@@ -67,6 +67,9 @@ extension LicenceKindInfo on LicenceKind {
 
 LicenceKind classifyLicenceText(String text) {
   final normalized = text.toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+  if (normalized.contains('mozilla public license')) {
+    return LicenceKind.mpl2;
+  }
   if (normalized.contains('gnu affero general public license')) {
     return LicenceKind.agpl;
   }
@@ -76,9 +79,6 @@ LicenceKind classifyLicenceText(String text) {
   }
   if (normalized.contains('gnu general public license')) {
     return LicenceKind.gpl;
-  }
-  if (normalized.contains('mozilla public license')) {
-    return LicenceKind.mpl2;
   }
   if (normalized.contains('apache license') &&
       normalized.contains('version 2.0')) {

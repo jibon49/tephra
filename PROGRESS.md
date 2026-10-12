@@ -11,8 +11,8 @@ Format rules:
 
 ## Current status
 
-- Current phase: **00** (completed)
-- Current step: **Exit gate passed**
+- Current phase: **01**
+- Current step: **01.2**
 - Last gate passed: **00**
 
 ## Phase 00 — Foundation
@@ -84,9 +84,17 @@ Instructions: `instructions/phase-00-foundation.md`
 
 Instructions: `instructions/phase-01-vault-editor.md`
 
+## Phase 1 inputs
+
+- `ENGINE`: `A` (`re_editor`)
+- `ANDROID_WATCHER`: `native` (`DirectoryWatcher`)
+- `ENGINE_HOOKS`: typed-text entry: `CodeLineEditingController.edit(TextEditingValue value)`; Enter: `CodeLineEditingController.applyNewLine()`; Tab: `CodeLineEditingController.applyIndent()` / `applyOutdent()`; undo grouping: `CodeLineEditingController.runRevocableOp(VoidCallback op)`; shortcut mapping: `CodeShortcutsActivatorsBuilder` / `CodeEditor.shortcutOverrideActions`; per-line `buildTextSpan`: `buildTextSpan({required BuildContext context, required int index, required TextSpan textSpan, required TextStyle style})`
+- `HIGHLIGHTER`: `re_highlight`
+
 ### Steps
 
-- [ ] 01.1 Branch, dependencies, package skeleton folders
+- [x] 01.1 Branch, dependencies, package skeleton folders
+  - notes: Added Phase 1 dependencies to tephra_core, tephra_vault, tephra_markdown, and app; added Android storage permissions and requestLegacyExternalStorage; updated license classifier for MPL-2.0; verified 139 allowed packages.
 - [ ] 01.2 `tephra_core`: exceptions, clocks, `contentHash`, `VaultPath`
 - [ ] 01.3 `tephra_vault`: `TextDocument`, ignore rules, interface and models
 - [ ] 01.4 `IoVaultFileSystem` and `MemoryVaultFileSystem`
@@ -684,6 +692,10 @@ Instructions: `instructions/phase-11-ecosystem.md`
 
 -
 
+## Conflicts
+
+- Phase 1: SAF-based `VaultFileSystem` for Android is deferred. Android uses "All files access" (`MANAGE_EXTERNAL_STORAGE`) on shared storage or the app-private folder. (Deviation from PHASE_PLAN 1.1).
+
 ## Ideas (not in scope — do not build without the human's approval)
 
--
+- Idea: SAF-based `VaultFileSystem` for Android without All-files-access.
