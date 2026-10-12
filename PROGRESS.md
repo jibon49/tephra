@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.19**
+- Current step: **Exit gate**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -57,7 +57,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: Built standalone spike docs/spikes/drift_spike with drift 2.35.2 and drift_flutter 0.3.1 (SQLite 3.53.4 with ENABLE_FTS5 verified). Windows profile benchmark on 10,000 notes: unicode61 insert 12.2s, trigram insert 21.8s; all query medians between 1.65ms and 8.83ms (passes < 50ms budget by 5x-25x). Android emulator debug measured queries 112-300ms (marked emulator/debug — not valid for the gate; physical device not connected). Trigram substring search on Bangla matched 106 records in 2.22ms median. Created docs/spikes/drift-fts5.md.
 - [x] 00.18 Platform spike: Android shared storage and file watching
   - notes: Built standalone spike docs/spikes/android_storage_spike. Verified MANAGE_EXTERNAL_STORAGE grant on Android 16 (API 36) emulator. Verified atomic write and read in /storage/emulated/0/Documents/TestVault/hello.md. Benchmarked all 3 watcher variants against external modifications (modify, add, remove) via ADB shell: DirectoryWatcher latencies 655-996ms (passes < 1s budget), Directory.watch (dart:io) latencies 22-56ms, PollingDirectoryWatcher latencies 57-417ms. Selected DirectoryWatcher (package:watcher) for Phase 1. Created docs/spikes/android-storage.md.
-- [ ] 00.19 Platform spike: Windows tray icon, second window, file watcher
+- [x] 00.19 Platform spike: Windows tray icon, second window, file watcher
+  - notes: Built standalone spike docs/spikes/windows_desktop_spike with tray_manager 0.8.0, desktop_multi_window 0.3.1, and watcher 1.2.1. Tray icon initialized with context menu. Spawned secondary window (StickySpikeApp) with JSON arguments. Registered sub-window plugin callback in windows/runner/flutter_window.cpp. Benchmarked DirectoryWatcher on test_vaults/real: modify 135ms, create 155ms, rename 135ms, delete 161ms. Created docs/spikes/windows-desktop.md.
 
 ### Exit gate
 
