@@ -86,11 +86,16 @@ void main() {
       }
     });
 
+    final robustWriter = AtomicFileWriter(
+      retries: 15,
+      retryDelay: const Duration(milliseconds: 20),
+    );
+
     for (var i = 1; i <= 200; i++) {
       final content = 'Line $i: ${"x" * (i * 10)}\n';
       final bytes = utf8.encode(content);
       validLengths.add(bytes.length);
-      await writer.write(target, bytes);
+      await robustWriter.write(target, bytes);
     }
 
     reading = false;

@@ -4,6 +4,7 @@
 library;
 
 export 'src/atomic_file_writer.dart';
+export 'src/change_debouncer.dart';
 export 'src/io_vault_file_system.dart';
 export 'src/memory_vault_file_system.dart';
 export 'src/system_trash.dart';

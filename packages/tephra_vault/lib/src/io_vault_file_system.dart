@@ -7,8 +7,10 @@ import 'dart:math';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:tephra_core/tephra_core.dart';
+import 'package:watcher/watcher.dart';
 
 import 'atomic_file_writer.dart';
+import 'change_debouncer.dart';
 import 'system_trash.dart';
 import 'text_document.dart';
 import 'trash_mode.dart';
@@ -28,11 +30,22 @@ final class IoVaultFileSystem implements VaultFileSystem {
     bool? caseInsensitive,
     AtomicFileWriter? writer,
     this.debounce = const Duration(milliseconds: 150),
+    Duration maxWait = const Duration(milliseconds: 500),
   }) : rootDir = _normalizeRoot(rootDir),
        caseInsensitive = caseInsensitive ?? Platform.isWindows,
        _writer =
            writer ??
-           AtomicFileWriter(isWindows: caseInsensitive ?? Platform.isWindows);
+           AtomicFileWriter(isWindows: caseInsensitive ?? Platform.isWindows),
+       _debouncer = ChangeDebouncer(
+         clock: clock,
+         quiet: debounce,
+         maxWait: maxWait,
+       ) {
+    _watchController = StreamController<VaultChange>.broadcast(
+      onListen: _startWatching,
+      onCancel: _stopWatching,
+    );
+  }
 
   final String rootDir;
   final VaultIgnore ignore;
@@ -44,7 +57,12 @@ final class IoVaultFileSystem implements VaultFileSystem {
 
   final AtomicFileWriter _writer;
   final _log = Logger('tephra.io_vault_file_system');
-  final _watchController = StreamController<VaultChange>.broadcast();
+  late final StreamController<VaultChange> _watchController;
+  final ChangeDebouncer _debouncer;
+  StreamSubscription<WatchEvent>? _watcherSub;
+  Timer? _reconnectTimer;
+  Timer? _debounceTimer;
+  int _consecutiveFailures = 0;
   final _random = Random();
 
   final Map<VaultPath, (String hash, DateTime until)> _selfWrites = {};
@@ -302,6 +320,14 @@ final class IoVaultFileSystem implements VaultFileSystem {
     final expire = clock.now().add(const Duration(seconds: 2));
     _selfDeleted[from] = expire;
     _selfCreated[to] = expire;
+    if (srcType == FileSystemEntityType.file) {
+      try {
+        final toFile = _file(to);
+        if (toFile.existsSync()) {
+          _selfWrites[to] = (contentHash(toFile.readAsBytesSync()), expire);
+        }
+      } catch (_) {}
+    }
   }
 
   @override
@@ -417,8 +443,226 @@ final class IoVaultFileSystem implements VaultFileSystem {
   @override
   Stream<VaultChange> watch() => _watchController.stream;
 
+  Completer<void>? _readyCompleter;
+
+  /// Completes when the underlying OS watcher is ready to detect changes.
+  Future<void> get ready => _readyCompleter?.future ?? Future<void>.value();
+
+  void _startWatching() {
+    _consecutiveFailures = 0;
+    _subscribeToOsWatcher();
+  }
+
+  void _stopWatching() {
+    _watcherSub?.cancel();
+    _watcherSub = null;
+    _reconnectTimer?.cancel();
+    _reconnectTimer = null;
+    _debounceTimer?.cancel();
+    _debounceTimer = null;
+    _debouncer.clear();
+    if (_readyCompleter != null && !_readyCompleter!.isCompleted) {
+      _readyCompleter!.complete();
+    }
+    _readyCompleter = null;
+  }
+
+  DirectoryWatcher _createWatcher() {
+    if (watcherMode == WatcherMode.polling) {
+      return PollingDirectoryWatcher(
+        rootDir,
+        pollingDelay: const Duration(seconds: 1),
+      );
+    }
+    return DirectoryWatcher(rootDir);
+  }
+
+  void _subscribeToOsWatcher() {
+    _watcherSub?.cancel();
+    _watcherSub = null;
+    final completer = Completer<void>();
+    _readyCompleter = completer;
+    try {
+      final watcher = _createWatcher();
+      watcher.ready.then(
+        (_) {
+          if (!completer.isCompleted) completer.complete();
+        },
+        onError: (Object _) {
+          if (!completer.isCompleted) completer.complete();
+        },
+      );
+      _watcherSub = watcher.events.listen(
+        _onWatchEvent,
+        onError: (Object error, StackTrace stackTrace) {
+          _log.warning('Watcher error on $rootDir: $error', error, stackTrace);
+          _watcherSub?.cancel();
+          _watcherSub = null;
+          _consecutiveFailures++;
+          if (_consecutiveFailures < 2) {
+            _reconnectTimer?.cancel();
+            _reconnectTimer = Timer(const Duration(seconds: 1), () {
+              if (_watchController.hasListener) {
+                _subscribeToOsWatcher();
+              }
+            });
+          } else {
+            _log.severe(
+              'Watcher failed consecutively 2 times on $rootDir; keeping stream open without events.',
+            );
+          }
+        },
+      );
+    } catch (e, st) {
+      _log.warning('Failed to initialize watcher on $rootDir: $e', e, st);
+      _consecutiveFailures++;
+      if (_consecutiveFailures < 2) {
+        _reconnectTimer?.cancel();
+        _reconnectTimer = Timer(const Duration(seconds: 1), () {
+          if (_watchController.hasListener) {
+            _subscribeToOsWatcher();
+          }
+        });
+      } else {
+        _log.severe('Watcher initialization failed twice on $rootDir');
+      }
+    }
+  }
+
+  void _onWatchEvent(WatchEvent event) {
+    _consecutiveFailures = 0;
+    final rel = p.relative(event.path, from: rootDir);
+    final path = VaultPath.tryParse(rel);
+    if (path == null || ignore.isIgnored(path)) {
+      return;
+    }
+
+    final RawChangeKind kind;
+    switch (event.type) {
+      case ChangeType.ADD:
+        kind = RawChangeKind.added;
+      case ChangeType.MODIFY:
+        kind = RawChangeKind.modified;
+      case ChangeType.REMOVE:
+        kind = RawChangeKind.removed;
+      default:
+        kind = RawChangeKind.modified;
+    }
+    _debouncer.add(path, kind);
+    _scheduleDebounceTimer();
+  }
+
+  void _scheduleDebounceTimer() {
+    final due = _debouncer.nextDueAt;
+    if (due == null) {
+      _debounceTimer?.cancel();
+      _debounceTimer = null;
+      return;
+    }
+    final now = clock.now();
+    final delay = due.isAfter(now) ? due.difference(now) : Duration.zero;
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(delay, _onDebounceTimer);
+  }
+
+  Future<void> _onDebounceTimer() async {
+    final merged = _debouncer.flushIfDue();
+    if (merged == null) {
+      _scheduleDebounceTimer();
+      return;
+    }
+
+    final now = clock.now();
+    _selfWrites.removeWhere((_, value) => !now.isBefore(value.$2));
+    _selfCreated.removeWhere((_, until) => !now.isBefore(until));
+    _selfDeleted.removeWhere((_, until) => !now.isBefore(until));
+
+    for (final change in merged) {
+      await _processMergedChange(change);
+    }
+
+    if (_debouncer.isNotEmpty) {
+      _scheduleDebounceTimer();
+    }
+  }
+
+  Future<void> _processMergedChange(MergedChange change) async {
+    final path = change.path;
+    final now = clock.now();
+
+    if (change.kind == RawChangeKind.removed) {
+      if (_isAncestorOrSelfIn(path, _selfDeleted, now)) {
+        return;
+      }
+      if (!_watchController.isClosed) {
+        _watchController.add(FileDeleted(path));
+      }
+      return;
+    }
+
+    final file = _file(path);
+    if (!file.existsSync()) {
+      if (_isAncestorOrSelfIn(path, _selfDeleted, now)) {
+        return;
+      }
+      if (!_watchController.isClosed) {
+        _watchController.add(FileDeleted(path));
+      }
+      return;
+    }
+
+    if (FileSystemEntity.isDirectorySync(file.path)) {
+      return;
+    }
+
+    final selfWrite = _selfWrites[path];
+    var isSelfWriteWithDifferentContent = false;
+    if (selfWrite != null && now.isBefore(selfWrite.$2)) {
+      try {
+        final bytes = file.readAsBytesSync();
+        final currentHash = contentHash(bytes);
+        if (currentHash == selfWrite.$1) {
+          return;
+        }
+        isSelfWriteWithDifferentContent = true;
+        _selfWrites.remove(path);
+      } catch (_) {}
+    }
+
+    if (change.kind == RawChangeKind.added &&
+        !isSelfWriteWithDifferentContent) {
+      if (_isAncestorOrSelfIn(path, _selfCreated, now)) {
+        return;
+      }
+      if (!_watchController.isClosed) {
+        _watchController.add(FileCreated(path));
+      }
+    } else {
+      if (!_watchController.isClosed) {
+        _watchController.add(FileModified(path));
+      }
+    }
+  }
+
+  bool _isAncestorOrSelfIn(
+    VaultPath path,
+    Map<VaultPath, DateTime> map,
+    DateTime now,
+  ) {
+    final until = map[path];
+    if (until != null && now.isBefore(until)) return true;
+    var current = path.parent;
+    while (current != null) {
+      final parentUntil = map[current];
+      if (parentUntil != null && now.isBefore(parentUntil)) return true;
+      current = current.parent;
+    }
+    return false;
+  }
+
   @override
   Future<void> dispose() async {
+    _stopWatching();
     if (!_watchController.isClosed) {
       await _watchController.close();
     }
