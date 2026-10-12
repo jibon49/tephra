@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **01**
-- Current step: **01.6**
+- Current step: **01.7**
 - Last gate passed: **00**
 
 ## Phase 00 — Foundation
@@ -103,7 +103,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented AtomicFileWriter (dot-prefix, safe rename, fallback, cleanStaleTemps), IoVaultFileSystem (strict VaultPath, case-only rename, trash with numeric suffixes), and MemoryVaultFileSystem. 72 tests pass in tephra_vault.
 - [x] 01.5 Watcher: debounce, merge rules, self-write suppression, Android watcher choice
   - notes: Implemented ChangeDebouncer (merge table, quiet/maxWait, first-seen order), IoVaultFileSystem.watch with lazy stream, error recovery, self-write/move/delete suppression, and Polling/native modes. External pickup latency 185-200 ms (< 1000 ms budget). 97 tests passing in tephra_vault.
-- [ ] 01.6 `tephra_markdown`: AST, options, `LineIndex`, frontmatter, parser utilities
+- [x] 01.6 `tephra_markdown`: AST, options, `LineIndex`, frontmatter, parser utilities
+  - notes: Implemented sealed MdNode AST (35 concrete nodes), ParserOptions, LineIndex (sub-millisecond lookups), OffsetMap, Unicode classification/case-folding, 256 HTML entities table, and YAML frontmatter split/decode. 30 unit tests passing.
 - [ ] 01.7 Block parser (CommonMark containers + GFM tables + Obsidian blocks)
 - [ ] 01.8 Inline parser
 - [ ] 01.9 `ParsedNote`, `MarkdownParser`, convenience lists, async parse helper
