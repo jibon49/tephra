@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.12**
+- Current step: **00.13**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -43,7 +43,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: registered project tephra-gemini as "Tephra (Gemini build)" on port 8093 (auto-start off), verified startup and HTTP 200 in Dev Launcher.
 - [x] 00.11 CI workflow (verified locally)
   - notes: created .github/workflows/ci.yml; CI verified locally by running the same commands; not yet run on GitHub (no remote); gitleaks-action note recorded.
-- [ ] 00.12 Fixture vault: `test_vaults/syntax/`
+- [x] 00.12 Fixture vault: `test_vaults/syntax/`
+  - notes: created test_vaults/README.md and 24 syntax notes byte-exact without BOM, LF line endings.
 - [ ] 00.13 Fixture vault: `test_vaults/edge/` and generated attachments
 - [ ] 00.14 Benchmark vault generator and `test_vaults/real/`
 - [ ] 00.15 First Android and Windows builds, run on devices
