@@ -47,7 +47,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: created test_vaults/README.md and 24 syntax notes byte-exact without BOM, LF line endings.
 - [x] 00.13 Fixture vault: `test_vaults/edge/` and generated attachments
   - notes: created png_writer, huge_note, gen_test_vaults script, test_vaults_test with 5 tests passing, generated edge vault and attachments.
-- [ ] 00.14 Benchmark vault generator and `test_vaults/real/`
+- [x] 00.14 Benchmark vault generator and `test_vaults/real/`
+  - notes: created bench_generator and gen_bench_vault CLI, bench_generator_test with 6 tests passing, generated real/ (300 notes, committed) and bench/ (10,000 notes in 43.8s, git-ignored).
 - [ ] 00.15 First Android and Windows builds, run on devices
 - [ ] 00.16 Editor spike (the key decision)
 - [ ] 00.17 Platform spike: drift + SQLite FTS5

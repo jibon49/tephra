@@ -13,7 +13,7 @@ Contains byte-exact edge cases created deterministically by tooling: CRLF line e
 
 ## real/
 
-A realistic 300-note vault mirroring real-world personal knowledge bases with interconnected links, tags, tasks, and attachments for indexing and integration testing.
+A realistic 300-note vault mirroring real-world personal knowledge bases with interconnected links, tags, tasks, and attachments for indexing and integration testing. `real/` is generated (300 notes, seed 7); the human may replace it with a copy of a real Obsidian vault.
 
 ## bench/
 
