@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.7**
+- Current step: **00.8**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -33,7 +33,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: created 7 pure-Dart packages with exact workspace dependency graph, verified no stray linter or template files.
 - [x] 00.6 First resolve, analyze and format baseline
   - notes: workspace resolves cleanly with single root lockfile, all dependencies added to app, analyze clean, format clean.
-- [ ] 00.7 App shell: logging, crash handlers, theme, localisation, welcome screen
+- [x] 00.7 App shell: logging, crash handlers, theme, localisation, welcome screen
+  - notes: logging with file rotation and crash handlers, theme, l10n, welcome screen with widget tests, verified Windows launch and file logging.
 - [ ] 00.8 Licence checker and third-party notices
 - [ ] 00.9 Dev preview entry point and README
 - [ ] 00.10 Register in Dev Launcher
