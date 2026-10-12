@@ -1,0 +1,19 @@
+name: tephra_search
+description: "Obsidian search syntax parser and engine for Tephra."
+version: 0.0.1
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  tephra_core:
+    path: ../tephra_core
+  tephra_markdown:
+    path: ../tephra_markdown
+  tephra_index:
+    path: ../tephra_index
+
+dev_dependencies:
+  test: ^1.25.6

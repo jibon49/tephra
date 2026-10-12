@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.5**
+- Current step: **00.6**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -29,7 +29,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: root pubspec.yaml with 8 workspace members and dependencies, analysis_options.yaml with strict analyzer and linter rules.
 - [x] 00.4 Create the Flutter app and set its identity
   - notes: Flutter app created, identity com.tephra.app / Tephra configured on Android, Windows, and Web, pubspec set up for workspace.
-- [ ] 00.5 Create the seven packages
+- [x] 00.5 Create the seven packages
+  - notes: created 7 pure-Dart packages with exact workspace dependency graph, verified no stray linter or template files.
 - [ ] 00.6 First resolve, analyze and format baseline
 - [ ] 00.7 App shell: logging, crash handlers, theme, localisation, welcome screen
 - [ ] 00.8 Licence checker and third-party notices
