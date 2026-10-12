@@ -1,0 +1,24 @@
+================ DRIFT FTS5 RESULTS (windows) ================
+SQLite version: 3.53.4
+ENABLE_FTS5 present: true
+Unicode61 10k rows insert: 12235.3 ms
+Trigram 10k rows insert: 21797.7 ms
+--- Unicode61 Queries ---
+  Query: "topic42" -> count=100, median=2.29 ms, max=11.32 ms
+  Query: "quick AND brown" -> count=189, median=2.58 ms, max=14.99 ms
+  Query: ""quick brown fox"" -> count=189, median=5.71 ms, max=16.54 ms
+  Query: "top*" -> count=200, median=8.83 ms, max=16.05 ms
+  Query: "বাংলা" -> count=106, median=3.25 ms, max=9.73 ms
+  Query: "লেখা" -> count=106, median=2.13 ms, max=5.67 ms
+  Query: "topic7 OR topic8" -> count=200, median=4.87 ms, max=14.52 ms
+  Query: "topic2 NOT topic3" -> count=100, median=1.65 ms, max=4.85 ms
+--- Trigram Queries ---
+  Query: "topic42" -> count=100, median=4.27 ms, max=11.21 ms
+  Query: "quick AND brown" -> count=189, median=3.91 ms, max=8.33 ms
+  Query: ""quick brown fox"" -> count=189, median=6.86 ms, max=10.59 ms
+  Query: "বাংলা" -> count=106, median=2.22 ms, max=5.98 ms
+  Query: "লেখা" -> count=106, median=1.70 ms, max=3.53 ms
+  Query: "ংলা" -> count=106, median=2.22 ms, max=3.48 ms
+Bangla substring "ংলা":
+  unicode61 matches: 106
+  trigram matches: 106

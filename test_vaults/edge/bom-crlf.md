@@ -1,0 +1,3 @@
+﻿# BOM and CRLF
+
+Text.

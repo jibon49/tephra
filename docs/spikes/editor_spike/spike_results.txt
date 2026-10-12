@@ -1,0 +1,9 @@
+================ SPIKE RESULTS (windows) ================
+A pass 1: SPIKE A windows typing build_p95=12.48 raster_p95=18.54 max=43.58 over16=101 | scroll fps=43.6 p95=32.12
+A pass 2: SPIKE A windows typing build_p95=12.12 raster_p95=17.00 max=778.17 over16=83 | scroll fps=62.0 p95=17.65
+A pass 3: SPIKE A windows typing build_p95=9.62 raster_p95=17.39 max=50.38 over16=93 | scroll fps=59.0 p95=18.21
+MEDIAN A: SPIKE A windows typing build_p95=12.12 raster_p95=17.00 max=778.17 over16=83 | scroll fps=62.0 p95=17.65
+B pass 1: SPIKE B windows typing build_p95=155058.35 raster_p95=39.08 max=181561.45 over16=32 | scroll fps=5.8 p95=251.01
+B pass 2: SPIKE B windows typing build_p95=155058.35 raster_p95=39.08 max=181561.45 over16=32 | scroll fps=5.8 p95=251.01
+B pass 3: SPIKE B windows typing build_p95=155058.35 raster_p95=39.08 max=181561.45 over16=32 | scroll fps=5.8 p95=251.01
+MEDIAN B: SPIKE B windows typing build_p95=155058.35 raster_p95=39.08 max=181561.45 over16=32 | scroll fps=5.8 p95=251.01

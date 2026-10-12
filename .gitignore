@@ -1,0 +1,33 @@
+# Dart / Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec_overrides.yaml
+coverage/
+
+# Secrets — never commit (only *.example.json templates are committed)
+secrets/*
+!secrets/*.example.json
+*.jks
+*.keystore
+key.properties
+client_secret*.json
+.env
+
+# Android local files
+android/local.properties
+app/android/local.properties
+**/android/.gradle/
+**/android/app/.cxx/
+
+# Generated fixtures
+test_vaults/bench/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

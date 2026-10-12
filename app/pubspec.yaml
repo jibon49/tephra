@@ -1,0 +1,41 @@
+name: tephra
+description: "Tephra, an Obsidian-compatible Markdown notes app for Android and Windows."
+publish_to: none
+version: 0.0.0+1
+resolution: workspace
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  tephra_core:
+    path: ../packages/tephra_core
+  tephra_markdown:
+    path: ../packages/tephra_markdown
+  tephra_vault:
+    path: ../packages/tephra_vault
+  tephra_index:
+    path: ../packages/tephra_index
+  tephra_search:
+    path: ../packages/tephra_search
+  tephra_sync:
+    path: ../packages/tephra_sync
+  tephra_io:
+    path: ../packages/tephra_io
+  flutter_riverpod: ^3.4.3
+  logging: ^1.3.0
+  path: ^1.9.1
+  path_provider: ^2.1.6
+  intl: ^0.20.3
+  flutter_localizations:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  generate: true

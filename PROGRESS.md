@@ -11,9 +11,9 @@ Format rules:
 
 ## Current status
 
-- Current phase: **00**
-- Current step: **00.2**
-- Last gate passed: none
+- Current phase: **00** (completed)
+- Current step: **Exit gate passed**
+- Last gate passed: **00**
 
 ## Phase 00 — Foundation
 
@@ -23,44 +23,62 @@ Instructions: `instructions/phase-00-foundation.md`
 
 - [x] 00.1 Verify the machine
   - notes: Flutter 3.47.7 stable, Dart 3.13.5, flutter doctor fully green, Windows desktop available, created Android emulator tephra_api36 (Android 36 x86_64), real phone not connected.
-- [ ] 00.2 Git repository, ignore and attribute files
-- [ ] 00.3 Workspace root: pubspec and analysis options
-- [ ] 00.4 Create the Flutter app and set its identity
-- [ ] 00.5 Create the seven packages
-- [ ] 00.6 First resolve, analyze and format baseline
-- [ ] 00.7 App shell: logging, crash handlers, theme, localisation, welcome screen
-- [ ] 00.8 Licence checker and third-party notices
-- [ ] 00.9 Dev preview entry point and README
-- [ ] 00.10 Register in Dev Launcher
-- [ ] 00.11 CI workflow (verified locally)
-- [ ] 00.12 Fixture vault: `test_vaults/syntax/`
-- [ ] 00.13 Fixture vault: `test_vaults/edge/` and generated attachments
-- [ ] 00.14 Benchmark vault generator and `test_vaults/real/`
-- [ ] 00.15 First Android and Windows builds, run on devices
-- [ ] 00.16 Editor spike (the key decision)
-- [ ] 00.17 Platform spike: drift + SQLite FTS5
-- [ ] 00.18 Platform spike: Android shared storage and file watching
-- [ ] 00.19 Platform spike: Windows tray icon, second window, file watcher
+- [x] 00.2 Git repository, ignore and attribute files
+  - notes: git repo initialized on main, core.autocrlf false, .gitignore and .gitattributes created, branched to phase-00 (commit e2b6e57).
+- [x] 00.3 Workspace root: pubspec and analysis options
+  - notes: root pubspec.yaml with 8 workspace members and dependencies, analysis_options.yaml with strict analyzer and linter rules.
+- [x] 00.4 Create the Flutter app and set its identity
+  - notes: Flutter app created, identity com.tephra.app / Tephra configured on Android, Windows, and Web, pubspec set up for workspace.
+- [x] 00.5 Create the seven packages
+  - notes: created 7 pure-Dart packages with exact workspace dependency graph, verified no stray linter or template files.
+- [x] 00.6 First resolve, analyze and format baseline
+  - notes: workspace resolves cleanly with single root lockfile, all dependencies added to app, analyze clean, format clean.
+- [x] 00.7 App shell: logging, crash handlers, theme, localisation, welcome screen
+  - notes: logging with file rotation and crash handlers, theme, l10n, welcome screen with widget tests, verified Windows launch and file logging.
+- [x] 00.8 Licence checker and third-party notices
+  - notes: license classifier with 12 tests, check_licenses tool created, verified 85 packages all allowed, generated THIRD_PARTY_NOTICES.md.
+- [x] 00.9 Dev preview entry point and README
+  - notes: created tool/dev.dart with LAN IP detection, README.md with Install/Run blocks, verified web server on port 8093 and 8097 override.
+- [x] 00.10 Register in Dev Launcher
+  - notes: registered project tephra-gemini as "Tephra (Gemini build)" on port 8093 (auto-start off), verified startup and HTTP 200 in Dev Launcher.
+- [x] 00.11 CI workflow (verified locally)
+  - notes: created .github/workflows/ci.yml; CI verified locally by running the same commands; not yet run on GitHub (no remote); gitleaks-action note recorded.
+- [x] 00.12 Fixture vault: `test_vaults/syntax/`
+  - notes: created test_vaults/README.md and 24 syntax notes byte-exact without BOM, LF line endings.
+- [x] 00.13 Fixture vault: `test_vaults/edge/` and generated attachments
+  - notes: created png_writer, huge_note, gen_test_vaults script, test_vaults_test with 5 tests passing, generated edge vault and attachments.
+- [x] 00.14 Benchmark vault generator and `test_vaults/real/`
+  - notes: created bench_generator and gen_bench_vault CLI, bench_generator_test with 6 tests passing, generated real/ (300 notes, committed) and bench/ (10,000 notes in 43.8s, git-ignored).
+- [x] 00.15 First Android and Windows builds, run on devices
+  - notes: flutter build windows --debug and flutter build apk --debug both succeeded; verified running on Windows and on Android emulator tephra_api36 (label "Tephra", welcome screen, tephra.log logging confirmed); not verified on physical device.
+- [x] 00.16 Editor spike (the key decision)
+  - notes: Built standalone spike with re_editor (A) and TextField (B). Profile measurements on Windows on 5,000-line note: A typing build p95=12.12ms (passes H2), scroll=62.0 FPS; B typing build p95=155,058ms (fails H2). Android emulator debug measured A build p95=319ms, scroll=1.2 FPS (marked emulator/debug — not valid for the gate; physical device not connected). Soft S1 (WidgetSpan inline) fails for A due to direct ParagraphBuilder use (overlay approach required for Live Preview). Created docs/spikes/editor.md and docs/decisions/0001-editor-engine.md accepting re_editor.
+- [x] 00.17 Platform spike: drift + SQLite FTS5
+  - notes: Built standalone spike docs/spikes/drift_spike with drift 2.35.2 and drift_flutter 0.3.1 (SQLite 3.53.4 with ENABLE_FTS5 verified). Windows profile benchmark on 10,000 notes: unicode61 insert 12.2s, trigram insert 21.8s; all query medians between 1.65ms and 8.83ms (passes < 50ms budget by 5x-25x). Android emulator debug measured queries 112-300ms (marked emulator/debug — not valid for the gate; physical device not connected). Trigram substring search on Bangla matched 106 records in 2.22ms median. Created docs/spikes/drift-fts5.md.
+- [x] 00.18 Platform spike: Android shared storage and file watching
+  - notes: Built standalone spike docs/spikes/android_storage_spike. Verified MANAGE_EXTERNAL_STORAGE grant on Android 16 (API 36) emulator. Verified atomic write and read in /storage/emulated/0/Documents/TestVault/hello.md. Benchmarked all 3 watcher variants against external modifications (modify, add, remove) via ADB shell: DirectoryWatcher latencies 655-996ms (passes < 1s budget), Directory.watch (dart:io) latencies 22-56ms, PollingDirectoryWatcher latencies 57-417ms. Selected DirectoryWatcher (package:watcher) for Phase 1. Created docs/spikes/android-storage.md.
+- [x] 00.19 Platform spike: Windows tray icon, second window, file watcher
+  - notes: Built standalone spike docs/spikes/windows_desktop_spike with tray_manager 0.8.0, desktop_multi_window 0.3.1, and watcher 1.2.1. Tray icon initialized with context menu. Spawned secondary window (StickySpikeApp) with JSON arguments. Registered sub-window plugin callback in windows/runner/flutter_window.cpp. Benchmarked DirectoryWatcher on test_vaults/real: modify 135ms, create 155ms, rename 135ms, delete 161ms. Created docs/spikes/windows-desktop.md.
 
 ### Exit gate
 
-- [ ] `flutter analyze --fatal-infos` → `No issues found!` and `dart format --output=none --set-exit-if-changed app/lib app/test packages tool` exits 0.
-- [ ] `dart test tool/test` and `cd app; flutter test` pass.
-- [ ] `dart run tool/check_licenses.dart` exits 0 and `THIRD_PARTY_NOTICES.md` is committed.
-- [ ] `.github/workflows/ci.yml` exists; every command it runs was executed locally and passed (GitHub run pending until the human creates the private repository).
-- [ ] `flutter build apk --debug` and `flutter build windows --release` both succeed locally.
-- [ ] Placeholder app runs on Windows and on the Android emulator; on the real phone (or `PROGRESS.md` says "not verified on device" and the human was told).
-- [ ] `docs/decisions/0001-editor-engine.md` exists, names the chosen engine, and the chosen prototype's Android typing p95 ≤ 16 ms measured in profile mode on a real phone (or the gap is reported to the human).
-- [ ] `docs/spikes/drift-fts5.md`: FTS5 present; every query median < 50 ms on the phone (or reported as not verified on device).
-- [ ] `docs/spikes/android-storage.md`: All-files-access granted, read/write in `Documents/TestVault` works, and the Phase 1 watcher choice is written down.
-- [ ] `docs/spikes/windows-desktop.md` exists with tray, second-window and watcher results.
-- [ ] `test_vaults/syntax` (24 notes + 4 attachments), `test_vaults/edge` (generated) and `test_vaults/real` (300 notes) are committed; `test_vaults/bench` is generated and ignored.
-- [ ] Project "Tephra (Gemini build)" is registered in Dev Launcher (auto-start off), starts, and its log shows `Local: http://localhost:8093/`.
-- [ ] `phase-00` merged into `main` with `git merge --no-ff phase-00`, tagged `v0.00.0`, and the human has been told the results.
+- [x] `flutter analyze --fatal-infos` → `No issues found!` and `dart format --output=none --set-exit-if-changed app/lib app/test packages tool` exits 0.
+- [x] `dart test tool/test` (23 passed) and `cd app; flutter test` (10 passed) pass.
+- [x] `dart run tool/check_licenses.dart` exits 0 (85 allowed, 0 not allowed) and `THIRD_PARTY_NOTICES.md` is committed.
+- [x] `.github/workflows/ci.yml` exists; every command it runs was executed locally and passed (GitHub run pending until the human creates the private repository).
+- [x] `flutter build apk --debug` (55.8s) and `flutter build windows --release` (87.4s) both succeed locally.
+- [x] Placeholder app runs on Windows and on the Android emulator; (not verified on device).
+- [x] `docs/decisions/0001-editor-engine.md` exists, names the chosen engine (re_editor), Windows typing p95 = 12.12 ms; Android emulator debug measured 319 ms (marked emulator/debug — not valid for the gate; not verified on device).
+- [x] `docs/spikes/drift-fts5.md`: FTS5 present; Windows profile query medians 1.65–8.83 ms; Android emulator debug measured 112–300 ms (marked emulator/debug — not valid for the gate; not verified on device).
+- [x] `docs/spikes/android-storage.md`: All-files-access granted, read/write in `Documents/TestVault` works, and DirectoryWatcher selected for Phase 1.
+- [x] `docs/spikes/windows-desktop.md` exists with tray (PASS), second-window (PASS, arguments passed), and watcher results (135–161 ms).
+- [x] `test_vaults/syntax` (24 notes + 4 attachments), `test_vaults/edge` (generated) and `test_vaults/real` (300 notes) are committed; `test_vaults/bench` is generated and ignored.
+- [x] Project "Tephra (Gemini build)" is registered in Dev Launcher (auto-start off), starts, and its log shows `Local: http://localhost:8093/`.
+- [x] `phase-00` merged into `main` with `git merge --no-ff phase-00`, tagged `v0.00.0`, and the human has been told the results.
 
 ### Phase notes
 
--
+- Phase 00 complete. Workspace, packages, tooling, test vaults, and all 4 platform spikes (editor engine, SQLite FTS5, Android storage, Windows multi-window/tray) de-risked and documented. All Exit Gate checks verified locally.
 
 ## Phase 01 — Vault, files & basic editor
 

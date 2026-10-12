@@ -1,0 +1,13 @@
+{
+  "@@locale": "en",
+  "appTitle": "Tephra",
+  "@appTitle": { "description": "Application name shown in the window title and task switcher." },
+  "welcomeTitle": "Welcome to Tephra",
+  "welcomeSubtitle": "Your notes are plain Markdown files in a folder you choose.",
+  "welcomeOpenVault": "Open vault",
+  "@welcomeOpenVault": { "description": "Button: open an existing vault folder." },
+  "welcomeCreateVault": "Create new vault",
+  "@welcomeCreateVault": { "description": "Button: create a new, empty vault folder." },
+  "comingInPhase1": "Coming in Phase 1",
+  "@comingInPhase1": { "description": "Temporary snackbar text for features that are not built yet." }
+}
