@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **01**
-- Current step: **01.4**
+- Current step: **01.5**
 - Last gate passed: **00**
 
 ## Phase 00 — Foundation
@@ -99,7 +99,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented TephraException family, Clock/SystemClock/ManualClock, contentHash (SHA-256), and VaultPath with exhaustive Windows-strict normalization and validation. 32 unit tests passing.
 - [x] 01.3 `tephra_vault`: `TextDocument`, ignore rules, interface and models
   - notes: Implemented TextDocument (BOM/line-ending preservation and round-trip law), VaultIgnore, SystemTrash, TrashMode, VaultChange, VaultEntry, and VaultFileSystem interface. 19 unit tests passing.
-- [ ] 01.4 `IoVaultFileSystem` and `MemoryVaultFileSystem`
+- [x] 01.4 `IoVaultFileSystem` and `MemoryVaultFileSystem`
+  - notes: Implemented AtomicFileWriter (dot-prefix, safe rename, fallback, cleanStaleTemps), IoVaultFileSystem (strict VaultPath, case-only rename, trash with numeric suffixes), and MemoryVaultFileSystem. 72 tests pass in tephra_vault.
 - [ ] 01.5 Watcher: debounce, merge rules, self-write suppression, Android watcher choice
 - [ ] 01.6 `tephra_markdown`: AST, options, `LineIndex`, frontmatter, parser utilities
 - [ ] 01.7 Block parser (CommonMark containers + GFM tables + Obsidian blocks)
