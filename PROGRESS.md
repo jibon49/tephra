@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.9**
+- Current step: **00.10**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -37,7 +37,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: logging with file rotation and crash handlers, theme, l10n, welcome screen with widget tests, verified Windows launch and file logging.
 - [x] 00.8 Licence checker and third-party notices
   - notes: license classifier with 12 tests, check_licenses tool created, verified 85 packages all allowed, generated THIRD_PARTY_NOTICES.md.
-- [ ] 00.9 Dev preview entry point and README
+- [x] 00.9 Dev preview entry point and README
+  - notes: created tool/dev.dart with LAN IP detection, README.md with Install/Run blocks, verified web server on port 8093 and 8097 override.
 - [ ] 00.10 Register in Dev Launcher
 - [ ] 00.11 CI workflow (verified locally)
 - [ ] 00.12 Fixture vault: `test_vaults/syntax/`
