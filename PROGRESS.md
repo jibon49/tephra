@@ -49,7 +49,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: created png_writer, huge_note, gen_test_vaults script, test_vaults_test with 5 tests passing, generated edge vault and attachments.
 - [x] 00.14 Benchmark vault generator and `test_vaults/real/`
   - notes: created bench_generator and gen_bench_vault CLI, bench_generator_test with 6 tests passing, generated real/ (300 notes, committed) and bench/ (10,000 notes in 43.8s, git-ignored).
-- [ ] 00.15 First Android and Windows builds, run on devices
+- [x] 00.15 First Android and Windows builds, run on devices
+  - notes: flutter build windows --debug and flutter build apk --debug both succeeded; verified running on Windows and on Android emulator tephra_api36 (label "Tephra", welcome screen, tephra.log logging confirmed); not verified on physical device.
 - [ ] 00.16 Editor spike (the key decision)
 - [ ] 00.17 Platform spike: drift + SQLite FTS5
 - [ ] 00.18 Platform spike: Android shared storage and file watching
