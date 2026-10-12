@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.13**
+- Current step: **00.14**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -45,7 +45,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: created .github/workflows/ci.yml; CI verified locally by running the same commands; not yet run on GitHub (no remote); gitleaks-action note recorded.
 - [x] 00.12 Fixture vault: `test_vaults/syntax/`
   - notes: created test_vaults/README.md and 24 syntax notes byte-exact without BOM, LF line endings.
-- [ ] 00.13 Fixture vault: `test_vaults/edge/` and generated attachments
+- [x] 00.13 Fixture vault: `test_vaults/edge/` and generated attachments
+  - notes: created png_writer, huge_note, gen_test_vaults script, test_vaults_test with 5 tests passing, generated edge vault and attachments.
 - [ ] 00.14 Benchmark vault generator and `test_vaults/real/`
 - [ ] 00.15 First Android and Windows builds, run on devices
 - [ ] 00.16 Editor spike (the key decision)
