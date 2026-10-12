@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **01**
-- Current step: **01.2**
+- Current step: **01.3**
 - Last gate passed: **00**
 
 ## Phase 00 — Foundation
@@ -95,7 +95,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
 
 - [x] 01.1 Branch, dependencies, package skeleton folders
   - notes: Added Phase 1 dependencies to tephra_core, tephra_vault, tephra_markdown, and app; added Android storage permissions and requestLegacyExternalStorage; updated license classifier for MPL-2.0; verified 139 allowed packages.
-- [ ] 01.2 `tephra_core`: exceptions, clocks, `contentHash`, `VaultPath`
+- [x] 01.2 `tephra_core`: exceptions, clocks, `contentHash`, `VaultPath`
+  - notes: Implemented TephraException family, Clock/SystemClock/ManualClock, contentHash (SHA-256), and VaultPath with exhaustive Windows-strict normalization and validation. 32 unit tests passing.
 - [ ] 01.3 `tephra_vault`: `TextDocument`, ignore rules, interface and models
 - [ ] 01.4 `IoVaultFileSystem` and `MemoryVaultFileSystem`
 - [ ] 01.5 Watcher: debounce, merge rules, self-write suppression, Android watcher choice
