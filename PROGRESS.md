@@ -105,7 +105,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented ChangeDebouncer (merge table, quiet/maxWait, first-seen order), IoVaultFileSystem.watch with lazy stream, error recovery, self-write/move/delete suppression, and Polling/native modes. External pickup latency 185-200 ms (< 1000 ms budget). 97 tests passing in tephra_vault.
 - [x] 01.6 `tephra_markdown`: AST, options, `LineIndex`, frontmatter, parser utilities
   - notes: Implemented sealed MdNode AST (35 concrete nodes), ParserOptions, LineIndex (sub-millisecond lookups), OffsetMap, Unicode classification/case-folding, 256 HTML entities table, and YAML frontmatter split/decode. 30 unit tests passing.
-- [ ] 01.7 Block parser (CommonMark containers + GFM tables + Obsidian blocks)
+- [x] 01.7 Block parser (CommonMark containers + GFM tables + Obsidian blocks)
+  - notes: Implemented BlockParser (CommonMark 0.31.2 strategy, LineCursor, BlockNode, GFM tables, Obsidian callouts/math/comments/footnotes/block IDs), test dump helper, and inline stub; 106 unit tests passing across 5 test suites in test/block.
 - [ ] 01.8 Inline parser
 - [ ] 01.9 `ParsedNote`, `MarkdownParser`, convenience lists, async parse helper
 - [ ] 01.10 CommonMark conformance, Obsidian syntax cases, `test_vaults/syntax`

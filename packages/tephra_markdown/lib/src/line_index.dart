@@ -4,11 +4,10 @@
 final class LineIndex {
   LineIndex(String text) : _textLength = text.length {
     final starts = <int>[0];
-    final len = text.length;
-    for (var i = 0; i < len; i++) {
-      if (text.codeUnitAt(i) == 0x0A) {
-        starts.add(i + 1);
-      }
+    var pos = text.indexOf('\n');
+    while (pos != -1) {
+      starts.add(pos + 1);
+      pos = text.indexOf('\n', pos + 1);
     }
     _lineStarts = starts;
   }
