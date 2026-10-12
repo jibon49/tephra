@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.14**
+- Current step: **00.17**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -51,7 +51,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: created bench_generator and gen_bench_vault CLI, bench_generator_test with 6 tests passing, generated real/ (300 notes, committed) and bench/ (10,000 notes in 43.8s, git-ignored).
 - [x] 00.15 First Android and Windows builds, run on devices
   - notes: flutter build windows --debug and flutter build apk --debug both succeeded; verified running on Windows and on Android emulator tephra_api36 (label "Tephra", welcome screen, tephra.log logging confirmed); not verified on physical device.
-- [ ] 00.16 Editor spike (the key decision)
+- [x] 00.16 Editor spike (the key decision)
+  - notes: Built standalone spike with re_editor (A) and TextField (B). Profile measurements on Windows on 5,000-line note: A typing build p95=12.12ms (passes H2), scroll=62.0 FPS; B typing build p95=155,058ms (fails H2). Android emulator debug measured A build p95=319ms, scroll=1.2 FPS (marked emulator/debug — not valid for the gate; physical device not connected). Soft S1 (WidgetSpan inline) fails for A due to direct ParagraphBuilder use (overlay approach required for Live Preview). Created docs/spikes/editor.md and docs/decisions/0001-editor-engine.md accepting re_editor.
 - [ ] 00.17 Platform spike: drift + SQLite FTS5
 - [ ] 00.18 Platform spike: Android shared storage and file watching
 - [ ] 00.19 Platform spike: Windows tray icon, second window, file watcher
