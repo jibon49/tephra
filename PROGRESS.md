@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.18**
+- Current step: **00.19**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -55,7 +55,8 @@ Instructions: `instructions/phase-00-foundation.md`
   - notes: Built standalone spike with re_editor (A) and TextField (B). Profile measurements on Windows on 5,000-line note: A typing build p95=12.12ms (passes H2), scroll=62.0 FPS; B typing build p95=155,058ms (fails H2). Android emulator debug measured A build p95=319ms, scroll=1.2 FPS (marked emulator/debug — not valid for the gate; physical device not connected). Soft S1 (WidgetSpan inline) fails for A due to direct ParagraphBuilder use (overlay approach required for Live Preview). Created docs/spikes/editor.md and docs/decisions/0001-editor-engine.md accepting re_editor.
 - [x] 00.17 Platform spike: drift + SQLite FTS5
   - notes: Built standalone spike docs/spikes/drift_spike with drift 2.35.2 and drift_flutter 0.3.1 (SQLite 3.53.4 with ENABLE_FTS5 verified). Windows profile benchmark on 10,000 notes: unicode61 insert 12.2s, trigram insert 21.8s; all query medians between 1.65ms and 8.83ms (passes < 50ms budget by 5x-25x). Android emulator debug measured queries 112-300ms (marked emulator/debug — not valid for the gate; physical device not connected). Trigram substring search on Bangla matched 106 records in 2.22ms median. Created docs/spikes/drift-fts5.md.
-- [ ] 00.18 Platform spike: Android shared storage and file watching
+- [x] 00.18 Platform spike: Android shared storage and file watching
+  - notes: Built standalone spike docs/spikes/android_storage_spike. Verified MANAGE_EXTERNAL_STORAGE grant on Android 16 (API 36) emulator. Verified atomic write and read in /storage/emulated/0/Documents/TestVault/hello.md. Benchmarked all 3 watcher variants against external modifications (modify, add, remove) via ADB shell: DirectoryWatcher latencies 655-996ms (passes < 1s budget), Directory.watch (dart:io) latencies 22-56ms, PollingDirectoryWatcher latencies 57-417ms. Selected DirectoryWatcher (package:watcher) for Phase 1. Created docs/spikes/android-storage.md.
 - [ ] 00.19 Platform spike: Windows tray icon, second window, file watcher
 
 ### Exit gate
