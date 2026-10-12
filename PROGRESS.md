@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **00**
-- Current step: **00.2**
+- Current step: **00.3**
 - Last gate passed: none
 
 ## Phase 00 — Foundation
@@ -23,7 +23,8 @@ Instructions: `instructions/phase-00-foundation.md`
 
 - [x] 00.1 Verify the machine
   - notes: Flutter 3.47.7 stable, Dart 3.13.5, flutter doctor fully green, Windows desktop available, created Android emulator tephra_api36 (Android 36 x86_64), real phone not connected.
-- [ ] 00.2 Git repository, ignore and attribute files
+- [x] 00.2 Git repository, ignore and attribute files
+  - notes: git repo initialized on main, core.autocrlf false, .gitignore and .gitattributes created, branched to phase-00 (commit e2b6e57).
 - [ ] 00.3 Workspace root: pubspec and analysis options
 - [ ] 00.4 Create the Flutter app and set its identity
 - [ ] 00.5 Create the seven packages
