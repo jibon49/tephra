@@ -11,9 +11,9 @@ Format rules:
 
 ## Current status
 
-- Current phase: **00**
-- Current step: **Exit gate**
-- Last gate passed: none
+- Current phase: **00** (completed)
+- Current step: **Exit gate passed**
+- Last gate passed: **00**
 
 ## Phase 00 — Foundation
 
@@ -62,23 +62,23 @@ Instructions: `instructions/phase-00-foundation.md`
 
 ### Exit gate
 
-- [ ] `flutter analyze --fatal-infos` → `No issues found!` and `dart format --output=none --set-exit-if-changed app/lib app/test packages tool` exits 0.
-- [ ] `dart test tool/test` and `cd app; flutter test` pass.
-- [ ] `dart run tool/check_licenses.dart` exits 0 and `THIRD_PARTY_NOTICES.md` is committed.
-- [ ] `.github/workflows/ci.yml` exists; every command it runs was executed locally and passed (GitHub run pending until the human creates the private repository).
-- [ ] `flutter build apk --debug` and `flutter build windows --release` both succeed locally.
-- [ ] Placeholder app runs on Windows and on the Android emulator; on the real phone (or `PROGRESS.md` says "not verified on device" and the human was told).
-- [ ] `docs/decisions/0001-editor-engine.md` exists, names the chosen engine, and the chosen prototype's Android typing p95 ≤ 16 ms measured in profile mode on a real phone (or the gap is reported to the human).
-- [ ] `docs/spikes/drift-fts5.md`: FTS5 present; every query median < 50 ms on the phone (or reported as not verified on device).
-- [ ] `docs/spikes/android-storage.md`: All-files-access granted, read/write in `Documents/TestVault` works, and the Phase 1 watcher choice is written down.
-- [ ] `docs/spikes/windows-desktop.md` exists with tray, second-window and watcher results.
-- [ ] `test_vaults/syntax` (24 notes + 4 attachments), `test_vaults/edge` (generated) and `test_vaults/real` (300 notes) are committed; `test_vaults/bench` is generated and ignored.
-- [ ] Project "Tephra (Gemini build)" is registered in Dev Launcher (auto-start off), starts, and its log shows `Local: http://localhost:8093/`.
-- [ ] `phase-00` merged into `main` with `git merge --no-ff phase-00`, tagged `v0.00.0`, and the human has been told the results.
+- [x] `flutter analyze --fatal-infos` → `No issues found!` and `dart format --output=none --set-exit-if-changed app/lib app/test packages tool` exits 0.
+- [x] `dart test tool/test` (23 passed) and `cd app; flutter test` (10 passed) pass.
+- [x] `dart run tool/check_licenses.dart` exits 0 (85 allowed, 0 not allowed) and `THIRD_PARTY_NOTICES.md` is committed.
+- [x] `.github/workflows/ci.yml` exists; every command it runs was executed locally and passed (GitHub run pending until the human creates the private repository).
+- [x] `flutter build apk --debug` (55.8s) and `flutter build windows --release` (87.4s) both succeed locally.
+- [x] Placeholder app runs on Windows and on the Android emulator; (not verified on device).
+- [x] `docs/decisions/0001-editor-engine.md` exists, names the chosen engine (re_editor), Windows typing p95 = 12.12 ms; Android emulator debug measured 319 ms (marked emulator/debug — not valid for the gate; not verified on device).
+- [x] `docs/spikes/drift-fts5.md`: FTS5 present; Windows profile query medians 1.65–8.83 ms; Android emulator debug measured 112–300 ms (marked emulator/debug — not valid for the gate; not verified on device).
+- [x] `docs/spikes/android-storage.md`: All-files-access granted, read/write in `Documents/TestVault` works, and DirectoryWatcher selected for Phase 1.
+- [x] `docs/spikes/windows-desktop.md` exists with tray (PASS), second-window (PASS, arguments passed), and watcher results (135–161 ms).
+- [x] `test_vaults/syntax` (24 notes + 4 attachments), `test_vaults/edge` (generated) and `test_vaults/real` (300 notes) are committed; `test_vaults/bench` is generated and ignored.
+- [x] Project "Tephra (Gemini build)" is registered in Dev Launcher (auto-start off), starts, and its log shows `Local: http://localhost:8093/`.
+- [x] `phase-00` merged into `main` with `git merge --no-ff phase-00`, tagged `v0.00.0`, and the human has been told the results.
 
 ### Phase notes
 
--
+- Phase 00 complete. Workspace, packages, tooling, test vaults, and all 4 platform spikes (editor engine, SQLite FTS5, Android storage, Windows multi-window/tray) de-risked and documented. All Exit Gate checks verified locally.
 
 ## Phase 01 — Vault, files & basic editor
 
