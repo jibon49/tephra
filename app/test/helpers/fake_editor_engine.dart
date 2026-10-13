@@ -101,6 +101,8 @@ class FakeEditorEngine implements EditorEngine {
         deletedLength: 0,
         insertedText: text,
         isUndoRedo: false,
+        startPos: const LinePos(0, 0),
+        endPos: const LinePos(0, 0),
       ),
     );
   }
@@ -133,6 +135,8 @@ class FakeEditorEngine implements EditorEngine {
           deletedLength: delLen,
           insertedText: edit.text,
           isUndoRedo: false,
+          startPos: edit.start,
+          endPos: edit.end,
         ),
       );
     }
@@ -146,6 +150,7 @@ class FakeEditorEngine implements EditorEngine {
     _undoStack.add(_HistoryEntry(_text, _selection));
     _redoStack.clear();
 
+    final prevLines = _lines;
     final delLen = endOffset - startOffset;
     _text =
         _text.substring(0, startOffset) +
@@ -159,6 +164,8 @@ class FakeEditorEngine implements EditorEngine {
         deletedLength: delLen,
         insertedText: replacement,
         isUndoRedo: false,
+        startPos: posOf(prevLines, startOffset),
+        endPos: posOf(prevLines, endOffset),
       ),
     );
   }
@@ -170,6 +177,7 @@ class FakeEditorEngine implements EditorEngine {
     final entry = _undoStack.removeLast();
 
     final oldText = _text;
+    final oldLines = _lines;
     _text = entry.text;
     _lines = ListLineView.fromText(_text);
     _selection = entry.selection;
@@ -180,6 +188,8 @@ class FakeEditorEngine implements EditorEngine {
         deletedLength: oldText.length,
         insertedText: _text,
         isUndoRedo: true,
+        startPos: const LinePos(0, 0),
+        endPos: posOf(oldLines, oldText.length),
       ),
     );
     _selectionController.add(null);
@@ -192,6 +202,7 @@ class FakeEditorEngine implements EditorEngine {
     final entry = _redoStack.removeLast();
 
     final oldText = _text;
+    final oldLines = _lines;
     _text = entry.text;
     _lines = ListLineView.fromText(_text);
     _selection = entry.selection;
@@ -202,6 +213,8 @@ class FakeEditorEngine implements EditorEngine {
         deletedLength: oldText.length,
         insertedText: _text,
         isUndoRedo: true,
+        startPos: const LinePos(0, 0),
+        endPos: posOf(oldLines, oldText.length),
       ),
     );
     _selectionController.add(null);

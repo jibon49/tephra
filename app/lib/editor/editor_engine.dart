@@ -13,6 +13,8 @@ final class EngineChange {
     required this.deletedLength,
     required this.insertedText,
     required this.isUndoRedo,
+    required this.startPos,
+    required this.endPos,
   });
 
   /// UTF-16 offset in the text BEFORE the change.
@@ -27,9 +29,15 @@ final class EngineChange {
   /// True if the change was produced by an undo or redo action.
   final bool isUndoRedo;
 
+  /// Line position where the change starts in the text BEFORE the change.
+  final LinePos startPos;
+
+  /// Line position where the deleted range ends in the text BEFORE the change.
+  final LinePos endPos;
+
   @override
   String toString() =>
-      'EngineChange(start: $start, del: $deletedLength, ins: "$insertedText", undo: $isUndoRedo)';
+      'EngineChange(start: $start, del: $deletedLength, ins: "$insertedText", undo: $isUndoRedo, startPos: $startPos, endPos: $endPos)';
 }
 
 /// Handlers called by an engine adapter before applying a user input.

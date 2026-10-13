@@ -1017,6 +1017,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Switch to source mode'**
   String get modeSourceTooltip;
+
+  /// No description provided for @findQueryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Find'**
+  String get findQueryHint;
+
+  /// No description provided for @findReplaceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get findReplaceHint;
+
+  /// No description provided for @findNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get findNoResults;
+
+  /// Counter in find bar showing current match and total matches
+  ///
+  /// In en, this message translates to:
+  /// **'{current} of {total}'**
+  String findCounter(int current, int total);
+
+  /// No description provided for @findInvalidRegex.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid regular expression'**
+  String get findInvalidRegex;
+
+  /// Snackbar text after replace all
+  ///
+  /// In en, this message translates to:
+  /// **'Replaced {count} occurrences'**
+  String findReplacedCount(int count);
+
+  /// No description provided for @findMatchCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Match case'**
+  String get findMatchCase;
+
+  /// No description provided for @findWholeWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Whole word'**
+  String get findWholeWord;
+
+  /// No description provided for @findRegex.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular expression'**
+  String get findRegex;
+
+  /// No description provided for @findNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next match'**
+  String get findNext;
+
+  /// No description provided for @findPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous match'**
+  String get findPrevious;
+
+  /// No description provided for @findClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get findClose;
+
+  /// No description provided for @findReplaceOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get findReplaceOne;
+
+  /// No description provided for @findReplaceAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace all'**
+  String get findReplaceAll;
+
+  /// No description provided for @commandEditorToggleBold.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle bold'**
+  String get commandEditorToggleBold;
+
+  /// No description provided for @commandEditorToggleItalic.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle italic'**
+  String get commandEditorToggleItalic;
+
+  /// No description provided for @commandEditorToggleStrikethrough.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle strikethrough'**
+  String get commandEditorToggleStrikethrough;
+
+  /// No description provided for @commandEditorToggleHighlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle highlight'**
+  String get commandEditorToggleHighlight;
+
+  /// No description provided for @commandEditorToggleCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle inline code'**
+  String get commandEditorToggleCode;
+
+  /// No description provided for @commandEditorInsertLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert link'**
+  String get commandEditorInsertLink;
+
+  /// No description provided for @commandEditorToggleBulletList.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle bullet list'**
+  String get commandEditorToggleBulletList;
+
+  /// No description provided for @commandEditorToggleNumberedList.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle numbered list'**
+  String get commandEditorToggleNumberedList;
+
+  /// No description provided for @commandEditorToggleTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle task checkbox'**
+  String get commandEditorToggleTask;
+
+  /// No description provided for @commandEditorToggleQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle quote'**
+  String get commandEditorToggleQuote;
+
+  /// No description provided for @commandEditorCycleHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle heading level'**
+  String get commandEditorCycleHeading;
+
+  /// No description provided for @commandEditorIndentList.
+  ///
+  /// In en, this message translates to:
+  /// **'Indent'**
+  String get commandEditorIndentList;
+
+  /// No description provided for @commandEditorOutdentList.
+  ///
+  /// In en, this message translates to:
+  /// **'Outdent'**
+  String get commandEditorOutdentList;
+
+  /// No description provided for @commandEditorUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get commandEditorUndo;
+
+  /// No description provided for @commandEditorRedo.
+  ///
+  /// In en, this message translates to:
+  /// **'Redo'**
+  String get commandEditorRedo;
+
+  /// No description provided for @commandEditorFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Find in note'**
+  String get commandEditorFind;
+
+  /// No description provided for @commandEditorReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Find and replace in note'**
+  String get commandEditorReplace;
+
+  /// No description provided for @commandEditorMoveLineUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move line up'**
+  String get commandEditorMoveLineUp;
+
+  /// No description provided for @commandEditorMoveLineDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move line down'**
+  String get commandEditorMoveLineDown;
+
+  /// No description provided for @commandEditorDuplicateLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate line'**
+  String get commandEditorDuplicateLine;
 }
 
 class _AppLocalizationsDelegate

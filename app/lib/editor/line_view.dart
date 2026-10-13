@@ -39,6 +39,7 @@ final class EditorSelection {
   final LinePos extent;
 
   bool get isCollapsed => base == extent;
+  bool get isReversed => base.compareTo(extent) > 0;
 
   LinePos get start => base.compareTo(extent) <= 0 ? base : extent;
   LinePos get end => base.compareTo(extent) <= 0 ? extent : base;
@@ -86,6 +87,8 @@ final class LineEdit {
   final LinePos start;
   final LinePos end;
   final String text;
+
+  String get replacement => text;
 
   @override
   bool operator ==(Object other) =>

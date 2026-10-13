@@ -1,13 +1,16 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:re_editor/re_editor.dart';
 
 import '../editor_engine.dart';
 import '../highlight/source_highlighter.dart';
 import '../line_view.dart';
+import '../offset_map_utils.dart';
 
 /// Adapter implementing [EditorEngine] on top of `re_editor`'s [CodeEditor].
 class ReEditorEngine implements EditorEngine {
@@ -15,21 +18,47 @@ class ReEditorEngine implements EditorEngine {
     _initController(initialText);
   }
 
-  late CodeLineEditingController _controller;
+  late final _InterceptingCodeLineController _controller;
   late final CodeScrollController _scrollController = CodeScrollController();
   late final FocusNode _focusNode = FocusNode();
 
-  final _changeController = StreamController<EngineChange>.broadcast();
-  final _selectionController = StreamController<void>.broadcast();
-  final _focusController = StreamController<bool>.broadcast();
+  final _changeController = StreamController<EngineChange>.broadcast(
+    sync: true,
+  );
+  final _selectionController = StreamController<void>.broadcast(sync: true);
+  final _focusController = StreamController<bool>.broadcast(sync: true);
 
   SourceHighlighter? _highlighter;
   late List<String> _prevLines;
   bool _isUndoRedo = false;
   bool _isDisposed = false;
 
+  /// Predicate indicating whether an IME/text edit should be intercepted.
+  static bool shouldInterceptEdit(TextEditingValue value) =>
+      _InterceptingCodeLineController.shouldIntercept(value);
+
+  /// Feeds a text editing value into the engine's intercepting controller.
+  void edit(TextEditingValue value) => _controller.edit(value);
+
+  /// Simulates typing text character-by-character at the current cursor position.
+  void typeText(String text) {
+    for (final char in text.characters) {
+      if (char == '\n') {
+        if (_controller.handlers?.onEnter() ?? false) {
+          continue;
+        }
+        _controller.applyNewLine();
+        continue;
+      }
+      final handled = _controller.handlers?.onTypedText(char) ?? false;
+      if (!handled) {
+        _controller.replaceSelection(char);
+      }
+    }
+  }
+
   void _initController(String initialText) {
-    _controller = CodeLineEditingController(
+    final base = CodeLineEditingController(
       codeLines: initialText.isEmpty
           ? CodeLines.fromText('')
           : CodeLines.fromText(initialText),
@@ -56,6 +85,7 @@ class ReEditorEngine implements EditorEngine {
             return textSpan;
           },
     );
+    _controller = _InterceptingCodeLineController(delegate: base);
 
     _prevLines = _extractLines(_controller.codeLines);
     _controller.addListener(_onControllerChanged);
@@ -126,17 +156,23 @@ class ReEditorEngine implements EditorEngine {
 
   @override
   void applyPlan(EditPlan plan) {
-    _controller.runRevocableOp(() {
-      final currentLines = lines;
-      // Sort edits descending
-      final sortedEdits = List<LineEdit>.from(plan.edits)
-        ..sort((a, b) {
-          final aOffset = offsetOf(currentLines, a.start);
-          final bOffset = offsetOf(currentLines, b.start);
-          return bOffset.compareTo(aOffset);
-        });
+    if (plan.edits.isEmpty) {
+      selection = plan.selection;
+      return;
+    }
 
-      for (final edit in sortedEdits) {
+    final currentLines = lines;
+    // Sort edits descending
+    final sortedEdits = List<LineEdit>.from(plan.edits)
+      ..sort((a, b) {
+        final aOffset = offsetOf(currentLines, a.start);
+        final bOffset = offsetOf(currentLines, b.start);
+        return bOffset.compareTo(aOffset);
+      });
+
+    if (sortedEdits.length == 1) {
+      final edit = sortedEdits.first;
+      _controller.runRevocableOp(() {
         _controller.replaceSelection(
           edit.text,
           CodeLineSelection(
@@ -146,10 +182,32 @@ class ReEditorEngine implements EditorEngine {
             extentOffset: edit.end.col,
           ),
         );
-      }
-    });
+      });
+      selection = plan.selection;
+      return;
+    }
 
-    selection = plan.selection;
+    // Multiple edits: apply descending to form new text and update value once
+    var newText = text;
+    for (final edit in sortedEdits) {
+      final start = offsetOf(currentLines, edit.start);
+      final end = offsetOf(currentLines, edit.end);
+      newText = newText.replaceRange(start, end, edit.text);
+    }
+
+    final targetSelection = CodeLineSelection(
+      baseIndex: plan.selection.base.line,
+      baseOffset: plan.selection.base.col,
+      extentIndex: plan.selection.extent.line,
+      extentOffset: plan.selection.extent.col,
+    );
+
+    _controller.runRevocableOp(() {
+      _controller.value = CodeLineEditingValue(
+        codeLines: CodeLines.fromText(newText),
+        selection: targetSelection,
+      );
+    });
   }
 
   @override
@@ -219,6 +277,7 @@ class ReEditorEngine implements EditorEngine {
 
   @override
   Widget buildView(BuildContext context, EditorViewConfig config) {
+    _controller.handlers = config.handlers;
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
 
@@ -271,6 +330,7 @@ class ReEditorEngine implements EditorEngine {
 
     return CodeEditor(
       controller: _controller,
+      autocompleteSymbols: false,
       wordWrap: true,
       readOnly: config.readOnly,
       autofocus: config.autofocus,
@@ -322,17 +382,37 @@ class ReEditorEngine implements EditorEngine {
       startOffset += _prevLines[i].length + 1;
     }
 
-    final deletedText = _prevLines.sublist(top, bottomPrev + 1).join('\n');
-    final insertedText = currentLines.sublist(top, bottomCurr + 1).join('\n');
+    final deletedChunk = _prevLines.sublist(top, bottomPrev + 1).join('\n');
+    final insertedChunk = currentLines.sublist(top, bottomCurr + 1).join('\n');
+
+    final prefix = commonPrefixLength(deletedChunk, insertedChunk);
+    final maxSuffix = min(
+      deletedChunk.length - prefix,
+      insertedChunk.length - prefix,
+    );
+    final suffix = commonSuffixLength(deletedChunk, insertedChunk, maxSuffix);
+
+    final actualStartOffset = startOffset + prefix;
+    final actualDeletedLength = deletedChunk.length - prefix - suffix;
+    final actualInsertedText = insertedChunk.substring(
+      prefix,
+      insertedChunk.length - suffix,
+    );
+
+    final prevView = ListLineView(_prevLines);
+    final startPos = posOf(prevView, actualStartOffset);
+    final endPos = posOf(prevView, actualStartOffset + actualDeletedLength);
 
     _prevLines = currentLines;
 
     _changeController.add(
       EngineChange(
-        start: startOffset,
-        deletedLength: deletedText.length,
-        insertedText: insertedText,
+        start: actualStartOffset,
+        deletedLength: actualDeletedLength,
+        insertedText: actualInsertedText,
         isUndoRedo: _isUndoRedo,
+        startPos: startPos,
+        endPos: endPos,
       ),
     );
   }
@@ -391,10 +471,63 @@ class _NoCommandShortcuts extends DefaultCodeShortcutsActivatorsBuilder {
       case CodeShortcutType.find:
       case CodeShortcutType.replace:
       case CodeShortcutType.save:
+      case CodeShortcutType.lineMoveUp:
+      case CodeShortcutType.lineMoveDown:
         return null;
+      case CodeShortcutType.newLine:
+        return const [
+          SingleActivator(LogicalKeyboardKey.enter),
+          SingleActivator(LogicalKeyboardKey.enter, shift: true),
+          SingleActivator(LogicalKeyboardKey.numpadEnter),
+          SingleActivator(LogicalKeyboardKey.numpadEnter, shift: true),
+        ];
       default:
         return super.build(type);
     }
+  }
+}
+
+/// Wrapper that intercepts [edit] calls to give [EngineInputHandlers.onTypedText]
+/// a chance to handle typed characters before the default engine behavior.
+///
+/// Composing text (active IME) is never intercepted to avoid breaking CJK input.
+class _InterceptingCodeLineController
+    extends CodeLineEditingControllerDelegate {
+  _InterceptingCodeLineController({required super.delegate});
+
+  /// Handlers set by [ReEditorEngine.buildView] each frame.
+  EngineInputHandlers? handlers;
+
+  /// Returns `true` when the value is safe to intercept (not composing).
+  static bool shouldIntercept(TextEditingValue value) {
+    final c = value.composing;
+    return !c.isValid || c == const TextRange(start: -1, end: -1);
+  }
+
+  @override
+  void edit(TextEditingValue newValue) {
+    if (handlers != null && shouldIntercept(newValue)) {
+      final String textBefore = startLine.text.substring(
+        0,
+        selection.startOffset,
+      );
+      final String textAfter = selection.isSameLine
+          ? startLine.text.substring(selection.endOffset)
+          : endLine.text.substring(selection.endOffset);
+
+      if (newValue.text.startsWith(textBefore) &&
+          newValue.text.endsWith(textAfter) &&
+          newValue.text.length >= textBefore.length + textAfter.length) {
+        final inserted = newValue.text.substring(
+          textBefore.length,
+          newValue.text.length - textAfter.length,
+        );
+        if (inserted.length == 1) {
+          if (handlers!.onTypedText(inserted)) return;
+        }
+      }
+    }
+    super.edit(newValue);
   }
 }
 

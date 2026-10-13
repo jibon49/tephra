@@ -14,6 +14,8 @@ import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import 'editor_controller.dart';
 import 'engine/re_editor_engine.dart';
+import 'find/find_bar.dart';
+import 'find/find_controller.dart';
 import 'providers.dart';
 
 /// Full Source mode editor widget wrapping [EditorController] and its engine view.
@@ -274,30 +276,39 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (_doc != null && _doc!.isReadOnly)
-          Container(
-            key: const ValueKey('note.malformedBanner'),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: theme.colorScheme.errorContainer),
-            child: Text(
-              l10n.noteMalformedBanner,
-              style: TextStyle(color: theme.colorScheme.onErrorContainer),
+    return ValueListenableBuilder<FindState>(
+      valueListenable: _controller!.findController,
+      builder: (context, findState, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (findState.isOpen)
+              FindBar(controller: _controller!.findController),
+            if (_doc != null && _doc!.isReadOnly)
+              Container(
+                key: const ValueKey('note.malformedBanner'),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.errorContainer,
+                ),
+                child: Text(
+                  l10n.noteMalformedBanner,
+                  style: TextStyle(color: theme.colorScheme.onErrorContainer),
+                ),
+              ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: horizontalPadding,
+                  right: horizontalPadding,
+                  bottom: 96,
+                ),
+                child: editorContent,
+              ),
             ),
-          ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: horizontalPadding,
-              right: horizontalPadding,
-              bottom: 96,
-            ),
-            child: editorContent,
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

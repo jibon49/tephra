@@ -504,4 +504,110 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modeSourceTooltip => 'Switch to source mode';
+
+  @override
+  String get findQueryHint => 'Find';
+
+  @override
+  String get findReplaceHint => 'Replace';
+
+  @override
+  String get findNoResults => 'No results';
+
+  @override
+  String findCounter(int current, int total) {
+    return '$current of $total';
+  }
+
+  @override
+  String get findInvalidRegex => 'Invalid regular expression';
+
+  @override
+  String findReplacedCount(int count) {
+    return 'Replaced $count occurrences';
+  }
+
+  @override
+  String get findMatchCase => 'Match case';
+
+  @override
+  String get findWholeWord => 'Whole word';
+
+  @override
+  String get findRegex => 'Regular expression';
+
+  @override
+  String get findNext => 'Next match';
+
+  @override
+  String get findPrevious => 'Previous match';
+
+  @override
+  String get findClose => 'Close';
+
+  @override
+  String get findReplaceOne => 'Replace';
+
+  @override
+  String get findReplaceAll => 'Replace all';
+
+  @override
+  String get commandEditorToggleBold => 'Toggle bold';
+
+  @override
+  String get commandEditorToggleItalic => 'Toggle italic';
+
+  @override
+  String get commandEditorToggleStrikethrough => 'Toggle strikethrough';
+
+  @override
+  String get commandEditorToggleHighlight => 'Toggle highlight';
+
+  @override
+  String get commandEditorToggleCode => 'Toggle inline code';
+
+  @override
+  String get commandEditorInsertLink => 'Insert link';
+
+  @override
+  String get commandEditorToggleBulletList => 'Toggle bullet list';
+
+  @override
+  String get commandEditorToggleNumberedList => 'Toggle numbered list';
+
+  @override
+  String get commandEditorToggleTask => 'Toggle task checkbox';
+
+  @override
+  String get commandEditorToggleQuote => 'Toggle quote';
+
+  @override
+  String get commandEditorCycleHeading => 'Cycle heading level';
+
+  @override
+  String get commandEditorIndentList => 'Indent';
+
+  @override
+  String get commandEditorOutdentList => 'Outdent';
+
+  @override
+  String get commandEditorUndo => 'Undo';
+
+  @override
+  String get commandEditorRedo => 'Redo';
+
+  @override
+  String get commandEditorFind => 'Find in note';
+
+  @override
+  String get commandEditorReplace => 'Find and replace in note';
+
+  @override
+  String get commandEditorMoveLineUp => 'Move line up';
+
+  @override
+  String get commandEditorMoveLineDown => 'Move line down';
+
+  @override
+  String get commandEditorDuplicateLine => 'Duplicate line';
 }

@@ -103,6 +103,8 @@ void main() {
           deletedLength: 0,
           insertedText: '\n',
           isUndoRedo: false,
+          startPos: LinePos(1, 4),
+          endPos: LinePos(1, 4),
         ),
         newLines,
       );

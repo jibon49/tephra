@@ -266,5 +266,52 @@
   "noteOpenElsewhere": "This note is being edited in another tab.",
   "editorReadOnlyHint": "This note is read-only because it contains invalid UTF-8.",
   "modeReadingTooltip": "Switch to reading view",
-  "modeSourceTooltip": "Switch to source mode"
+  "modeSourceTooltip": "Switch to source mode",
+  "findQueryHint": "Find",
+  "findReplaceHint": "Replace",
+  "findNoResults": "No results",
+  "findCounter": "{current} of {total}",
+  "@findCounter": {
+    "description": "Counter in find bar showing current match and total matches",
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "findInvalidRegex": "Invalid regular expression",
+  "findReplacedCount": "Replaced {count} occurrences",
+  "@findReplacedCount": {
+    "description": "Snackbar text after replace all",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "findMatchCase": "Match case",
+  "findWholeWord": "Whole word",
+  "findRegex": "Regular expression",
+  "findNext": "Next match",
+  "findPrevious": "Previous match",
+  "findClose": "Close",
+  "findReplaceOne": "Replace",
+  "findReplaceAll": "Replace all",
+  "commandEditorToggleBold": "Toggle bold",
+  "commandEditorToggleItalic": "Toggle italic",
+  "commandEditorToggleStrikethrough": "Toggle strikethrough",
+  "commandEditorToggleHighlight": "Toggle highlight",
+  "commandEditorToggleCode": "Toggle inline code",
+  "commandEditorInsertLink": "Insert link",
+  "commandEditorToggleBulletList": "Toggle bullet list",
+  "commandEditorToggleNumberedList": "Toggle numbered list",
+  "commandEditorToggleTask": "Toggle task checkbox",
+  "commandEditorToggleQuote": "Toggle quote",
+  "commandEditorCycleHeading": "Cycle heading level",
+  "commandEditorIndentList": "Indent",
+  "commandEditorOutdentList": "Outdent",
+  "commandEditorUndo": "Undo",
+  "commandEditorRedo": "Redo",
+  "commandEditorFind": "Find in note",
+  "commandEditorReplace": "Find and replace in note",
+  "commandEditorMoveLineUp": "Move line up",
+  "commandEditorMoveLineDown": "Move line down",
+  "commandEditorDuplicateLine": "Duplicate line"
 }

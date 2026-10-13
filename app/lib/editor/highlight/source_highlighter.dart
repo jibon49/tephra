@@ -56,15 +56,59 @@ class SourceHighlighter {
 
   int get currentRevision => _currentRevision;
   int get lineCount => _lines.length;
+  List<OverlayRange> get overlays => List.unmodifiable(_overlays);
 
   List<RangeStyle> runsForLine(int line) =>
       line >= 0 && line < _lines.length ? _lines[line] : const [];
 
   bool isLineDirty(int line) => _dirtyLines.contains(line);
 
-  void setOverlays(List<OverlayRange> overlays) {
+  final Map<int, List<RawSpan>> _lineOverlays = {};
+
+  Set<int> setOverlays(List<OverlayRange> overlays, [LineView? lines]) {
+    final oldAffected = _lineOverlays.keys.toSet();
+    _lineOverlays.clear();
     _overlays = overlays;
     _spanCache.clear();
+
+    if (overlays.isEmpty) {
+      return oldAffected;
+    }
+
+    if (lines != null) {
+      for (final o in overlays) {
+        if (o.start >= o.end) continue;
+        final startPos = posOf(lines, o.start);
+        final endPos = posOf(lines, o.end);
+        if (startPos.line == endPos.line) {
+          _lineOverlays
+              .putIfAbsent(startPos.line, () => [])
+              .add(RawSpan(startPos.col, endPos.col, o.token));
+        } else {
+          for (
+            var l = startPos.line;
+            l <= endPos.line && l < lines.lineCount;
+            l++
+          ) {
+            final lLen = lines.lineAt(l).length;
+            final sCol = (l == startPos.line) ? startPos.col : 0;
+            final eCol = (l == endPos.line) ? endPos.col : lLen;
+            if (sCol < eCol) {
+              _lineOverlays
+                  .putIfAbsent(l, () => [])
+                  .add(RawSpan(sCol, eCol, o.token));
+            }
+          }
+        }
+      }
+    } else {
+      for (final o in overlays) {
+        _lineOverlays
+            .putIfAbsent(0, () => [])
+            .add(RawSpan(o.start, o.end, o.token));
+      }
+    }
+    return {...oldAffected, ..._lineOverlays.keys};
   }
 
   /// Ingests a new AST [parsed] snapshot at [revision] and updates cached line tokens.
@@ -178,7 +222,7 @@ class SourceHighlighter {
     }
 
     // Apply overlays if any intersect with this line
-    if (_overlays.isNotEmpty) {
+    if (_lineOverlays.containsKey(line)) {
       runs = _applyOverlays(line, lineText, runs);
     }
 
@@ -236,7 +280,9 @@ class SourceHighlighter {
     String lineText,
     List<RangeStyle> baseRuns,
   ) {
-    // If overlays exist, convert baseRuns + overlays to raw spans and resweep
+    final lineSpans = _lineOverlays[line];
+    if (lineSpans == null || lineSpans.isEmpty) return baseRuns;
+
     final raw = <RawSpan>[];
     for (final r in baseRuns) {
       for (final t in r.tokens) {
@@ -244,15 +290,11 @@ class SourceHighlighter {
       }
     }
 
-    for (final o in _overlays) {
-      // Overlays are in document coordinates; check line intersection
-      // For simple line-local overlays:
-      if (o.start < lineText.length && o.end > 0) {
-        final start = o.start.clamp(0, lineText.length);
-        final end = o.end.clamp(0, lineText.length);
-        if (start < end) {
-          raw.add(RawSpan(start, end, o.token));
-        }
+    for (final s in lineSpans) {
+      final start = s.start.clamp(0, lineText.length);
+      final end = s.end.clamp(0, lineText.length);
+      if (start < end) {
+        raw.add(RawSpan(start, end, s.token));
       }
     }
 

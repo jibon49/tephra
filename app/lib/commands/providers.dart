@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../editor/editor_commands.dart';
 import '../explorer/explorer_commands.dart';
 import '../settings/providers.dart';
 import '../vault/providers.dart';
@@ -18,6 +19,7 @@ final commandRegistryProvider = Provider<CommandRegistry>((ref) {
   final registry = CommandRegistry();
   registerBuiltinCommands(registry);
   registerExplorerCommands(registry);
+  registerEditorCommands(registry);
   return registry;
 });
 

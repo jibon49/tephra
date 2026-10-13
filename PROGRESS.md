@@ -129,7 +129,9 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented file explorer panel with lazy expansion, 6 sort modes, pure DFS tree flattener, Riverpod providers, ExplorerService for CRUD/move/duplicate/reveal, MoveToDialog folder picker, desktop right-click menu and mobile bottom sheet, ExplorerRowTile with drag & drop and inline rename (Enter commit / Escape cancel), and 7 registered commands. 42 new unit & widget tests (332 total in app/test).
 - [x] 01.18 Editor: `EditorController`, engine adapter, Source mode with syntax highlighting
   - notes: Built EditorController with engine abstraction, EditorRegistry, ReEditorEngine (isolated to editor/engine/), SourceHighlighter with 39 tokens + quick-styler fallback, SourceEditorView with responsive width and openElsewhere banner, wired into NoteView and workspace tabs; all 62 editor tests and note view mode-switch tests pass.
-- [ ] 01.19 Editing helpers, shortcuts, commands, find & replace
+- [x] 01.19 Editing helpers, shortcuts, commands, find & replace
+  - notes: Implemented 20 editor commands, FindEngine & FindBar with regex/case/word toggles, pure editing helpers (auto-pair, list continuation, indentation, inline/block formatting, line moves), _InterceptingCodeLineController with IME safety, and synchronous change streams with character-level diffing in ReEditorEngine; 105 tests passing in app/test/editor.
+
 - [ ] 01.20 Autosave, save indicator, external changes, three-way merge, conflict dialog
 - [ ] 01.21 Attachments (paste, drop, pick) and the phone keyboard toolbar
 - [ ] 01.22 Round-trip proof, crash safety, performance budget, demo and exit gate

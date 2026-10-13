@@ -11,8 +11,11 @@ import '../reading/parse_service.dart';
 import '../vault/note_document.dart';
 import 'edit_operation.dart';
 import 'editor_engine.dart';
+import 'editor_input_handlers.dart';
 import 'editor_options.dart';
 import 'editor_registry.dart';
+import 'find/find_controller.dart';
+import 'helpers/auto_pair.dart';
 import 'highlight/source_highlighter.dart';
 import 'line_view.dart';
 import 'offset_map_utils.dart';
@@ -81,6 +84,21 @@ final class EditorController implements NoteEditorBinding {
   final Clock clock;
   final EditorRegistry? registry;
   final SourceHighlighter highlighter;
+
+  final AutoPairTracker tracker = AutoPairTracker();
+  late final FindController findController = FindController(this);
+
+  LineView get lines => engine.lines;
+
+  void runPlan(EditPlan? plan) {
+    if (plan != null) {
+      engine.applyPlan(plan);
+    }
+  }
+
+  void repaintLines(int firstLine, int lastLine) {
+    engine.repaintLines(firstLine, lastLine);
+  }
 
   EditorOptions options;
 
@@ -227,6 +245,8 @@ final class EditorController implements NoteEditorBinding {
     final currentSel = selection;
     applyEdits([edit]);
 
+    tracker.clear();
+
     if (keepCursor) {
       final middleLen = edit.replacement.length;
       int mapOne(int o) {
@@ -254,13 +274,7 @@ final class EditorController implements NoteEditorBinding {
       options: options,
       readOnly: options.readOnly || document.isReadOnly,
       baseStyle: baseStyle,
-      handlers: EngineInputHandlers(
-        onTypedText: (typed) => false,
-        onEnter: () => false,
-        onBackspace: () => false,
-        onTab: (shift) => false,
-        onPaste: () async => false,
-      ),
+      handlers: buildHandlers(this, tracker),
       autofocus: autofocus,
     );
 
@@ -280,6 +294,14 @@ final class EditorController implements NoteEditorBinding {
         isUndoRedo: change.isUndoRedo,
       ),
     );
+
+    final lineEdit = LineEdit(
+      change.startPos,
+      change.endPos,
+      change.insertedText,
+    );
+    tracker.onEdit(lineEdit);
+    tracker.prune(engine.lines);
 
     highlighter.onEdit(change, engine.lines);
     _scheduleParse();
@@ -317,6 +339,7 @@ final class EditorController implements NoteEditorBinding {
     _selectionSub?.cancel();
     _focusSub?.cancel();
 
+    findController.dispose();
     document.detachEditor(this);
     registry?.unregister(this);
 
