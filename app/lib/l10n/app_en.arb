@@ -262,5 +262,9 @@
   },
   "explorerMoveExists": "A file with that name already exists in the destination folder",
   "explorerUntitledFolder": "Untitled folder",
-  "explorerEmpty": "This vault has no notes yet"
+  "explorerEmpty": "This vault has no notes yet",
+  "noteOpenElsewhere": "This note is being edited in another tab.",
+  "editorReadOnlyHint": "This note is read-only because it contains invalid UTF-8.",
+  "modeReadingTooltip": "Switch to reading view",
+  "modeSourceTooltip": "Switch to source mode"
 }

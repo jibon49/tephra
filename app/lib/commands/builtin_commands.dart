@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../editor/providers.dart';
 import '../vault/providers.dart';
 import '../workspace/open_file.dart';
 import '../workspace/providers.dart';
@@ -228,6 +229,7 @@ void registerBuiltinCommands(CommandRegistry registry) {
         final creator = ref.read(noteCreatorProvider);
         final activePath = ref.read(activeNotePathProvider);
         final path = await creator.createUntitled(contextNote: activePath);
+        ref.read(focusEditorOnOpenProvider.notifier).set(true);
         openFile(ref, path, newTab: true);
       },
     ),

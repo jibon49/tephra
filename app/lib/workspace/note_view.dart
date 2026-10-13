@@ -6,6 +6,7 @@ import 'package:tephra_core/tephra_core.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
+import '../editor/source_editor_view.dart';
 import '../l10n/app_localizations.dart';
 import '../reading/link_actions.dart';
 import '../reading/reading_controller.dart';
@@ -14,8 +15,9 @@ import '../reading/task_toggler.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import 'providers.dart';
+import 'workspace_models.dart';
 
-class NoteView extends ConsumerWidget {
+class NoteView extends ConsumerStatefulWidget {
   const NoteView({
     required this.path,
     this.subpath,
@@ -28,9 +30,16 @@ class NoteView extends ConsumerWidget {
   final String tabId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<NoteView> createState() => _NoteViewState();
+}
+
+class _NoteViewState extends ConsumerState<NoteView> {
+  int? _lastOffset;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final doc = ref.watch(noteDocumentProvider(path));
+    final doc = ref.watch(noteDocumentProvider(widget.path));
 
     return ListenableBuilder(
       listenable: doc,
@@ -65,7 +74,9 @@ class NoteView extends ConsumerWidget {
                 const SizedBox(height: 12),
                 FilledButton(
                   onPressed: () {
-                    ref.read(workspaceProvider.notifier).closeTabById(tabId);
+                    ref
+                        .read(workspaceProvider.notifier)
+                        .closeTabById(widget.tabId);
                   },
                   child: Text(l10n.tabClose),
                 ),
@@ -74,11 +85,36 @@ class NoteView extends ConsumerWidget {
           );
         }
 
-        return NoteReadingView(
-          path: path,
-          subpath: subpath,
-          tabId: tabId,
-          doc: doc,
+        final ws = ref.watch(workspaceProvider);
+        final tab = ws.findTab(widget.tabId);
+        final mode = tab?.mode ?? ViewMode.reading;
+
+        if (mode == ViewMode.source) {
+          return KeyedSubtree(
+            key: ValueKey('${widget.tabId}:${mode.name}'),
+            child: SourceEditorView(
+              path: widget.path,
+              tabId: widget.tabId,
+              initialOffset: _lastOffset,
+              onOffsetChanged: (offset) {
+                _lastOffset = offset;
+              },
+            ),
+          );
+        }
+
+        return KeyedSubtree(
+          key: ValueKey('${widget.tabId}:${mode.name}'),
+          child: NoteReadingView(
+            path: widget.path,
+            subpath: widget.subpath,
+            tabId: widget.tabId,
+            doc: doc,
+            initialOffset: _lastOffset,
+            onOffsetChanged: (offset) {
+              _lastOffset = offset;
+            },
+          ),
         );
       },
     );
@@ -92,12 +128,16 @@ class NoteReadingView extends ConsumerStatefulWidget {
     this.subpath,
     required this.tabId,
     required this.doc,
+    this.initialOffset,
+    this.onOffsetChanged,
   });
 
   final VaultPath path;
   final String? subpath;
   final String tabId;
   final NoteDocument doc;
+  final int? initialOffset;
+  final void Function(int offset)? onOffsetChanged;
 
   @override
   ConsumerState<NoteReadingView> createState() => _NoteReadingViewState();
@@ -174,6 +214,8 @@ class _NoteReadingViewState extends ConsumerState<NoteReadingView> {
             text: widget.doc.text,
             readOnly: widget.doc.isReadOnly,
             controller: _controller,
+            initialOffset: widget.initialOffset,
+            onTopOffsetChanged: widget.onOffsetChanged,
             onToggleTask: (task, newStatus) =>
                 _taskToggler.toggleTask(widget.doc, task, newStatus),
             onOpenWikiLink: linkActions.openWikiLink,

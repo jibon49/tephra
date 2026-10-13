@@ -491,4 +491,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get explorerEmpty => 'This vault has no notes yet';
+
+  @override
+  String get noteOpenElsewhere => 'This note is being edited in another tab.';
+
+  @override
+  String get editorReadOnlyHint =>
+      'This note is read-only because it contains invalid UTF-8.';
+
+  @override
+  String get modeReadingTooltip => 'Switch to reading view';
+
+  @override
+  String get modeSourceTooltip => 'Switch to source mode';
 }

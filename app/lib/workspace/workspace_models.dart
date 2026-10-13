@@ -159,6 +159,15 @@ final class WorkspaceState {
 
   TabState? get focusedTab => currentPane?.activeTab;
 
+  TabState? findTab(String id) {
+    for (final pane in panes) {
+      for (final tab in pane.tabs) {
+        if (tab.id == id) return tab;
+      }
+    }
+    return null;
+  }
+
   WorkspaceState copyWith({
     List<PaneState>? panes,
     SplitAxis? axis,

@@ -5,13 +5,19 @@ import 'dart:async';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
+import '../reading/parse_service.dart';
 import 'note_document.dart';
 
 final class NoteDocumentStore {
-  NoteDocumentStore(this.fs, this.clock);
+  NoteDocumentStore(
+    this.fs,
+    this.clock, {
+    this.parseService = const ParseService(),
+  });
 
   final VaultFileSystem fs;
   final Clock clock;
+  final ParseService parseService;
 
   final Map<VaultPath, NoteDocument> _documents = {};
   final Map<VaultPath, int> _refCounts = {};
@@ -23,7 +29,12 @@ final class NoteDocumentStore {
       return existing;
     }
 
-    final doc = NoteDocument(path: path, fs: fs, clock: clock);
+    final doc = NoteDocument(
+      path: path,
+      fs: fs,
+      clock: clock,
+      parseService: parseService,
+    );
     _documents[path] = doc;
     _refCounts[path] = 1;
     unawaited(doc.load());

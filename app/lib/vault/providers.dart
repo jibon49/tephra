@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
+import '../reading/providers.dart';
 import '../workspace/providers.dart';
 import 'note_creator.dart';
 import 'note_document.dart';
@@ -98,7 +99,12 @@ final noteCreatorProvider = Provider<NoteCreator>((ref) => NoteCreator(ref));
 
 final noteDocumentStoreProvider = Provider<NoteDocumentStore>((ref) {
   final fs = ref.watch(vaultFsProvider);
-  final store = NoteDocumentStore(fs, const SystemClock());
+  final parseService = ref.watch(parseServiceProvider);
+  final store = NoteDocumentStore(
+    fs,
+    const SystemClock(),
+    parseService: parseService,
+  );
   ref.onDispose(() => unawaited(store.flushAll()));
   return store;
 });

@@ -16,14 +16,20 @@ import 'reading_scope.dart';
 import 'simple_link_resolver.dart';
 
 final class PendingJump {
-  const PendingJump({required this.path, this.heading, this.blockRef});
+  const PendingJump({
+    required this.path,
+    this.heading,
+    this.blockRef,
+    this.offset,
+  });
 
   final VaultPath path;
   final String? heading;
   final String? blockRef;
+  final int? offset;
 }
 
-final class PendingJumpNotifier extends Notifier<PendingJump?> {
+class PendingJumpNotifier extends Notifier<PendingJump?> {
   @override
   PendingJump? build() => null;
 

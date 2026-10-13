@@ -1,11 +1,15 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_markdown/tephra_markdown.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../editor/edit_operation.dart';
+import '../reading/parse_service.dart';
 
 enum SaveState { saved, unsaved, saving, error }
 
@@ -18,11 +22,16 @@ abstract interface class NoteEditorBinding {
 }
 
 final class NoteDocument extends ChangeNotifier {
-  NoteDocument({required this.path, required this.fs, required this.clock})
-    : _base = const TextDocument(text: '');
+  NoteDocument({
+    required this.path,
+    required this.fs,
+    required this.clock,
+    this.parseService = const ParseService(),
+  }) : _base = const TextDocument(text: '');
 
   final VaultFileSystem fs;
   final Clock clock;
+  final ParseService parseService;
 
   VaultPath path;
 
@@ -60,6 +69,20 @@ final class NoteDocument extends ChangeNotifier {
 
   bool? _cachedDirty;
   int _cachedDirtyRevision = -1;
+
+  int _parsedRevision = -1;
+  Future<ParsedNote>? _parsedFuture;
+
+  /// Returns the parsed AST of the document, memoised per [revision].
+  Future<ParsedNote> parsed() {
+    if (_parsedFuture != null && _parsedRevision == _revision) {
+      return _parsedFuture!;
+    }
+    _parsedRevision = _revision;
+    final currentText = text;
+    _parsedFuture = parseService.parse(currentText);
+    return _parsedFuture!;
+  }
 
   String get text {
     if (_editor != null) {
@@ -137,7 +160,9 @@ final class NoteDocument extends ChangeNotifier {
     _cachedDirty = null;
     _revision++;
     _saveState = SaveState.unsaved;
-    notifyListeners();
+    if (!_isDisposed) {
+      notifyListeners();
+    }
   }
 
   bool edit(EditOperation op) {
@@ -212,7 +237,11 @@ final class NoteDocument extends ChangeNotifier {
     _editor = binding;
     _cachedText = null;
     _cachedDirty = null;
-    notifyListeners();
+    scheduleMicrotask(() {
+      if (!_isDisposed) {
+        notifyListeners();
+      }
+    });
   }
 
   void detachEditor(NoteEditorBinding binding) {
@@ -221,7 +250,11 @@ final class NoteDocument extends ChangeNotifier {
       _editor = null;
       _cachedText = null;
       _cachedDirty = null;
-      notifyListeners();
+      scheduleMicrotask(() {
+        if (!_isDisposed) {
+          notifyListeners();
+        }
+      });
     }
   }
 }

@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
 
+import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/providers.dart';
 import '../workspace/open_file.dart';
@@ -102,6 +103,7 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
     final activePath = ref.read(activeNotePathProvider);
     final path = await creator.createFromName(name, contextNote: activePath);
     if (mounted) {
+      ref.read(focusEditorOnOpenProvider.notifier).set(true);
       openFile(ref, path, newTab: newTab);
     }
   }

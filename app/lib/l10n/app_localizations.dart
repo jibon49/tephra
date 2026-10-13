@@ -993,6 +993,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This vault has no notes yet'**
   String get explorerEmpty;
+
+  /// No description provided for @noteOpenElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'This note is being edited in another tab.'**
+  String get noteOpenElsewhere;
+
+  /// No description provided for @editorReadOnlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This note is read-only because it contains invalid UTF-8.'**
+  String get editorReadOnlyHint;
+
+  /// No description provided for @modeReadingTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to reading view'**
+  String get modeReadingTooltip;
+
+  /// No description provided for @modeSourceTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to source mode'**
+  String get modeSourceTooltip;
 }
 
 class _AppLocalizationsDelegate
