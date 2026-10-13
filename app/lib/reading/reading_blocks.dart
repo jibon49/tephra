@@ -3,10 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
+import 'callout_view.dart';
+import 'inline_builder.dart';
 import 'inline_text.dart';
 import 'reading_code.dart';
 import 'reading_scope.dart';
 import 'reading_table.dart';
+import 'task_checkbox.dart';
 
 /// Returns true if [html] contains only an HTML comment.
 bool isCommentOnlyHtml(String html) {
@@ -20,6 +23,7 @@ Widget buildBlock(
   MdNode node, {
   int depth = 0,
   bool tight = false,
+  TextStyle? textStyle,
 }) {
   final scope = ReadingScope.maybeOf(context);
   final theme = Theme.of(context);
@@ -31,15 +35,29 @@ Widget buildBlock(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: node.children
-            .map((c) => buildBlock(context, c, depth: depth, tight: tight))
+            .map(
+              (c) => buildBlock(
+                context,
+                c,
+                depth: depth,
+                tight: tight,
+                textStyle: textStyle,
+              ),
+            )
             .toList(),
       );
 
     case MdParagraph():
+      if (node.children.every(isHiddenInline)) {
+        return const SizedBox.shrink();
+      }
       final bottomMargin = tight ? 2.0 : (styles?.paragraphBottomMargin ?? 9.6);
       return Padding(
         padding: EdgeInsets.only(bottom: bottomMargin),
-        child: InlineText(nodes: node.children, style: styles?.body),
+        child: InlineText(
+          nodes: node.children,
+          style: textStyle ?? styles?.body,
+        ),
       );
 
     case MdHeading():
@@ -76,20 +94,21 @@ Widget buildBlock(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: node.children
-                .map((c) => buildBlock(context, c, depth: depth))
+                .map(
+                  (c) => buildBlock(
+                    context,
+                    c,
+                    depth: depth,
+                    textStyle: textStyle,
+                  ),
+                )
                 .toList(),
           ),
         ),
       );
 
     case MdCallout():
-      // In step 01.15, renders as plain MdBlockQuote with the same children
-      return buildBlock(
-        context,
-        MdBlockQuote(node.start, node.end, children: node.children),
-        depth: depth,
-        tight: tight,
-      );
+      return CalloutView(node: node, depth: depth);
 
     case MdThematicBreak():
       return const Divider(height: 24, thickness: 1);
@@ -103,17 +122,35 @@ Widget buildBlock(
         final item = node.children[i];
         final Widget marker;
 
+        final isStruckThrough =
+            item.task != null && (item.task!.isDone || item.task!.char == '-');
+        final itemTextStyle = isStruckThrough
+            ? (styles?.body ?? const TextStyle()).copyWith(
+                decoration: TextDecoration.lineThrough,
+                color: theme.colorScheme.onSurfaceVariant,
+              )
+            : textStyle;
+
         if (item.task != null) {
-          marker = SizedBox(
-            width: 28,
-            height: 24,
-            child: Center(
-              child: Checkbox(
-                value: item.task!.isDone,
-                onChanged: null,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
+          final taskItem = scope?.parsed.tasks.firstWhere(
+            (t) => t.statusOffset == item.task!.offset,
+            orElse: () => TaskItem(
+              status: item.task!,
+              text: '',
+              start: item.start,
+              end: item.end,
+              statusOffset: item.task!.offset,
+              line: 0,
             ),
+          );
+          marker = TaskCheckbox(
+            status: item.task!,
+            readOnly: scope?.readOnly ?? false,
+            onChanged: (newStatus) {
+              if (taskItem != null) {
+                scope?.onToggleTask?.call(taskItem, newStatus);
+              }
+            },
           );
         } else if (node.ordered) {
           marker = SizedBox(
@@ -135,16 +172,31 @@ Widget buildBlock(
           );
         }
 
-        final itemContent = Column(
+        Widget itemContent = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: item.children
               .map(
-                (c) =>
-                    buildBlock(context, c, depth: depth + 1, tight: node.tight),
+                (c) => buildBlock(
+                  context,
+                  c,
+                  depth: depth + 1,
+                  tight: node.tight,
+                  textStyle: itemTextStyle,
+                ),
               )
               .toList(),
         );
+
+        if (isStruckThrough) {
+          itemContent = DefaultTextStyle.merge(
+            style: TextStyle(
+              decoration: TextDecoration.lineThrough,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            child: itemContent,
+          );
+        }
 
         final verticalPadding = node.tight ? 1.0 : 4.0;
 
@@ -177,7 +229,15 @@ Widget buildBlock(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: node.children
-            .map((c) => buildBlock(context, c, depth: depth, tight: tight))
+            .map(
+              (c) => buildBlock(
+                context,
+                c,
+                depth: depth,
+                tight: tight,
+                textStyle: textStyle,
+              ),
+            )
             .toList(),
       );
 

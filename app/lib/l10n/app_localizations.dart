@@ -717,6 +717,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading note…'**
   String get readingLoading;
+
+  /// Message shown when a link target is not found in vault
+  ///
+  /// In en, this message translates to:
+  /// **'\"{target}\" doesn\'t exist'**
+  String linkNotFound(String target);
+
+  /// No description provided for @linkCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get linkCreate;
+
+  /// No description provided for @linkSchemeBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening this URL scheme is blocked for security'**
+  String get linkSchemeBlocked;
+
+  /// Placeholder for missing image
+  ///
+  /// In en, this message translates to:
+  /// **'Image not found: {name}'**
+  String imageNotFound(String name);
+
+  /// Placeholder for missing embed
+  ///
+  /// In en, this message translates to:
+  /// **'Embed not found: {target}'**
+  String embedNotFound(String target);
+
+  /// No description provided for @embedOpenLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Open this file type in a later version'**
+  String get embedOpenLater;
+
+  /// No description provided for @fileChipOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get fileChipOpen;
 }
 
 class _AppLocalizationsDelegate

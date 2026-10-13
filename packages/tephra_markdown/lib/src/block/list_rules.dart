@@ -28,7 +28,7 @@ final class ListMarkerMatch {
   final TaskStatus? task;
 }
 
-final RegExp _taskRegex = RegExp(r'^\[(.)\][ \t]');
+final RegExp _taskRegex = RegExp(r'^\[(.)\][ \t]', unicode: true);
 
 /// Checks if [cursor] is at a thematic break.
 bool isThematicBreak(LineCursor cursor) {
@@ -195,7 +195,7 @@ ListMarkerMatch? checkListMarker(
         final charOffset = cursor.offset + 1;
         task = TaskStatus(taskChar, charOffset);
         // Consume checkbox [c] and subsequent spaces/tabs
-        cursor.advanceOffset(3); // '[' + char + ']'
+        cursor.advanceOffset(2 + taskChar.length); // '[' + char + ']'
         cursor.advanceToNextNonSpace();
       }
     }

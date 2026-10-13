@@ -334,4 +334,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get readingLoading => 'Loading note…';
+
+  @override
+  String linkNotFound(String target) {
+    return '\"$target\" doesn\'t exist';
+  }
+
+  @override
+  String get linkCreate => 'Create';
+
+  @override
+  String get linkSchemeBlocked =>
+      'Opening this URL scheme is blocked for security';
+
+  @override
+  String imageNotFound(String name) {
+    return 'Image not found: $name';
+  }
+
+  @override
+  String embedNotFound(String target) {
+    return 'Embed not found: $target';
+  }
+
+  @override
+  String get embedOpenLater => 'Open this file type in a later version';
+
+  @override
+  String get fileChipOpen => 'Open';
 }

@@ -123,7 +123,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented TephraCommand registry, canonical shortcut grammar/codec, FuzzyMatcher with bold ranges (10k strings ranked in 22-35 ms), builtin commands (15 commands), CommandPalette dialog (560x480 desktop / fullscreen phone), QuickSwitcher (10k items ranked in 39 ms), NoteCreator with location rules, HotkeyHost with event bubbling, HotkeysScreen with live recorder and conflict resolution, and grouped SettingsScreen. 161 total tests passing in app/test.
 - [x] 01.15 Note documents (buffers) and the reading view: structure and block widgets
   - notes: Implemented NoteDocument in-memory buffer with exact round-trip preservation (BOM/CRLF/dominant endings), NoteDocumentStore with ref-counting, ReadingView with ScrollablePositionedList, ReadingViewController, ReadingScope, ReadingStyles, binary block lookup, CodeBlockView with re_highlight syntax highlighting and copy button, TableView with column alignment and padding, FootnoteIndex and footnote section, and updated NoteView/NoteReadingView with malformed banner. 196 total tests passing in app/test.
-- [ ] 01.16 Reading view: inline rendering, callouts, tasks, links, images/embeds, goldens
+- [x] 01.16 Reading view: inline rendering, callouts, tasks, links, images/embeds, goldens
+  - notes: Implemented InlineText & InlineBuilder for all markdown inlines, CalloutView with 27 Obsidian callout styles and folding, TaskCheckbox & TaskToggler with atomic offset checks and surrogate-pair support, SimpleLinkResolver & LinkActions with pending jump handling, ReadingImage & FileChip embeds with memory LRU caching, 15 semantic syntax tests, and 27 golden image tests in app/test/reading/goldens. 290 total tests passing in app/test.
 - [ ] 01.17 File explorer
 - [ ] 01.18 Editor: `EditorController`, engine adapter, Source mode with syntax highlighting
 - [ ] 01.19 Editing helpers, shortcuts, commands, find & replace

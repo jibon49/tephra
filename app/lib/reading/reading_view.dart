@@ -27,6 +27,7 @@ class ReadingView extends ConsumerStatefulWidget {
     this.readableWidth = true,
     this.onToggleTask,
     this.onOpenWikiLink,
+    this.onOpenMarkdownLink,
     this.onOpenUrl,
     this.initialOffset,
     this.onTopOffsetChanged,
@@ -39,6 +40,7 @@ class ReadingView extends ConsumerStatefulWidget {
   final bool readableWidth;
   final Future<void> Function(TaskItem task, String newStatus)? onToggleTask;
   final void Function(WikiLinkTap tap)? onOpenWikiLink;
+  final void Function(String url, {bool newTab})? onOpenMarkdownLink;
   final void Function(Uri uri)? onOpenUrl;
   final int? initialOffset;
   final void Function(int sourceOffset)? onTopOffsetChanged;
@@ -268,6 +270,7 @@ class _ReadingViewState extends ConsumerState<ReadingView>
       onToggleCallout: _onToggleCallout,
       onToggleTask: widget.onToggleTask,
       onOpenWikiLink: widget.onOpenWikiLink,
+      onOpenMarkdownLink: widget.onOpenMarkdownLink,
       onOpenUrl: widget.onOpenUrl,
       controller: widget.controller,
       child: LayoutBuilder(

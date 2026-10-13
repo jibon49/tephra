@@ -110,3 +110,10 @@ final noteDocumentProvider = Provider.autoDispose
       ref.onDispose(() => s.release(path));
       return d;
     });
+
+final vaultFilesProvider = FutureProvider<List<VaultPath>>((ref) async {
+  ref.watch(vaultRevisionProvider);
+  final fs = ref.watch(vaultFsProvider);
+  final entries = await fs.list(folder: VaultPath.root, recursive: true);
+  return entries.where((e) => !e.isFolder).map((e) => e.path).toList();
+});

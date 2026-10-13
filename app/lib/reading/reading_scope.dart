@@ -52,6 +52,7 @@ class ReadingScope extends InheritedWidget {
     this.onToggleCallout,
     this.onToggleTask,
     this.onOpenWikiLink,
+    this.onOpenMarkdownLink,
     this.onOpenUrl,
     this.controller,
     required super.child,
@@ -67,6 +68,7 @@ class ReadingScope extends InheritedWidget {
   final void Function(int startOffset)? onToggleCallout;
   final Future<void> Function(TaskItem task, String newStatus)? onToggleTask;
   final void Function(WikiLinkTap tap)? onOpenWikiLink;
+  final void Function(String url, {bool newTab})? onOpenMarkdownLink;
   final void Function(Uri uri)? onOpenUrl;
   final ReadingViewController? controller;
 

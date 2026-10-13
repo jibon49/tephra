@@ -168,5 +168,36 @@
   "codeRenderedLater": "Rendered in a later version",
   "footnoteMissing": "Undefined footnote",
   "footnotesTitle": "Footnotes",
-  "readingLoading": "Loading note…"
+  "readingLoading": "Loading note…",
+  "linkNotFound": "\"{target}\" doesn't exist",
+  "@linkNotFound": {
+    "description": "Message shown when a link target is not found in vault",
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "linkCreate": "Create",
+  "linkSchemeBlocked": "Opening this URL scheme is blocked for security",
+  "imageNotFound": "Image not found: {name}",
+  "@imageNotFound": {
+    "description": "Placeholder for missing image",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "embedNotFound": "Embed not found: {target}",
+  "@embedNotFound": {
+    "description": "Placeholder for missing embed",
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "embedOpenLater": "Open this file type in a later version",
+  "fileChipOpen": "Open"
 }
