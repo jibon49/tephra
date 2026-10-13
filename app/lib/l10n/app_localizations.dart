@@ -124,11 +124,179 @@ abstract class AppLocalizations {
   /// **'Create new vault'**
   String get welcomeCreateVault;
 
-  /// Temporary snackbar text for features that are not built yet.
+  /// Header for recent vaults section.
   ///
   /// In en, this message translates to:
-  /// **'Coming in Phase 1'**
-  String get comingInPhase1;
+  /// **'Recent vaults'**
+  String get vaultPickerRecent;
+
+  /// Button: create vault inside isolated app private storage on Android.
+  ///
+  /// In en, this message translates to:
+  /// **'Create vault in app storage'**
+  String get vaultPickerCreatePrivate;
+
+  /// Subtitle for a recent vault path that does not exist.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault folder no longer exists'**
+  String get vaultRecentMissing;
+
+  /// Menu option to remove vault from recent list.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from list'**
+  String get vaultRecentRemove;
+
+  /// Warning hint when creating a vault in app-private storage.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes in app storage are only visible to Tephra and are removed if you uninstall the app.'**
+  String get vaultPrivateHint;
+
+  /// Dialog title for creating a vault.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new vault'**
+  String get createVaultTitle;
+
+  /// Field label for vault name.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault name'**
+  String get createVaultName;
+
+  /// Label for folder location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get createVaultLocation;
+
+  /// Button to choose folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose…'**
+  String get createVaultChoose;
+
+  /// Action button to create vault.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createVaultCreate;
+
+  /// Error message when vault name is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault name cannot be empty.'**
+  String get createVaultNameEmpty;
+
+  /// Error message when vault name is invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault name contains invalid characters.'**
+  String get createVaultNameInvalid;
+
+  /// Error when opening missing folder.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder could not be found.'**
+  String get vaultErrorMissing;
+
+  /// Error when target path is a file.
+  ///
+  /// In en, this message translates to:
+  /// **'The chosen path is not a folder.'**
+  String get vaultErrorNotAFolder;
+
+  /// Error when lacking filesystem permissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Access to this folder was denied.'**
+  String get vaultErrorNoAccess;
+
+  /// Error when vault formatVersion > 1.
+  ///
+  /// In en, this message translates to:
+  /// **'This vault was created by a newer version of Tephra.'**
+  String get vaultErrorTooNew;
+
+  /// Error when creating in non-empty folder.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder already exists and is not empty.'**
+  String get vaultErrorNotEmpty;
+
+  /// Snackbar notifying of Obsidian settings import.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported your Obsidian settings (read-only copy).'**
+  String get vaultImportedFromObsidian;
+
+  /// Title for Android storage access explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access to your files'**
+  String get storageAccessTitle;
+
+  /// Explanation of Android All files access.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra stores notes as plain Markdown files in a folder you choose, so other apps like Obsidian can open the same files. Android calls this “All files access”. Tephra only reads and writes inside the vault folder you pick.'**
+  String get storageAccessBody;
+
+  /// Button to grant Android All files access.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access'**
+  String get storageAccessAllow;
+
+  /// Button to fall back to app-private storage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use app storage instead'**
+  String get storageAccessPrivate;
+
+  /// Button to dismiss storage access prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get storageAccessNotNow;
+
+  /// Common cancel button.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get commonCancel;
+
+  /// Common OK button.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get commonOk;
+
+  /// Common delete button.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get commonDelete;
+
+  /// Common rename button.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get commonRename;
+
+  /// Common create button.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get commonCreate;
+
+  /// Common close button.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get commonClose;
 }
 
 class _AppLocalizationsDelegate

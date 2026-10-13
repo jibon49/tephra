@@ -115,7 +115,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: CommonMark 0.31.2 conformance at 617 / 652 (94.6% vs ≥ 85% requirement) with 100.0% in all 7 required sections; 262/262 Obsidian cases passed; syntax_vault_test for all 24 syntax notes passed; fuzz_test with 2,000 random docs (seed 42) and CommonMark seed 7 passed with invariant containment, non-overlapping siblings and determinism checks; fixed nested list continuation relative indent and trimTrailingSpaces.
 - [x] 01.11 App services: JSON stores, app and vault settings, platform services, vault session providers
   - notes: Implemented RFC 4122 v4 UUID generator, TephraJsonStore & AppJsonFile with corrupt-file backup (.bad-<ts>), StoragePermissionService (Android SDK >= 30 and 26-29), WindowsSystemTrash via PowerShell Microsoft.VisualBasic API, AppSettings & VaultSettings models/stores with unknown-key preservation and default fallbacks, VaultSession & createVaultFileSystem factory, and Riverpod session/settings/revision providers. All 39 tests passing in app/test.
-- [ ] 01.12 Vault picker, create/open, recent vaults, Android permission flow, `.obsidian` import
+- [x] 01.12 Vault picker, create/open, recent vaults, Android permission flow, `.obsidian` import
+  - notes: Implemented vault metadata with UUID/formatVersion check, safe VaultOpener/VaultCreator, ObsidianImporter and hotkey converter, VaultGate, VaultPickerScreen, CreateVaultDialog, StorageAccessScreen permission flow, and folder_picker. All 67 app tests passing.
 - [ ] 01.13 Workspace: adaptive shell, tabs, history, splits, view registry
 - [ ] 01.14 Commands, palette, quick switcher, hotkeys, settings screen
 - [ ] 01.15 Note documents (buffers) and the reading view: structure and block widgets

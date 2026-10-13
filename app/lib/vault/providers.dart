@@ -84,3 +84,7 @@ final vaultRevisionProvider = NotifierProvider<VaultRevisionNotifier, int>(
 final vaultNameProvider = Provider<String>((ref) {
   return ref.watch(vaultSessionProvider)?.name ?? '';
 });
+
+final vaultOpenedHooksProvider = Provider<List<Future<void> Function(Ref ref)>>(
+  (ref) => const [],
+);
