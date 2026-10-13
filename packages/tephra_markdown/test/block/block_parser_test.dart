@@ -98,7 +98,7 @@ void main() {
 
   group('Block quotes', () {
     test('block quote with lazy continuation', () {
-      expect(dump(parseBlocks('> a\nb').root), 'doc(bq(p(t"a⏎b")))');
+      expect(dump(parseBlocks('> a\nb').root), 'doc(bq(p(t"a",sb,t"b")))');
     });
 
     test('nested quote > > b', () {
@@ -142,7 +142,7 @@ void main() {
       expect(dump(parseBlocks('<a href="x">\ny').root), 'doc(html)');
       expect(
         dump(parseBlocks('para\n<a href="x">').root),
-        'doc(p(t"para⏎<a href="x">"))',
+        'doc(p(t"para",sb,ihtml"<a href="x">"))',
       );
     });
   });
@@ -175,7 +175,7 @@ void main() {
 
     test('definition cannot interrupt a paragraph', () {
       final res = parseBlocks('para\n[a]: b');
-      expect(dump(res.root), 'doc(p(t"para⏎[a]: b"))');
+      expect(dump(res.root), 'doc(p(t"para",sb,t"[a]: b"))');
       expect(res.definitions.containsKey('a'), isFalse);
     });
   });

@@ -23,6 +23,10 @@ MdDocument finalizeTree({
   required List<BlockRef> blockIds,
   FrontmatterSplit? frontmatter,
 }) {
+  // Pre-pass: extract all link definitions across the whole document
+  // before any inline parsing so forward references resolve.
+  _collectAllDefinitions(root, fullText, definitions);
+
   final ctx = InlineContext(options: options, definitions: definitions);
 
   final docChildren = <MdNode>[];
@@ -58,6 +62,23 @@ MdDocument finalizeTree({
       ? docChildren.last.end
       : (frontmatter?.end ?? fullText.length);
   return MdDocument(0, docEnd, children: docChildren);
+}
+
+void _collectAllDefinitions(
+  BlockNode node,
+  String fullText,
+  Map<String, LinkDefinition> definitions,
+) {
+  if (node.type == BlockType.paragraph) {
+    extractLinkDefinitions(
+      text: fullText,
+      segments: node.segments,
+      definitions: definitions,
+    );
+  }
+  for (final child in node.children) {
+    _collectAllDefinitions(child, fullText, definitions);
+  }
 }
 
 MdNode? _finalizeBlock({
@@ -170,6 +191,14 @@ MdNode? _finalizeBlock({
       node.segments[node.segments.length - 1] = last;
       final nodeEnd = last.$2;
 
+      final map = OffsetMap();
+      for (final seg in node.segments) {
+        map.addSegment(seg.$1, seg.$2);
+      }
+      final virtualText = map.buildText(fullText);
+
+      (int, int)? blockIdRange;
+
       // Check block ID
       if (options.obsidian) {
         final lastSegText = fullText.substring(last.$1, last.$2);
@@ -214,23 +243,26 @@ MdNode? _finalizeBlock({
                 idEnd: idEnd,
               ),
             );
+            final vLastStart = virtualText.length - lastSegText.length;
+            final vIdStart = vLastStart + caretIdx;
+            final vIdEnd = vIdStart + 1 + id.length;
+            blockIdRange = (vIdStart, vIdEnd);
           }
         }
       }
 
-      final map = OffsetMap();
-      for (final seg in node.segments) {
-        map.addSegment(seg.$1, seg.$2);
-      }
-      final virtualText = map.buildText(fullText);
+      final pCtx = blockIdRange != null
+          ? ctx.withBlockIdRange(blockIdRange)
+          : ctx;
       final inlines = parseInlines(
         InlineSource(text: virtualText, map: map),
-        ctx,
+        pCtx,
       );
       return MdParagraph(node.start, nodeEnd, children: inlines);
 
     case BlockType.heading:
       String? blockId;
+      (int, int)? blockIdRange;
       if (node.segments.isNotEmpty) {
         var last = node.segments.last;
         while (last.$2 > last.$1 &&
@@ -258,6 +290,16 @@ MdNode? _finalizeBlock({
                   idEnd: idEnd,
                 ),
               );
+
+              final mapTemp = OffsetMap();
+              for (final seg in node.segments) {
+                mapTemp.addSegment(seg.$1, seg.$2);
+              }
+              final vText = mapTemp.buildText(fullText);
+              final vLastStart = vText.length - lastSegText.length;
+              final vIdStart = vLastStart + caretIdx;
+              final vIdEnd = vIdStart + 1 + id.length;
+              blockIdRange = (vIdStart, vIdEnd);
             }
           }
         }
@@ -268,9 +310,12 @@ MdNode? _finalizeBlock({
         map.addSegment(seg.$1, seg.$2);
       }
       final virtualText = map.buildText(fullText);
+      final hCtx = blockIdRange != null
+          ? ctx.withBlockIdRange(blockIdRange)
+          : ctx;
       final inlines = parseInlines(
         InlineSource(text: virtualText, map: map),
-        ctx,
+        hCtx,
       );
       return MdHeading(
         node.start,

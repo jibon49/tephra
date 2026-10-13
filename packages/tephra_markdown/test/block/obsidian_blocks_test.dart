@@ -125,7 +125,10 @@ void main() {
     });
 
     test(r'$$ with trailing content is not a math block', () {
-      expect(dump(parseBlocks(r'$$a$$ tail').root), r'doc(p(t"$$a$$ tail"))');
+      expect(
+        dump(parseBlocks(r'$$a$$ tail').root),
+        r'doc(p(imath"a",t" tail"))',
+      );
     });
 
     test('math block cannot interrupt a paragraph', () {
@@ -136,7 +139,7 @@ void main() {
             r'$$x$$',
           ).root,
         ),
-        r'doc(p(t"para⏎$$x$$"))',
+        r'doc(p(t"para",sb,imath"x"))',
       );
     });
 
@@ -150,7 +153,7 @@ void main() {
 
   group('Comment blocks', () {
     test('single-line comment is a paragraph (not block)', () {
-      expect(dump(parseBlocks('%%hidden%%').root), 'doc(p(t"%%hidden%%"))');
+      expect(dump(parseBlocks('%%hidden%%').root), 'doc(p(icmt"hidden"))');
     });
 
     test('multi-line comment block', () {
@@ -170,13 +173,13 @@ void main() {
     });
 
     test('comment block cannot interrupt a paragraph', () {
-      expect(dump(parseBlocks('para\n%%').root), 'doc(p(t"para⏎%%"))');
+      expect(dump(parseBlocks('para\n%%').root), 'doc(p(t"para",sb,t"%%"))');
     });
 
     test('comment blocks disabled when obsidian is false', () {
       expect(
         dump(parseBlocks('%%\nx\n%%', options: ParserOptions.commonMark).root),
-        'doc(p(t"%%⏎x⏎%%"))',
+        'doc(p(t"%%",sb,t"x",sb,t"%%"))',
       );
     });
   });
@@ -192,14 +195,14 @@ void main() {
     test('continuation with 4 spaces', () {
       expect(
         dump(parseBlocks('[^1]: a\n    b').root),
-        'doc(fn{label=1}(p(t"a⏎b")))',
+        'doc(fn{label=1}(p(t"a",sb,t"b")))',
       );
     });
 
     test('lazy continuation', () {
       expect(
         dump(parseBlocks('[^1]: a\nnext').root),
-        'doc(fn{label=1}(p(t"a⏎next")))',
+        'doc(fn{label=1}(p(t"a",sb,t"next")))',
       );
     });
 
@@ -217,7 +220,7 @@ void main() {
     test('footnote definition cannot interrupt paragraph', () {
       expect(
         dump(parseBlocks('para\n[^1]: a').root),
-        'doc(p(t"para⏎[^1]: a"))',
+        'doc(p(t"para",sb,fref"1",t": a"))',
       );
     });
   });

@@ -243,14 +243,14 @@ void _dumpNode(MdNode node, StringBuffer buf) {
       if (node.alias != null) {
         buf.write(',a=${node.alias}');
       }
+      if (node.pdfPage != null) {
+        buf.write(',p=${node.pdfPage}');
+      }
       if (node.size != null) {
         buf.write(',w=${node.size!.width}');
         if (node.size!.height != null) {
           buf.write(',x=${node.size!.height}');
         }
-      }
-      if (node.pdfPage != null) {
-        buf.write(',p=${node.pdfPage}');
       }
       buf.write('}');
 

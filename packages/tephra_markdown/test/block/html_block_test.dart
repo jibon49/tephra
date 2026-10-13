@@ -61,7 +61,7 @@ void main() {
   group('Paragraph interruption by HTML blocks', () {
     test('type 7 cannot interrupt a paragraph', () {
       final res = parseBlocks('para\n<a href="x">');
-      expect(dump(res.root), 'doc(p(t"para⏎<a href="x">"))');
+      expect(dump(res.root), 'doc(p(t"para",sb,ihtml"<a href="x">"))');
     });
 
     test('type 6 can interrupt a paragraph', () {

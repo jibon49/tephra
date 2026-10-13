@@ -63,7 +63,10 @@ void main() {
 
   group('Paragraph interruption by list', () {
     test('ordered list interrupts paragraph only with 1', () {
-      expect(dump(parseBlocks('para\n2. x').root), 'doc(p(t"para⏎2. x"))');
+      expect(
+        dump(parseBlocks('para\n2. x').root),
+        'doc(p(t"para",sb,t"2. x"))',
+      );
       expect(
         dump(parseBlocks('para\n1. x').root),
         'doc(p(t"para"),ol(li(p(t"x"))))',
@@ -79,7 +82,7 @@ void main() {
 
     test('empty item cannot interrupt paragraph', () {
       expect(dump(parseBlocks('para\n-').root), 'doc(h2(t"para"))');
-      expect(dump(parseBlocks('para\n1.').root), 'doc(p(t"para⏎1."))');
+      expect(dump(parseBlocks('para\n1.').root), 'doc(p(t"para",sb,t"1."))');
     });
   });
 
@@ -99,7 +102,7 @@ void main() {
     });
 
     test('lazy continuation inside an item', () {
-      expect(dump(parseBlocks('- a\nb').root), 'doc(ul(li(p(t"a⏎b"))))');
+      expect(dump(parseBlocks('- a\nb').root), 'doc(ul(li(p(t"a",sb,t"b"))))');
     });
 
     test('list inside a block quote', () {

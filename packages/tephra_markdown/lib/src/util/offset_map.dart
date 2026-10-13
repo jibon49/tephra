@@ -18,8 +18,15 @@ final class _Segment {
 /// Maps character offsets within a virtual inline string back to absolute
 /// UTF-16 source offsets.
 final class OffsetMap {
-  OffsetMap();
+  OffsetMap() : _parent = null, _shift = 0;
 
+  /// Creates an OffsetMap shifted by [shift] relative to [parent].
+  OffsetMap.shifted(OffsetMap parent, int shift)
+    : _parent = parent,
+      _shift = shift;
+
+  final OffsetMap? _parent;
+  final int _shift;
   final List<_Segment> _segments = [];
 
   /// Appends text of source range `[srcStart, srcEnd)`.
@@ -55,6 +62,9 @@ final class OffsetMap {
   /// Maps a virtual index to its start-style source offset.
   /// The virtual `\n` between segments maps to the previous segment's `srcEnd`.
   int toSource(int virtualIndex) {
+    if (_parent != null) {
+      return _parent.toSource(virtualIndex + _shift);
+    }
     if (_segments.isEmpty) return 0;
     if (virtualIndex <= 0) return _segments.first.srcStart;
 
@@ -78,6 +88,9 @@ final class OffsetMap {
 
   /// Maps an exclusive virtual end index to its source offset.
   int toSourceEnd(int virtualIndexExclusive) {
+    if (_parent != null) {
+      return _parent.toSourceEnd(virtualIndexExclusive + _shift);
+    }
     return virtualIndexExclusive == 0
         ? toSource(0)
         : toSource(virtualIndexExclusive - 1) + 1;

@@ -53,13 +53,13 @@ void main() {
       final res = parseBlocks('|a|\n|-|\n|x \\| y|');
       expect(
         dump(res.root),
-        'doc(table{aligns=n}(trh(td(t"a")),tr(td(t"x \\| y"))))',
+        'doc(table{aligns=n}(trh(td(t"a")),tr(td(t"x | y"))))',
       );
     });
 
     test('header/delimiter count mismatch stays paragraph', () {
       final res = parseBlocks('|a|b|\n|-|\n|1|2|');
-      expect(dump(res.root), 'doc(p(t"|a|b|⏎|-|⏎|1|2|"))');
+      expect(dump(res.root), 'doc(p(t"|a|b|",sb,t"|-|",sb,t"|1|2|"))');
     });
 
     test('paragraph splitting before table header', () {
@@ -91,7 +91,7 @@ void main() {
         '|a|b|\n|-|-|\n|1|2|',
         options: ParserOptions.commonMark,
       );
-      expect(dump(res.root), 'doc(p(t"|a|b|⏎|-|-|⏎|1|2|"))');
+      expect(dump(res.root), 'doc(p(t"|a|b|",sb,t"|-|-|",sb,t"|1|2|"))');
     });
   });
 }
