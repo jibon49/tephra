@@ -319,4 +319,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newNoteUntitled => 'Untitled';
+
+  @override
+  String get codeCopied => 'Code copied to clipboard';
+
+  @override
+  String get codeRenderedLater => 'Rendered in a later version';
+
+  @override
+  String get footnoteMissing => 'Undefined footnote';
+
+  @override
+  String get footnotesTitle => 'Footnotes';
+
+  @override
+  String get readingLoading => 'Loading note…';
 }

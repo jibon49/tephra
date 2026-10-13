@@ -163,5 +163,10 @@
   },
   "hotkeyReplace": "Replace",
   "hotkeyKeepBoth": "Keep both",
-  "newNoteUntitled": "Untitled"
+  "newNoteUntitled": "Untitled",
+  "codeCopied": "Code copied to clipboard",
+  "codeRenderedLater": "Rendered in a later version",
+  "footnoteMissing": "Undefined footnote",
+  "footnotesTitle": "Footnotes",
+  "readingLoading": "Loading note…"
 }

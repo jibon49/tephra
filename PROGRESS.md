@@ -121,7 +121,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented adaptive WorkspaceShell (>= 840 dp desktop, < 840 dp phone), tabs with 100-entry history, split panes, debounced workspace persistence (.tephra/workspace.json), view and sidebar registries, tab status, desktop status bar, and phone drawer with back navigation. 39 workspace tests passing (106 total in app/test).
 - [x] 01.14 Commands, palette, quick switcher, hotkeys, settings screen
   - notes: Implemented TephraCommand registry, canonical shortcut grammar/codec, FuzzyMatcher with bold ranges (10k strings ranked in 22-35 ms), builtin commands (15 commands), CommandPalette dialog (560x480 desktop / fullscreen phone), QuickSwitcher (10k items ranked in 39 ms), NoteCreator with location rules, HotkeyHost with event bubbling, HotkeysScreen with live recorder and conflict resolution, and grouped SettingsScreen. 161 total tests passing in app/test.
-- [ ] 01.15 Note documents (buffers) and the reading view: structure and block widgets
+- [x] 01.15 Note documents (buffers) and the reading view: structure and block widgets
+  - notes: Implemented NoteDocument in-memory buffer with exact round-trip preservation (BOM/CRLF/dominant endings), NoteDocumentStore with ref-counting, ReadingView with ScrollablePositionedList, ReadingViewController, ReadingScope, ReadingStyles, binary block lookup, CodeBlockView with re_highlight syntax highlighting and copy button, TableView with column alignment and padding, FootnoteIndex and footnote section, and updated NoteView/NoteReadingView with malformed banner. 196 total tests passing in app/test.
 - [ ] 01.16 Reading view: inline rendering, callouts, tasks, links, images/embeds, goldens
 - [ ] 01.17 File explorer
 - [ ] 01.18 Editor: `EditorController`, engine adapter, Source mode with syntax highlighting

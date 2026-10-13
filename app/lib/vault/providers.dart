@@ -3,10 +3,13 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../workspace/providers.dart';
 import 'note_creator.dart';
+import 'note_document.dart';
+import 'note_document_store.dart';
 import 'vault_session.dart';
 
 /// Notifier managing the currently active [VaultSession].
@@ -92,3 +95,18 @@ final vaultOpenedHooksProvider = Provider<List<Future<void> Function(Ref ref)>>(
 );
 
 final noteCreatorProvider = Provider<NoteCreator>((ref) => NoteCreator(ref));
+
+final noteDocumentStoreProvider = Provider<NoteDocumentStore>((ref) {
+  final fs = ref.watch(vaultFsProvider);
+  final store = NoteDocumentStore(fs, const SystemClock());
+  ref.onDispose(() => unawaited(store.flushAll()));
+  return store;
+});
+
+final noteDocumentProvider = Provider.autoDispose
+    .family<NoteDocument, VaultPath>((ref, path) {
+      final s = ref.watch(noteDocumentStoreProvider);
+      final d = s.acquire(path);
+      ref.onDispose(() => s.release(path));
+      return d;
+    });

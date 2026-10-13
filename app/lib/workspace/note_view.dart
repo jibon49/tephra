@@ -3,20 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
-import 'package:tephra_vault/tephra_vault.dart';
 
 import '../l10n/app_localizations.dart';
+import '../reading/reading_controller.dart';
+import '../reading/reading_view.dart';
+import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import 'providers.dart';
-
-final noteContentProvider = FutureProvider.family<TextDocument, VaultPath>((
-  ref,
-  path,
-) async {
-  ref.watch(vaultRevisionProvider);
-  final fs = ref.watch(vaultFsProvider);
-  return fs.readText(path);
-});
 
 class NoteView extends ConsumerWidget {
   const NoteView({
@@ -33,38 +26,33 @@ class NoteView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final asyncDoc = ref.watch(noteContentProvider(path));
+    final doc = ref.watch(noteDocumentProvider(path));
 
-    return asyncDoc.when(
-      data: (doc) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (doc.malformed)
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.errorContainer,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    l10n.noteMalformedBanner,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onErrorContainer,
-                    ),
-                  ),
-                ),
-              SelectableText(doc.text),
-            ],
-          ),
-        );
-      },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) {
-        if (err is FileNotFoundException) {
+    return ListenableBuilder(
+      listenable: doc,
+      builder: (context, _) {
+        if (!doc.isLoaded) {
+          if (doc.saveState == SaveState.error) {
+            return Center(
+              child: Text(
+                'Error loading note: ${doc.lastError}',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            );
+          }
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 12),
+                Text(l10n.readingLoading),
+              ],
+            ),
+          );
+        }
+
+        if (doc.isMissing) {
           return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -81,8 +69,62 @@ class NoteView extends ConsumerWidget {
             ),
           );
         }
-        return Center(child: Text('Error loading note: $err'));
+
+        return NoteReadingView(path: path, tabId: tabId, doc: doc);
       },
+    );
+  }
+}
+
+class NoteReadingView extends StatefulWidget {
+  const NoteReadingView({
+    super.key,
+    required this.path,
+    required this.tabId,
+    required this.doc,
+  });
+
+  final VaultPath path;
+  final String tabId;
+  final NoteDocument doc;
+
+  @override
+  State<NoteReadingView> createState() => _NoteReadingViewState();
+}
+
+class _NoteReadingViewState extends State<NoteReadingView> {
+  final ReadingViewController _controller = ReadingViewController();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (widget.doc.isReadOnly)
+          Container(
+            key: const ValueKey('note.malformedBanner'),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.errorContainer,
+            ),
+            child: Text(
+              l10n.noteMalformedBanner,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onErrorContainer,
+              ),
+            ),
+          ),
+        Expanded(
+          child: ReadingView(
+            path: widget.path,
+            text: widget.doc.text,
+            readOnly: widget.doc.isReadOnly,
+            controller: _controller,
+          ),
+        ),
+      ],
     );
   }
 }

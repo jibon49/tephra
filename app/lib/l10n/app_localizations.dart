@@ -687,6 +687,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Untitled'**
   String get newNoteUntitled;
+
+  /// No description provided for @codeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied to clipboard'**
+  String get codeCopied;
+
+  /// No description provided for @codeRenderedLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Rendered in a later version'**
+  String get codeRenderedLater;
+
+  /// No description provided for @footnoteMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Undefined footnote'**
+  String get footnoteMissing;
+
+  /// No description provided for @footnotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Footnotes'**
+  String get footnotesTitle;
+
+  /// No description provided for @readingLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading note…'**
+  String get readingLoading;
 }
 
 class _AppLocalizationsDelegate
