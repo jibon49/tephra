@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/hotkey_host.dart';
+import 'builtin_panels.dart';
 import 'desktop_layout.dart';
 import 'phone_layout.dart';
 import 'providers.dart';
@@ -21,6 +22,7 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      registerBuiltinPanels(ref);
       ref
           .read(statusBarRegistryProvider.notifier)
           .register(

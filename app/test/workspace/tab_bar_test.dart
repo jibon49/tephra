@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tephra/workspace/providers.dart';
+import 'package:tephra/workspace/tab_bar_view.dart';
 import 'package:tephra/workspace/workspace_shell.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
@@ -31,7 +32,13 @@ void main() {
     await tester.pumpAndSettle();
 
     // Stem shown
-    expect(find.text('MyNote'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(WorkspaceTabBarView),
+        matching: find.text('MyNote'),
+      ),
+      findsOneWidget,
+    );
 
     // With 1 item, back and forward are disabled
     final backBtn = tester.widget<IconButton>(
@@ -88,22 +95,28 @@ void main() {
         .openPath(VaultPath('NoteB.md'), newTab: true);
     await tester.pumpAndSettle();
 
-    expect(find.text('NoteA'), findsOneWidget);
-    expect(find.text('NoteB'), findsOneWidget);
+    final noteATab = find.descendant(
+      of: find.byType(WorkspaceTabBarView),
+      matching: find.text('NoteA'),
+    );
+    final noteBTab = find.descendant(
+      of: find.byType(WorkspaceTabBarView),
+      matching: find.text('NoteB'),
+    );
+
+    expect(noteATab, findsOneWidget);
+    expect(noteBTab, findsOneWidget);
 
     // Middle-click NoteB tab chip
     final pointer = TestPointer(1, PointerDeviceKind.mouse);
     await tester.sendEventToBinding(
-      pointer.down(
-        tester.getCenter(find.text('NoteB')),
-        buttons: kMiddleMouseButton,
-      ),
+      pointer.down(tester.getCenter(noteBTab), buttons: kMiddleMouseButton),
     );
     await tester.sendEventToBinding(pointer.up());
     await tester.pumpAndSettle();
 
-    expect(find.text('NoteB'), findsNothing);
-    expect(find.text('NoteA'), findsOneWidget);
+    expect(noteBTab, findsNothing);
+    expect(noteATab, findsOneWidget);
   });
 
   testWidgets('dirty dot appears when tabDirtyProvider is overridden to true', (
@@ -133,7 +146,13 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify tab chip and dirty dot container
-    expect(find.text('DirtyNote'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(WorkspaceTabBarView),
+        matching: find.text('DirtyNote'),
+      ),
+      findsOneWidget,
+    );
     // Finds the 6x6 dirty dot BoxDecoration with circle shape
     final containers = tester.widgetList<Container>(find.byType(Container));
     final hasDirtyDot = containers.any((c) {

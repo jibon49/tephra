@@ -759,6 +759,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open'**
   String get fileChipOpen;
+
+  /// No description provided for @commandNoteCreateFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new folder'**
+  String get commandNoteCreateFolder;
+
+  /// No description provided for @commandNoteRenameNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename current note'**
+  String get commandNoteRenameNote;
+
+  /// No description provided for @commandNoteDeleteNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete current note'**
+  String get commandNoteDeleteNote;
+
+  /// No description provided for @commandNoteDuplicateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate current note'**
+  String get commandNoteDuplicateNote;
+
+  /// No description provided for @commandNoteRevealInExplorer.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal in system explorer'**
+  String get commandNoteRevealInExplorer;
+
+  /// No description provided for @commandExplorerCollapseAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse all folders'**
+  String get commandExplorerCollapseAll;
+
+  /// No description provided for @commandExplorerRevealActiveFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal active file in explorer'**
+  String get commandExplorerRevealActiveFile;
+
+  /// No description provided for @explorerNewNote.
+  ///
+  /// In en, this message translates to:
+  /// **'New note'**
+  String get explorerNewNote;
+
+  /// No description provided for @explorerNewFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'New folder'**
+  String get explorerNewFolder;
+
+  /// No description provided for @explorerSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Change sort order'**
+  String get explorerSort;
+
+  /// No description provided for @explorerSortNameAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (A to Z)'**
+  String get explorerSortNameAsc;
+
+  /// No description provided for @explorerSortNameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (Z to A)'**
+  String get explorerSortNameDesc;
+
+  /// No description provided for @explorerSortModifiedNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified time (new to old)'**
+  String get explorerSortModifiedNew;
+
+  /// No description provided for @explorerSortModifiedOld.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified time (old to new)'**
+  String get explorerSortModifiedOld;
+
+  /// No description provided for @explorerSortCreatedNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Created time (new to old)'**
+  String get explorerSortCreatedNew;
+
+  /// No description provided for @explorerSortCreatedOld.
+  ///
+  /// In en, this message translates to:
+  /// **'Created time (old to new)'**
+  String get explorerSortCreatedOld;
+
+  /// No description provided for @explorerCollapseAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse all'**
+  String get explorerCollapseAll;
+
+  /// No description provided for @explorerOpenInNewTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in new tab'**
+  String get explorerOpenInNewTab;
+
+  /// No description provided for @explorerRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get explorerRename;
+
+  /// No description provided for @explorerDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get explorerDuplicate;
+
+  /// No description provided for @explorerMoveTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to…'**
+  String get explorerMoveTo;
+
+  /// No description provided for @explorerMoveHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Move here'**
+  String get explorerMoveHere;
+
+  /// No description provided for @explorerReveal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal in system explorer'**
+  String get explorerReveal;
+
+  /// No description provided for @explorerDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get explorerDelete;
+
+  /// Title for delete confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{name}”?'**
+  String explorerDeleteTitle(String name);
+
+  /// No description provided for @explorerDeleteBodySystem.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be moved to the Recycle Bin.'**
+  String get explorerDeleteBodySystem;
+
+  /// No description provided for @explorerDeleteBodyVault.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be moved to the vault\'s .trash folder.'**
+  String get explorerDeleteBodyVault;
+
+  /// No description provided for @explorerDeleteBodyPermanent.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be deleted permanently. This cannot be undone.'**
+  String get explorerDeleteBodyPermanent;
+
+  /// Extra note in delete dialog for non-empty folder
+  ///
+  /// In en, this message translates to:
+  /// **'All {count} items inside are included.'**
+  String explorerDeleteFolderExtra(int count);
+
+  /// No description provided for @explorerDeleteUnsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes in open notes will be lost.'**
+  String get explorerDeleteUnsaved;
+
+  /// No description provided for @explorerNameEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Name cannot be empty'**
+  String get explorerNameEmpty;
+
+  /// No description provided for @explorerNameInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Name contains invalid characters'**
+  String get explorerNameInvalid;
+
+  /// No description provided for @explorerNameExists.
+  ///
+  /// In en, this message translates to:
+  /// **'A file or folder with that name already exists'**
+  String get explorerNameExists;
+
+  /// No description provided for @explorerPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission denied'**
+  String get explorerPermissionDenied;
+
+  /// No description provided for @explorerNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'File not found'**
+  String get explorerNotFound;
+
+  /// Notice snackbar after file rename or move
+  ///
+  /// In en, this message translates to:
+  /// **'Links to “{name}” were not updated. Automatic link updates arrive in a later version.'**
+  String explorerLinksNotUpdatedNotice(String name);
+
+  /// No description provided for @explorerMoveExists.
+  ///
+  /// In en, this message translates to:
+  /// **'A file with that name already exists in the destination folder'**
+  String get explorerMoveExists;
+
+  /// No description provided for @explorerUntitledFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled folder'**
+  String get explorerUntitledFolder;
+
+  /// No description provided for @explorerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This vault has no notes yet'**
+  String get explorerEmpty;
 }
 
 class _AppLocalizationsDelegate

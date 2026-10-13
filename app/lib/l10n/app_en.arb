@@ -199,5 +199,68 @@
     }
   },
   "embedOpenLater": "Open this file type in a later version",
-  "fileChipOpen": "Open"
+  "fileChipOpen": "Open",
+  "commandNoteCreateFolder": "Create new folder",
+  "commandNoteRenameNote": "Rename current note",
+  "commandNoteDeleteNote": "Delete current note",
+  "commandNoteDuplicateNote": "Duplicate current note",
+  "commandNoteRevealInExplorer": "Reveal in system explorer",
+  "commandExplorerCollapseAll": "Collapse all folders",
+  "commandExplorerRevealActiveFile": "Reveal active file in explorer",
+  "explorerNewNote": "New note",
+  "explorerNewFolder": "New folder",
+  "explorerSort": "Change sort order",
+  "explorerSortNameAsc": "File name (A to Z)",
+  "explorerSortNameDesc": "File name (Z to A)",
+  "explorerSortModifiedNew": "Modified time (new to old)",
+  "explorerSortModifiedOld": "Modified time (old to new)",
+  "explorerSortCreatedNew": "Created time (new to old)",
+  "explorerSortCreatedOld": "Created time (old to new)",
+  "explorerCollapseAll": "Collapse all",
+  "explorerOpenInNewTab": "Open in new tab",
+  "explorerRename": "Rename",
+  "explorerDuplicate": "Duplicate",
+  "explorerMoveTo": "Move to…",
+  "explorerMoveHere": "Move here",
+  "explorerReveal": "Reveal in system explorer",
+  "explorerDelete": "Delete",
+  "explorerDeleteTitle": "Delete “{name}”?",
+  "@explorerDeleteTitle": {
+    "description": "Title for delete confirmation dialog",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "explorerDeleteBodySystem": "It will be moved to the Recycle Bin.",
+  "explorerDeleteBodyVault": "It will be moved to the vault's .trash folder.",
+  "explorerDeleteBodyPermanent": "It will be deleted permanently. This cannot be undone.",
+  "explorerDeleteFolderExtra": "All {count} items inside are included.",
+  "@explorerDeleteFolderExtra": {
+    "description": "Extra note in delete dialog for non-empty folder",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "explorerDeleteUnsaved": "Unsaved changes in open notes will be lost.",
+  "explorerNameEmpty": "Name cannot be empty",
+  "explorerNameInvalid": "Name contains invalid characters",
+  "explorerNameExists": "A file or folder with that name already exists",
+  "explorerPermissionDenied": "Permission denied",
+  "explorerNotFound": "File not found",
+  "explorerLinksNotUpdatedNotice": "Links to “{name}” were not updated. Automatic link updates arrive in a later version.",
+  "@explorerLinksNotUpdatedNotice": {
+    "description": "Notice snackbar after file rename or move",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "explorerMoveExists": "A file with that name already exists in the destination folder",
+  "explorerUntitledFolder": "Untitled folder",
+  "explorerEmpty": "This vault has no notes yet"
 }

@@ -125,7 +125,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented NoteDocument in-memory buffer with exact round-trip preservation (BOM/CRLF/dominant endings), NoteDocumentStore with ref-counting, ReadingView with ScrollablePositionedList, ReadingViewController, ReadingScope, ReadingStyles, binary block lookup, CodeBlockView with re_highlight syntax highlighting and copy button, TableView with column alignment and padding, FootnoteIndex and footnote section, and updated NoteView/NoteReadingView with malformed banner. 196 total tests passing in app/test.
 - [x] 01.16 Reading view: inline rendering, callouts, tasks, links, images/embeds, goldens
   - notes: Implemented InlineText & InlineBuilder for all markdown inlines, CalloutView with 27 Obsidian callout styles and folding, TaskCheckbox & TaskToggler with atomic offset checks and surrogate-pair support, SimpleLinkResolver & LinkActions with pending jump handling, ReadingImage & FileChip embeds with memory LRU caching, 15 semantic syntax tests, and 27 golden image tests in app/test/reading/goldens. 290 total tests passing in app/test.
-- [ ] 01.17 File explorer
+- [x] 01.17 File explorer
+  - notes: Implemented file explorer panel with lazy expansion, 6 sort modes, pure DFS tree flattener, Riverpod providers, ExplorerService for CRUD/move/duplicate/reveal, MoveToDialog folder picker, desktop right-click menu and mobile bottom sheet, ExplorerRowTile with drag & drop and inline rename (Enter commit / Escape cancel), and 7 registered commands. 42 new unit & widget tests (332 total in app/test).
 - [ ] 01.18 Editor: `EditorController`, engine adapter, Source mode with syntax highlighting
 - [ ] 01.19 Editing helpers, shortcuts, commands, find & replace
 - [ ] 01.20 Autosave, save indicator, external changes, three-way merge, conflict dialog

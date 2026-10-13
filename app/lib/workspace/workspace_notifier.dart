@@ -409,6 +409,13 @@ final class WorkspaceNotifier extends Notifier<WorkspaceState> {
     _scheduleSave();
   }
 
+  void setLeftSidebarVisible(bool visible) {
+    if (state.leftSidebarVisible != visible) {
+      state = state.copyWith(leftSidebarVisible: visible);
+      _scheduleSave();
+    }
+  }
+
   void toggleRightSidebar() {
     state = state.copyWith(rightSidebarVisible: !state.rightSidebarVisible);
     _scheduleSave();

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../explorer/explorer_commands.dart';
 import '../settings/providers.dart';
 import '../vault/providers.dart';
 import 'builtin_commands.dart';
@@ -16,6 +17,7 @@ final phoneScaffoldKeyProvider = Provider<GlobalKey<ScaffoldState>>((ref) {
 final commandRegistryProvider = Provider<CommandRegistry>((ref) {
   final registry = CommandRegistry();
   registerBuiltinCommands(registry);
+  registerExplorerCommands(registry);
   return registry;
 });
 

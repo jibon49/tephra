@@ -61,9 +61,11 @@ Widget testApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routes: {SettingsScreen.routeName: (context) => const SettingsScreen()},
-      home: MediaQuery(
-        data: MediaQueryData(size: size),
-        child: child,
+      home: ScaffoldMessenger(
+        child: MediaQuery(
+          data: MediaQueryData(size: size),
+          child: child,
+        ),
       ),
     ),
   );

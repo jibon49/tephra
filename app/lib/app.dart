@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tephra/explorer/providers.dart';
 import 'package:tephra/l10n/app_localizations.dart';
 import 'package:tephra/settings/providers.dart';
 import 'package:tephra/settings/settings_screen.dart';
@@ -21,6 +22,7 @@ class TephraApp extends ConsumerWidget {
     };
 
     return MaterialApp(
+      scaffoldMessengerKey: ref.watch(scaffoldMessengerKeyProvider),
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),

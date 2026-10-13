@@ -362,4 +362,133 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fileChipOpen => 'Open';
+
+  @override
+  String get commandNoteCreateFolder => 'Create new folder';
+
+  @override
+  String get commandNoteRenameNote => 'Rename current note';
+
+  @override
+  String get commandNoteDeleteNote => 'Delete current note';
+
+  @override
+  String get commandNoteDuplicateNote => 'Duplicate current note';
+
+  @override
+  String get commandNoteRevealInExplorer => 'Reveal in system explorer';
+
+  @override
+  String get commandExplorerCollapseAll => 'Collapse all folders';
+
+  @override
+  String get commandExplorerRevealActiveFile =>
+      'Reveal active file in explorer';
+
+  @override
+  String get explorerNewNote => 'New note';
+
+  @override
+  String get explorerNewFolder => 'New folder';
+
+  @override
+  String get explorerSort => 'Change sort order';
+
+  @override
+  String get explorerSortNameAsc => 'File name (A to Z)';
+
+  @override
+  String get explorerSortNameDesc => 'File name (Z to A)';
+
+  @override
+  String get explorerSortModifiedNew => 'Modified time (new to old)';
+
+  @override
+  String get explorerSortModifiedOld => 'Modified time (old to new)';
+
+  @override
+  String get explorerSortCreatedNew => 'Created time (new to old)';
+
+  @override
+  String get explorerSortCreatedOld => 'Created time (old to new)';
+
+  @override
+  String get explorerCollapseAll => 'Collapse all';
+
+  @override
+  String get explorerOpenInNewTab => 'Open in new tab';
+
+  @override
+  String get explorerRename => 'Rename';
+
+  @override
+  String get explorerDuplicate => 'Duplicate';
+
+  @override
+  String get explorerMoveTo => 'Move to…';
+
+  @override
+  String get explorerMoveHere => 'Move here';
+
+  @override
+  String get explorerReveal => 'Reveal in system explorer';
+
+  @override
+  String get explorerDelete => 'Delete';
+
+  @override
+  String explorerDeleteTitle(String name) {
+    return 'Delete “$name”?';
+  }
+
+  @override
+  String get explorerDeleteBodySystem => 'It will be moved to the Recycle Bin.';
+
+  @override
+  String get explorerDeleteBodyVault =>
+      'It will be moved to the vault\'s .trash folder.';
+
+  @override
+  String get explorerDeleteBodyPermanent =>
+      'It will be deleted permanently. This cannot be undone.';
+
+  @override
+  String explorerDeleteFolderExtra(int count) {
+    return 'All $count items inside are included.';
+  }
+
+  @override
+  String get explorerDeleteUnsaved =>
+      'Unsaved changes in open notes will be lost.';
+
+  @override
+  String get explorerNameEmpty => 'Name cannot be empty';
+
+  @override
+  String get explorerNameInvalid => 'Name contains invalid characters';
+
+  @override
+  String get explorerNameExists =>
+      'A file or folder with that name already exists';
+
+  @override
+  String get explorerPermissionDenied => 'Permission denied';
+
+  @override
+  String get explorerNotFound => 'File not found';
+
+  @override
+  String explorerLinksNotUpdatedNotice(String name) {
+    return 'Links to “$name” were not updated. Automatic link updates arrive in a later version.';
+  }
+
+  @override
+  String get explorerMoveExists =>
+      'A file with that name already exists in the destination folder';
+
+  @override
+  String get explorerUntitledFolder => 'Untitled folder';
+
+  @override
+  String get explorerEmpty => 'This vault has no notes yet';
 }
