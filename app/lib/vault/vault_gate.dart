@@ -12,6 +12,7 @@ import 'package:tephra/settings/providers.dart';
 import 'package:tephra/vault/providers.dart';
 import 'package:tephra/vault/vault_opener.dart';
 import 'package:tephra/vault/vault_picker_screen.dart';
+import 'package:tephra/workspace/workspace_shell.dart';
 
 /// Routes between [VaultPickerScreen] and the open vault workspace,
 /// automatically reopening the last active vault on startup when available.
@@ -100,7 +101,6 @@ class _VaultGateState extends ConsumerState<VaultGate> {
       return const VaultPickerScreen();
     }
 
-    // Step 01.13 replaces this with WorkspaceShell
-    return Scaffold(body: Center(child: Text(session.name)));
+    return const WorkspaceShell();
   }
 }

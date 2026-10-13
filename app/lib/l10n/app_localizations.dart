@@ -297,6 +297,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get commonClose;
+
+  /// Tooltip for navigating back in tab history.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get workspaceBack;
+
+  /// Tooltip for navigating forward in tab history.
+  ///
+  /// In en, this message translates to:
+  /// **'Forward'**
+  String get workspaceForward;
+
+  /// Placeholder text when no tabs are open.
+  ///
+  /// In en, this message translates to:
+  /// **'No note open'**
+  String get workspaceEmptyTitle;
+
+  /// Action to close the current tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Close tab'**
+  String get tabClose;
+
+  /// Action to close all tabs except the current one.
+  ///
+  /// In en, this message translates to:
+  /// **'Close other tabs'**
+  String get tabCloseOthers;
+
+  /// Action to split pane horizontally side by side.
+  ///
+  /// In en, this message translates to:
+  /// **'Split right'**
+  String get tabSplitRight;
+
+  /// Action to split pane vertically top and bottom.
+  ///
+  /// In en, this message translates to:
+  /// **'Split down'**
+  String get tabSplitDown;
+
+  /// Message displayed when an open note was deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Note no longer exists'**
+  String get noteMissing;
+
+  /// Warning banner when note text contains malformed UTF-8.
+  ///
+  /// In en, this message translates to:
+  /// **'This note contains invalid characters and cannot be read cleanly.'**
+  String get noteMalformedBanner;
+
+  /// Header for unsupported file preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported file type'**
+  String get unsupportedFileTitle;
+
+  /// Button to launch unsupported file with default OS application.
+  ///
+  /// In en, this message translates to:
+  /// **'Open with default app'**
+  String get openWithSystemApp;
+
+  /// Explanation for unsupported files on Android.
+  ///
+  /// In en, this message translates to:
+  /// **'This file type cannot be previewed in Tephra.'**
+  String get unsupportedFileAndroid;
+
+  /// Label for the file explorer sidebar panel.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get sidebarExplorer;
+
+  /// Tooltip for the phone drawer menu button.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get phoneMenu;
+
+  /// Reading mode label.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading view'**
+  String get modeReading;
+
+  /// Source editing mode label.
+  ///
+  /// In en, this message translates to:
+  /// **'Source mode'**
+  String get modeSource;
+
+  /// Command to switch between reading and source views.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle reading / source view'**
+  String get commandToggleMode;
 }
 
 class _AppLocalizationsDelegate

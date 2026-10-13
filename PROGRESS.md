@@ -117,7 +117,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented RFC 4122 v4 UUID generator, TephraJsonStore & AppJsonFile with corrupt-file backup (.bad-<ts>), StoragePermissionService (Android SDK >= 30 and 26-29), WindowsSystemTrash via PowerShell Microsoft.VisualBasic API, AppSettings & VaultSettings models/stores with unknown-key preservation and default fallbacks, VaultSession & createVaultFileSystem factory, and Riverpod session/settings/revision providers. All 39 tests passing in app/test.
 - [x] 01.12 Vault picker, create/open, recent vaults, Android permission flow, `.obsidian` import
   - notes: Implemented vault metadata with UUID/formatVersion check, safe VaultOpener/VaultCreator, ObsidianImporter and hotkey converter, VaultGate, VaultPickerScreen, CreateVaultDialog, StorageAccessScreen permission flow, and folder_picker. All 67 app tests passing.
-- [ ] 01.13 Workspace: adaptive shell, tabs, history, splits, view registry
+- [x] 01.13 Workspace: adaptive shell, tabs, history, splits, view registry
+  - notes: Implemented adaptive WorkspaceShell (>= 840 dp desktop, < 840 dp phone), tabs with 100-entry history, split panes, debounced workspace persistence (.tephra/workspace.json), view and sidebar registries, tab status, desktop status bar, and phone drawer with back navigation. 39 workspace tests passing (106 total in app/test).
 - [ ] 01.14 Commands, palette, quick switcher, hotkeys, settings screen
 - [ ] 01.15 Note documents (buffers) and the reading view: structure and block widgets
 - [ ] 01.16 Reading view: inline rendering, callouts, tasks, links, images/embeds, goldens

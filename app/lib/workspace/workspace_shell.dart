@@ -1,0 +1,52 @@
+// © 2026 Tephra. All rights reserved.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'desktop_layout.dart';
+import 'phone_layout.dart';
+import 'providers.dart';
+import 'status_bar_registry.dart';
+
+class WorkspaceShell extends ConsumerStatefulWidget {
+  const WorkspaceShell({super.key});
+
+  @override
+  ConsumerState<WorkspaceShell> createState() => _WorkspaceShellState();
+}
+
+class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(statusBarRegistryProvider.notifier)
+          .register(
+            StatusBarItemSpec(
+              id: 'status.activePath',
+              alignment: StatusBarAlignment.left,
+              builder: (context, ref) {
+                final activePath = ref.watch(activeNotePathProvider);
+                if (activePath == null) return const SizedBox.shrink();
+                return Text(
+                  activePath.value,
+                  style: Theme.of(context).textTheme.labelSmall,
+                );
+              },
+              order: 0,
+            ),
+          );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= 840;
+
+    return FocusScope(
+      child: isDesktop ? const DesktopLayout() : const PhoneLayout(),
+    );
+  }
+}

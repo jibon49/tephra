@@ -117,4 +117,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonClose => 'Close';
+
+  @override
+  String get workspaceBack => 'Back';
+
+  @override
+  String get workspaceForward => 'Forward';
+
+  @override
+  String get workspaceEmptyTitle => 'No note open';
+
+  @override
+  String get tabClose => 'Close tab';
+
+  @override
+  String get tabCloseOthers => 'Close other tabs';
+
+  @override
+  String get tabSplitRight => 'Split right';
+
+  @override
+  String get tabSplitDown => 'Split down';
+
+  @override
+  String get noteMissing => 'Note no longer exists';
+
+  @override
+  String get noteMalformedBanner =>
+      'This note contains invalid characters and cannot be read cleanly.';
+
+  @override
+  String get unsupportedFileTitle => 'Unsupported file type';
+
+  @override
+  String get openWithSystemApp => 'Open with default app';
+
+  @override
+  String get unsupportedFileAndroid =>
+      'This file type cannot be previewed in Tephra.';
+
+  @override
+  String get sidebarExplorer => 'Files';
+
+  @override
+  String get phoneMenu => 'Menu';
+
+  @override
+  String get modeReading => 'Reading view';
+
+  @override
+  String get modeSource => 'Source mode';
+
+  @override
+  String get commandToggleMode => 'Toggle reading / source view';
 }
