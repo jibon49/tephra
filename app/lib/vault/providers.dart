@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../workspace/providers.dart';
+import 'note_creator.dart';
 import 'vault_session.dart';
 
 /// Notifier managing the currently active [VaultSession].
@@ -89,3 +90,5 @@ final vaultNameProvider = Provider<String>((ref) {
 final vaultOpenedHooksProvider = Provider<List<Future<void> Function(Ref ref)>>(
   (ref) => [(ref) => ref.read(workspaceProvider.notifier).restore()],
 );
+
+final noteCreatorProvider = Provider<NoteCreator>((ref) => NoteCreator(ref));

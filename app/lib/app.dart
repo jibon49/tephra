@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra/l10n/app_localizations.dart';
 import 'package:tephra/settings/providers.dart';
+import 'package:tephra/settings/settings_screen.dart';
 import 'package:tephra/theme/app_theme.dart';
 import 'package:tephra/vault/vault_gate.dart';
 
@@ -27,6 +28,7 @@ class TephraApp extends ConsumerWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const VaultGate(),
+      routes: {SettingsScreen.routeName: (context) => const SettingsScreen()},
     );
   }
 }

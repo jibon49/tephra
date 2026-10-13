@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../commands/command_palette.dart';
+import '../commands/providers.dart';
+import '../commands/quick_switcher.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/providers.dart';
 import 'empty_workspace_view.dart';
@@ -19,6 +22,7 @@ class PhoneLayout extends ConsumerWidget {
     final viewRegistry = ref.watch(viewRegistryProvider);
     final focusedTab = ref.watch(workspaceProvider.select((w) => w.focusedTab));
     final session = ref.watch(vaultSessionProvider);
+    final scaffoldKey = ref.watch(phoneScaffoldKeyProvider);
 
     final title = focusedTab != null
         ? viewRegistry.titleFor(focusedTab.content, l10n)
@@ -42,6 +46,7 @@ class PhoneLayout extends ConsumerWidget {
         }
       },
       child: Scaffold(
+        key: scaffoldKey,
         appBar: AppBar(
           leading: Builder(
             builder: (ctx) => IconButton(
@@ -80,14 +85,28 @@ class PhoneLayout extends ConsumerWidget {
             ),
             PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert),
+              onSelected: (value) {
+                switch (value) {
+                  case 'palette':
+                    showCommandPalette(context);
+                  case 'switcher':
+                    showQuickSwitcher(context);
+                  case 'settings':
+                    Navigator.of(context).pushNamed('/settings');
+                }
+              },
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  value: 'reading',
-                  child: Text(
-                    focusedTab?.mode == ViewMode.reading
-                        ? l10n.modeSource
-                        : l10n.modeReading,
-                  ),
+                  value: 'palette',
+                  child: Text(l10n.commandAppOpenCommandPalette),
+                ),
+                PopupMenuItem(
+                  value: 'switcher',
+                  child: Text(l10n.commandAppOpenQuickSwitcher),
+                ),
+                PopupMenuItem(
+                  value: 'settings',
+                  child: Text(l10n.commandAppOpenSettings),
                 ),
               ],
             ),

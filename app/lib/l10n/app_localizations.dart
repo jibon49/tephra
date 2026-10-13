@@ -399,6 +399,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Toggle reading / source view'**
   String get commandToggleMode;
+
+  /// No description provided for @commandAppOpenQuickSwitcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Open quick switcher'**
+  String get commandAppOpenQuickSwitcher;
+
+  /// No description provided for @commandAppOpenCommandPalette.
+  ///
+  /// In en, this message translates to:
+  /// **'Open command palette'**
+  String get commandAppOpenCommandPalette;
+
+  /// No description provided for @commandAppOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get commandAppOpenSettings;
+
+  /// No description provided for @commandAppOpenVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Open another vault…'**
+  String get commandAppOpenVault;
+
+  /// No description provided for @commandAppToggleLeftSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle left sidebar'**
+  String get commandAppToggleLeftSidebar;
+
+  /// No description provided for @commandWorkspaceCloseTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Close tab'**
+  String get commandWorkspaceCloseTab;
+
+  /// No description provided for @commandWorkspaceNextTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Next tab'**
+  String get commandWorkspaceNextTab;
+
+  /// No description provided for @commandWorkspacePreviousTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous tab'**
+  String get commandWorkspacePreviousTab;
+
+  /// No description provided for @commandWorkspaceGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate back'**
+  String get commandWorkspaceGoBack;
+
+  /// No description provided for @commandWorkspaceGoForward.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate forward'**
+  String get commandWorkspaceGoForward;
+
+  /// No description provided for @commandWorkspaceSplitRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Split right'**
+  String get commandWorkspaceSplitRight;
+
+  /// No description provided for @commandWorkspaceSplitDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Split down'**
+  String get commandWorkspaceSplitDown;
+
+  /// No description provided for @commandWorkspaceClosePane.
+  ///
+  /// In en, this message translates to:
+  /// **'Close split'**
+  String get commandWorkspaceClosePane;
+
+  /// No description provided for @commandEditorToggleReadingView.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle reading view'**
+  String get commandEditorToggleReadingView;
+
+  /// No description provided for @commandNoteCreateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new note'**
+  String get commandNoteCreateNote;
+
+  /// No description provided for @palettePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a command…'**
+  String get palettePlaceholder;
+
+  /// No description provided for @paletteNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching commands'**
+  String get paletteNoResults;
+
+  /// No description provided for @switcherPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a note name…'**
+  String get switcherPlaceholder;
+
+  /// Row to create new note with query name
+  ///
+  /// In en, this message translates to:
+  /// **'Create “{name}”'**
+  String switcherCreate(String name);
+
+  /// No description provided for @switcherNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching notes'**
+  String get switcherNoResults;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsAppearance;
+
+  /// No description provided for @settingsEditor.
+  ///
+  /// In en, this message translates to:
+  /// **'Editor'**
+  String get settingsEditor;
+
+  /// No description provided for @settingsFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files & Links'**
+  String get settingsFiles;
+
+  /// No description provided for @settingsHotkeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Hotkeys'**
+  String get settingsHotkeys;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsAbout;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
+  /// No description provided for @settingsFontSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Font size'**
+  String get settingsFontSize;
+
+  /// No description provided for @settingsUseTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Indent with tabs'**
+  String get settingsUseTab;
+
+  /// No description provided for @settingsTabSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Tab size'**
+  String get settingsTabSize;
+
+  /// No description provided for @settingsReadableLineLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Readable line length'**
+  String get settingsReadableLineLength;
+
+  /// No description provided for @settingsDefaultViewMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Default view for new tabs'**
+  String get settingsDefaultViewMode;
+
+  /// No description provided for @settingsAttachmentFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment folder'**
+  String get settingsAttachmentFolder;
+
+  /// No description provided for @settingsAttachmentFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'/ = vault root, ./ = same folder as the note, ./attachments = subfolder of the note\'s folder, or a folder name'**
+  String get settingsAttachmentFolderHelp;
+
+  /// No description provided for @settingsNewNoteLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Default location for new notes'**
+  String get settingsNewNoteLocation;
+
+  /// No description provided for @settingsNewNoteFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder for new notes'**
+  String get settingsNewNoteFolder;
+
+  /// No description provided for @settingsTrashMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted files'**
+  String get settingsTrashMode;
+
+  /// No description provided for @settingsShowHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Show hidden folders'**
+  String get settingsShowHidden;
+
+  /// No description provided for @hotkeysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hotkeys'**
+  String get hotkeysTitle;
+
+  /// No description provided for @hotkeysSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter hotkeys…'**
+  String get hotkeysSearch;
+
+  /// No description provided for @hotkeysAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add hotkey'**
+  String get hotkeysAdd;
+
+  /// No description provided for @hotkeysReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get hotkeysReset;
+
+  /// No description provided for @hotkeysResetAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset all'**
+  String get hotkeysResetAll;
+
+  /// No description provided for @hotkeysPressKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Press hotkey combo…'**
+  String get hotkeysPressKeys;
+
+  /// Title for conflict warning dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Already used by {commands}'**
+  String hotkeyConflictTitle(String commands);
+
+  /// No description provided for @hotkeyReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get hotkeyReplace;
+
+  /// No description provided for @hotkeyKeepBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep both'**
+  String get hotkeyKeepBoth;
+
+  /// No description provided for @newNoteUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled'**
+  String get newNoteUntitled;
 }
 
 class _AppLocalizationsDelegate

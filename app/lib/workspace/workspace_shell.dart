@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../commands/hotkey_host.dart';
 import 'desktop_layout.dart';
 import 'phone_layout.dart';
 import 'providers.dart';
@@ -45,8 +46,10 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= 840;
 
-    return FocusScope(
-      child: isDesktop ? const DesktopLayout() : const PhoneLayout(),
+    return HotkeyHost(
+      child: FocusScope(
+        child: isDesktop ? const DesktopLayout() : const PhoneLayout(),
+      ),
     );
   }
 }

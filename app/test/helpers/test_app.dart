@@ -8,6 +8,7 @@ import 'package:tephra/core/providers.dart';
 import 'package:tephra/l10n/app_localizations.dart';
 import 'package:tephra/settings/app_settings.dart';
 import 'package:tephra/settings/providers.dart';
+import 'package:tephra/settings/settings_screen.dart';
 import 'package:tephra/settings/vault_settings.dart';
 import 'package:tephra/theme/app_theme.dart';
 import 'package:tephra/vault/providers.dart';
@@ -59,6 +60,7 @@ Widget testApp(
       darkTheme: AppTheme.dark(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      routes: {SettingsScreen.routeName: (context) => const SettingsScreen()},
       home: MediaQuery(
         data: MediaQueryData(size: size),
         child: child,

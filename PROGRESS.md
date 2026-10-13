@@ -119,7 +119,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented vault metadata with UUID/formatVersion check, safe VaultOpener/VaultCreator, ObsidianImporter and hotkey converter, VaultGate, VaultPickerScreen, CreateVaultDialog, StorageAccessScreen permission flow, and folder_picker. All 67 app tests passing.
 - [x] 01.13 Workspace: adaptive shell, tabs, history, splits, view registry
   - notes: Implemented adaptive WorkspaceShell (>= 840 dp desktop, < 840 dp phone), tabs with 100-entry history, split panes, debounced workspace persistence (.tephra/workspace.json), view and sidebar registries, tab status, desktop status bar, and phone drawer with back navigation. 39 workspace tests passing (106 total in app/test).
-- [ ] 01.14 Commands, palette, quick switcher, hotkeys, settings screen
+- [x] 01.14 Commands, palette, quick switcher, hotkeys, settings screen
+  - notes: Implemented TephraCommand registry, canonical shortcut grammar/codec, FuzzyMatcher with bold ranges (10k strings ranked in 22-35 ms), builtin commands (15 commands), CommandPalette dialog (560x480 desktop / fullscreen phone), QuickSwitcher (10k items ranked in 39 ms), NoteCreator with location rules, HotkeyHost with event bubbling, HotkeysScreen with live recorder and conflict resolution, and grouped SettingsScreen. 161 total tests passing in app/test.
 - [ ] 01.15 Note documents (buffers) and the reading view: structure and block widgets
 - [ ] 01.16 Reading view: inline rendering, callouts, tasks, links, images/embeds, goldens
 - [ ] 01.17 File explorer

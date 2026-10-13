@@ -170,4 +170,153 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandToggleMode => 'Toggle reading / source view';
+
+  @override
+  String get commandAppOpenQuickSwitcher => 'Open quick switcher';
+
+  @override
+  String get commandAppOpenCommandPalette => 'Open command palette';
+
+  @override
+  String get commandAppOpenSettings => 'Open settings';
+
+  @override
+  String get commandAppOpenVault => 'Open another vault…';
+
+  @override
+  String get commandAppToggleLeftSidebar => 'Toggle left sidebar';
+
+  @override
+  String get commandWorkspaceCloseTab => 'Close tab';
+
+  @override
+  String get commandWorkspaceNextTab => 'Next tab';
+
+  @override
+  String get commandWorkspacePreviousTab => 'Previous tab';
+
+  @override
+  String get commandWorkspaceGoBack => 'Navigate back';
+
+  @override
+  String get commandWorkspaceGoForward => 'Navigate forward';
+
+  @override
+  String get commandWorkspaceSplitRight => 'Split right';
+
+  @override
+  String get commandWorkspaceSplitDown => 'Split down';
+
+  @override
+  String get commandWorkspaceClosePane => 'Close split';
+
+  @override
+  String get commandEditorToggleReadingView => 'Toggle reading view';
+
+  @override
+  String get commandNoteCreateNote => 'Create new note';
+
+  @override
+  String get palettePlaceholder => 'Type a command…';
+
+  @override
+  String get paletteNoResults => 'No matching commands';
+
+  @override
+  String get switcherPlaceholder => 'Type a note name…';
+
+  @override
+  String switcherCreate(String name) {
+    return 'Create “$name”';
+  }
+
+  @override
+  String get switcherNoResults => 'No matching notes';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsEditor => 'Editor';
+
+  @override
+  String get settingsFiles => 'Files & Links';
+
+  @override
+  String get settingsHotkeys => 'Hotkeys';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get settingsFontSize => 'Font size';
+
+  @override
+  String get settingsUseTab => 'Indent with tabs';
+
+  @override
+  String get settingsTabSize => 'Tab size';
+
+  @override
+  String get settingsReadableLineLength => 'Readable line length';
+
+  @override
+  String get settingsDefaultViewMode => 'Default view for new tabs';
+
+  @override
+  String get settingsAttachmentFolder => 'Attachment folder';
+
+  @override
+  String get settingsAttachmentFolderHelp =>
+      '/ = vault root, ./ = same folder as the note, ./attachments = subfolder of the note\'s folder, or a folder name';
+
+  @override
+  String get settingsNewNoteLocation => 'Default location for new notes';
+
+  @override
+  String get settingsNewNoteFolder => 'Folder for new notes';
+
+  @override
+  String get settingsTrashMode => 'Deleted files';
+
+  @override
+  String get settingsShowHidden => 'Show hidden folders';
+
+  @override
+  String get hotkeysTitle => 'Hotkeys';
+
+  @override
+  String get hotkeysSearch => 'Filter hotkeys…';
+
+  @override
+  String get hotkeysAdd => 'Add hotkey';
+
+  @override
+  String get hotkeysReset => 'Reset';
+
+  @override
+  String get hotkeysResetAll => 'Reset all';
+
+  @override
+  String get hotkeysPressKeys => 'Press hotkey combo…';
+
+  @override
+  String hotkeyConflictTitle(String commands) {
+    return 'Already used by $commands';
+  }
+
+  @override
+  String get hotkeyReplace => 'Replace';
+
+  @override
+  String get hotkeyKeepBoth => 'Keep both';
+
+  @override
+  String get newNoteUntitled => 'Untitled';
 }

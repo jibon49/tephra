@@ -99,5 +99,69 @@
   "modeSource": "Source mode",
   "@modeSource": { "description": "Source editing mode label." },
   "commandToggleMode": "Toggle reading / source view",
-  "@commandToggleMode": { "description": "Command to switch between reading and source views." }
+  "@commandToggleMode": { "description": "Command to switch between reading and source views." },
+  "commandAppOpenQuickSwitcher": "Open quick switcher",
+  "commandAppOpenCommandPalette": "Open command palette",
+  "commandAppOpenSettings": "Open settings",
+  "commandAppOpenVault": "Open another vault…",
+  "commandAppToggleLeftSidebar": "Toggle left sidebar",
+  "commandWorkspaceCloseTab": "Close tab",
+  "commandWorkspaceNextTab": "Next tab",
+  "commandWorkspacePreviousTab": "Previous tab",
+  "commandWorkspaceGoBack": "Navigate back",
+  "commandWorkspaceGoForward": "Navigate forward",
+  "commandWorkspaceSplitRight": "Split right",
+  "commandWorkspaceSplitDown": "Split down",
+  "commandWorkspaceClosePane": "Close split",
+  "commandEditorToggleReadingView": "Toggle reading view",
+  "commandNoteCreateNote": "Create new note",
+  "palettePlaceholder": "Type a command…",
+  "paletteNoResults": "No matching commands",
+  "switcherPlaceholder": "Type a note name…",
+  "switcherCreate": "Create “{name}”",
+  "@switcherCreate": {
+    "description": "Row to create new note with query name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "switcherNoResults": "No matching notes",
+  "settingsTitle": "Settings",
+  "settingsAppearance": "Appearance",
+  "settingsEditor": "Editor",
+  "settingsFiles": "Files & Links",
+  "settingsHotkeys": "Hotkeys",
+  "settingsAbout": "About",
+  "settingsTheme": "Theme",
+  "settingsFontSize": "Font size",
+  "settingsUseTab": "Indent with tabs",
+  "settingsTabSize": "Tab size",
+  "settingsReadableLineLength": "Readable line length",
+  "settingsDefaultViewMode": "Default view for new tabs",
+  "settingsAttachmentFolder": "Attachment folder",
+  "settingsAttachmentFolderHelp": "/ = vault root, ./ = same folder as the note, ./attachments = subfolder of the note's folder, or a folder name",
+  "settingsNewNoteLocation": "Default location for new notes",
+  "settingsNewNoteFolder": "Folder for new notes",
+  "settingsTrashMode": "Deleted files",
+  "settingsShowHidden": "Show hidden folders",
+  "hotkeysTitle": "Hotkeys",
+  "hotkeysSearch": "Filter hotkeys…",
+  "hotkeysAdd": "Add hotkey",
+  "hotkeysReset": "Reset",
+  "hotkeysResetAll": "Reset all",
+  "hotkeysPressKeys": "Press hotkey combo…",
+  "hotkeyConflictTitle": "Already used by {commands}",
+  "@hotkeyConflictTitle": {
+    "description": "Title for conflict warning dialog",
+    "placeholders": {
+      "commands": {
+        "type": "String"
+      }
+    }
+  },
+  "hotkeyReplace": "Replace",
+  "hotkeyKeepBoth": "Keep both",
+  "newNoteUntitled": "Untitled"
 }
