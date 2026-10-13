@@ -45,7 +45,9 @@ BlockParseResult parseBlocks(
   final lineIndex = LineIndex(text);
   final lineCount = lineIndex.lineCount;
   final numLines = text.endsWith('\n') ? lineCount - 1 : lineCount;
-  final startLine = startOffset == 0 ? 0 : lineIndex.lineOf(startOffset);
+  final startLine = startOffset >= text.length
+      ? numLines
+      : (startOffset == 0 ? 0 : lineIndex.lineOf(startOffset));
 
   final root = BlockNode(type: BlockType.document, start: 0, end: text.length);
 
@@ -147,6 +149,7 @@ void _processLine({
       options: options,
       fullText: fullText,
       definitions: definitions,
+      tipIsParagraph: tip.isOpen && tip.type == BlockType.paragraph,
     );
 
     if (res is MatchedStart) {
@@ -278,8 +281,11 @@ _ContinueResult _continueBlock(
       // Content column is markerOffsetColumn + padding
       final requiredCol =
           block.markerOffsetColumn + (block.markerLength + block.padding);
-      if (cursor.indent >= requiredCol) {
-        cursor.advanceColumns(requiredCol);
+      final neededIndent = requiredCol - cursor.column;
+      if (neededIndent <= 0 || cursor.indent >= neededIndent) {
+        if (neededIndent > 0) {
+          cursor.advanceColumns(neededIndent);
+        }
         return _ContinueResult.matched;
       }
       return _ContinueResult.notMatched;

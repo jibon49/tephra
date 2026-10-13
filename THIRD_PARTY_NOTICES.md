@@ -36165,3 +36165,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ````
 
+## Test data
+
+CommonMark spec examples, © John MacFarlane, CC BY-SA 4.0
+

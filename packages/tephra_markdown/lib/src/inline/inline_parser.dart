@@ -192,8 +192,17 @@ List<MdNode> parseInlines(InlineSource source, InlineContext ctx) {
         index = codeRes.nextIndex;
         continue;
       }
-      itemList.appendText('`', index, index + 1);
-      index++;
+      var runLen = 0;
+      while (index + runLen < text.length &&
+          text.codeUnitAt(index + runLen) == 0x60) {
+        runLen++;
+      }
+      itemList.appendText(
+        text.substring(index, index + runLen),
+        index,
+        index + runLen,
+      );
+      index += runLen;
       continue;
     }
 

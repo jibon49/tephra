@@ -37,6 +37,7 @@ BlockStartResult checkBlockStart({
   required ParserOptions options,
   required String fullText,
   required Map<String, LinkDefinition> definitions,
+  bool tipIsParagraph = false,
 }) {
   BlockNode? para;
   if (container.type == BlockType.paragraph && container.isOpen) {
@@ -51,7 +52,7 @@ BlockStartResult checkBlockStart({
   // Indented code cannot start if tip is paragraph or line is blank, or indent < 4.
   // A start with indent >= 4 is never a start EXCEPT indented code.
   if (cursor.indent >= 4) {
-    if (!cursor.blank && !isParagraphOpen) {
+    if (!cursor.blank && !isParagraphOpen && !tipIsParagraph) {
       final startOffset = cursor.offset;
       cursor.advanceColumns(4);
       final rawLine = cursor.rest();

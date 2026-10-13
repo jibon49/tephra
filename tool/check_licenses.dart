@@ -182,6 +182,11 @@ void main(List<String> args) {
       buffer.write('\n````\n\n');
     }
 
+    buffer.write('## Test data\n\n');
+    buffer.write(
+      'CommonMark spec examples, © John MacFarlane, CC BY-SA 4.0\n\n',
+    );
+
     final noticesFile = File(p.join(repoRoot, 'THIRD_PARTY_NOTICES.md'));
     noticesFile.writeAsStringSync(buffer.toString());
   }

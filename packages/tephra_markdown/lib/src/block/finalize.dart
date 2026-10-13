@@ -331,7 +331,10 @@ MdNode? _finalizeBlock({
         final code = node.rawLines.isNotEmpty
             ? '${node.rawLines.join('\n')}\n'
             : '';
-        final lang = node.info.split(RegExp(r'\s+')).firstOrNull;
+        final rawLang = node.info.split(RegExp(r'\s+')).firstOrNull;
+        final lang = (rawLang != null && rawLang.isNotEmpty)
+            ? decodeEscapesAndEntities(rawLang)
+            : null;
         final language = (lang != null && lang.isNotEmpty) ? lang : null;
         return MdCodeBlock(
           node.start,

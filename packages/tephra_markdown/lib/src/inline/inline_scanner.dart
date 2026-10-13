@@ -109,9 +109,15 @@ final class InlineItemList {
           remove(cur);
           cur = p;
         } else {
-          final keepLen = spaceStart - cur.virtualStart;
-          cur.text = cur.text.substring(0, keepLen);
-          cur.virtualEnd = spaceStart;
+          final spacesToTrim = cur.virtualEnd - spaceStart;
+          if (spacesToTrim > 0) {
+            if (cur.text.length > spacesToTrim) {
+              cur.text = cur.text.substring(0, cur.text.length - spacesToTrim);
+              cur.virtualEnd = spaceStart;
+            } else {
+              remove(cur);
+            }
+          }
           break;
         }
       } else {
