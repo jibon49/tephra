@@ -426,6 +426,7 @@ void _addTableRow(BlockNode table, LineCursor cursor) {
     cells = cells.sublist(0, headerCount);
   }
   table.tableRows.add(cells);
+  table.tableRowSpans.add((cursor.lineStart, cursor.lineEnd));
   table.updateEnd(cursor.lineEnd);
 }
 

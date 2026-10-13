@@ -399,10 +399,13 @@ MdNode? _finalizeBlock({
             cells.add(MdTableCell(cellSeg.$1, cellSeg.$2, children: const []));
           }
         }
-        final rowStart = rowSegments.isNotEmpty
-            ? rowSegments.first.$1
-            : node.start;
-        final rowEnd = rowSegments.isNotEmpty ? rowSegments.last.$2 : node.end;
+        final rowSpan = r < node.tableRowSpans.length
+            ? node.tableRowSpans[r]
+            : (rowSegments.isNotEmpty
+                  ? (rowSegments.first.$1, rowSegments.last.$2)
+                  : (node.start, node.end));
+        final rowStart = rowSpan.$1;
+        final rowEnd = rowSpan.$2;
         rows.add(
           MdTableRow(rowStart, rowEnd, header: isHeader, children: cells),
         );

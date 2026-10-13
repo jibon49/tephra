@@ -77,6 +77,7 @@ final class BlockNode {
   // Table metadata
   List<TableAlign> aligns = [];
   final List<List<(int start, int end)>> tableRows = [];
+  final List<(int start, int end)> tableRowSpans = [];
 
   // Footnote metadata
   String footnoteLabel = '';
@@ -96,6 +97,7 @@ final class BlockNode {
   void addChild(BlockNode child) {
     child.parent = this;
     children.add(child);
+    updateEnd(child.end);
   }
 
   void updateEnd(int newEnd) {

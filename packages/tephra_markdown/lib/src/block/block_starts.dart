@@ -431,6 +431,7 @@ BlockStartResult checkBlockStart({
         );
         tableNode.aligns = delimiterAligns;
         tableNode.tableRows.add(headerCells); // header row
+        tableNode.tableRowSpans.add((headerSeg.$1, headerSeg.$2));
 
         if (para.segments.length > 1) {
           // Earlier segments stay a paragraph

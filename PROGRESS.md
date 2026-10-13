@@ -109,7 +109,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented BlockParser (CommonMark 0.31.2 strategy, LineCursor, BlockNode, GFM tables, Obsidian callouts/math/comments/footnotes/block IDs), test dump helper, and inline stub; 106 unit tests passing across 5 test suites in test/block.
 - [x] 01.8 Inline parser
   - notes: Implemented CommonMark 0.31.2 and Obsidian/GFM inline parsers (code spans, raw HTML inlines, autolinks, wikilinks/embeds, tags, math, footnotes, block IDs, delimiter stack for bold/italic/strike/highlight, brackets/link resolution) with 295 passing tests in tephra_markdown.
-- [ ] 01.9 `ParsedNote`, `MarkdownParser`, convenience lists, async parse helper
+- [x] 01.9 `ParsedNote`, `MarkdownParser`, convenience lists, async parse helper
+  - notes: Implemented ParsedNote, MarkdownParser with single-pass convenience collectors (headings, wikiLinks, links, tags deduplicated, aliases, blockIds, tasks), ParseService (isolate for > 50,000 chars), tableRowSpans for table row ranges; huge-5000-lines.md parsed in 336 ms (< 500 ms budget), long-line.md in 6 ms; all 31 offset cases and ParseService tests passing.
 - [ ] 01.10 CommonMark conformance, Obsidian syntax cases, `test_vaults/syntax`
 - [ ] 01.11 App services: JSON stores, app and vault settings, platform services, vault session providers
 - [ ] 01.12 Vault picker, create/open, recent vaults, Android permission flow, `.obsidian` import

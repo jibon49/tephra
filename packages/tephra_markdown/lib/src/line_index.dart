@@ -2,18 +2,22 @@
 
 /// Pre-indexed UTF-16 line offsets for fast line-number lookups and slicing.
 final class LineIndex {
-  LineIndex(String text) : _textLength = text.length {
+  LineIndex(String text)
+    : _textLength = text.length,
+      _lineStarts = _computeStarts(text);
+
+  static List<int> _computeStarts(String text) {
     final starts = <int>[0];
     var pos = text.indexOf('\n');
     while (pos != -1) {
       starts.add(pos + 1);
       pos = text.indexOf('\n', pos + 1);
     }
-    _lineStarts = starts;
+    return starts;
   }
 
   final int _textLength;
-  late final List<int> _lineStarts;
+  final List<int> _lineStarts;
 
   /// Total number of lines. Empty string has 1 line; `'a\n'` has 2 lines.
   int get lineCount => _lineStarts.length;
