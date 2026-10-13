@@ -113,7 +113,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
   - notes: Implemented ParsedNote, MarkdownParser with single-pass convenience collectors (headings, wikiLinks, links, tags deduplicated, aliases, blockIds, tasks), ParseService (isolate for > 50,000 chars), tableRowSpans for table row ranges; huge-5000-lines.md parsed in 336 ms (< 500 ms budget), long-line.md in 6 ms; all 31 offset cases and ParseService tests passing.
 - [x] 01.10 CommonMark conformance, Obsidian syntax cases, `test_vaults/syntax`
   - notes: CommonMark 0.31.2 conformance at 617 / 652 (94.6% vs ≥ 85% requirement) with 100.0% in all 7 required sections; 262/262 Obsidian cases passed; syntax_vault_test for all 24 syntax notes passed; fuzz_test with 2,000 random docs (seed 42) and CommonMark seed 7 passed with invariant containment, non-overlapping siblings and determinism checks; fixed nested list continuation relative indent and trimTrailingSpaces.
-- [ ] 01.11 App services: JSON stores, app and vault settings, platform services, vault session providers
+- [x] 01.11 App services: JSON stores, app and vault settings, platform services, vault session providers
+  - notes: Implemented RFC 4122 v4 UUID generator, TephraJsonStore & AppJsonFile with corrupt-file backup (.bad-<ts>), StoragePermissionService (Android SDK >= 30 and 26-29), WindowsSystemTrash via PowerShell Microsoft.VisualBasic API, AppSettings & VaultSettings models/stores with unknown-key preservation and default fallbacks, VaultSession & createVaultFileSystem factory, and Riverpod session/settings/revision providers. All 39 tests passing in app/test.
 - [ ] 01.12 Vault picker, create/open, recent vaults, Android permission flow, `.obsidian` import
 - [ ] 01.13 Workspace: adaptive shell, tabs, history, splits, view registry
 - [ ] 01.14 Commands, palette, quick switcher, hotkeys, settings screen
