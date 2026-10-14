@@ -197,7 +197,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented all 15 index models (NoteSummary, FileRecord, LinkRecord, UnlinkedMention, TagCount, HeadingRecord, BlockRecord, AliasRecord, TaskRecord, FtsHit, PropertyKeyCount, IndexProgress, IndexEvent, IndexOptions, IndexStats), model_helpers collection equality, and re-used LineIndex from tephra_markdown; 22 unit tests passing.
 - [x] 02.4 Note extraction: `ParsedNote` → index rows
   - notes: Pure deterministic NoteExtractor producing ExtractedNote with helpers link_target_key, word_counter, and property_typing; fixed block parser table continuation and list closing when followed by unindented blocks; 24 extract unit tests passing.
-- [ ] 02.5 Link resolver, `NameTable`, heading and block matching
+- [x] 02.5 Link resolver, `NameTable`, heading and block matching
+  - notes: Implemented NameTable (case/name/alias in-memory lookups), LinkResolver with exact 10-step Obsidian resolution algorithm, ResolvedTarget, and heading_matcher (normalizeHeading, findHeading, findBlock, sectionRange); all 38 matrix cases and 45 link tests passing.
 - [ ] 02.6 `IndexerCore`: full index, reconcile, incremental updates, dirty targets (in-process)
 - [ ] 02.7 `NoteIndex` facade, queries and the worker isolate
 - [ ] 02.8 Index consistency fuzz test
