@@ -225,7 +225,11 @@ final class EditorController implements NoteEditorBinding {
   }
 
   @override
-  void replaceAll(String newText, {required bool keepCursor}) {
+  void replaceAll(
+    String newText, {
+    required bool keepCursor,
+    bool clearHistory = false,
+  }) {
     final oldText = text;
     if (oldText == newText) return;
 
@@ -258,6 +262,10 @@ final class EditorController implements NoteEditorBinding {
       select(mapOne(currentSel.baseOffset), mapOne(currentSel.extentOffset));
     } else {
       select(0);
+    }
+
+    if (clearHistory) {
+      engine.clearUndoHistory();
     }
   }
 

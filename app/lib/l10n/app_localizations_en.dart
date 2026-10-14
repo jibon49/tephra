@@ -364,6 +364,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fileChipOpen => 'Open';
 
   @override
+  String get commandNoteSave => 'Save current note';
+
+  @override
   String get commandNoteCreateFolder => 'Create new folder';
 
   @override
@@ -610,4 +613,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandEditorDuplicateLine => 'Duplicate line';
+
+  @override
+  String conflictTitle(String name) {
+    return '“$name” changed on disk';
+  }
+
+  @override
+  String get conflictBody =>
+      'You have unsaved changes and this note was also changed outside Tephra. Choose which version to keep. Nothing is lost: the version you do not keep is saved as a copy.';
+
+  @override
+  String get conflictKeepMine => 'Keep mine';
+
+  @override
+  String get conflictTakeTheirs => 'Take theirs';
+
+  @override
+  String get conflictKeepBoth => 'Keep both';
+
+  @override
+  String get noteDeletedBanner => 'This note was deleted outside Tephra.';
+
+  @override
+  String get noteRecreate => 'Recreate file';
+
+  @override
+  String get saveStateSaved => 'Saved';
+
+  @override
+  String get saveStateUnsaved => 'Unsaved changes';
+
+  @override
+  String get saveStateSaving => 'Saving…';
+
+  @override
+  String get saveStateError => 'Couldn\'t save — tap to retry';
+
+  @override
+  String get saveFailed => 'Failed to save note';
 }

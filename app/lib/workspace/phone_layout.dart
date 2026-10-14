@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../commands/command_palette.dart';
 import '../commands/providers.dart';
 import '../commands/quick_switcher.dart';
+import '../editor/save_state_indicator.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/providers.dart';
 import 'empty_workspace_view.dart';
@@ -23,6 +24,10 @@ class PhoneLayout extends ConsumerWidget {
     final focusedTab = ref.watch(workspaceProvider.select((w) => w.focusedTab));
     final session = ref.watch(vaultSessionProvider);
     final scaffoldKey = ref.watch(phoneScaffoldKeyProvider);
+    final activeNotePath = ref.watch(activeNotePathProvider);
+    final noteDoc = activeNotePath != null
+        ? ref.watch(noteDocumentProvider(activeNotePath))
+        : null;
 
     final title = focusedTab != null
         ? viewRegistry.titleFor(focusedTab.content, l10n)
@@ -56,7 +61,14 @@ class PhoneLayout extends ConsumerWidget {
               onPressed: () => Scaffold.of(ctx).openDrawer(),
             ),
           ),
-          title: Text(title),
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title),
+              if (noteDoc != null) SaveStateIndicator(doc: noteDoc),
+            ],
+          ),
           actions: [
             IconButton(
               icon: const Icon(Icons.arrow_back),

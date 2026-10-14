@@ -132,7 +132,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
 - [x] 01.19 Editing helpers, shortcuts, commands, find & replace
   - notes: Implemented 20 editor commands, FindEngine & FindBar with regex/case/word toggles, pure editing helpers (auto-pair, list continuation, indentation, inline/block formatting, line moves), _InterceptingCodeLineController with IME safety, and synchronous change streams with character-level diffing in ReEditorEngine; 105 tests passing in app/test/editor.
 
-- [ ] 01.20 Autosave, save indicator, external changes, three-way merge, conflict dialog
+- [x] 01.20 Autosave, save indicator, external changes, three-way merge, conflict dialog
+  - notes: Implemented three-way merge with exact context matching (5,000-line note merges in 30 ms vs < 500 ms budget), conflict resolution (keepMine, takeTheirs with recovery copy, keepBoth with timestamped conflict notes), NoteDocument 1000ms debounced autosave, external change detection with stat guard, silent reload, DeletedOnDiskBanner, SaveStateIndicator in status bar & phone header, note.save command, and AutosaveHost lifecycle flush; external pickup verified in 172-201 ms (< 1000 ms budget).
 - [ ] 01.21 Attachments (paste, drop, pick) and the phone keyboard toolbar
 - [ ] 01.22 Round-trip proof, crash safety, performance budget, demo and exit gate
 

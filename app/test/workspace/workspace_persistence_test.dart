@@ -132,7 +132,7 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    container
+    await container
         .read(vaultSessionProvider.notifier)
         .set(
           VaultSession(

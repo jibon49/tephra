@@ -105,7 +105,7 @@ final class VaultOpener {
       isAppPrivate: isAppPrivate,
     );
 
-    ref.read(vaultSessionProvider.notifier).set(session);
+    await ref.read(vaultSessionProvider.notifier).set(session);
     ref.read(appSettingsProvider.notifier).addRecentVault(rootDir, name);
     ref
         .read(appSettingsProvider.notifier)

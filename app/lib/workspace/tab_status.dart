@@ -3,8 +3,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 
-/// Indicates whether a given file path has unsaved edits.
-///
-/// In Step 01.13 this always returns `false`. Step 01.20 updates this to read the
-/// live document buffer state.
-final tabDirtyProvider = Provider.family<bool, VaultPath>((ref, path) => false);
+import '../vault/note_document.dart';
+import '../vault/providers.dart';
+
+/// Indicates whether a given file path has unsaved edits, is saving, or has a save error.
+final tabDirtyProvider = Provider.family<bool, VaultPath>((ref, path) {
+  final store = ref.watch(noteDocumentStoreProvider);
+  void listener() {
+    ref.invalidateSelf();
+  }
+
+  store.stateVersion.addListener(listener);
+  ref.onDispose(() {
+    store.stateVersion.removeListener(listener);
+  });
+
+  final doc = store.peek(path);
+  if (doc == null) return false;
+  return doc.saveState == SaveState.unsaved ||
+      doc.saveState == SaveState.saving ||
+      doc.saveState == SaveState.error;
+});

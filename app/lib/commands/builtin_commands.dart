@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../editor/providers.dart';
+import '../l10n/app_localizations.dart';
+import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import '../workspace/open_file.dart';
 import '../workspace/providers.dart';
@@ -231,6 +233,29 @@ void registerBuiltinCommands(CommandRegistry registry) {
         final path = await creator.createUntitled(contextNote: activePath);
         ref.read(focusEditorOnOpenProvider.notifier).set(true);
         openFile(ref, path, newTab: true);
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'note.save',
+      label: (l10n) => l10n.commandNoteSave,
+      icon: Icons.save_outlined,
+      defaultShortcuts: const [
+        SingleActivator(LogicalKeyboardKey.keyS, control: true),
+      ],
+      isAvailable: (ref) => ref.read(activeNotePathProvider) != null,
+      run: (ref, context) async {
+        final path = ref.read(activeNotePathProvider);
+        if (path == null) return;
+        final doc = ref.read(noteDocumentProvider(path));
+        final result = await doc.save();
+        if (result == SaveOutcome.failed && context.mounted) {
+          final l10n = AppLocalizations.of(context);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(l10n.saveFailed)));
+        }
       },
     ),
   );

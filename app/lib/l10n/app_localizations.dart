@@ -760,6 +760,12 @@ abstract class AppLocalizations {
   /// **'Open'**
   String get fileChipOpen;
 
+  /// No description provided for @commandNoteSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save current note'**
+  String get commandNoteSave;
+
   /// No description provided for @commandNoteCreateFolder.
   ///
   /// In en, this message translates to:
@@ -1221,6 +1227,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Duplicate line'**
   String get commandEditorDuplicateLine;
+
+  /// Dialog title when an external conflict is detected
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” changed on disk'**
+  String conflictTitle(String name);
+
+  /// No description provided for @conflictBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes and this note was also changed outside Tephra. Choose which version to keep. Nothing is lost: the version you do not keep is saved as a copy.'**
+  String get conflictBody;
+
+  /// No description provided for @conflictKeepMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep mine'**
+  String get conflictKeepMine;
+
+  /// No description provided for @conflictTakeTheirs.
+  ///
+  /// In en, this message translates to:
+  /// **'Take theirs'**
+  String get conflictTakeTheirs;
+
+  /// No description provided for @conflictKeepBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep both'**
+  String get conflictKeepBoth;
+
+  /// No description provided for @noteDeletedBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'This note was deleted outside Tephra.'**
+  String get noteDeletedBanner;
+
+  /// No description provided for @noteRecreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Recreate file'**
+  String get noteRecreate;
+
+  /// No description provided for @saveStateSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get saveStateSaved;
+
+  /// No description provided for @saveStateUnsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes'**
+  String get saveStateUnsaved;
+
+  /// No description provided for @saveStateSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get saveStateSaving;
+
+  /// No description provided for @saveStateError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save — tap to retry'**
+  String get saveStateError;
+
+  /// No description provided for @saveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save note'**
+  String get saveFailed;
 }
 
 class _AppLocalizationsDelegate

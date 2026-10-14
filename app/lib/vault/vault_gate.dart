@@ -14,6 +14,8 @@ import 'package:tephra/vault/vault_opener.dart';
 import 'package:tephra/vault/vault_picker_screen.dart';
 import 'package:tephra/workspace/workspace_shell.dart';
 
+import 'autosave_host.dart';
+
 /// Routes between [VaultPickerScreen] and the open vault workspace,
 /// automatically reopening the last active vault on startup when available.
 class VaultGate extends ConsumerStatefulWidget {
@@ -101,6 +103,6 @@ class _VaultGateState extends ConsumerState<VaultGate> {
       return const VaultPickerScreen();
     }
 
-    return const WorkspaceShell();
+    return const AutosaveHost(child: WorkspaceShell());
   }
 }

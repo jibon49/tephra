@@ -200,6 +200,7 @@
   },
   "embedOpenLater": "Open this file type in a later version",
   "fileChipOpen": "Open",
+  "commandNoteSave": "Save current note",
   "commandNoteCreateFolder": "Create new folder",
   "commandNoteRenameNote": "Rename current note",
   "commandNoteDeleteNote": "Delete current note",
@@ -313,5 +314,24 @@
   "commandEditorReplace": "Find and replace in note",
   "commandEditorMoveLineUp": "Move line up",
   "commandEditorMoveLineDown": "Move line down",
-  "commandEditorDuplicateLine": "Duplicate line"
+  "commandEditorDuplicateLine": "Duplicate line",
+  "conflictTitle": "“{name}” changed on disk",
+  "@conflictTitle": {
+    "description": "Dialog title when an external conflict is detected",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "conflictBody": "You have unsaved changes and this note was also changed outside Tephra. Choose which version to keep. Nothing is lost: the version you do not keep is saved as a copy.",
+  "conflictKeepMine": "Keep mine",
+  "conflictTakeTheirs": "Take theirs",
+  "conflictKeepBoth": "Keep both",
+  "noteDeletedBanner": "This note was deleted outside Tephra.",
+  "noteRecreate": "Recreate file",
+  "saveStateSaved": "Saved",
+  "saveStateUnsaved": "Unsaved changes",
+  "saveStateSaving": "Saving…",
+  "saveStateError": "Couldn't save — tap to retry",
+  "saveFailed": "Failed to save note"
 }
+

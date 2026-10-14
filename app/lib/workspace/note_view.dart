@@ -6,6 +6,7 @@ import 'package:tephra_core/tephra_core.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
+import '../editor/conflict_dialog.dart';
 import '../editor/source_editor_view.dart';
 import '../l10n/app_localizations.dart';
 import '../reading/link_actions.dart';
@@ -14,6 +15,7 @@ import '../reading/reading_view.dart';
 import '../reading/task_toggler.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
+import 'note_banners.dart';
 import 'providers.dart';
 import 'workspace_models.dart';
 
@@ -35,6 +37,27 @@ class NoteView extends ConsumerStatefulWidget {
 
 class _NoteViewState extends ConsumerState<NoteView> {
   int? _lastOffset;
+  MergeConflict? _lastConflict;
+
+  @override
+  void didUpdateWidget(NoteView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.path != oldWidget.path) {
+      _lastConflict = null;
+    }
+  }
+
+  void _checkConflict(NoteDocument doc) {
+    if (doc.pendingConflict != null && doc.pendingConflict != _lastConflict) {
+      _lastConflict = doc.pendingConflict;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        showConflictDialog(context, doc);
+      });
+    } else if (doc.pendingConflict == null) {
+      _lastConflict = null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +67,8 @@ class _NoteViewState extends ConsumerState<NoteView> {
     return ListenableBuilder(
       listenable: doc,
       builder: (context, _) {
+        _checkConflict(doc);
+
         if (!doc.isLoaded) {
           if (doc.saveState == SaveState.error) {
             return Center(
@@ -89,8 +114,9 @@ class _NoteViewState extends ConsumerState<NoteView> {
         final tab = ws.findTab(widget.tabId);
         final mode = tab?.mode ?? ViewMode.reading;
 
+        final Widget view;
         if (mode == ViewMode.source) {
-          return KeyedSubtree(
+          view = KeyedSubtree(
             key: ValueKey('${widget.tabId}:${mode.name}'),
             child: SourceEditorView(
               path: widget.path,
@@ -101,20 +127,29 @@ class _NoteViewState extends ConsumerState<NoteView> {
               },
             ),
           );
+        } else {
+          view = KeyedSubtree(
+            key: ValueKey('${widget.tabId}:${mode.name}'),
+            child: NoteReadingView(
+              path: widget.path,
+              subpath: widget.subpath,
+              tabId: widget.tabId,
+              doc: doc,
+              initialOffset: _lastOffset,
+              onOffsetChanged: (offset) {
+                _lastOffset = offset;
+              },
+            ),
+          );
         }
 
-        return KeyedSubtree(
-          key: ValueKey('${widget.tabId}:${mode.name}'),
-          child: NoteReadingView(
-            path: widget.path,
-            subpath: widget.subpath,
-            tabId: widget.tabId,
-            doc: doc,
-            initialOffset: _lastOffset,
-            onOffsetChanged: (offset) {
-              _lastOffset = offset;
-            },
-          ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (doc.isDeletedOnDisk)
+              DeletedOnDiskBanner(doc: doc, tabId: widget.tabId),
+            Expanded(child: view),
+          ],
         );
       },
     );

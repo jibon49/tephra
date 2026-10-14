@@ -2,25 +2,78 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../reading/parse_service.dart';
 import 'note_document.dart';
 
+final _logger = Logger('NoteDocumentStore');
+
 final class NoteDocumentStore {
   NoteDocumentStore(
     this.fs,
     this.clock, {
     this.parseService = const ParseService(),
+    this.onFlushed,
   });
 
   final VaultFileSystem fs;
   final Clock clock;
   final ParseService parseService;
+  VoidCallback? onFlushed;
 
   final Map<VaultPath, NoteDocument> _documents = {};
   final Map<VaultPath, int> _refCounts = {};
+
+  final ValueNotifier<int> _stateVersion = ValueNotifier<int>(0);
+  ValueListenable<int> get stateVersion => _stateVersion;
+
+  StreamSubscription<VaultChange>? _watchSub;
+  bool _isDisposed = false;
+
+  void start() {
+    _watchSub?.cancel();
+    _watchSub = fs.watch().listen(
+      (change) {
+        if (_isDisposed) return;
+        if (change is FileCreated || change is FileModified) {
+          final doc = peek(change.path);
+          if (doc != null) {
+            doc.onExternalChange().catchError((Object e, StackTrace s) {
+              _logger.warning(
+                'Failed to handle external change for ${change.path}: $e',
+                e,
+                s,
+              );
+            });
+          }
+        } else if (change is FileDeleted) {
+          final doc = peek(change.path);
+          if (doc != null) {
+            doc.onExternalDelete().catchError((Object e, StackTrace s) {
+              _logger.warning(
+                'Failed to handle external delete for ${change.path}: $e',
+                e,
+                s,
+              );
+            });
+          }
+        }
+      },
+      onError: (Object e) {
+        _logger.warning('Watcher stream error in NoteDocumentStore: $e');
+      },
+    );
+  }
+
+  void _onDocChanged() {
+    if (!_isDisposed) {
+      _stateVersion.value++;
+    }
+  }
 
   NoteDocument acquire(VaultPath path) {
     final existing = _documents[path];
@@ -34,6 +87,8 @@ final class NoteDocumentStore {
       fs: fs,
       clock: clock,
       parseService: parseService,
+      onDiskChanged: _onDocChanged,
+      onDocChanged: _onDocChanged,
     );
     _documents[path] = doc;
     _refCounts[path] = 1;
@@ -111,10 +166,22 @@ final class NoteDocumentStore {
   }
 
   Future<void> flushAll() async {
-    for (final doc in List.of(_documents.values)) {
-      if (doc.isDirty) {
-        await doc.save();
-      }
+    final dirty = _documents.values.where((d) => d.isDirty).toList();
+    if (dirty.isNotEmpty) {
+      await Future.wait(dirty.map((d) => d.save()));
     }
+    onFlushed?.call();
+  }
+
+  void dispose() {
+    if (_isDisposed) return;
+    _isDisposed = true;
+    _watchSub?.cancel();
+    _stateVersion.dispose();
+    for (final doc in _documents.values) {
+      doc.dispose();
+    }
+    _documents.clear();
+    _refCounts.clear();
   }
 }

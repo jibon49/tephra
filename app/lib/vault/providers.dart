@@ -18,20 +18,20 @@ class VaultSessionNotifier extends Notifier<VaultSession?> {
   @override
   VaultSession? build() => null;
 
-  void set(VaultSession? s) {
+  Future<void> set(VaultSession? s) async {
     final oldFs = state?.fs;
     state = s;
     if (oldFs != null && oldFs != s?.fs) {
       if (oldFs is IoVaultFileSystem) {
-        unawaited(oldFs.dispose());
+        await oldFs.dispose();
       } else if (oldFs is MemoryVaultFileSystem) {
-        unawaited(oldFs.dispose());
+        await oldFs.dispose();
       }
     }
   }
 
-  void close() {
-    set(null);
+  Future<void> close() async {
+    await set(null);
   }
 }
 
@@ -105,7 +105,10 @@ final noteDocumentStoreProvider = Provider<NoteDocumentStore>((ref) {
     const SystemClock(),
     parseService: parseService,
   );
-  ref.onDispose(() => unawaited(store.flushAll()));
+  store.start();
+  ref.onDispose(() {
+    unawaited(store.flushAll().then((_) => store.dispose()));
+  });
   return store;
 });
 

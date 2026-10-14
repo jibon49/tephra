@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/hotkey_host.dart';
+import '../editor/save_state_indicator.dart';
+import '../vault/providers.dart';
 import 'builtin_panels.dart';
 import 'desktop_layout.dart';
 import 'phone_layout.dart';
@@ -23,23 +25,35 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       registerBuiltinPanels(ref);
-      ref
-          .read(statusBarRegistryProvider.notifier)
-          .register(
-            StatusBarItemSpec(
-              id: 'status.activePath',
-              alignment: StatusBarAlignment.left,
-              builder: (context, ref) {
-                final activePath = ref.watch(activeNotePathProvider);
-                if (activePath == null) return const SizedBox.shrink();
-                return Text(
-                  activePath.value,
-                  style: Theme.of(context).textTheme.labelSmall,
-                );
-              },
-              order: 0,
-            ),
-          );
+      final registry = ref.read(statusBarRegistryProvider.notifier);
+      registry.register(
+        StatusBarItemSpec(
+          id: 'status.activePath',
+          alignment: StatusBarAlignment.left,
+          builder: (context, ref) {
+            final activePath = ref.watch(activeNotePathProvider);
+            if (activePath == null) return const SizedBox.shrink();
+            return Text(
+              activePath.value,
+              style: Theme.of(context).textTheme.labelSmall,
+            );
+          },
+          order: 0,
+        ),
+      );
+      registry.register(
+        StatusBarItemSpec(
+          id: 'status.save',
+          alignment: StatusBarAlignment.right,
+          order: 100,
+          builder: (context, ref) {
+            final activePath = ref.watch(activeNotePathProvider);
+            if (activePath == null) return const SizedBox.shrink();
+            final doc = ref.watch(noteDocumentProvider(activePath));
+            return SaveStateIndicator(doc: doc);
+          },
+        ),
+      );
     });
   }
 

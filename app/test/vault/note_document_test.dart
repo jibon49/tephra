@@ -84,7 +84,11 @@ final class _FakeNoteEditorBinding implements NoteEditorBinding {
   }
 
   @override
-  void replaceAll(String text, {required bool keepCursor}) {
+  void replaceAll(
+    String text, {
+    required bool keepCursor,
+    bool clearHistory = false,
+  }) {
     replaceAllCalled = true;
     currentText = text;
   }

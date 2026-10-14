@@ -37,6 +37,8 @@ final class WorkspaceNotifier extends Notifier<WorkspaceState> {
     _saveTimer = Timer(const Duration(milliseconds: 500), _flushSave);
   }
 
+  Future<void> flushSave() => _flushSave();
+
   Future<void> _flushSave() async {
     _saveTimer?.cancel();
     _saveTimer = null;
