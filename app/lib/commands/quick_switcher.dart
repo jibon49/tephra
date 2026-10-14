@@ -7,13 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_search/tephra_search.dart';
 
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/providers.dart';
 import '../workspace/open_file.dart';
 import '../workspace/providers.dart';
-import 'fuzzy_matcher.dart';
 import 'quick_switcher_items.dart';
 
 final _logger = Logger('switcher');
@@ -74,7 +74,7 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
         if (visibleItems.isNotEmpty &&
             _selectedIndex >= 0 &&
             _selectedIndex < visibleItems.length) {
-          _openItem(visibleItems[_selectedIndex].path, newTab: true);
+          _openItem(visibleItems[_selectedIndex], newTab: true);
         } else if (q.isNotEmpty) {
           _createAndOpen(q, newTab: true);
         }
@@ -84,7 +84,7 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
         } else if (visibleItems.isNotEmpty &&
             _selectedIndex >= 0 &&
             _selectedIndex < visibleItems.length) {
-          _openItem(visibleItems[_selectedIndex].path, newTab: false);
+          _openItem(visibleItems[_selectedIndex], newTab: false);
         }
       }
     } else if (event.logicalKey == LogicalKeyboardKey.escape) {
@@ -92,9 +92,13 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
     }
   }
 
-  void _openItem(VaultPath path, {required bool newTab}) {
+  void _openItem(SwitcherItem item, {required bool newTab}) {
     Navigator.of(context).pop();
-    openFile(ref, path, newTab: newTab);
+    if (item.isHeading && item.heading != null) {
+      openFile(ref, item.path, subpath: '#${item.heading}', newTab: newTab);
+    } else {
+      openFile(ref, item.path, newTab: newTab);
+    }
   }
 
   Future<void> _createAndOpen(String name, {required bool newTab}) async {
@@ -110,12 +114,20 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
 
   List<SwitcherItem> _rankItems(
     List<SwitcherItem> allItems,
+    List<SwitcherItem> allHeadings,
     List<VaultPath> recents,
     String query,
   ) {
     final q = query.trim();
+    final sw = Stopwatch()..start();
+
     if (q.isEmpty) {
-      final itemMap = {for (final item in allItems) item.path: item};
+      final itemMap = <VaultPath, SwitcherItem>{};
+      for (final item in allItems) {
+        if (!item.isAlias && !item.isAttachment && !item.isHeading) {
+          itemMap[item.path] = item;
+        }
+      }
       final result = <SwitcherItem>[];
       for (final r in recents.take(50)) {
         final existing = itemMap[r];
@@ -125,38 +137,117 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
           result.add(
             SwitcherItem(
               path: r,
-              stem: r.stem,
-              folder: r.parent?.value ?? '',
-              stemLower: r.stem.toLowerCase(),
+              primary: r.stem,
+              secondary: r.parent?.value ?? '',
+              primaryLower: r.stem.toLowerCase(),
               pathLower: r.value.toLowerCase(),
             ),
           );
         }
       }
+      sw.stop();
+      _logger.fine('perf switcher ${sw.elapsedMilliseconds} ms');
       return result;
     }
 
-    final sw = Stopwatch()..start();
+    if (q.startsWith('#')) {
+      final headingQuery = q.substring(1).trim();
+      final scored = <(SwitcherItem, int)>[];
+      for (final item in allHeadings) {
+        final s = headingQuery.isEmpty
+            ? 0
+            : FuzzyScorer.score(headingQuery, item.primary);
+        if (s != null) {
+          scored.add((item, s));
+        }
+      }
+      scored.sort((a, b) {
+        final cmp = b.$2.compareTo(a.$2);
+        if (cmp != 0) return cmp;
+        final lenCmp = a.$1.path.value.length.compareTo(b.$1.path.value.length);
+        if (lenCmp != 0) return lenCmp;
+        return a.$1.primary.compareTo(b.$1.primary);
+      });
+      final top50 = scored.take(50).map((e) => e.$1).toList();
+      sw.stop();
+      _logger.fine('perf switcher ${sw.elapsedMilliseconds} ms');
+      return top50;
+    }
+
+    if (q.contains('#')) {
+      final hashIdx = q.indexOf('#');
+      final namePart = q.substring(0, hashIdx).trim();
+      final headPart = q.substring(hashIdx + 1).trim();
+
+      SwitcherItem? bestNote;
+      var bestScore = -1000000;
+      for (final item in allItems) {
+        if (item.isAttachment || item.isHeading) continue;
+        final primaryScore = FuzzyScorer.score(namePart, item.primary);
+        int? pathScore;
+        if (namePart.contains('/')) {
+          final rawPath = FuzzyScorer.score(namePart, item.path.value);
+          if (rawPath != null) pathScore = rawPath - 100;
+        }
+        int? matchScore;
+        if (primaryScore != null && pathScore != null) {
+          matchScore = math.max(primaryScore, pathScore);
+        } else if (primaryScore != null) {
+          matchScore = primaryScore;
+        } else if (pathScore != null) {
+          matchScore = pathScore;
+        }
+        if (matchScore == null) continue;
+
+        final recentRank = recents.indexOf(item.path);
+        final recentBoost = (recentRank >= 0 && recentRank < 10)
+            ? math.max(0, 50 - 5 * recentRank)
+            : 0;
+        final total = matchScore + recentBoost;
+        if (total > bestScore) {
+          bestScore = total;
+          bestNote = item;
+        }
+      }
+
+      if (bestNote == null) {
+        sw.stop();
+        _logger.fine('perf switcher ${sw.elapsedMilliseconds} ms');
+        return const [];
+      }
+
+      final noteHeadings = allHeadings.where((h) => h.path == bestNote!.path);
+      final scored = <(SwitcherItem, int)>[];
+      for (final h in noteHeadings) {
+        final s = headPart.isEmpty ? 0 : FuzzyScorer.score(headPart, h.primary);
+        if (s != null) {
+          scored.add((h, s));
+        }
+      }
+      scored.sort((a, b) => b.$2.compareTo(a.$2));
+      final top50 = scored.take(50).map((e) => e.$1).toList();
+      sw.stop();
+      _logger.fine('perf switcher ${sw.elapsedMilliseconds} ms');
+      return top50;
+    }
+
     final scored = <(SwitcherItem, int)>[];
 
     for (final item in allItems) {
-      final stemScore = FuzzyMatcher.score(q, item.stem);
+      final primaryScore = FuzzyScorer.score(q, item.primary);
       int? pathScore;
       if (q.contains('/')) {
-        final pathWithoutExt = item.path.parent == null
-            ? item.stem
-            : '${item.path.parent!.value}/${item.stem}';
-        final rawPath = FuzzyMatcher.score(q, pathWithoutExt);
+        final rawPath = FuzzyScorer.score(q, item.path.value);
         if (rawPath != null) {
-          pathScore = rawPath - 20;
+          pathScore = rawPath - 100;
         }
       }
 
       int? matchScore;
-      if (stemScore != null && pathScore != null) {
-        matchScore = math.max(stemScore, pathScore);
-      } else if (stemScore != null) {
-        matchScore = stemScore;
+      if (primaryScore != null && pathScore != null) {
+        matchScore = math.max(primaryScore, pathScore);
+      } else if (primaryScore != null) {
+        matchScore = primaryScore;
       } else if (pathScore != null) {
         matchScore = pathScore;
       }
@@ -181,19 +272,21 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
 
     final top50 = scored.take(50).map((e) => e.$1).toList();
     sw.stop();
-    _logger.fine('rank ${sw.elapsedMilliseconds} ms');
+    _logger.fine('perf switcher ${sw.elapsedMilliseconds} ms');
     return top50;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final allItemsAsync = ref.watch(quickSwitcherItemsProvider);
+    final allItemsAsync = ref.watch(switcherItemsProvider);
     final allItems = allItemsAsync.value ?? const <SwitcherItem>[];
+    final allHeadingsAsync = ref.watch(switcherHeadingsProvider);
+    final allHeadings = allHeadingsAsync.value ?? const <SwitcherItem>[];
     final recents = ref.watch(recentFilesProvider);
 
     final q = _controller.text.trim();
-    final visibleItems = _rankItems(allItems, recents, q);
+    final visibleItems = _rankItems(allItems, allHeadings, recents, q);
 
     if (_selectedIndex >= visibleItems.length) {
       _selectedIndex = math.max(0, visibleItems.length - 1);
@@ -204,7 +297,12 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
     final canShowPhoneCreate =
         isPhone &&
         q.isNotEmpty &&
-        !allItems.any((i) => i.stem.toLowerCase() == q.toLowerCase());
+        !q.startsWith('#') &&
+        !allItems.any(
+          (i) =>
+              i.primary.toLowerCase() == q.toLowerCase() ||
+              i.path.value.toLowerCase() == q.toLowerCase(),
+        );
 
     final content = KeyboardListener(
       focusNode: _focusNode,
@@ -273,13 +371,39 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
 
                       final item = visibleItems[index];
                       final isSelected = index == _selectedIndex;
-                      final ranges = q.isEmpty
+
+                      final matchQuery = q.startsWith('#')
+                          ? q.substring(1).trim()
+                          : (q.contains('#')
+                                ? q.substring(q.indexOf('#') + 1).trim()
+                                : q);
+                      final ranges = matchQuery.isEmpty
                           ? const <(int, int)>[]
-                          : FuzzyMatcher.matchRanges(q, item.stem);
+                          : FuzzyScorer.matchRanges(matchQuery, item.primary);
+
+                      final IconData icon;
+                      if (item.isHeading) {
+                        icon = Icons.numbers_outlined;
+                      } else if (item.isAlias) {
+                        icon = Icons.shortcut_outlined;
+                      } else if (item.isAttachment) {
+                        icon = Icons.attach_file;
+                      } else {
+                        icon = Icons.description_outlined;
+                      }
+
+                      final Key rowKey;
+                      if (item.isHeading) {
+                        rowKey = Key('switcher.row.heading.${item.primary}');
+                      } else if (item.isAlias) {
+                        rowKey = Key('switcher.row.alias.${item.primary}');
+                      } else {
+                        rowKey = Key('switcher.row.${item.path.value}');
+                      }
 
                       return InkWell(
-                        key: Key('switcher.row.${item.path.value}'),
-                        onTap: () => _openItem(item.path, newTab: false),
+                        key: rowKey,
+                        onTap: () => _openItem(item, newTab: false),
                         child: Container(
                           height: 48,
                           color: isSelected
@@ -288,7 +412,7 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Row(
                             children: [
-                              const Icon(Icons.description_outlined, size: 20),
+                              Icon(icon, size: 20),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
@@ -297,12 +421,12 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
                                   children: [
                                     _buildHighlightedText(
                                       context,
-                                      item.stem,
+                                      item.primary,
                                       ranges,
                                     ),
-                                    if (item.folder.isNotEmpty)
+                                    if (item.secondary.isNotEmpty)
                                       Text(
-                                        item.folder,
+                                        item.secondary,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall
@@ -361,11 +485,8 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
       spans.add(TextSpan(text: text.substring(lastIndex)));
     }
 
-    return RichText(
-      text: TextSpan(
-        style: Theme.of(context).textTheme.bodyMedium,
-        children: spans,
-      ),
+    return Text.rich(
+      TextSpan(style: Theme.of(context).textTheme.bodyMedium, children: spans),
       overflow: TextOverflow.ellipsis,
     );
   }

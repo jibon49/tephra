@@ -11,6 +11,7 @@ export 'src/engine/search_engine.dart';
 export 'src/engine/search_match.dart';
 export 'src/engine/search_result.dart';
 export 'src/engine/search_sort.dart';
+export 'src/fuzzy/fuzzy_scorer.dart';
 export 'src/parser/search_expr.dart';
 export 'src/parser/search_expr_printer.dart';
 export 'src/parser/search_parser.dart';

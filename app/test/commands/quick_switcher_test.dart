@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tephra/commands/fuzzy_matcher.dart';
 import 'package:tephra/commands/quick_switcher.dart';
 import 'package:tephra/commands/quick_switcher_items.dart';
+import 'package:tephra/core/providers.dart';
+import 'package:tephra/settings/app_settings.dart';
 import 'package:tephra/workspace/providers.dart';
+import 'package:tephra/workspace/tab_content.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_search/tephra_search.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../helpers/test_app.dart';
@@ -283,14 +286,199 @@ void main() {
       expect(find.byKey(const Key('switcher.create')), findsOneWidget);
     });
 
+    testWidgets('alias row selects its note', (tester) async {
+      await fs.writeText(
+        VaultPath('Config.md'),
+        const TextDocument(text: '---\naliases: [MyConfigAlias]\n---\nBody'),
+      );
+      late WidgetRef capturedRef;
+
+      await tester.pumpWidget(
+        testApp(
+          Consumer(
+            builder: (context, ref, _) {
+              capturedRef = ref;
+              return ElevatedButton(
+                onPressed: () => showQuickSwitcher(context),
+                child: const Text('Open'),
+              );
+            },
+          ),
+          fs: fs,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final index = await capturedRef.read(noteIndexProvider.future);
+      await index.reconcile();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('switcher.query')),
+        'MyConfig',
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('MyConfigAlias'), findsOneWidget);
+      expect(find.text('→ Config'), findsOneWidget);
+
+      await tester.tap(find.text('MyConfigAlias'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('switcher.query')), findsNothing);
+      final activePath = capturedRef.read(activeNotePathProvider);
+      expect(activePath?.value, 'Config.md');
+    });
+
+    testWidgets('#Set lists headings and selecting opens note at heading', (
+      tester,
+    ) async {
+      await fs.writeText(
+        VaultPath('Settings.md'),
+        const TextDocument(text: '# Set Preferences\nBody text here'),
+      );
+      late WidgetRef capturedRef;
+
+      await tester.pumpWidget(
+        testApp(
+          Consumer(
+            builder: (context, ref, _) {
+              capturedRef = ref;
+              return ElevatedButton(
+                onPressed: () => showQuickSwitcher(context),
+                child: const Text('Open'),
+              );
+            },
+          ),
+          fs: fs,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final index = await capturedRef.read(noteIndexProvider.future);
+      await index.reconcile();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('switcher.query')), '#Set');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Set Preferences'), findsOneWidget);
+      expect(find.text('Settings'), findsOneWidget);
+
+      await tester.tap(find.text('Set Preferences'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('switcher.query')), findsNothing);
+      final activePath = capturedRef.read(activeNotePathProvider);
+      expect(activePath?.value, 'Settings.md');
+      final content = capturedRef.read(workspaceProvider).focusedTab?.content;
+      expect(content, isA<FileTabContent>());
+      expect((content as FileTabContent).subpath, '#Set Preferences');
+    });
+
+    testWidgets('recent note ranks above an equally scored non-recent one', (
+      tester,
+    ) async {
+      await fs.writeText(
+        VaultPath('NoteA.md'),
+        const TextDocument(text: 'Note A content'),
+      );
+      await fs.writeText(
+        VaultPath('NoteB.md'),
+        const TextDocument(text: 'Note B content'),
+      );
+      late WidgetRef capturedRef;
+
+      await tester.pumpWidget(
+        testApp(
+          Consumer(
+            builder: (context, ref, _) {
+              capturedRef = ref;
+              return ElevatedButton(
+                onPressed: () => showQuickSwitcher(context),
+                child: const Text('Open'),
+              );
+            },
+          ),
+          fs: fs,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final index = await capturedRef.read(noteIndexProvider.future);
+      await index.reconcile();
+      await tester.pumpAndSettle();
+
+      capturedRef.read(recentFilesProvider.notifier).set([
+        VaultPath('NoteB.md'),
+      ]);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('switcher.query')), 'Note');
+      await tester.pumpAndSettle();
+
+      final noteAPos = tester.getTopLeft(find.text('NoteA'));
+      final noteBPos = tester.getTopLeft(find.text('NoteB'));
+
+      // NoteB has recent boost so it must appear above NoteA (smaller Y)
+      expect(noteBPos.dy, lessThan(noteAPos.dy));
+    });
+
+    testWidgets('switcherShowAttachments setting includes attachments', (
+      tester,
+    ) async {
+      late WidgetRef capturedRef;
+
+      await tester.pumpWidget(
+        testApp(
+          Consumer(
+            builder: (context, ref, _) {
+              capturedRef = ref;
+              return ElevatedButton(
+                onPressed: () => showQuickSwitcher(context),
+                child: const Text('Open'),
+              );
+            },
+          ),
+          fs: fs,
+          appSettings: const AppSettings(
+            deviceId: 'test',
+            switcherShowAttachments: true,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final index = await capturedRef.read(noteIndexProvider.future);
+      await index.reconcile();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('switcher.query')), 'Cover');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Cover.png'), findsOneWidget);
+    });
+
     test('10,000-item rank completes in < 50 ms', () {
       final items = List.generate(10000, (i) {
         final path = VaultPath('folder$i/Note$i.md');
         return SwitcherItem(
           path: path,
-          stem: 'Note$i',
-          folder: 'folder$i',
-          stemLower: 'note$i',
+          primary: 'Note$i',
+          secondary: 'folder$i',
+          primaryLower: 'note$i',
           pathLower: 'folder$i/note$i.md',
         );
       });
@@ -305,13 +493,13 @@ void main() {
 
       final scored = <(SwitcherItem, int)>[];
       for (final item in items) {
-        final stemScore = FuzzyMatcher.score(q, item.stem);
-        if (stemScore != null) {
+        final primaryScore = FuzzyScorer.score(q, item.primary);
+        if (primaryScore != null) {
           final recentRank = recents.indexOf(item.path);
           final recentBoost = (recentRank >= 0 && recentRank < 10)
               ? (50 - 5 * recentRank)
               : 0;
-          scored.add((item, stemScore + recentBoost));
+          scored.add((item, primaryScore + recentBoost));
         }
       }
       scored.sort((a, b) => b.$2.compareTo(a.$2));

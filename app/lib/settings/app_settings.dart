@@ -66,6 +66,7 @@ final class AppSettings {
     this.recentCommands = const [],
     this.pagePreviewReadingRequiresCtrl = false,
     this.pagePreviewEditorRequiresCtrl = true,
+    this.switcherShowAttachments = false,
     this.extra = const {},
   });
 
@@ -81,6 +82,8 @@ final class AppSettings {
         json['pagePreviewReadingRequiresCtrl'] as bool? ?? false;
     final pagePreviewEditorRequiresCtrl =
         json['pagePreviewEditorRequiresCtrl'] as bool? ?? true;
+    final switcherShowAttachments =
+        json['switcherShowAttachments'] as bool? ?? false;
 
     final rawRecentVaults = json['recentVaults'];
     final recentVaults = <RecentVault>[];
@@ -111,6 +114,7 @@ final class AppSettings {
       'recentCommands',
       'pagePreviewReadingRequiresCtrl',
       'pagePreviewEditorRequiresCtrl',
+      'switcherShowAttachments',
     };
     final extra = <String, Object?>{};
     for (final entry in json.entries) {
@@ -128,6 +132,7 @@ final class AppSettings {
       recentCommands: List.unmodifiable(recentCommands.take(10)),
       pagePreviewReadingRequiresCtrl: pagePreviewReadingRequiresCtrl,
       pagePreviewEditorRequiresCtrl: pagePreviewEditorRequiresCtrl,
+      switcherShowAttachments: switcherShowAttachments,
       extra: Map.unmodifiable(extra),
     );
   }
@@ -156,6 +161,9 @@ final class AppSettings {
   /// Whether hovering over internal links in editor view requires holding Ctrl to show page preview.
   final bool pagePreviewEditorRequiresCtrl;
 
+  /// Whether the quick switcher includes non-markdown attachments.
+  final bool switcherShowAttachments;
+
   /// Unknown keys preserved on read/write.
   final Map<String, Object?> extra;
 
@@ -169,6 +177,7 @@ final class AppSettings {
       'recentCommands': recentCommands,
       'pagePreviewReadingRequiresCtrl': pagePreviewReadingRequiresCtrl,
       'pagePreviewEditorRequiresCtrl': pagePreviewEditorRequiresCtrl,
+      'switcherShowAttachments': switcherShowAttachments,
     };
     map.addAll(extra);
     return map;
@@ -183,6 +192,7 @@ final class AppSettings {
     List<String>? recentCommands,
     bool? pagePreviewReadingRequiresCtrl,
     bool? pagePreviewEditorRequiresCtrl,
+    bool? switcherShowAttachments,
     Map<String, Object?>? extra,
   }) {
     return AppSettings(
@@ -198,6 +208,8 @@ final class AppSettings {
           pagePreviewReadingRequiresCtrl ?? this.pagePreviewReadingRequiresCtrl,
       pagePreviewEditorRequiresCtrl:
           pagePreviewEditorRequiresCtrl ?? this.pagePreviewEditorRequiresCtrl,
+      switcherShowAttachments:
+          switcherShowAttachments ?? this.switcherShowAttachments,
       extra: extra ?? this.extra,
     );
   }
@@ -254,6 +266,7 @@ final class AppSettings {
               other.pagePreviewReadingRequiresCtrl &&
           pagePreviewEditorRequiresCtrl ==
               other.pagePreviewEditorRequiresCtrl &&
+          switcherShowAttachments == other.switcherShowAttachments &&
           mapEquals(extra, other.extra);
 
   @override
@@ -266,6 +279,7 @@ final class AppSettings {
     Object.hashAll(recentCommands),
     pagePreviewReadingRequiresCtrl,
     pagePreviewEditorRequiresCtrl,
+    switcherShowAttachments,
     Object.hashAll(extra.entries),
   );
 }
