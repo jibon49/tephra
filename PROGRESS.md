@@ -199,7 +199,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Pure deterministic NoteExtractor producing ExtractedNote with helpers link_target_key, word_counter, and property_typing; fixed block parser table continuation and list closing when followed by unindented blocks; 24 extract unit tests passing.
 - [x] 02.5 Link resolver, `NameTable`, heading and block matching
   - notes: Implemented NameTable (case/name/alias in-memory lookups), LinkResolver with exact 10-step Obsidian resolution algorithm, ResolvedTarget, and heading_matcher (normalizeHeading, findHeading, findBlock, sectionRange); all 38 matrix cases and 45 link tests passing.
-- [ ] 02.6 `IndexerCore`: full index, reconcile, incremental updates, dirty targets (in-process)
+- [x] 02.6 `IndexerCore`: full index, reconcile, incremental updates, dirty targets (in-process)
+  - notes: Implemented IndexerCore with loadNameTable, reconcile, apply, rebuild, atomic transaction batching, and dirty target re-resolution; all 19 indexer unit tests passing (110 total in tephra_index).
 - [ ] 02.7 `NoteIndex` facade, queries and the worker isolate
 - [ ] 02.8 Index consistency fuzz test
 - [ ] 02.9 App integration: index lifecycle, indexing file-system decorator, progress, `Rebuild index`, link settings
