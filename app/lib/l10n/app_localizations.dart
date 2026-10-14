@@ -976,12 +976,6 @@ abstract class AppLocalizations {
   /// **'File not found'**
   String get explorerNotFound;
 
-  /// Notice snackbar after file rename or move
-  ///
-  /// In en, this message translates to:
-  /// **'Links to “{name}” were not updated. Automatic link updates arrive in a later version.'**
-  String explorerLinksNotUpdatedNotice(String name);
-
   /// No description provided for @explorerMoveExists.
   ///
   /// In en, this message translates to:
@@ -1479,6 +1473,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid link target'**
   String get linkInvalidTarget;
+
+  /// No description provided for @renameTargetExists.
+  ///
+  /// In en, this message translates to:
+  /// **'A file or folder with that name already exists'**
+  String get renameTargetExists;
+
+  /// No description provided for @renameUpdateLinksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update links'**
+  String get renameUpdateLinksTitle;
+
+  /// Dialog prompt asking whether to update links across notes after a file rename or move
+  ///
+  /// In en, this message translates to:
+  /// **'Update {links, plural, =1{1 link} other{{links} links}} in {files, plural, =1{1 file} other{{files} files}}?'**
+  String renameUpdateLinksPrompt(int links, int files);
+
+  /// No description provided for @renameUpdateLinksActionUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get renameUpdateLinksActionUpdate;
+
+  /// No description provided for @renameUpdateLinksActionDontUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t update'**
+  String get renameUpdateLinksActionDontUpdate;
+
+  /// Toast message after links are updated on rename or move
+  ///
+  /// In en, this message translates to:
+  /// **'{links, plural, =1{Updated 1 link} other{Updated {links} links}} in {files, plural, =1{1 file} other{{files} files}}'**
+  String renameLinksUpdated(int links, int files);
+
+  /// No description provided for @undoRenameDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo rename completed'**
+  String get undoRenameDone;
+
+  /// Toast message after undoing a rename operation when some files conflicted
+  ///
+  /// In en, this message translates to:
+  /// **'Undo finished; {count, plural, =1{1 file had changed and was left as it is} other{{count} files had changed and were left as they are}}'**
+  String undoRenamePartial(int count);
+
+  /// No description provided for @undoAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undoAction;
+
+  /// No description provided for @commandVaultUndoLastRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo last rename'**
+  String get commandVaultUndoLastRename;
 }
 
 class _AppLocalizationsDelegate

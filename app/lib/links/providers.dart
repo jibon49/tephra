@@ -6,6 +6,9 @@ import 'package:tephra_core/tephra_core.dart';
 import '../core/providers.dart';
 import 'link_navigator.dart';
 
+export 'link_navigator.dart';
+export 'link_rename_service.dart';
+
 /// Provider for [LinkNavigator].
 final linkNavigatorProvider = Provider<LinkNavigator>((ref) {
   return LinkNavigator(ref);

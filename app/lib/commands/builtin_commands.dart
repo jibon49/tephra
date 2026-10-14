@@ -7,6 +7,7 @@ import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
+import '../vault/vault_undo.dart';
 import '../workspace/open_file.dart';
 import '../workspace/providers.dart';
 import '../workspace/workspace_models.dart';
@@ -258,6 +259,19 @@ void registerBuiltinCommands(CommandRegistry registry) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(l10n.saveFailed)));
         }
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'vault.undo-last-rename',
+      label: (l10n) => l10n.commandVaultUndoLastRename,
+      icon: Icons.undo,
+      defaultShortcuts: const [],
+      isAvailable: (ref) => ref.read(vaultUndoStackProvider).isNotEmpty,
+      run: (ref, context) async {
+        await ref.read(vaultUndoStackProvider.notifier).undoLast();
       },
     ),
   );

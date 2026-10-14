@@ -252,15 +252,6 @@
   "explorerNameExists": "A file or folder with that name already exists",
   "explorerPermissionDenied": "Permission denied",
   "explorerNotFound": "File not found",
-  "explorerLinksNotUpdatedNotice": "Links to “{name}” were not updated. Automatic link updates arrive in a later version.",
-  "@explorerLinksNotUpdatedNotice": {
-    "description": "Notice snackbar after file rename or move",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "explorerMoveExists": "A file with that name already exists in the destination folder",
   "explorerUntitledFolder": "Untitled folder",
   "explorerEmpty": "This vault has no notes yet",
@@ -374,6 +365,36 @@
       "name": { "type": "String" }
     }
   },
-  "linkInvalidTarget": "Invalid link target"
+  "linkInvalidTarget": "Invalid link target",
+  "renameTargetExists": "A file or folder with that name already exists",
+  "renameUpdateLinksTitle": "Update links",
+  "renameUpdateLinksPrompt": "Update {links, plural, =1{1 link} other{{links} links}} in {files, plural, =1{1 file} other{{files} files}}?",
+  "@renameUpdateLinksPrompt": {
+    "description": "Dialog prompt asking whether to update links across notes after a file rename or move",
+    "placeholders": {
+      "links": { "type": "int" },
+      "files": { "type": "int" }
+    }
+  },
+  "renameUpdateLinksActionUpdate": "Update",
+  "renameUpdateLinksActionDontUpdate": "Don't update",
+  "renameLinksUpdated": "{links, plural, =1{Updated 1 link} other{Updated {links} links}} in {files, plural, =1{1 file} other{{files} files}}",
+  "@renameLinksUpdated": {
+    "description": "Toast message after links are updated on rename or move",
+    "placeholders": {
+      "links": { "type": "int" },
+      "files": { "type": "int" }
+    }
+  },
+  "undoRenameDone": "Undo rename completed",
+  "undoRenamePartial": "Undo finished; {count, plural, =1{1 file had changed and was left as it is} other{{count} files had changed and were left as they are}}",
+  "@undoRenamePartial": {
+    "description": "Toast message after undoing a rename operation when some files conflicted",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "undoAction": "Undo",
+  "commandVaultUndoLastRename": "Undo last rename"
 }
 

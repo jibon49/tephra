@@ -481,11 +481,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get explorerNotFound => 'File not found';
 
   @override
-  String explorerLinksNotUpdatedNotice(String name) {
-    return 'Links to “$name” were not updated. Automatic link updates arrive in a later version.';
-  }
-
-  @override
   String get explorerMoveExists =>
       'A file with that name already exists in the destination folder';
 
@@ -748,4 +743,71 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get linkInvalidTarget => 'Invalid link target';
+
+  @override
+  String get renameTargetExists =>
+      'A file or folder with that name already exists';
+
+  @override
+  String get renameUpdateLinksTitle => 'Update links';
+
+  @override
+  String renameUpdateLinksPrompt(int links, int files) {
+    String _temp0 = intl.Intl.pluralLogic(
+      links,
+      locale: localeName,
+      other: '$links links',
+      one: '1 link',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      files,
+      locale: localeName,
+      other: '$files files',
+      one: '1 file',
+    );
+    return 'Update $_temp0 in $_temp1?';
+  }
+
+  @override
+  String get renameUpdateLinksActionUpdate => 'Update';
+
+  @override
+  String get renameUpdateLinksActionDontUpdate => 'Don\'t update';
+
+  @override
+  String renameLinksUpdated(int links, int files) {
+    String _temp0 = intl.Intl.pluralLogic(
+      links,
+      locale: localeName,
+      other: 'Updated $links links',
+      one: 'Updated 1 link',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      files,
+      locale: localeName,
+      other: '$files files',
+      one: '1 file',
+    );
+    return '$_temp0 in $_temp1';
+  }
+
+  @override
+  String get undoRenameDone => 'Undo rename completed';
+
+  @override
+  String undoRenamePartial(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files had changed and were left as they are',
+      one: '1 file had changed and was left as it is',
+    );
+    return 'Undo finished; $_temp0';
+  }
+
+  @override
+  String get undoAction => 'Undo';
+
+  @override
+  String get commandVaultUndoLastRename => 'Undo last rename';
 }

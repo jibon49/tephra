@@ -107,8 +107,7 @@ abstract final class NoteExtractor {
     }
 
     // 6. Links (walk whole AST in document order)
-    final links = <ExtractedLink>[];
-    _extractLinks(parsed.root, parsed, links);
+    final links = extractLinks(path, parsed);
 
     // 7. Tags (inline from AST + frontmatter tags)
     final tags = <ExtractedTag>[];
@@ -167,6 +166,13 @@ abstract final class NoteExtractor {
       ftsName: ftsName,
       ftsBody: ftsBody,
     );
+  }
+
+  /// Extracts links from [parsed] in document order.
+  static List<ExtractedLink> extractLinks(VaultPath path, ParsedNote parsed) {
+    final links = <ExtractedLink>[];
+    _extractLinks(parsed.root, parsed, links);
+    return links;
   }
 
   static String _extractHeadingText(MdHeading h) {

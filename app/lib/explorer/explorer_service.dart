@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
-import '../l10n/app_localizations.dart';
+import '../links/providers.dart';
 import '../settings/providers.dart';
 import '../vault/providers.dart';
 import '../workspace/providers.dart';
@@ -101,19 +101,7 @@ final class ExplorerService {
     final to = from.withName(finalName);
     if (to == from) return from;
 
-    if (await fs.exists(to) && to.caseKey != from.caseKey) {
-      throw FileConflictException(to);
-    }
-
-    final store = ref.read(noteDocumentStoreProvider);
-    await store.flushPath(from);
-    await fs.move(from, to);
-    store.retargetPath(from, to);
-    ref.read(workspaceProvider.notifier).retargetPath(from, to);
-    ref.read(explorerExpandedProvider.notifier).retarget(from, to);
-    ref.read(explorerSelectedProvider.notifier).select(to);
-    ref.read(vaultRevisionProvider.notifier).bump();
-    _showNotice(from.name);
+    await ref.read(linkRenameServiceProvider).renameOrMove(from, to);
     return to;
   }
 
@@ -132,20 +120,8 @@ final class ExplorerService {
     final to = targetFolder.isRoot
         ? VaultPath(from.name)
         : targetFolder.join(from.name);
-    final fs = ref.read(vaultFsProvider);
-    if (await fs.exists(to)) {
-      throw FileConflictException(to);
-    }
 
-    final store = ref.read(noteDocumentStoreProvider);
-    await store.flushPath(from);
-    await fs.move(from, to);
-    store.retargetPath(from, to);
-    ref.read(workspaceProvider.notifier).retargetPath(from, to);
-    ref.read(explorerExpandedProvider.notifier).retarget(from, to);
-    ref.read(explorerSelectedProvider.notifier).select(to);
-    ref.read(vaultRevisionProvider.notifier).bump();
-    _showNotice(from.name);
+    await ref.read(linkRenameServiceProvider).renameOrMove(from, to);
     return to;
   }
 
@@ -205,20 +181,5 @@ final class ExplorerService {
     if (session == null) return;
     final absPath = p.join(session.rootDir, path.value);
     await revealInSystemExplorer(absPath);
-  }
-
-  void _showNotice(String name) {
-    try {
-      final key = ref.read(scaffoldMessengerKeyProvider);
-      final context = key.currentContext;
-      final message = context != null
-          ? AppLocalizations.of(context).explorerLinksNotUpdatedNotice(name)
-          : 'Links to “$name” were not updated. Automatic link updates arrive in a later version.';
-      key.currentState?.showSnackBar(
-        SnackBar(content: Text(message), duration: const Duration(seconds: 5)),
-      );
-    } catch (_) {
-      // Ignore if binding/context not available in non-UI unit tests.
-    }
   }
 }

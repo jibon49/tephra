@@ -3,6 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tephra/settings/vault_settings.dart';
+import 'package:tephra/vault/indexing_vault_file_system.dart';
 import 'package:tephra/vault/providers.dart';
 import 'package:tephra/vault/vault_session.dart';
 import 'package:tephra_vault/tephra_vault.dart';
@@ -32,7 +33,8 @@ void main() {
     );
 
     container.read(vaultSessionProvider.notifier).set(session);
-    expect(container.read(vaultFsProvider), equals(fs));
+    expect(container.read(rawVaultFsProvider), equals(fs));
+    expect(container.read(vaultFsProvider), isA<IndexingVaultFileSystem>());
     expect(container.read(vaultNameProvider), equals('Session 1'));
   });
 

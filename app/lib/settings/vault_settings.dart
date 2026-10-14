@@ -1,6 +1,7 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'package:flutter/foundation.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 /// Where new files should be created by default.
@@ -270,6 +271,8 @@ final class VaultSettings {
   ViewModeSetting get viewMode => ViewModeSetting.fromString(defaultViewMode);
 
   ExplorerSort get explorerSortEnum => ExplorerSort.fromString(explorerSort);
+
+  NewLinkFormat get newLinkFormatEnum => NewLinkFormat.fromJson(newLinkFormat);
 
   Map<String, Object?> toJson() {
     final map = <String, Object?>{
