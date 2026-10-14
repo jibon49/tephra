@@ -4,6 +4,7 @@
 library;
 
 export 'src/index_exceptions.dart';
+export 'src/links/name_table.dart';
 export 'src/model/alias_record.dart';
 export 'src/model/block_record.dart';
 export 'src/model/file_record.dart';
@@ -19,3 +20,4 @@ export 'src/model/property_key_count.dart';
 export 'src/model/tag_count.dart';
 export 'src/model/task_record.dart';
 export 'src/model/unlinked_mention.dart';
+export 'src/note_index.dart';

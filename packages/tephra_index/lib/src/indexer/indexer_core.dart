@@ -162,10 +162,6 @@ final class IndexerCore {
     }
 
     // 4. Index modified or new files
-    onProgress(
-      IndexProgress(phase: IndexPhase.indexing, done: 0, total: toIndex.length),
-    );
-
     var doneSoFar = 0;
     for (var i = 0; i < toIndex.length; i += batchSize) {
       final batch = toIndex.sublist(

@@ -201,7 +201,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented NameTable (case/name/alias in-memory lookups), LinkResolver with exact 10-step Obsidian resolution algorithm, ResolvedTarget, and heading_matcher (normalizeHeading, findHeading, findBlock, sectionRange); all 38 matrix cases and 45 link tests passing.
 - [x] 02.6 `IndexerCore`: full index, reconcile, incremental updates, dirty targets (in-process)
   - notes: Implemented IndexerCore with loadNameTable, reconcile, apply, rebuild, atomic transaction batching, and dirty target re-resolution; all 19 indexer unit tests passing (110 total in tephra_index).
-- [ ] 02.7 `NoteIndex` facade, queries and the worker isolate
+- [x] 02.7 `NoteIndex` facade, queries and the worker isolate
+  - notes: Implemented NoteIndex facade, InProcessIndexRunner, IsolateIndexRunner, IndexRequestQueue with apply coalescing, indexWorkerMain isolate worker with shutdown & crash recovery, and all 19 query methods; 125 total tests passing in tephra_index.
 - [ ] 02.8 Index consistency fuzz test
 - [ ] 02.9 App integration: index lifecycle, indexing file-system decorator, progress, `Rebuild index`, link settings
 - [ ] 02.10 Link formatting and link navigation (open, create on click)

@@ -6,3 +6,8 @@ import 'package:tephra_core/tephra_core.dart';
 class IndexCorruptException extends TephraException {
   const IndexCorruptException(super.message);
 }
+
+/// Thrown when an index query is invalid or fails.
+class IndexQueryException extends TephraException {
+  const IndexQueryException(super.message);
+}
