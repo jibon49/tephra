@@ -20,6 +20,10 @@ void main() {
       expect(s.defaultViewMode, equals('reading'));
       expect(s.explorerSort, equals('nameAsc'));
       expect(s.trashModeEnum, equals(TrashMode.vaultTrash));
+      expect(s.newLinkFormat, equals('shortest'));
+      expect(s.useMarkdownLinks, isFalse);
+      expect(s.alwaysUpdateLinks, isTrue);
+      expect(s.excludedFolders, isEmpty);
     });
 
     test('every key round-trips correctly', () {
@@ -38,6 +42,10 @@ void main() {
         dailyNotes: {'folder': 'daily', 'format': 'YYYY-MM-DD'},
         templates: {'folder': 'templates'},
         importedFromObsidian: true,
+        newLinkFormat: 'relative',
+        useMarkdownLinks: true,
+        alwaysUpdateLinks: false,
+        excludedFolders: ['Archive', 'Templates/Hidden'],
         extra: {'unknownField': 123},
       );
 
@@ -48,6 +56,10 @@ void main() {
       expect(reloaded.newFileLocationEnum, equals(NewFileLocation.folder));
       expect(reloaded.viewMode, equals(ViewModeSetting.source));
       expect(reloaded.explorerSortEnum, equals(ExplorerSort.modifiedNew));
+      expect(reloaded.newLinkFormat, equals('relative'));
+      expect(reloaded.useMarkdownLinks, isTrue);
+      expect(reloaded.alwaysUpdateLinks, isFalse);
+      expect(reloaded.excludedFolders, equals(['Archive', 'Templates/Hidden']));
     });
 
     test('invalid values fall back to defaults (clamping/enumeration)', () {
@@ -58,6 +70,7 @@ void main() {
         'newFileLocation': 'invalidLocation',
         'defaultViewMode': 'invalidMode',
         'explorerSort': 'invalidSort',
+        'newLinkFormat': 'invalidLinkFormat',
       });
 
       expect(s.tabSize, equals(4));
@@ -66,6 +79,10 @@ void main() {
       expect(s.newFileLocation, equals('root'));
       expect(s.defaultViewMode, equals('reading'));
       expect(s.explorerSort, equals('nameAsc'));
+      expect(s.newLinkFormat, equals('shortest'));
+      expect(s.useMarkdownLinks, isFalse);
+      expect(s.alwaysUpdateLinks, isTrue);
+      expect(s.excludedFolders, isEmpty);
     });
   });
 

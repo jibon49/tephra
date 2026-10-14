@@ -15,6 +15,7 @@ import '../editor/save_state_indicator.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/providers.dart';
 import 'empty_workspace_view.dart';
+import 'index_status.dart';
 import 'providers.dart';
 import 'sidebar_registry.dart';
 import 'workspace_models.dart';
@@ -90,6 +91,7 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
+          bottom: const PhoneIndexProgressBar(),
           leading: Builder(
             builder: (ctx) => IconButton(
               key: const Key('phone.menu'),

@@ -204,8 +204,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
 - [x] 02.7 `NoteIndex` facade, queries and the worker isolate
   - notes: Implemented NoteIndex facade, InProcessIndexRunner, IsolateIndexRunner, IndexRequestQueue with apply coalescing, indexWorkerMain isolate worker with shutdown & crash recovery, and all 19 query methods; 125 total tests passing in tephra_index.
 - [x] 02.8 Index consistency fuzz test
-  - notes: Implemented dumpIndex and ftsProbeWords in testing library, index_fuzz_test with deterministic random generators, and verified 300-op smoke test + 3 seeds x 10,000 operations (30,000 ops total) with 0 differences between incremental and fresh rebuild (runtime: 1m 15s); fixed duplicate block ID deduplication in NoteExtractor and target conflict checks in folder moves.
-- [ ] 02.9 App integration: index lifecycle, indexing file-system decorator, progress, `Rebuild index`, link settings
+- [x] 02.9 App integration: index lifecycle, indexing file-system decorator, progress, `Rebuild index`, link settings
+  - notes: Implemented IndexingVaultFileSystem wrapping session fs with deferred attach buffering, NoteIndexNotifier lifecycle with isolate worker and background reconciliation, IndexStatusItem & PhoneIndexProgressBar adaptive progress UI, index.rebuild command with confirmation dialog and snackbar, VaultSettings fields (newLinkFormat, useMarkdownLinks, alwaysUpdateLinks, excludedFolders) with Obsidian app.json import and SettingsScreen Files & links section; all 11 tests passing.
 - [ ] 02.10 Link formatting and link navigation (open, create on click)
 - [ ] 02.11 Rename/move link maintenance as one undoable operation
 - [ ] 02.12 Backlinks and outgoing-links panes (linked + unlinked mentions)

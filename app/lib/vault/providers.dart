@@ -8,6 +8,7 @@ import 'package:tephra_vault/tephra_vault.dart';
 
 import '../reading/providers.dart';
 import '../workspace/providers.dart';
+import 'indexing_vault_file_system.dart';
 import 'note_creator.dart';
 import 'note_document.dart';
 import 'note_document_store.dart';
@@ -40,7 +41,7 @@ final vaultSessionProvider =
       VaultSessionNotifier.new,
     );
 
-final vaultFsProvider = Provider<VaultFileSystem>((ref) {
+final rawVaultFsProvider = Provider<VaultFileSystem>((ref) {
   final s = ref.watch(vaultSessionProvider);
   if (s == null) {
     throw StateError('No vault is open');
@@ -48,9 +49,18 @@ final vaultFsProvider = Provider<VaultFileSystem>((ref) {
   return s.fs;
 });
 
+final indexingVaultFsProvider = Provider<IndexingVaultFileSystem>((ref) {
+  final rawFs = ref.watch(rawVaultFsProvider);
+  return IndexingVaultFileSystem(rawFs);
+});
+
+final vaultFsProvider = Provider<VaultFileSystem>((ref) {
+  return ref.watch(indexingVaultFsProvider);
+});
+
 final vaultChangesProvider = StreamProvider<VaultChange>((ref) {
-  final fs = ref.watch(vaultFsProvider);
-  return fs.watch();
+  final rawFs = ref.watch(rawVaultFsProvider);
+  return rawFs.watch();
 });
 
 final class VaultRevisionNotifier extends Notifier<int> {

@@ -108,6 +108,10 @@ final class VaultSettings {
     this.dailyNotes = const {},
     this.templates = const {},
     this.importedFromObsidian = false,
+    this.newLinkFormat = 'shortest',
+    this.useMarkdownLinks = false,
+    this.alwaysUpdateLinks = true,
+    this.excludedFolders = const [],
     this.extra = const {},
   });
 
@@ -167,6 +171,24 @@ final class VaultSettings {
 
     final importedFromObsidian = json['importedFromObsidian'] as bool? ?? false;
 
+    var newLinkFormat = json['newLinkFormat'] as String? ?? 'shortest';
+    if (newLinkFormat != 'shortest' &&
+        newLinkFormat != 'relative' &&
+        newLinkFormat != 'absolute') {
+      newLinkFormat = 'shortest';
+    }
+
+    final useMarkdownLinks = json['useMarkdownLinks'] as bool? ?? false;
+    final alwaysUpdateLinks = json['alwaysUpdateLinks'] as bool? ?? true;
+
+    final rawExcluded = json['excludedFolders'];
+    final excludedFolders = rawExcluded is List
+        ? rawExcluded
+              .map((e) => e.toString())
+              .where((e) => e.isNotEmpty)
+              .toList()
+        : const <String>[];
+
     const knownKeys = {
       'attachmentFolder',
       'newFileLocation',
@@ -182,6 +204,10 @@ final class VaultSettings {
       'dailyNotes',
       'templates',
       'importedFromObsidian',
+      'newLinkFormat',
+      'useMarkdownLinks',
+      'alwaysUpdateLinks',
+      'excludedFolders',
     };
 
     final extra = <String, Object?>{};
@@ -206,6 +232,10 @@ final class VaultSettings {
       dailyNotes: Map.unmodifiable(dailyNotes),
       templates: Map.unmodifiable(templates),
       importedFromObsidian: importedFromObsidian,
+      newLinkFormat: newLinkFormat,
+      useMarkdownLinks: useMarkdownLinks,
+      alwaysUpdateLinks: alwaysUpdateLinks,
+      excludedFolders: List.unmodifiable(excludedFolders),
       extra: Map.unmodifiable(extra),
     );
   }
@@ -224,6 +254,10 @@ final class VaultSettings {
   final Map<String, Object?> dailyNotes;
   final Map<String, Object?> templates;
   final bool importedFromObsidian;
+  final String newLinkFormat;
+  final bool useMarkdownLinks;
+  final bool alwaysUpdateLinks;
+  final List<String> excludedFolders;
   final Map<String, Object?> extra;
 
   NewFileLocation get newFileLocationEnum =>
@@ -253,6 +287,10 @@ final class VaultSettings {
       'dailyNotes': dailyNotes,
       'templates': templates,
       'importedFromObsidian': importedFromObsidian,
+      'newLinkFormat': newLinkFormat,
+      'useMarkdownLinks': useMarkdownLinks,
+      'alwaysUpdateLinks': alwaysUpdateLinks,
+      'excludedFolders': excludedFolders,
     };
     map.addAll(extra);
     return map;
@@ -273,6 +311,10 @@ final class VaultSettings {
     Map<String, Object?>? dailyNotes,
     Map<String, Object?>? templates,
     bool? importedFromObsidian,
+    String? newLinkFormat,
+    bool? useMarkdownLinks,
+    bool? alwaysUpdateLinks,
+    List<String>? excludedFolders,
     Map<String, Object?>? extra,
   }) {
     return VaultSettings(
@@ -290,6 +332,10 @@ final class VaultSettings {
       dailyNotes: dailyNotes ?? this.dailyNotes,
       templates: templates ?? this.templates,
       importedFromObsidian: importedFromObsidian ?? this.importedFromObsidian,
+      newLinkFormat: newLinkFormat ?? this.newLinkFormat,
+      useMarkdownLinks: useMarkdownLinks ?? this.useMarkdownLinks,
+      alwaysUpdateLinks: alwaysUpdateLinks ?? this.alwaysUpdateLinks,
+      excludedFolders: excludedFolders ?? this.excludedFolders,
       extra: extra ?? this.extra,
     );
   }
@@ -312,6 +358,10 @@ final class VaultSettings {
           mapEquals(dailyNotes, other.dailyNotes) &&
           mapEquals(templates, other.templates) &&
           importedFromObsidian == other.importedFromObsidian &&
+          newLinkFormat == other.newLinkFormat &&
+          useMarkdownLinks == other.useMarkdownLinks &&
+          alwaysUpdateLinks == other.alwaysUpdateLinks &&
+          listEquals(excludedFolders, other.excludedFolders) &&
           mapEquals(extra, other.extra);
 
   @override
@@ -330,6 +380,10 @@ final class VaultSettings {
     Object.hashAll(dailyNotes.entries),
     Object.hashAll(templates.entries),
     importedFromObsidian,
+    newLinkFormat,
+    useMarkdownLinks,
+    alwaysUpdateLinks,
+    Object.hashAll(excludedFolders),
     Object.hashAll(extra.entries),
   );
 }

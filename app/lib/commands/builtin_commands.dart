@@ -12,11 +12,13 @@ import '../workspace/providers.dart';
 import '../workspace/workspace_models.dart';
 import 'command_palette.dart';
 import 'command_registry.dart';
+import 'index_commands.dart';
 import 'providers.dart';
 import 'quick_switcher.dart';
 import 'tephra_command.dart';
 
 void registerBuiltinCommands(CommandRegistry registry) {
+  registerIndexCommands(registry);
   registry.register(
     TephraCommand(
       id: 'app.open-quick-switcher',

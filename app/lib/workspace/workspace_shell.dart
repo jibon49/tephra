@@ -8,6 +8,7 @@ import '../editor/save_state_indicator.dart';
 import '../vault/providers.dart';
 import 'builtin_panels.dart';
 import 'desktop_layout.dart';
+import 'index_status.dart';
 import 'phone_layout.dart';
 import 'providers.dart';
 import 'status_bar_registry.dart';
@@ -42,6 +43,14 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
         ),
       );
       registry.register(
+        const StatusBarItemSpec(
+          id: 'status.index',
+          alignment: StatusBarAlignment.left,
+          order: 50,
+          builder: _buildIndexStatus,
+        ),
+      );
+      registry.register(
         StatusBarItemSpec(
           id: 'status.save',
           alignment: StatusBarAlignment.right,
@@ -69,3 +78,6 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
     );
   }
 }
+
+Widget _buildIndexStatus(BuildContext context, WidgetRef ref) =>
+    const IndexStatusItem();

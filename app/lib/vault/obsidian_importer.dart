@@ -55,6 +55,10 @@ final class ObsidianImporter {
     var tabSize = 4;
     var readableLineLength = true;
     var defaultViewMode = 'source';
+    var newLinkFormat = 'shortest';
+    var useMarkdownLinks = false;
+    var alwaysUpdateLinks = true;
+    var excludedFolders = <String>[];
 
     Map<String, Object?> dailyNotes = const {};
     Map<String, Object?> templates = const {};
@@ -109,6 +113,28 @@ final class ObsidianImporter {
             defaultViewMode = 'reading';
           } else {
             defaultViewMode = 'source';
+          }
+
+          if (decoded['newLinkFormat'] is String) {
+            final f = decoded['newLinkFormat'] as String;
+            if (f == 'shortest' || f == 'relative' || f == 'absolute') {
+              newLinkFormat = f;
+            }
+          }
+
+          if (decoded['useMarkdownLinks'] is bool) {
+            useMarkdownLinks = decoded['useMarkdownLinks'] as bool;
+          }
+
+          if (decoded['alwaysUpdateLinks'] is bool) {
+            alwaysUpdateLinks = decoded['alwaysUpdateLinks'] as bool;
+          }
+
+          if (decoded['userIgnoreFilters'] is List) {
+            excludedFolders = (decoded['userIgnoreFilters'] as List)
+                .map((e) => e.toString())
+                .where((e) => e.isNotEmpty)
+                .toList();
           }
 
           imported.add('app.json');
@@ -251,6 +277,10 @@ final class ObsidianImporter {
       dailyNotes: dailyNotes,
       templates: templates,
       importedFromObsidian: true,
+      newLinkFormat: newLinkFormat,
+      useMarkdownLinks: useMarkdownLinks,
+      alwaysUpdateLinks: alwaysUpdateLinks,
+      excludedFolders: excludedFolders,
     );
 
     await VaultSettingsStore(fs).save(vaultSettings);

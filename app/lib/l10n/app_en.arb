@@ -341,6 +341,31 @@
   "attachmentPickFile": "File",
   "toolbarMore": "More",
   "commandEditorHideKeyboard": "Hide keyboard",
-  "commandEditorInsertAttachment": "Insert attachment…"
+  "commandEditorInsertAttachment": "Insert attachment…",
+  "indexStatusScanning": "Scanning vault…",
+  "indexStatusIndexing": "Indexing {done} / {total}",
+  "@indexStatusIndexing": {
+    "description": "Progress shown while indexing notes",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "indexStatusResolving": "Resolving links…",
+  "commandRebuildIndex": "Rebuild index",
+  "rebuildIndexConfirmTitle": "Rebuild index",
+  "rebuildIndexConfirmBody": "Rebuild the search index for this vault? Tephra stays usable while it runs.",
+  "rebuildIndexDone": "Index rebuilt",
+  "excludedFoldersRebuildPrompt": "Changing excluded folders requires rebuilding the search index. Rebuild now?",
+  "settingsFilesAndLinks": "Files & links",
+  "settingsNewLinkFormat": "New link format",
+  "settingsNewLinkFormatShortest": "Shortest path when possible",
+  "settingsNewLinkFormatRelative": "Relative path to file",
+  "settingsNewLinkFormatAbsolute": "Absolute path in vault",
+  "settingsUseWikilinks": "Use [[Wikilinks]]",
+  "settingsAlwaysUpdateLinks": "Automatically update internal links",
+  "settingsExcludedFolders": "Excluded folders",
+  "settingsExcludedFoldersAdd": "Add folder…",
+  "settingsExcludedFoldersEmpty": "No excluded folders"
 }
 

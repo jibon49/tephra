@@ -1353,6 +1353,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Insert attachment…'**
   String get commandEditorInsertAttachment;
+
+  /// No description provided for @indexStatusScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning vault…'**
+  String get indexStatusScanning;
+
+  /// Progress shown while indexing notes
+  ///
+  /// In en, this message translates to:
+  /// **'Indexing {done} / {total}'**
+  String indexStatusIndexing(int done, int total);
+
+  /// No description provided for @indexStatusResolving.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolving links…'**
+  String get indexStatusResolving;
+
+  /// No description provided for @commandRebuildIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild index'**
+  String get commandRebuildIndex;
+
+  /// No description provided for @rebuildIndexConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild index'**
+  String get rebuildIndexConfirmTitle;
+
+  /// No description provided for @rebuildIndexConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild the search index for this vault? Tephra stays usable while it runs.'**
+  String get rebuildIndexConfirmBody;
+
+  /// No description provided for @rebuildIndexDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Index rebuilt'**
+  String get rebuildIndexDone;
+
+  /// No description provided for @excludedFoldersRebuildPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing excluded folders requires rebuilding the search index. Rebuild now?'**
+  String get excludedFoldersRebuildPrompt;
+
+  /// No description provided for @settingsFilesAndLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Files & links'**
+  String get settingsFilesAndLinks;
+
+  /// No description provided for @settingsNewLinkFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'New link format'**
+  String get settingsNewLinkFormat;
+
+  /// No description provided for @settingsNewLinkFormatShortest.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortest path when possible'**
+  String get settingsNewLinkFormatShortest;
+
+  /// No description provided for @settingsNewLinkFormatRelative.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative path to file'**
+  String get settingsNewLinkFormatRelative;
+
+  /// No description provided for @settingsNewLinkFormatAbsolute.
+  ///
+  /// In en, this message translates to:
+  /// **'Absolute path in vault'**
+  String get settingsNewLinkFormatAbsolute;
+
+  /// No description provided for @settingsUseWikilinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Use [[Wikilinks]]'**
+  String get settingsUseWikilinks;
+
+  /// No description provided for @settingsAlwaysUpdateLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically update internal links'**
+  String get settingsAlwaysUpdateLinks;
+
+  /// No description provided for @settingsExcludedFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded folders'**
+  String get settingsExcludedFolders;
+
+  /// No description provided for @settingsExcludedFoldersAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add folder…'**
+  String get settingsExcludedFoldersAdd;
+
+  /// No description provided for @settingsExcludedFoldersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No excluded folders'**
+  String get settingsExcludedFoldersEmpty;
 }
 
 class _AppLocalizationsDelegate

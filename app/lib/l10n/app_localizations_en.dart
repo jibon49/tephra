@@ -679,4 +679,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandEditorInsertAttachment => 'Insert attachment…';
+
+  @override
+  String get indexStatusScanning => 'Scanning vault…';
+
+  @override
+  String indexStatusIndexing(int done, int total) {
+    return 'Indexing $done / $total';
+  }
+
+  @override
+  String get indexStatusResolving => 'Resolving links…';
+
+  @override
+  String get commandRebuildIndex => 'Rebuild index';
+
+  @override
+  String get rebuildIndexConfirmTitle => 'Rebuild index';
+
+  @override
+  String get rebuildIndexConfirmBody =>
+      'Rebuild the search index for this vault? Tephra stays usable while it runs.';
+
+  @override
+  String get rebuildIndexDone => 'Index rebuilt';
+
+  @override
+  String get excludedFoldersRebuildPrompt =>
+      'Changing excluded folders requires rebuilding the search index. Rebuild now?';
+
+  @override
+  String get settingsFilesAndLinks => 'Files & links';
+
+  @override
+  String get settingsNewLinkFormat => 'New link format';
+
+  @override
+  String get settingsNewLinkFormatShortest => 'Shortest path when possible';
+
+  @override
+  String get settingsNewLinkFormatRelative => 'Relative path to file';
+
+  @override
+  String get settingsNewLinkFormatAbsolute => 'Absolute path in vault';
+
+  @override
+  String get settingsUseWikilinks => 'Use [[Wikilinks]]';
+
+  @override
+  String get settingsAlwaysUpdateLinks => 'Automatically update internal links';
+
+  @override
+  String get settingsExcludedFolders => 'Excluded folders';
+
+  @override
+  String get settingsExcludedFoldersAdd => 'Add folder…';
+
+  @override
+  String get settingsExcludedFoldersEmpty => 'No excluded folders';
 }

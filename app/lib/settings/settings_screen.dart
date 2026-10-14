@@ -6,9 +6,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
 import 'hotkeys_screen.dart';
-import 'providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -237,6 +237,84 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const Divider(),
 
+          // --- Files & links ---
+          _SectionHeader(title: l10n.settingsFilesAndLinks),
+          ListTile(
+            title: Text(l10n.settingsNewLinkFormat),
+            trailing: DropdownButton<String>(
+              value: vaultSettings.newLinkFormat,
+              onChanged: (val) {
+                if (val != null) {
+                  ref
+                      .read(vaultSettingsProvider.notifier)
+                      .update((s) => s.copyWith(newLinkFormat: val));
+                }
+              },
+              items: [
+                DropdownMenuItem(
+                  value: 'shortest',
+                  child: Text(l10n.settingsNewLinkFormatShortest),
+                ),
+                DropdownMenuItem(
+                  value: 'relative',
+                  child: Text(l10n.settingsNewLinkFormatRelative),
+                ),
+                DropdownMenuItem(
+                  value: 'absolute',
+                  child: Text(l10n.settingsNewLinkFormatAbsolute),
+                ),
+              ],
+            ),
+          ),
+          SwitchListTile(
+            title: Text(l10n.settingsUseWikilinks),
+            value: !vaultSettings.useMarkdownLinks,
+            onChanged: (val) {
+              ref
+                  .read(vaultSettingsProvider.notifier)
+                  .update((s) => s.copyWith(useMarkdownLinks: !val));
+            },
+          ),
+          SwitchListTile(
+            title: Text(l10n.settingsAlwaysUpdateLinks),
+            value: vaultSettings.alwaysUpdateLinks,
+            onChanged: (val) {
+              ref
+                  .read(vaultSettingsProvider.notifier)
+                  .update((s) => s.copyWith(alwaysUpdateLinks: val));
+            },
+          ),
+          ListTile(
+            title: Text(l10n.settingsExcludedFolders),
+            subtitle: vaultSettings.excludedFolders.isEmpty
+                ? Text(l10n.settingsExcludedFoldersEmpty)
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final folder in vaultSettings.excludedFolders)
+                        Row(
+                          children: [
+                            Expanded(child: Text(folder)),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.remove_circle_outline,
+                                size: 20,
+                              ),
+                              onPressed: () =>
+                                  _removeExcludedFolder(context, ref, folder),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+            trailing: IconButton(
+              icon: const Icon(Icons.add),
+              tooltip: l10n.settingsExcludedFoldersAdd,
+              onPressed: () => _addExcludedFolder(context, ref),
+            ),
+          ),
+          const Divider(),
+
           // --- Hotkeys ---
           _SectionHeader(title: l10n.settingsHotkeys),
           ListTile(
@@ -261,6 +339,84 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _updateExcludedFolders(
+    BuildContext context,
+    WidgetRef ref,
+    List<String> updated,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.rebuildIndexConfirmTitle),
+        content: Text(l10n.excludedFoldersRebuildPrompt),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.commonOk),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      ref
+          .read(vaultSettingsProvider.notifier)
+          .update((s) => s.copyWith(excludedFolders: updated));
+      ref.invalidate(noteIndexProvider);
+      final index = await ref.read(noteIndexProvider.future);
+      await index.rebuild();
+    }
+  }
+
+  Future<void> _addExcludedFolder(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController();
+    final folder = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.settingsExcludedFoldersAdd),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(hintText: 'folder/name'),
+          onSubmitted: (val) => Navigator.of(ctx).pop(val.trim()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(null),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
+            child: Text(l10n.commonOk),
+          ),
+        ],
+      ),
+    );
+
+    if (folder != null && folder.isNotEmpty && context.mounted) {
+      final current = ref.read(vaultSettingsProvider).excludedFolders;
+      if (!current.contains(folder)) {
+        await _updateExcludedFolders(context, ref, [...current, folder]);
+      }
+    }
+  }
+
+  Future<void> _removeExcludedFolder(
+    BuildContext context,
+    WidgetRef ref,
+    String folder,
+  ) async {
+    final current = ref.read(vaultSettingsProvider).excludedFolders;
+    final updated = current.where((f) => f != folder).toList();
+    await _updateExcludedFolders(context, ref, updated);
   }
 }
 
