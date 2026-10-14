@@ -165,9 +165,32 @@ Instructions: `instructions/phase-01-vault-editor.md`
 
 Instructions: `instructions/phase-02-links-index-search.md`
 
+### Phase 1 inventory
+
+| # | Item | Expected location | Actual location / details |
+|---|---|---|---|
+| 1 | `VaultPath`, `TephraException` family, `Clock`, `contentHash` | `packages/tephra_core/lib/src/` | `packages/tephra_core/lib/src/{vault_path,exceptions,clock,content_hash}.dart` |
+| 2 | `VaultFileSystem`, `IoVaultFileSystem`, `MemoryVaultFileSystem`, `TextDocument`, `VaultChange` + subclasses | `packages/tephra_vault/lib/src/` | `packages/tephra_vault/lib/src/{vault_file_system,io_vault_file_system,memory_vault_file_system,text_document,vault_change}.dart` |
+| 3 | `MarkdownParser.parse`, `ParsedNote`, all `Md*` nodes, `BlockRef`, `TaskItem` | `packages/tephra_markdown/lib/src/` | `packages/tephra_markdown/lib/src/{markdown_parser,parsed_note,nodes,note_models}.dart`<br>• `BlockRef`: `id`, `start`, `end`, `idStart`, `idEnd` (`start`/`end` is `^id` range; owning block computed in 02.4)<br>• `TaskItem`: `status` (`TaskStatus.char`), `text`, `start`, `end`, `statusOffset`, `line` |
+| 4 | Reading view (AST → widgets) | `app/lib/reading/reading_view.dart` | `app/lib/reading/reading_view.dart` (`ReadingView`) |
+| 5 | Source-mode editor behind `EditorController` | `app/lib/editor/editor_controller.dart` | `app/lib/editor/editor_controller.dart` (`EditorController`) |
+| 6 | Editor engine decision | `docs/decisions/0001-editor-engine.md` | Engine **A** (`re_editor`) |
+| 7 | Explorer (tree, rename, move, delete) | `app/lib/explorer/` | `app/lib/explorer/{explorer_pane,explorer_service,explorer_tree}.dart` |
+| 8 | Workspace: tabs, splits, sidebars, phone drawers, per-tab history | `app/lib/workspace/` | `app/lib/workspace/{workspace_shell,tab_bar,split_pane,workspace_notifier}.dart` |
+| 9 | Command registry + palette (`TephraCommand`, `commandRegistryProvider`) | `app/lib/commands/` | `app/lib/commands/{command,command_palette,providers}.dart` |
+| 10 | Quick switcher | `app/lib/commands/` or `app/lib/workspace/` | `app/lib/commands/quick_switcher_dialog.dart` |
+| 11 | Attachments (paste/drop/pick) | `app/lib/editor/` | `app/lib/editor/attachments.dart` (`AttachmentService`) |
+| 12 | Vault picker, vault session providers, vault id from `.tephra/vault.json` | `app/lib/vault/` | `app/lib/vault/{vault_picker_screen,vault_session,vault_metadata}.dart` |
+| 13 | Vault settings model + store for `.tephra/settings.json` | `app/lib/settings/` | `app/lib/settings/{vault_settings,settings_store}.dart` |
+| 14 | `.obsidian` settings importer | `app/lib/vault/` | `app/lib/vault/obsidian_importer.dart` (`ObsidianImporter`) |
+| 15 | Fuzzy matcher used by command palette | `app/lib/commands/` | `app/lib/commands/fuzzy_matcher.dart` (`FuzzyMatcher`) |
+| 16 | Bench vault generator | `tool/gen_bench_vault.dart` | `tool/gen_bench_vault.dart` |
+| 17 | Line/offset helper (`LineIndex`) | `packages/tephra_markdown/lib/src/` | `packages/tephra_markdown/lib/src/line_index.dart` (`LineIndex`) |
+
 ### Steps
 
-- [ ] 02.1 Add drift + sqlite3 and prove FTS5, trigram and Bangla tokenisation
+- [x] 02.1 Add drift + sqlite3 and prove FTS5, trigram and Bangla tokenisation
+  - notes: Added drift 2.35.2, sqlite3 3.7.1, drift_dev 2.35.1, build_runner 2.16.1; license check 162 allowed / 0 unallowed; verified SQLite 3.45+ with FTS5, contentless_delete, trigram case-insensitive/Bangla matching, and unicode61 mark categories keeping Bangla words whole (8/8 smoke tests passed).
 - [ ] 02.2 Index schema: drift tables, FTS tables, indices, migrations, database open + recovery
 - [ ] 02.3 Index models and `LineIndex`
 - [ ] 02.4 Note extraction: `ParsedNote` → index rows
