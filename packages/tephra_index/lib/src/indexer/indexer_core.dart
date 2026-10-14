@@ -224,7 +224,9 @@ final class IndexerCore {
 
     final Set<String> changed;
     if (wasEmpty) {
-      changed = await _reresolveAllUnresolved();
+      final unresChanged = await _reresolveAllUnresolved();
+      final dirtyChanged = await _reresolve(dirty);
+      changed = unresChanged.union(dirtyChanged);
     } else {
       changed = await _reresolve(dirty);
     }
@@ -335,29 +337,35 @@ final class IndexerCore {
           }
         });
 
-        final reindexed = <VaultPath>{};
+        final toWrite =
+            <
+              ({VaultPath path, VaultEntry stat, List<int> bytes, String hash})
+            >[];
         for (final o in victims) {
           final suffix = o == from ? '' : o.value.substring(from.value.length);
           final n = VaultPath(path.value + suffix);
           final stat = await fs.stat(n);
           if (stat != null && !stat.isFolder && isIndexable(n, options)) {
             _nameTable.addFile(n);
+            dirty.addAll(fileTargetKeys(n));
             try {
               final bytes = await fs.readBytes(n);
               final hash = contentHash(bytes);
-              late _WriteResult r;
-              await db.transaction(() async {
-                r = await _writeFile(n, stat, bytes, hash);
-              });
-              dirty.addAll(fileTargetKeys(n));
-              dirty.addAll(
-                _symmetricDifference(r.oldAliasKeys, r.newAliasKeys),
-              );
-              reindexed.add(n);
+              toWrite.add((path: n, stat: stat, bytes: bytes, hash: hash));
             } catch (err, st) {
               _log.warning('Failed to read moved file $n', err, st);
             }
           }
+        }
+
+        final reindexed = <VaultPath>{};
+        for (final item in toWrite) {
+          late _WriteResult r;
+          await db.transaction(() async {
+            r = await _writeFile(item.path, item.stat, item.bytes, item.hash);
+          });
+          dirty.addAll(_symmetricDifference(r.oldAliasKeys, r.newAliasKeys));
+          reindexed.add(item.path);
         }
 
         final changed = await _reresolve(dirty);
@@ -533,6 +541,7 @@ final class IndexerCore {
               line: b.line,
               preview: b.preview,
             ),
+            mode: InsertMode.insertOrReplace,
           );
         }
 

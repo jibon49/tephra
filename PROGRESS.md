@@ -203,7 +203,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented IndexerCore with loadNameTable, reconcile, apply, rebuild, atomic transaction batching, and dirty target re-resolution; all 19 indexer unit tests passing (110 total in tephra_index).
 - [x] 02.7 `NoteIndex` facade, queries and the worker isolate
   - notes: Implemented NoteIndex facade, InProcessIndexRunner, IsolateIndexRunner, IndexRequestQueue with apply coalescing, indexWorkerMain isolate worker with shutdown & crash recovery, and all 19 query methods; 125 total tests passing in tephra_index.
-- [ ] 02.8 Index consistency fuzz test
+- [x] 02.8 Index consistency fuzz test
+  - notes: Implemented dumpIndex and ftsProbeWords in testing library, index_fuzz_test with deterministic random generators, and verified 300-op smoke test + 3 seeds x 10,000 operations (30,000 ops total) with 0 differences between incremental and fresh rebuild (runtime: 1m 15s); fixed duplicate block ID deduplication in NoteExtractor and target conflict checks in folder moves.
 - [ ] 02.9 App integration: index lifecycle, indexing file-system decorator, progress, `Rebuild index`, link settings
 - [ ] 02.10 Link formatting and link navigation (open, create on click)
 - [ ] 02.11 Rename/move link maintenance as one undoable operation
@@ -232,7 +233,7 @@ Instructions: `instructions/phase-02-links-index-search.md`
 - [ ] `dart run tool/check_licenses.dart` exits 0 (new direct dependencies: `drift`, `sqlite3`, `drift_dev`, `build_runner`, `yaml_edit`, `yaml`, `intl`, and `url_launcher` / `scrollable_positioned_list` if they were not already present — all permissive) and `THIRD_PARTY_NOTICES.md` is regenerated and committed.
 - [ ] **Demo script** (above) passes on Windows **and** on a real Android phone; every "Expected" line observed. (Anything not verified on a device is written as "not verified on device" and reported to the human.)
 - [ ] **Search parity:** `search_parity_test.dart` passes for all 44 queries (Q1–Q44) on `test_vaults/search`; in addition the human opened `test_vaults/search` in Obsidian and ran queries Q1–Q30 there: the result sets are identical, or every difference is listed in `PROGRESS.md` with an explanation the human accepted.
-- [ ] **Index fuzz:** `cd packages/tephra_index; dart test --tags fuzz` passes — 3 seeds × 10,000 operations, **0 differences** between the incremental index and a fresh rebuild; the run time is recorded.
+- [x] **Index fuzz:** `cd packages/tephra_index; dart test --tags fuzz` passes — 3 seeds × 10,000 operations, **0 differences** between the incremental index and a fresh rebuild; runtime recorded: 1m 15s.
 - [ ] **Link maintenance:** link resolver matrix (step 02.5), `rename_planner_test`, `rename_500_test` (500 notes, 2,000 links updated, all untouched bytes identical, < 5 s) and `vault_undo_test` pass.
 - [ ] **Live Preview:** the engine equivalence test (`live_preview_engine_test`) (incremental == full recompute over 500 random edits per syntax note), the invariant "decorated line length == source line length", and `live_preview_no_write_test` (0 writes) pass; the IME manual checks of step 02.24 were done on Windows and Android and are recorded; the engine (A/B), the widget mode (W1 or documented styled-source fallback) and `kLpHideMode` per platform are written in `PROGRESS.md`.
 - [ ] **Properties:** `frontmatter_editor_test` passes; opening the edited vault in Obsidian shows the same properties, and the YAML of untouched properties (order, comments, quotes) is unchanged; the "yaml_edit limits" list in `PROGRESS.md` is empty or accepted by the human.

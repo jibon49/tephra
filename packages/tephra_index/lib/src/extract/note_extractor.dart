@@ -74,7 +74,11 @@ abstract final class NoteExtractor {
 
     // 5. Blocks
     final blocks = <ExtractedBlock>[];
+    final seenBlockKeys = <String>{};
     for (final ref in parsed.blockIds) {
+      final key = ref.id.toLowerCase();
+      if (!seenBlockKeys.add(key)) continue;
+
       final owner = _findBlockOwner(ref, parsed);
       final ownerStart = owner.start;
       final ownerEnd = owner.end;
