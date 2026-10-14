@@ -206,7 +206,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
 - [x] 02.8 Index consistency fuzz test
 - [x] 02.9 App integration: index lifecycle, indexing file-system decorator, progress, `Rebuild index`, link settings
   - notes: Implemented IndexingVaultFileSystem wrapping session fs with deferred attach buffering, NoteIndexNotifier lifecycle with isolate worker and background reconciliation, IndexStatusItem & PhoneIndexProgressBar adaptive progress UI, index.rebuild command with confirmation dialog and snackbar, VaultSettings fields (newLinkFormat, useMarkdownLinks, alwaysUpdateLinks, excludedFolders) with Obsidian app.json import and SettingsScreen Files & links section; all 11 tests passing.
-- [ ] 02.10 Link formatting and link navigation (open, create on click)
+- [x] 02.10 Link formatting and link navigation (open, create on click)
+  - notes: Implemented LinkFormatSettings, LinkFormatter (shortest/relative/absolute wiki and markdown paths with url encoding and heading/block sanitization, 19 test cases), LinkNavigator (open, reveal heading/block, debounced auto-create in new note location, file missing guard), linkResolutionProvider with 60% opacity unresolved link styling in ReadingView, and SourceEditorView Ctrl+click link navigation; all tests passing.
 - [ ] 02.11 Rename/move link maintenance as one undoable operation
 - [ ] 02.12 Backlinks and outgoing-links panes (linked + unlinked mentions)
 - [ ] 02.13 Outline pane (headings tree, jump, drag sections on desktop)

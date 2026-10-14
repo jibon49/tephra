@@ -366,6 +366,14 @@
   "settingsAlwaysUpdateLinks": "Automatically update internal links",
   "settingsExcludedFolders": "Excluded folders",
   "settingsExcludedFoldersAdd": "Add folder…",
-  "settingsExcludedFoldersEmpty": "No excluded folders"
+  "settingsExcludedFoldersEmpty": "No excluded folders",
+  "linkHeadingNotFound": "Heading or block not found",
+  "linkTargetFileMissing": "\"{name}\" doesn't exist in this vault",
+  "@linkTargetFileMissing": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "linkInvalidTarget": "Invalid link target"
 }
 

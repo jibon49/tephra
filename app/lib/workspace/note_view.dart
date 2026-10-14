@@ -3,13 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
-
+import 'package:tephra_index/tephra_index.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../editor/conflict_dialog.dart';
 import '../editor/source_editor_view.dart';
 import '../l10n/app_localizations.dart';
-import '../reading/link_actions.dart';
+import '../links/providers.dart';
+import '../reading/link_actions.dart' show pendingJumpProvider;
 import '../reading/reading_controller.dart';
 import '../reading/reading_view.dart';
 import '../reading/task_toggler.dart';
@@ -219,12 +220,6 @@ class _NoteReadingViewState extends ConsumerState<NoteReadingView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final linkActions = LinkActions(
-      ref: ref,
-      context: context,
-      from: widget.path,
-      controller: _controller,
-    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -253,8 +248,81 @@ class _NoteReadingViewState extends ConsumerState<NoteReadingView> {
             onTopOffsetChanged: widget.onOffsetChanged,
             onToggleTask: (task, newStatus) =>
                 _taskToggler.toggleTask(widget.doc, task, newStatus),
-            onOpenWikiLink: linkActions.openWikiLink,
-            onOpenMarkdownLink: linkActions.openMarkdownLink,
+            onOpenWikiLink: (tap) {
+              if (tap.target.isEmpty) {
+                if (tap.heading != null) {
+                  _controller.scrollToHeading(tap.heading!);
+                } else if (tap.blockRef != null) {
+                  _controller.scrollToBlockRef(tap.blockRef!);
+                }
+                return;
+              }
+              ref
+                  .read(linkNavigatorProvider)
+                  .open(
+                    from: widget.path,
+                    target: tap.target,
+                    heading: tap.heading,
+                    blockRef: tap.blockRef,
+                    newTab: tap.newTab,
+                  );
+            },
+            onOpenMarkdownLink: (url, {bool newTab = false}) async {
+              final uri = Uri.tryParse(url);
+              if (uri != null && uri.hasScheme) {
+                final scheme = uri.scheme.toLowerCase();
+                const allowedSchemes = {'http', 'https', 'mailto', 'tel'};
+                if (allowedSchemes.contains(scheme)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                } else {
+                  ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                    SnackBar(content: Text(l10n.linkSchemeBlocked)),
+                  );
+                }
+                return;
+              }
+
+              final decoded = LinkFormatter.decodeMarkdownPath(url);
+              final hashIndex = decoded.indexOf('#');
+              final String pathPart;
+              final String? anchorPart;
+              if (hashIndex != -1) {
+                pathPart = decoded.substring(0, hashIndex);
+                anchorPart = decoded.substring(hashIndex + 1);
+              } else {
+                pathPart = decoded;
+                anchorPart = null;
+              }
+
+              String? blockRef;
+              String? heading;
+              if (anchorPart != null) {
+                if (anchorPart.startsWith('^')) {
+                  blockRef = anchorPart.substring(1);
+                } else {
+                  heading = anchorPart;
+                }
+              }
+
+              if (pathPart.isEmpty) {
+                if (heading != null) {
+                  _controller.scrollToHeading(heading);
+                } else if (blockRef != null) {
+                  _controller.scrollToBlockRef(blockRef);
+                }
+                return;
+              }
+
+              await ref
+                  .read(linkNavigatorProvider)
+                  .open(
+                    from: widget.path,
+                    target: pathPart,
+                    heading: heading,
+                    blockRef: blockRef,
+                    newTab: newTab,
+                  );
+            },
             onOpenUrl: (uri) =>
                 launchUrl(uri, mode: LaunchMode.externalApplication),
           ),

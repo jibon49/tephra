@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
+import '../links/providers.dart';
 import 'block_lookup.dart';
 import 'providers.dart';
 import 'reading_blocks.dart';
@@ -259,6 +261,32 @@ class _ReadingViewState extends ConsumerState<ReadingView>
     final hasFootnotes = _footnoteIndex?.hasReferences ?? false;
     final totalItems = _visibleBlocks.length + (hasFootnotes ? 1 : 0);
 
+    final unresolvedTargets = <String>{};
+    final seen = <String>{};
+    for (final w in _parsed!.wikiLinks) {
+      if (w.target.isNotEmpty && seen.add(w.target)) {
+        final res = ref.watch(linkResolutionProvider((widget.path, w.target)));
+        if (res.hasValue && res.value == null) {
+          unresolvedTargets.add(w.target);
+        }
+      }
+    }
+    for (final l in _parsed!.links) {
+      if (l.url.isNotEmpty && Uri.tryParse(l.url)?.hasScheme != true) {
+        final pathPart = LinkFormatter.decodeMarkdownPath(
+          l.url.split('#').first,
+        );
+        if (pathPart.isNotEmpty && seen.add(pathPart)) {
+          final res = ref.watch(
+            linkResolutionProvider((widget.path, pathPart)),
+          );
+          if (res.hasValue && res.value == null) {
+            unresolvedTargets.add(pathPart);
+          }
+        }
+      }
+    }
+
     return ReadingScope(
       path: widget.path,
       parsed: _parsed!,
@@ -267,6 +295,7 @@ class _ReadingViewState extends ConsumerState<ReadingView>
       footnoteNumbers: _footnoteIndex?.numbers ?? const {},
       readOnly: widget.readOnly,
       toggledCallouts: _toggledCallouts,
+      unresolvedLinks: unresolvedTargets,
       onToggleCallout: _onToggleCallout,
       onToggleTask: widget.onToggleTask,
       onOpenWikiLink: widget.onOpenWikiLink,

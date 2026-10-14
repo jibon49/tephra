@@ -3,6 +3,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
 import 'reading_images.dart';
@@ -182,8 +183,19 @@ final class InlineBuilder {
           };
 
           final isExternal = Uri.tryParse(node.url)?.hasScheme == true;
+          final pathPart = isExternal
+              ? ''
+              : LinkFormatter.decodeMarkdownPath(node.url.split('#').first);
+          final isUnresolvedLink =
+              !isExternal &&
+              pathPart.isNotEmpty &&
+              (scope?.unresolvedLinks.contains(pathPart) ?? false);
+          final baseColor = styles?.linkColor ?? theme.colorScheme.primary;
+          final linkColor = isUnresolvedLink
+              ? baseColor.withValues(alpha: 0.6)
+              : baseColor;
           final s = TextStyle(
-            color: styles?.linkColor ?? theme.colorScheme.primary,
+            color: linkColor,
             decoration: isExternal ? TextDecoration.underline : null,
           );
           return TextSpan(
@@ -241,9 +253,14 @@ final class InlineBuilder {
           recognizer.onSecondaryTapUp = (_) => handleTap(true);
           recognizer.onTertiaryTapUp = (_) => handleTap(true);
 
-          final s = TextStyle(
-            color: styles?.linkColor ?? theme.colorScheme.primary,
-          );
+          final isUnresolved =
+              node.target.isNotEmpty &&
+              (scope?.unresolvedLinks.contains(node.target) ?? false);
+          final baseWikiColor = styles?.linkColor ?? theme.colorScheme.primary;
+          final wikiLinkColor = isUnresolved
+              ? baseWikiColor.withValues(alpha: 0.6)
+              : baseWikiColor;
+          final s = TextStyle(color: wikiLinkColor);
           return TextSpan(text: displayText, style: s, recognizer: recognizer);
 
         case MdFootnoteRef():

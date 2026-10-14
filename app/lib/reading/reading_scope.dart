@@ -49,6 +49,7 @@ class ReadingScope extends InheritedWidget {
     required this.footnoteNumbers,
     required this.readOnly,
     required this.toggledCallouts,
+    this.unresolvedLinks = const {},
     this.onToggleCallout,
     this.onToggleTask,
     this.onOpenWikiLink,
@@ -65,6 +66,7 @@ class ReadingScope extends InheritedWidget {
   final Map<String, int> footnoteNumbers;
   final bool readOnly;
   final Set<int> toggledCallouts;
+  final Set<String> unresolvedLinks;
   final void Function(int startOffset)? onToggleCallout;
   final Future<void> Function(TaskItem task, String newStatus)? onToggleTask;
   final void Function(WikiLinkTap tap)? onOpenWikiLink;

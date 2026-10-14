@@ -11,6 +11,8 @@ import 'package:tephra_vault/tephra_vault.dart';
 import '../vault/index_session.dart';
 import 'platform/system_trash_windows.dart';
 
+export '../links/providers.dart'
+    show linkNavigatorProvider, linkResolutionProvider;
 export '../settings/providers.dart'
     show appSettingsProvider, vaultSettingsProvider;
 export '../vault/index_session.dart' show NoteIndexNotifier;

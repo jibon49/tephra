@@ -1461,6 +1461,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No excluded folders'**
   String get settingsExcludedFoldersEmpty;
+
+  /// No description provided for @linkHeadingNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading or block not found'**
+  String get linkHeadingNotFound;
+
+  /// No description provided for @linkTargetFileMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" doesn\'t exist in this vault'**
+  String linkTargetFileMissing(String name);
+
+  /// No description provided for @linkInvalidTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid link target'**
+  String get linkInvalidTarget;
 }
 
 class _AppLocalizationsDelegate

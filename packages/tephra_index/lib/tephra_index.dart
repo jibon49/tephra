@@ -4,6 +4,9 @@
 library;
 
 export 'src/index_exceptions.dart';
+export 'src/links/heading_matcher.dart';
+export 'src/links/link_format_settings.dart';
+export 'src/links/link_formatter.dart';
 export 'src/links/name_table.dart';
 export 'src/model/alias_record.dart';
 export 'src/model/block_record.dart';

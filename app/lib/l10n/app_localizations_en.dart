@@ -737,4 +737,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsExcludedFoldersEmpty => 'No excluded folders';
+
+  @override
+  String get linkHeadingNotFound => 'Heading or block not found';
+
+  @override
+  String linkTargetFileMissing(String name) {
+    return '\"$name\" doesn\'t exist in this vault';
+  }
+
+  @override
+  String get linkInvalidTarget => 'Invalid link target';
 }

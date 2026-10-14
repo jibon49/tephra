@@ -4,10 +4,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_index/tephra_index.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
+import '../links/providers.dart';
 import '../reading/providers.dart';
 import '../reading/reading_view.dart';
 import '../vault/note_document.dart';
@@ -213,6 +217,74 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
     super.dispose();
   }
 
+  void _handleCtrlClick(PointerUpEvent event) {
+    scheduleMicrotask(() {
+      if (!mounted || _controller == null) return;
+      final offset = _controller!.selection.baseOffset;
+      final parsed = _controller!.parsed;
+      if (parsed == null) return;
+
+      for (final wiki in parsed.wikiLinks) {
+        if (offset >= wiki.start && offset <= wiki.end) {
+          ref
+              .read(linkNavigatorProvider)
+              .open(
+                from: widget.path,
+                target: wiki.target,
+                heading: wiki.heading,
+                blockRef: wiki.blockRef,
+              );
+          return;
+        }
+      }
+
+      for (final link in parsed.links) {
+        if (offset >= link.start && offset <= link.end) {
+          final uri = Uri.tryParse(link.url);
+          if (uri != null && uri.hasScheme) {
+            final scheme = uri.scheme.toLowerCase();
+            if (const {'http', 'https', 'mailto', 'tel'}.contains(scheme)) {
+              launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+            return;
+          }
+
+          final decoded = LinkFormatter.decodeMarkdownPath(link.url);
+          final hashIndex = decoded.indexOf('#');
+          final String pathPart;
+          final String? anchorPart;
+          if (hashIndex != -1) {
+            pathPart = decoded.substring(0, hashIndex);
+            anchorPart = decoded.substring(hashIndex + 1);
+          } else {
+            pathPart = decoded;
+            anchorPart = null;
+          }
+
+          String? blockRef;
+          String? heading;
+          if (anchorPart != null) {
+            if (anchorPart.startsWith('^')) {
+              blockRef = anchorPart.substring(1);
+            } else {
+              heading = anchorPart;
+            }
+          }
+
+          ref
+              .read(linkNavigatorProvider)
+              .open(
+                from: widget.path,
+                target: pathPart,
+                heading: heading,
+                blockRef: blockRef,
+              );
+          return;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.watch(noteDocumentProvider(widget.path));
@@ -268,6 +340,15 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       context,
       autofocus: shouldAutofocus,
       onPaste: () => handlePasteAttachment(_controller!, ref, context: context),
+    );
+
+    editorContent = Listener(
+      onPointerUp: (event) {
+        if (HardwareKeyboard.instance.isControlPressed) {
+          _handleCtrlClick(event);
+        }
+      },
+      child: editorContent,
     );
 
     if (_controller!.options.readableLineLength && isDesktop) {
