@@ -220,7 +220,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented SearchExpr AST (EmptyExpr, AndExpr, OrExpr, NotExpr, TermExpr, PhraseExpr, RegexExpr, OperatorExpr with 12 operators, PropertyExpr with exists/empty/matches), SearchSyntaxException with offset tracking, canonical printExpr, and recursive descent SearchParser; all 44 test matrix cases passing.
 - [x] 02.16 Search engine: SQL/FTS compilation, verification, streaming, sorting, cancellation
   - notes: Implemented SqlCompiler (FTS phrase escaping, exactness tracking, nested compound limits, 6 sort orders), NoteDoc, search_matcher evaluation (substrings, frontmatter, line/block/section units, task statuses, regexes, match-case scoping, de-duped Snippets), verifyBatch isolate runner, SearchEngine streaming with 20/100 batching and CancelToken, fixture vault test_vaults/search/ with 10 notes; all 101 tests in tephra_search passing (44/44 Obsidian parity queries Q1-Q44 verified).
-- [ ] 02.17 Search UI, search history, copy results, in-note highlights, ` ```query ` blocks
+- [x] 02.17 Search UI, search history, copy results, in-note highlights, ` ```query ` blocks
+  - notes: Implemented SearchController with debounced queries, SearchPane (virtualised, grouping by note, match counts, collapsible, history dropdown), SearchScreen (phone route), SearchHistoryStore (max 20, deduplicated, .tephra/cache/search-history.json), Copy search results (formatResultsAsMarkdown, clipboard integration), in-note highlights with auto-scroll in reading & source modes, QueryBlockView (reading view & preview support), registered search.open and search.copy-results commands; all 16 search tests pass, all 101 tephra_search tests pass.
 - [ ] 02.18 Tags pane and bookmarks
 - [ ] 02.19 Fuzzy scorer and index-backed quick switcher
 - [ ] 02.20 Editor autocomplete core: popup, `[[` and `![[` links, headings, blocks, aliases

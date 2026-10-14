@@ -10,6 +10,7 @@ import 'package:re_highlight/styles/atom-one-light.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
 import '../l10n/app_localizations.dart';
+import '../search/query_block_view.dart';
 import 'reading_scope.dart';
 
 /// Syntax highlighter wrapping `re_highlight`.
@@ -119,6 +120,10 @@ class CodeBlockView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (node.language == 'query') {
+      return QueryBlockView(query: node.code);
+    }
+
     final scope = ReadingScope.maybeOf(context);
     final theme = Theme.of(context);
     final styles = scope?.styles;

@@ -110,7 +110,22 @@ final class InlineBuilder {
     buildNode = (MdNode node, TextStyle currentStyle) {
       switch (node) {
         case MdText():
-          return TextSpan(text: node.text, style: currentStyle);
+          final highlights = scope?.searchHighlights;
+          if (highlights == null || highlights.isEmpty) {
+            return TextSpan(text: node.text, style: currentStyle);
+          }
+          final overlapping = highlights
+              .where((h) => h.$1 < node.end && h.$2 > node.start)
+              .toList();
+          if (overlapping.isEmpty) {
+            return TextSpan(text: node.text, style: currentStyle);
+          }
+          return _buildHighlightedTextSpan(
+            node,
+            currentStyle,
+            overlapping,
+            theme,
+          );
 
         case MdEmphasis():
           final s = currentStyle.copyWith(fontStyle: FontStyle.italic);
@@ -449,5 +464,72 @@ final class InlineBuilder {
       TextSpan(style: baseStyle, children: children),
       recognizers,
     );
+  }
+
+  static InlineSpan _buildHighlightedTextSpan(
+    MdText node,
+    TextStyle currentStyle,
+    List<(int, int)> ranges,
+    ThemeData theme,
+  ) {
+    final text = node.text;
+    final nodeStart = node.start;
+
+    final localRanges = <(int, int)>[];
+    for (final r in ranges) {
+      final start = (r.$1 - nodeStart).clamp(0, text.length);
+      final end = (r.$2 - nodeStart).clamp(start, text.length);
+      if (end > start) {
+        localRanges.add((start, end));
+      }
+    }
+
+    if (localRanges.isEmpty) {
+      return TextSpan(text: text, style: currentStyle);
+    }
+
+    localRanges.sort((a, b) => a.$1.compareTo(b.$1));
+    final merged = <(int, int)>[];
+    for (final r in localRanges) {
+      if (merged.isEmpty) {
+        merged.add(r);
+      } else {
+        final last = merged.last;
+        if (r.$1 <= last.$2) {
+          merged[merged.length - 1] = (
+            last.$1,
+            last.$2 > r.$2 ? last.$2 : r.$2,
+          );
+        } else {
+          merged.add(r);
+        }
+      }
+    }
+
+    final highlightStyle = currentStyle.copyWith(
+      backgroundColor: theme.colorScheme.primaryContainer.withAlpha(180),
+      fontWeight: FontWeight.bold,
+    );
+
+    final spans = <InlineSpan>[];
+    var cursor = 0;
+
+    for (final r in merged) {
+      if (r.$1 > cursor) {
+        spans.add(
+          TextSpan(text: text.substring(cursor, r.$1), style: currentStyle),
+        );
+      }
+      spans.add(
+        TextSpan(text: text.substring(r.$1, r.$2), style: highlightStyle),
+      );
+      cursor = r.$2;
+    }
+
+    if (cursor < text.length) {
+      spans.add(TextSpan(text: text.substring(cursor), style: currentStyle));
+    }
+
+    return TextSpan(children: spans);
   }
 }

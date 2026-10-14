@@ -274,6 +274,11 @@ final class VaultSettings {
 
   NewLinkFormat get newLinkFormatEnum => NewLinkFormat.fromJson(newLinkFormat);
 
+  LinkFormatSettings get linkFormatSettings => LinkFormatSettings(
+    format: newLinkFormatEnum,
+    useMarkdownLinks: useMarkdownLinks,
+  );
+
   Map<String, Object?> toJson() {
     final map = <String, Object?>{
       'attachmentFolder': attachmentFolder,

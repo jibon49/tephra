@@ -24,12 +24,14 @@ class ActiveReadingControllerNotifier extends Notifier<ReadingViewController?> {
 
   void set(ReadingViewController? controller) {
     scheduleMicrotask(() {
+      if (!ref.mounted) return;
       state = controller;
     });
   }
 
   void clearIfCurrent(ReadingViewController controller) {
     scheduleMicrotask(() {
+      if (!ref.mounted) return;
       if (state == controller) {
         state = null;
       }

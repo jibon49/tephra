@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
+import '../search/copy_results.dart';
+import '../search/providers.dart';
+import '../search/search_screen.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import '../vault/vault_undo.dart';
@@ -272,6 +275,59 @@ void registerBuiltinCommands(CommandRegistry registry) {
       isAvailable: (ref) => ref.read(vaultUndoStackProvider).isNotEmpty,
       run: (ref, context) async {
         await ref.read(vaultUndoStackProvider.notifier).undoLast();
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'search.open',
+      label: (l10n) => l10n.commandSearchOpen,
+      icon: Icons.search,
+      defaultShortcuts: const [
+        SingleActivator(LogicalKeyboardKey.keyF, control: true, shift: true),
+      ],
+      run: (ref, context) {
+        final activeEditor = ref.read(activeEditorProvider);
+        String? prefill;
+        if (activeEditor != null && !activeEditor.selection.isCollapsed) {
+          final sel = activeEditor.selection;
+          final text = activeEditor.text;
+          if (sel.start >= 0 && sel.end <= text.length) {
+            prefill = text.substring(sel.start, sel.end).trim();
+          }
+        }
+        if (prefill != null && prefill.isNotEmpty) {
+          ref.read(searchControllerProvider.notifier).setQuery(prefill);
+        }
+
+        final width = MediaQuery.sizeOf(context).width;
+        if (width >= 840) {
+          ref.read(activeLeftSidebarPanelProvider.notifier).select('search');
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => SearchScreen(initialQuery: prefill),
+            ),
+          );
+        }
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'search.copy-results',
+      label: (l10n) => l10n.commandSearchCopyResults,
+      icon: Icons.copy,
+      defaultShortcuts: const [],
+      isAvailable: (ref) =>
+          ref.read(searchControllerProvider).results.isNotEmpty,
+      run: (ref, context) {
+        final results = ref.read(searchControllerProvider).results;
+        if (results.isNotEmpty) {
+          copyResultsToClipboard(context, ref, results);
+        }
       },
     ),
   );

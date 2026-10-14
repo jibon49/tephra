@@ -14,6 +14,7 @@ import '../l10n/app_localizations.dart';
 import '../links/providers.dart';
 import '../reading/providers.dart';
 import '../reading/reading_view.dart';
+import '../search/search_highlights.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import 'attachment_actions.dart';
@@ -46,6 +47,7 @@ class SourceEditorView extends ConsumerStatefulWidget {
 class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
   EditorController? _controller;
   StreamSubscription<void>? _selectionSub;
+  StreamSubscription<void>? _editsSub;
   bool _isWaitingForEditor = false;
   bool _isCreatingController = false;
   NoteDocument? _doc;
@@ -137,6 +139,10 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
         }
       });
 
+      _editsSub = controller.edits.listen((_) {
+        clearNoteSearchHighlights(ref, widget.path);
+      });
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         _handleInitialOffsetAndJumps(controller, doc);
@@ -197,6 +203,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       _controller?.dispose();
       _controller = null;
       _selectionSub?.cancel();
+      _editsSub?.cancel();
       _doc?.removeListener(_onDocChanged);
       _initDocAndEditor();
     } else {
@@ -212,6 +219,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
   void dispose() {
     _doc?.removeListener(_onDocChanged);
     _selectionSub?.cancel();
+    _editsSub?.cancel();
     _controller?.dispose();
     _controller = null;
     super.dispose();

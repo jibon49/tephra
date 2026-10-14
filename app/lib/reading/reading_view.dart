@@ -12,6 +12,7 @@ import 'package:tephra_markdown/tephra_markdown.dart';
 import '../links/page_preview.dart';
 import '../links/page_preview_controller.dart';
 import '../links/providers.dart';
+import '../search/search_highlights.dart';
 import 'block_lookup.dart';
 import 'embeds/embed_context.dart';
 import 'providers.dart';
@@ -290,6 +291,20 @@ class _ReadingViewState extends ConsumerState<ReadingView>
       }
     }
 
+    final searchHighlights = ref.watch(searchHighlightsProvider(widget.path));
+    ref.listen<List<(int, int)>>(searchHighlightsProvider(widget.path), (
+      prev,
+      next,
+    ) {
+      if (next.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            scrollToOffset(next.first.$1);
+          }
+        });
+      }
+    });
+
     return EmbedContext(
       depth: 0,
       chain: {widget.path},
@@ -302,6 +317,7 @@ class _ReadingViewState extends ConsumerState<ReadingView>
         readOnly: widget.readOnly,
         toggledCallouts: _toggledCallouts,
         unresolvedLinks: unresolvedTargets,
+        searchHighlights: searchHighlights,
         onToggleCallout: _onToggleCallout,
         onToggleTask: widget.onToggleTask,
         onOpenWikiLink: widget.onOpenWikiLink,

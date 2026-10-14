@@ -50,6 +50,7 @@ class ReadingScope extends InheritedWidget {
     required this.readOnly,
     required this.toggledCallouts,
     this.unresolvedLinks = const {},
+    this.searchHighlights = const [],
     this.onToggleCallout,
     this.onToggleTask,
     this.onOpenWikiLink,
@@ -70,6 +71,7 @@ class ReadingScope extends InheritedWidget {
   final bool readOnly;
   final Set<int> toggledCallouts;
   final Set<String> unresolvedLinks;
+  final List<(int, int)> searchHighlights;
   final void Function(int startOffset)? onToggleCallout;
   final Future<void> Function(TaskItem task, String newStatus)? onToggleTask;
   final void Function(WikiLinkTap tap)? onOpenWikiLink;
@@ -112,6 +114,7 @@ class ReadingScope extends InheritedWidget {
         styles != oldWidget.styles ||
         readOnly != oldWidget.readOnly ||
         controller != oldWidget.controller ||
-        toggledCallouts != oldWidget.toggledCallouts;
+        toggledCallouts != oldWidget.toggledCallouts ||
+        searchHighlights != oldWidget.searchHighlights;
   }
 }

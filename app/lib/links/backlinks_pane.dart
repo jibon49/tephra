@@ -162,9 +162,11 @@ class _BacklinksPaneState extends ConsumerState<BacklinksPane> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  l10n.linkedMentionsTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Text(
+                    l10n.linkedMentionsTitle,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(width: 8),
                 _buildBadge(links.length),
@@ -318,9 +320,11 @@ class _BacklinksPaneState extends ConsumerState<BacklinksPane> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  l10n.unlinkedMentionsTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Text(
+                    l10n.unlinkedMentionsTitle,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),

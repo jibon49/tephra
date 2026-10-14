@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tephra/l10n/app_localizations.dart';
 import 'package:tephra/reading/callout_view.dart';
-import 'package:tephra/reading/file_chip.dart';
+import 'package:tephra/reading/embeds/file_chip.dart';
 import 'package:tephra/reading/inline_text.dart';
 import 'package:tephra/reading/reading_code.dart';
 import 'package:tephra/reading/reading_controller.dart';
@@ -276,6 +276,9 @@ void main() {
   testWidgets('12-embeds: FileChip exists for non-image attachments', (
     tester,
   ) async {
+    await tester.binding.setSurfaceSize(const Size(800, 3000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     final file = File('../test_vaults/syntax/12-embeds.md');
     final text = file.readAsStringSync();
 

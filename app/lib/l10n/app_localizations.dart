@@ -1689,6 +1689,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create'**
   String get previewCreate;
+
+  /// No description provided for @searchTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchTabTitle;
+
+  /// No description provided for @searchFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search…'**
+  String get searchFieldHint;
+
+  /// No description provided for @searchMatchCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Match case'**
+  String get searchMatchCase;
+
+  /// No description provided for @searchSortFileNameAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (A to Z)'**
+  String get searchSortFileNameAsc;
+
+  /// No description provided for @searchSortFileNameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (Z to A)'**
+  String get searchSortFileNameDesc;
+
+  /// No description provided for @searchSortModifiedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified time (new to old)'**
+  String get searchSortModifiedDesc;
+
+  /// No description provided for @searchSortModifiedAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified time (old to new)'**
+  String get searchSortModifiedAsc;
+
+  /// No description provided for @searchSortCreatedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Created time (new to old)'**
+  String get searchSortCreatedDesc;
+
+  /// No description provided for @searchSortCreatedAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Created time (old to new)'**
+  String get searchSortCreatedAsc;
+
+  /// No description provided for @searchCollapseAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse results'**
+  String get searchCollapseAll;
+
+  /// No description provided for @searchExpandAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand results'**
+  String get searchExpandAll;
+
+  /// No description provided for @searchCopyResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy search results'**
+  String get searchCopyResults;
+
+  /// No description provided for @searchBookmarkThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark this search'**
+  String get searchBookmarkThis;
+
+  /// Number of results found
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 result} other{{count} results}}'**
+  String searchResultCount(int count);
+
+  /// No description provided for @searchMatchedFileName.
+  ///
+  /// In en, this message translates to:
+  /// **'(matched file name)'**
+  String get searchMatchedFileName;
+
+  /// No description provided for @searchResultsCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Search results copied to clipboard'**
+  String get searchResultsCopied;
+
+  /// Search query syntax error description
+  ///
+  /// In en, this message translates to:
+  /// **'Search syntax error at character {offset}'**
+  String searchSyntaxError(int offset);
+
+  /// Header for query block showing number of matching notes
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 result} other{{count} results}}'**
+  String queryBlockHeader(int count);
+
+  /// Button in query block to show full results in search pane
+  ///
+  /// In en, this message translates to:
+  /// **'Show all {count} results'**
+  String queryBlockShowAll(int count);
+
+  /// No description provided for @commandSearchOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Search: Search in all files'**
+  String get commandSearchOpen;
+
+  /// No description provided for @commandSearchCopyResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Search: Copy search results'**
+  String get commandSearchCopyResults;
+
+  /// No description provided for @searchNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes match your search.'**
+  String get searchNoResults;
+
+  /// No description provided for @searchHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent searches'**
+  String get searchHistoryTitle;
 }
 
 class _AppLocalizationsDelegate

@@ -37,6 +37,8 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
             return Text(
               activePath.value,
               style: Theme.of(context).textTheme.labelSmall,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             );
           },
           order: 0,

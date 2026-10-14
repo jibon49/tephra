@@ -429,7 +429,62 @@
       }
     }
   },
-  "previewCreate": "Create"
+  "previewCreate": "Create",
+  "searchTabTitle": "Search",
+  "searchFieldHint": "Search…",
+  "searchMatchCase": "Match case",
+  "searchSortFileNameAsc": "File name (A to Z)",
+  "searchSortFileNameDesc": "File name (Z to A)",
+  "searchSortModifiedDesc": "Modified time (new to old)",
+  "searchSortModifiedAsc": "Modified time (old to new)",
+  "searchSortCreatedDesc": "Created time (new to old)",
+  "searchSortCreatedAsc": "Created time (old to new)",
+  "searchCollapseAll": "Collapse results",
+  "searchExpandAll": "Expand results",
+  "searchCopyResults": "Copy search results",
+  "searchBookmarkThis": "Bookmark this search",
+  "searchResultCount": "{count, plural, =1{1 result} other{{count} results}}",
+  "@searchResultCount": {
+    "description": "Number of results found",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchMatchedFileName": "(matched file name)",
+  "searchResultsCopied": "Search results copied to clipboard",
+  "searchSyntaxError": "Search syntax error at character {offset}",
+  "@searchSyntaxError": {
+    "description": "Search query syntax error description",
+    "placeholders": {
+      "offset": {
+        "type": "int"
+      }
+    }
+  },
+  "queryBlockHeader": "{count, plural, =1{1 result} other{{count} results}}",
+  "@queryBlockHeader": {
+    "description": "Header for query block showing number of matching notes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queryBlockShowAll": "Show all {count} results",
+  "@queryBlockShowAll": {
+    "description": "Button in query block to show full results in search pane",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commandSearchOpen": "Search: Search in all files",
+  "commandSearchCopyResults": "Search: Copy search results",
+  "searchNoResults": "No notes match your search.",
+  "searchHistoryTitle": "Recent searches"
 }
 
 

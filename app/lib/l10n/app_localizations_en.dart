@@ -892,4 +892,93 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get previewCreate => 'Create';
+
+  @override
+  String get searchTabTitle => 'Search';
+
+  @override
+  String get searchFieldHint => 'Search…';
+
+  @override
+  String get searchMatchCase => 'Match case';
+
+  @override
+  String get searchSortFileNameAsc => 'File name (A to Z)';
+
+  @override
+  String get searchSortFileNameDesc => 'File name (Z to A)';
+
+  @override
+  String get searchSortModifiedDesc => 'Modified time (new to old)';
+
+  @override
+  String get searchSortModifiedAsc => 'Modified time (old to new)';
+
+  @override
+  String get searchSortCreatedDesc => 'Created time (new to old)';
+
+  @override
+  String get searchSortCreatedAsc => 'Created time (old to new)';
+
+  @override
+  String get searchCollapseAll => 'Collapse results';
+
+  @override
+  String get searchExpandAll => 'Expand results';
+
+  @override
+  String get searchCopyResults => 'Copy search results';
+
+  @override
+  String get searchBookmarkThis => 'Bookmark this search';
+
+  @override
+  String searchResultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count results',
+      one: '1 result',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchMatchedFileName => '(matched file name)';
+
+  @override
+  String get searchResultsCopied => 'Search results copied to clipboard';
+
+  @override
+  String searchSyntaxError(int offset) {
+    return 'Search syntax error at character $offset';
+  }
+
+  @override
+  String queryBlockHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count results',
+      one: '1 result',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String queryBlockShowAll(int count) {
+    return 'Show all $count results';
+  }
+
+  @override
+  String get commandSearchOpen => 'Search: Search in all files';
+
+  @override
+  String get commandSearchCopyResults => 'Search: Copy search results';
+
+  @override
+  String get searchNoResults => 'No notes match your search.';
+
+  @override
+  String get searchHistoryTitle => 'Recent searches';
 }

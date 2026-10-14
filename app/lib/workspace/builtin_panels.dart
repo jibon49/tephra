@@ -7,6 +7,7 @@ import '../explorer/explorer_pane.dart';
 import '../links/backlinks_pane.dart';
 import '../links/outgoing_links_pane.dart';
 import '../outline/outline_pane.dart';
+import '../search/search_pane.dart';
 import 'sidebar_registry.dart';
 
 /// Registers default sidebar panels for the workspace.
@@ -20,6 +21,16 @@ void registerBuiltinPanels(WidgetRef ref) {
       icon: Icons.folder_outlined,
       builder: (context, ref) => const ExplorerPane(),
       order: 0,
+    ),
+  );
+  registry.register(
+    SidebarPanelSpec(
+      id: 'search',
+      side: SidebarSide.left,
+      label: (l) => l.searchTabTitle,
+      icon: Icons.search,
+      builder: (context, ref) => const SearchPane(),
+      order: 1,
     ),
   );
   registry.register(

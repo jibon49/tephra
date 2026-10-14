@@ -34,11 +34,22 @@ class StatusBar extends ConsumerWidget {
         style: theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
         child: Row(
           children: [
-            for (final item in leftItems) ...[
-              item.builder(context, ref),
-              const SizedBox(width: 8),
-            ],
-            const Spacer(),
+            Expanded(
+              child: ClipRect(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final item in leftItems) ...[
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: item.builder(context, ref),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ],
+                ),
+              ),
+            ),
             for (final item in rightItems) ...[
               const SizedBox(width: 8),
               item.builder(context, ref),
