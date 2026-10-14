@@ -853,4 +853,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sortModifiedNew => 'Modified time (new to old)';
+
+  @override
+  String get sidebarOutline => 'Outline';
+
+  @override
+  String get outlineNoHeadings => 'No headings found';
+
+  @override
+  String get copyLinkToHeading => 'Copy link to heading';
+
+  @override
+  String get headingLinkCopied => 'Link to heading copied';
+
+  @override
+  String get bookmarkHeading => 'Bookmark heading';
+
+  @override
+  String get headingBookmarked => 'Heading bookmarked';
 }

@@ -10,6 +10,7 @@ import '../editor/conflict_dialog.dart';
 import '../editor/source_editor_view.dart';
 import '../l10n/app_localizations.dart';
 import '../links/providers.dart';
+import '../outline/providers.dart';
 import '../reading/link_actions.dart' show pendingJumpProvider;
 import '../reading/reading_controller.dart';
 import '../reading/reading_view.dart';
@@ -183,10 +184,18 @@ class _NoteReadingViewState extends ConsumerState<NoteReadingView> {
   final ReadingViewController _controller = ReadingViewController();
   final TaskToggler _taskToggler = const TaskToggler();
 
+  late final ActiveReadingControllerNotifier _readingNotifier;
+
   @override
   void initState() {
     super.initState();
+    _readingNotifier = ref.read(activeReadingControllerProvider.notifier);
     _checkPendingJump();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _readingNotifier.set(_controller);
+      }
+    });
   }
 
   @override
@@ -194,7 +203,14 @@ class _NoteReadingViewState extends ConsumerState<NoteReadingView> {
     super.didUpdateWidget(oldWidget);
     if (widget.path != oldWidget.path || widget.subpath != oldWidget.subpath) {
       _checkPendingJump();
+      _readingNotifier.set(_controller);
     }
+  }
+
+  @override
+  void dispose() {
+    _readingNotifier.clearIfCurrent(_controller);
+    super.dispose();
   }
 
   void _checkPendingJump() {
@@ -206,6 +222,8 @@ class _NoteReadingViewState extends ConsumerState<NoteReadingView> {
           _controller.scrollToHeading(jump.heading!);
         } else if (jump.blockRef != null) {
           _controller.scrollToBlockRef(jump.blockRef!);
+        } else if (jump.offset != null) {
+          _controller.scrollToOffset(jump.offset!);
         }
       } else if (widget.subpath != null) {
         if (widget.subpath!.startsWith('#^')) {

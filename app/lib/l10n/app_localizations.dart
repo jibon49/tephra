@@ -1617,6 +1617,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Modified time (new to old)'**
   String get sortModifiedNew;
+
+  /// No description provided for @sidebarOutline.
+  ///
+  /// In en, this message translates to:
+  /// **'Outline'**
+  String get sidebarOutline;
+
+  /// No description provided for @outlineNoHeadings.
+  ///
+  /// In en, this message translates to:
+  /// **'No headings found'**
+  String get outlineNoHeadings;
+
+  /// No description provided for @copyLinkToHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link to heading'**
+  String get copyLinkToHeading;
+
+  /// No description provided for @headingLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link to heading copied'**
+  String get headingLinkCopied;
+
+  /// No description provided for @bookmarkHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark heading'**
+  String get bookmarkHeading;
+
+  /// No description provided for @headingBookmarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading bookmarked'**
+  String get headingBookmarked;
 }
 
 class _AppLocalizationsDelegate

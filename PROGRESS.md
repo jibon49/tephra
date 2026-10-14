@@ -212,7 +212,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented TextEdit, FileEdit, applyTextEdits, locateLinkPathSpan (wiki, table cell pipe, markdown, angle brackets), RenamePlan/RenamePlanner, LinkRenameService with open-buffer priority, VaultUndoStackNotifier (20 entries) and undo operation, registered vault.undo-last-rename command; rename_500_test updated 2,000 links across 500 notes in 2.1 s (< 5 s budget); all tests passing.
 - [x] 02.12 Backlinks and outgoing-links panes (linked + unlinked mentions)
   - notes: Implemented Snippet & makeSnippet, mention_finder (whole-word case-insensitive, Unicode marks, excluded ranges), NoteIndex.unlinkedMentions with trigram candidate pruning and 500-mention cap, BacklinksPane with collapsible linked/unlinked sections and sort modes, OutgoingLinksPane with resolved/unresolved groups, UnlinkedMentionLinker with undo support; registered sidebar panels; all tests passing.
-- [ ] 02.13 Outline pane (headings tree, jump, drag sections on desktop)
+- [x] 02.13 Outline pane (headings tree, jump, drag sections on desktop)
+  - notes: Implemented OutlineNode & buildOutline with depth and visible text extraction, sectionOf & moveSectionEdits with trailing newline preservation and rejection guards, activeReadingControllerProvider, OutlinePane with responsive desktop Draggable and mobile long-press menus, and registered outline sidebar panel in right sidebar / drawer; all 18 unit and widget tests passing.
 - [ ] 02.14 Embeds and transclusion in reading view; page preview
 - [ ] 02.15 Search query parser (`tephra_search`)
 - [ ] 02.16 Search engine: SQL/FTS compilation, verification, streaming, sorting, cancellation

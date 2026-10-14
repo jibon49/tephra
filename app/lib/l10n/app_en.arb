@@ -409,6 +409,13 @@
   "noActiveNote": "No active note",
   "sortAlphabeticalAsc": "File name (A to Z)",
   "sortAlphabeticalDesc": "File name (Z to A)",
-  "sortModifiedNew": "Modified time (new to old)"
+  "sortModifiedNew": "Modified time (new to old)",
+  "sidebarOutline": "Outline",
+  "outlineNoHeadings": "No headings found",
+  "copyLinkToHeading": "Copy link to heading",
+  "headingLinkCopied": "Link to heading copied",
+  "bookmarkHeading": "Bookmark heading",
+  "headingBookmarked": "Heading bookmarked"
 }
+
 
