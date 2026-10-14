@@ -216,7 +216,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented OutlineNode & buildOutline with depth and visible text extraction, sectionOf & moveSectionEdits with trailing newline preservation and rejection guards, activeReadingControllerProvider, OutlinePane with responsive desktop Draggable and mobile long-press menus, and registered outline sidebar panel in right sidebar / drawer; all 18 unit and widget tests passing.
 - [x] 02.14 Embeds and transclusion in reading view; page preview
   - notes: Implemented EmbedSlice AST slicing, EmbedContext recursion tracking (depth limit 5, circular embed detection), NoteEmbed with live text invalidation & accent border, ImageEmbed with width/height scaling, FileChip fallback, EmbedView dispatcher, PagePreviewController (max 3 nested popups, hover/long-press triggers), and PagePreviewPopup; all 16 embed and preview tests passing (31 total in test/links and test/reading/embeds).
-- [ ] 02.15 Search query parser (`tephra_search`)
+- [x] 02.15 Search query parser (`tephra_search`)
+  - notes: Implemented SearchExpr AST (EmptyExpr, AndExpr, OrExpr, NotExpr, TermExpr, PhraseExpr, RegexExpr, OperatorExpr with 12 operators, PropertyExpr with exists/empty/matches), SearchSyntaxException with offset tracking, canonical printExpr, and recursive descent SearchParser; all 44 test matrix cases passing.
 - [ ] 02.16 Search engine: SQL/FTS compilation, verification, streaming, sorting, cancellation
 - [ ] 02.17 Search UI, search history, copy results, in-note highlights, ` ```query ` blocks
 - [ ] 02.18 Tags pane and bookmarks
