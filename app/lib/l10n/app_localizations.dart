@@ -1653,6 +1653,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Heading bookmarked'**
   String get headingBookmarked;
+
+  /// No description provided for @embedTooDeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Embed depth limit reached'**
+  String get embedTooDeep;
+
+  /// No description provided for @embedCircular.
+  ///
+  /// In en, this message translates to:
+  /// **'Circular embed'**
+  String get embedCircular;
+
+  /// No description provided for @embedSectionNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Section or block not found'**
+  String get embedSectionNotFound;
+
+  /// No description provided for @embedMediaLaterPhase.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing and viewing this file type arrives in a later version'**
+  String get embedMediaLaterPhase;
+
+  /// Page preview message for unresolved note target
+  ///
+  /// In en, this message translates to:
+  /// **'“{target}” is not created yet. Click to create.'**
+  String previewNotCreated(String target);
+
+  /// No description provided for @previewCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get previewCreate;
 }
 
 class _AppLocalizationsDelegate

@@ -9,8 +9,11 @@ import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
+import '../links/page_preview.dart';
+import '../links/page_preview_controller.dart';
 import '../links/providers.dart';
 import 'block_lookup.dart';
+import 'embeds/embed_context.dart';
 import 'providers.dart';
 import 'reading_blocks.dart';
 import 'reading_controller.dart';
@@ -287,56 +290,94 @@ class _ReadingViewState extends ConsumerState<ReadingView>
       }
     }
 
-    return ReadingScope(
-      path: widget.path,
-      parsed: _parsed!,
-      text: widget.text,
-      styles: styles,
-      footnoteNumbers: _footnoteIndex?.numbers ?? const {},
-      readOnly: widget.readOnly,
-      toggledCallouts: _toggledCallouts,
-      unresolvedLinks: unresolvedTargets,
-      onToggleCallout: _onToggleCallout,
-      onToggleTask: widget.onToggleTask,
-      onOpenWikiLink: widget.onOpenWikiLink,
-      onOpenMarkdownLink: widget.onOpenMarkdownLink,
-      onOpenUrl: widget.onOpenUrl,
-      controller: widget.controller,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final width = constraints.maxWidth;
-          final h = width < 600 ? 16.0 : 32.0;
-          final shouldConstrain = widget.readableWidth && width > 760;
-
-          return SelectionArea(
-            child: ScrollablePositionedList.builder(
-              itemCount: totalItems,
-              itemScrollController: _itemScrollController,
-              itemPositionsListener: _itemPositionsListener,
-              padding: EdgeInsets.fromLTRB(h, 16, h, 96),
-              itemBuilder: (context, index) {
-                final Widget item;
-                if (index < _visibleBlocks.length) {
-                  item = buildBlock(context, _visibleBlocks[index]);
-                } else {
-                  item = FootnoteSectionView(index: _footnoteIndex!);
-                }
-
-                if (shouldConstrain) {
-                  return Align(
-                    alignment: Alignment.topCenter,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 700),
-                      child: item,
-                    ),
-                  );
-                }
-
-                return item;
-              },
-            ),
-          );
+    return EmbedContext(
+      depth: 0,
+      chain: {widget.path},
+      child: ReadingScope(
+        path: widget.path,
+        parsed: _parsed!,
+        text: widget.text,
+        styles: styles,
+        footnoteNumbers: _footnoteIndex?.numbers ?? const {},
+        readOnly: widget.readOnly,
+        toggledCallouts: _toggledCallouts,
+        unresolvedLinks: unresolvedTargets,
+        onToggleCallout: _onToggleCallout,
+        onToggleTask: widget.onToggleTask,
+        onOpenWikiLink: widget.onOpenWikiLink,
+        onOpenMarkdownLink: widget.onOpenMarkdownLink,
+        onOpenUrl: widget.onOpenUrl,
+        controller: widget.controller,
+        onLinkEnter: (ctx, target, heading, blockRef, pos) {
+          final depth = PagePreviewDepthContext.maybeOf(ctx)?.depth ?? 0;
+          ref
+              .read(pagePreviewControllerProvider)
+              .onLinkEnter(
+                context: ctx,
+                from: widget.path,
+                target: target,
+                heading: heading,
+                blockRef: blockRef,
+                position: pos,
+                callerDepth: depth,
+                isEditor: false,
+              );
         },
+        onLinkExit: (target) {
+          ref
+              .read(pagePreviewControllerProvider)
+              .onLinkExit(target: target, callerDepth: 0);
+        },
+        onLinkLongPress: (ctx, target, heading, blockRef, pos) {
+          final depth = PagePreviewDepthContext.maybeOf(ctx)?.depth ?? 0;
+          ref
+              .read(pagePreviewControllerProvider)
+              .showPreview(
+                context: ctx,
+                from: widget.path,
+                target: target,
+                heading: heading,
+                blockRef: blockRef,
+                position: pos,
+                callerDepth: depth,
+              );
+        },
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final h = width < 600 ? 16.0 : 32.0;
+            final shouldConstrain = widget.readableWidth && width > 760;
+
+            return SelectionArea(
+              child: ScrollablePositionedList.builder(
+                itemCount: totalItems,
+                itemScrollController: _itemScrollController,
+                itemPositionsListener: _itemPositionsListener,
+                padding: EdgeInsets.fromLTRB(h, 16, h, 96),
+                itemBuilder: (context, index) {
+                  final Widget item;
+                  if (index < _visibleBlocks.length) {
+                    item = buildBlock(context, _visibleBlocks[index]);
+                  } else {
+                    item = FootnoteSectionView(index: _footnoteIndex!);
+                  }
+
+                  if (shouldConstrain) {
+                    return Align(
+                      alignment: Alignment.topCenter,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 700),
+                        child: item,
+                      ),
+                    );
+                  }
+
+                  return item;
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

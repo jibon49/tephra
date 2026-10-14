@@ -1,12 +1,14 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
-import 'reading_images.dart';
+import 'embeds/embed_view.dart';
 import 'reading_scope.dart';
 
 /// Returns true if [node] is hidden from the reading view.
@@ -21,13 +23,64 @@ final class InlineBuildResult {
   final List<GestureRecognizer> recognizers;
 }
 
+/// Tap gesture recognizer that also detects long-press gestures for link previews.
+class LinkGestureRecognizer extends TapGestureRecognizer {
+  LinkGestureRecognizer({super.debugOwner});
+
+  GestureLongPressCallback? onLongPress;
+  Timer? _longPressTimer;
+  Offset? _longPressPosition;
+  bool _didLongPress = false;
+
+  bool get didLongPress => _didLongPress;
+  Offset? get longPressPosition => _longPressPosition;
+
+  @override
+  void addAllowedPointer(PointerDownEvent event) {
+    super.addAllowedPointer(event);
+    _didLongPress = false;
+    _longPressPosition = event.position;
+    _longPressTimer?.cancel();
+    _longPressTimer = Timer(kLongPressTimeout, () {
+      _didLongPress = true;
+      resolve(GestureDisposition.accepted);
+      onLongPress?.call();
+    });
+  }
+
+  @override
+  void handleEvent(PointerEvent event) {
+    super.handleEvent(event);
+    if (event is PointerMoveEvent) {
+      if (_longPressPosition != null &&
+          (event.position - _longPressPosition!).distance > kTouchSlop) {
+        _longPressTimer?.cancel();
+      }
+    } else if (event is PointerUpEvent || event is PointerCancelEvent) {
+      _longPressTimer?.cancel();
+    }
+  }
+
+  @override
+  void rejectGesture(int pointer) {
+    _longPressTimer?.cancel();
+    super.rejectGesture(pointer);
+  }
+
+  @override
+  void dispose() {
+    _longPressTimer?.cancel();
+    super.dispose();
+  }
+}
+
 /// Builds rich inline spans from Markdown AST nodes.
 final class InlineBuilder {
   const InlineBuilder._();
 
   /// Injectable recognizer factory for testing recognizer disposal.
   static TapGestureRecognizer Function() recognizerFactory =
-      TapGestureRecognizer.new;
+      LinkGestureRecognizer.new;
 
   /// Builds an [InlineSpan] and collects all gesture recognizers for [nodes].
   static InlineBuildResult build(
@@ -165,7 +218,7 @@ final class InlineBuilder {
             if (scope != null) {
               return WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
-                child: ReadingMarkdownImage(
+                child: EmbedView.markdown(
                   url: node.url,
                   alt: alt,
                   from: scope.path,
@@ -175,17 +228,46 @@ final class InlineBuilder {
             return TextSpan(text: alt, style: currentStyle);
           }
 
-          final recognizer = recognizerFactory();
-          recognizers.add(recognizer);
-          recognizer.onTap = () {
-            final isCtrl = HardwareKeyboard.instance.isControlPressed;
-            scope?.onOpenMarkdownLink?.call(node.url, newTab: isCtrl);
-          };
-
           final isExternal = Uri.tryParse(node.url)?.hasScheme == true;
           final pathPart = isExternal
               ? ''
               : LinkFormatter.decodeMarkdownPath(node.url.split('#').first);
+          final fragment = !isExternal && node.url.contains('#')
+              ? node.url.split('#').last
+              : null;
+          final heading = fragment != null && !fragment.startsWith('^')
+              ? fragment
+              : null;
+          final blockRef = fragment != null && fragment.startsWith('^')
+              ? fragment.substring(1)
+              : null;
+
+          final recognizer = recognizerFactory();
+          recognizers.add(recognizer);
+
+          if (recognizer is LinkGestureRecognizer &&
+              !isExternal &&
+              pathPart.isNotEmpty) {
+            recognizer.onLongPress = () {
+              scope?.onLinkLongPress?.call(
+                context,
+                pathPart,
+                heading,
+                blockRef,
+                recognizer.longPressPosition ?? Offset.zero,
+              );
+            };
+          }
+
+          recognizer.onTap = () {
+            if (recognizer is LinkGestureRecognizer &&
+                recognizer.didLongPress) {
+              return;
+            }
+            final isCtrl = HardwareKeyboard.instance.isControlPressed;
+            scope?.onOpenMarkdownLink?.call(node.url, newTab: isCtrl);
+          };
+
           final isUnresolvedLink =
               !isExternal &&
               pathPart.isNotEmpty &&
@@ -201,6 +283,18 @@ final class InlineBuilder {
           return TextSpan(
             style: s,
             recognizer: recognizer,
+            onEnter: !isExternal && pathPart.isNotEmpty
+                ? (event) => scope?.onLinkEnter?.call(
+                    context,
+                    pathPart,
+                    heading,
+                    blockRef,
+                    event.position,
+                  )
+                : null,
+            onExit: !isExternal && pathPart.isNotEmpty
+                ? (_) => scope?.onLinkExit?.call(pathPart)
+                : null,
             children: buildChildren(node.children, s),
           );
 
@@ -209,7 +303,7 @@ final class InlineBuilder {
             if (scope != null) {
               return WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
-                child: ReadingWikiEmbed(node: node, from: scope.path),
+                child: EmbedView.wiki(node: node, from: scope.path),
               );
             }
             return TextSpan(text: node.target, style: currentStyle);
@@ -235,6 +329,18 @@ final class InlineBuilder {
           final recognizer = recognizerFactory();
           recognizers.add(recognizer);
 
+          if (recognizer is LinkGestureRecognizer && node.target.isNotEmpty) {
+            recognizer.onLongPress = () {
+              scope?.onLinkLongPress?.call(
+                context,
+                node.target,
+                node.heading,
+                node.blockRef,
+                recognizer.longPressPosition ?? Offset.zero,
+              );
+            };
+          }
+
           void handleTap(bool newTab) {
             scope?.onOpenWikiLink?.call(
               WikiLinkTap(
@@ -247,6 +353,10 @@ final class InlineBuilder {
           }
 
           recognizer.onTap = () {
+            if (recognizer is LinkGestureRecognizer &&
+                recognizer.didLongPress) {
+              return;
+            }
             final isCtrl = HardwareKeyboard.instance.isControlPressed;
             handleTap(isCtrl);
           };
@@ -261,7 +371,23 @@ final class InlineBuilder {
               ? baseWikiColor.withValues(alpha: 0.6)
               : baseWikiColor;
           final s = TextStyle(color: wikiLinkColor);
-          return TextSpan(text: displayText, style: s, recognizer: recognizer);
+          return TextSpan(
+            text: displayText,
+            style: s,
+            recognizer: recognizer,
+            onEnter: node.target.isNotEmpty
+                ? (event) => scope?.onLinkEnter?.call(
+                    context,
+                    node.target,
+                    node.heading,
+                    node.blockRef,
+                    event.position,
+                  )
+                : null,
+            onExit: node.target.isNotEmpty
+                ? (_) => scope?.onLinkExit?.call(node.target)
+                : null,
+          );
 
         case MdFootnoteRef():
           final num = scope?.footnoteNumbers[node.label]?.toString() ?? '?';

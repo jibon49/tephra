@@ -56,6 +56,9 @@ class ReadingScope extends InheritedWidget {
     this.onOpenMarkdownLink,
     this.onOpenUrl,
     this.controller,
+    this.onLinkEnter,
+    this.onLinkExit,
+    this.onLinkLongPress,
     required super.child,
   });
 
@@ -73,6 +76,23 @@ class ReadingScope extends InheritedWidget {
   final void Function(String url, {bool newTab})? onOpenMarkdownLink;
   final void Function(Uri uri)? onOpenUrl;
   final ReadingViewController? controller;
+  final void Function(
+    BuildContext context,
+    String target,
+    String? heading,
+    String? blockRef,
+    Offset position,
+  )?
+  onLinkEnter;
+  final void Function(String target)? onLinkExit;
+  final void Function(
+    BuildContext context,
+    String target,
+    String? heading,
+    String? blockRef,
+    Offset position,
+  )?
+  onLinkLongPress;
 
   static ReadingScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<ReadingScope>();

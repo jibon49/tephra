@@ -415,7 +415,22 @@
   "copyLinkToHeading": "Copy link to heading",
   "headingLinkCopied": "Link to heading copied",
   "bookmarkHeading": "Bookmark heading",
-  "headingBookmarked": "Heading bookmarked"
+  "headingBookmarked": "Heading bookmarked",
+  "embedTooDeep": "Embed depth limit reached",
+  "embedCircular": "Circular embed",
+  "embedSectionNotFound": "Section or block not found",
+  "embedMediaLaterPhase": "Playing and viewing this file type arrives in a later version",
+  "previewNotCreated": "“{target}” is not created yet. Click to create.",
+  "@previewNotCreated": {
+    "description": "Page preview message for unresolved note target",
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "previewCreate": "Create"
 }
+
 
 

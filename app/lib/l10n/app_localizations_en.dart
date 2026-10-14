@@ -871,4 +871,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get headingBookmarked => 'Heading bookmarked';
+
+  @override
+  String get embedTooDeep => 'Embed depth limit reached';
+
+  @override
+  String get embedCircular => 'Circular embed';
+
+  @override
+  String get embedSectionNotFound => 'Section or block not found';
+
+  @override
+  String get embedMediaLaterPhase =>
+      'Playing and viewing this file type arrives in a later version';
+
+  @override
+  String previewNotCreated(String target) {
+    return '“$target” is not created yet. Click to create.';
+  }
+
+  @override
+  String get previewCreate => 'Create';
 }

@@ -64,6 +64,8 @@ final class AppSettings {
     this.deviceName = '',
     this.lastVaultPath,
     this.recentCommands = const [],
+    this.pagePreviewReadingRequiresCtrl = false,
+    this.pagePreviewEditorRequiresCtrl = true,
     this.extra = const {},
   });
 
@@ -75,6 +77,10 @@ final class AppSettings {
     final themeMode = json['themeMode'] as String? ?? 'system';
     final deviceName = json['deviceName'] as String? ?? '';
     final lastVaultPath = json['lastVaultPath'] as String?;
+    final pagePreviewReadingRequiresCtrl =
+        json['pagePreviewReadingRequiresCtrl'] as bool? ?? false;
+    final pagePreviewEditorRequiresCtrl =
+        json['pagePreviewEditorRequiresCtrl'] as bool? ?? true;
 
     final rawRecentVaults = json['recentVaults'];
     final recentVaults = <RecentVault>[];
@@ -103,6 +109,8 @@ final class AppSettings {
       'lastVaultPath',
       'recentVaults',
       'recentCommands',
+      'pagePreviewReadingRequiresCtrl',
+      'pagePreviewEditorRequiresCtrl',
     };
     final extra = <String, Object?>{};
     for (final entry in json.entries) {
@@ -118,6 +126,8 @@ final class AppSettings {
       lastVaultPath: lastVaultPath,
       recentVaults: List.unmodifiable(recentVaults.take(12)),
       recentCommands: List.unmodifiable(recentCommands.take(10)),
+      pagePreviewReadingRequiresCtrl: pagePreviewReadingRequiresCtrl,
+      pagePreviewEditorRequiresCtrl: pagePreviewEditorRequiresCtrl,
       extra: Map.unmodifiable(extra),
     );
   }
@@ -140,6 +150,12 @@ final class AppSettings {
   /// IDs of recently used palette commands, newest first, max 10.
   final List<String> recentCommands;
 
+  /// Whether hovering over internal links in reading view requires holding Ctrl to show page preview.
+  final bool pagePreviewReadingRequiresCtrl;
+
+  /// Whether hovering over internal links in editor view requires holding Ctrl to show page preview.
+  final bool pagePreviewEditorRequiresCtrl;
+
   /// Unknown keys preserved on read/write.
   final Map<String, Object?> extra;
 
@@ -151,6 +167,8 @@ final class AppSettings {
       'deviceName': deviceName,
       if (lastVaultPath != null) 'lastVaultPath': lastVaultPath,
       'recentCommands': recentCommands,
+      'pagePreviewReadingRequiresCtrl': pagePreviewReadingRequiresCtrl,
+      'pagePreviewEditorRequiresCtrl': pagePreviewEditorRequiresCtrl,
     };
     map.addAll(extra);
     return map;
@@ -163,6 +181,8 @@ final class AppSettings {
     String? deviceName,
     String? Function()? lastVaultPath,
     List<String>? recentCommands,
+    bool? pagePreviewReadingRequiresCtrl,
+    bool? pagePreviewEditorRequiresCtrl,
     Map<String, Object?>? extra,
   }) {
     return AppSettings(
@@ -174,6 +194,10 @@ final class AppSettings {
           ? lastVaultPath()
           : this.lastVaultPath,
       recentCommands: recentCommands ?? this.recentCommands,
+      pagePreviewReadingRequiresCtrl:
+          pagePreviewReadingRequiresCtrl ?? this.pagePreviewReadingRequiresCtrl,
+      pagePreviewEditorRequiresCtrl:
+          pagePreviewEditorRequiresCtrl ?? this.pagePreviewEditorRequiresCtrl,
       extra: extra ?? this.extra,
     );
   }
@@ -226,6 +250,10 @@ final class AppSettings {
           deviceName == other.deviceName &&
           lastVaultPath == other.lastVaultPath &&
           listEquals(recentCommands, other.recentCommands) &&
+          pagePreviewReadingRequiresCtrl ==
+              other.pagePreviewReadingRequiresCtrl &&
+          pagePreviewEditorRequiresCtrl ==
+              other.pagePreviewEditorRequiresCtrl &&
           mapEquals(extra, other.extra);
 
   @override
@@ -236,6 +264,8 @@ final class AppSettings {
     deviceName,
     lastVaultPath,
     Object.hashAll(recentCommands),
+    pagePreviewReadingRequiresCtrl,
+    pagePreviewEditorRequiresCtrl,
     Object.hashAll(extra.entries),
   );
 }
