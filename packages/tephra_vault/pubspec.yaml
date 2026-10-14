@@ -8,8 +8,11 @@ environment:
   sdk: ^3.13.0
 
 dependencies:
+  logging: ^1.3.0
+  path: ^1.9.1
   tephra_core:
     path: ../tephra_core
+  watcher: ^1.2.1
 
 dev_dependencies:
   test: ^1.25.6

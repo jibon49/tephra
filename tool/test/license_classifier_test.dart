@@ -60,6 +60,12 @@ void main() {
     expect(classifyLicenceText(text), LicenceKind.mit);
   });
 
+  test('MPL with secondary license mentions is classified as MPL-2.0', () {
+    const text =
+        'Mozilla Public License Version 2.0\n"Secondary License" means either the GNU Affero General Public License...';
+    expect(classifyLicenceText(text), LicenceKind.mpl2);
+  });
+
   test('unknown text', () {
     const text = 'All rights reserved.';
     expect(classifyLicenceText(text), LicenceKind.unknown);

@@ -24,6 +24,7 @@ app/android/local.properties
 
 # Generated fixtures
 test_vaults/bench/
+test_vaults/**/.tephra/
 
 # IDE / OS
 .idea/

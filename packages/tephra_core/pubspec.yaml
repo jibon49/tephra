@@ -9,3 +9,5 @@ environment:
 
 dev_dependencies:
   test: ^1.25.6
+dependencies:
+  crypto: ^3.0.7

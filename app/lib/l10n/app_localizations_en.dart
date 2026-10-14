@@ -26,5 +26,657 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeCreateVault => 'Create new vault';
 
   @override
-  String get comingInPhase1 => 'Coming in Phase 1';
+  String get vaultPickerRecent => 'Recent vaults';
+
+  @override
+  String get vaultPickerCreatePrivate => 'Create vault in app storage';
+
+  @override
+  String get vaultRecentMissing => 'Vault folder no longer exists';
+
+  @override
+  String get vaultRecentRemove => 'Remove from list';
+
+  @override
+  String get vaultPrivateHint =>
+      'Notes in app storage are only visible to Tephra and are removed if you uninstall the app.';
+
+  @override
+  String get createVaultTitle => 'Create new vault';
+
+  @override
+  String get createVaultName => 'Vault name';
+
+  @override
+  String get createVaultLocation => 'Location';
+
+  @override
+  String get createVaultChoose => 'Choose…';
+
+  @override
+  String get createVaultCreate => 'Create';
+
+  @override
+  String get createVaultNameEmpty => 'Vault name cannot be empty.';
+
+  @override
+  String get createVaultNameInvalid =>
+      'Vault name contains invalid characters.';
+
+  @override
+  String get vaultErrorMissing => 'The folder could not be found.';
+
+  @override
+  String get vaultErrorNotAFolder => 'The chosen path is not a folder.';
+
+  @override
+  String get vaultErrorNoAccess => 'Access to this folder was denied.';
+
+  @override
+  String get vaultErrorTooNew =>
+      'This vault was created by a newer version of Tephra.';
+
+  @override
+  String get vaultErrorNotEmpty =>
+      'The folder already exists and is not empty.';
+
+  @override
+  String get vaultImportedFromObsidian =>
+      'Imported your Obsidian settings (read-only copy).';
+
+  @override
+  String get storageAccessTitle => 'Allow access to your files';
+
+  @override
+  String get storageAccessBody =>
+      'Tephra stores notes as plain Markdown files in a folder you choose, so other apps like Obsidian can open the same files. Android calls this “All files access”. Tephra only reads and writes inside the vault folder you pick.';
+
+  @override
+  String get storageAccessAllow => 'Allow access';
+
+  @override
+  String get storageAccessPrivate => 'Use app storage instead';
+
+  @override
+  String get storageAccessNotNow => 'Not now';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
+  String get commonRename => 'Rename';
+
+  @override
+  String get commonCreate => 'Create';
+
+  @override
+  String get commonClose => 'Close';
+
+  @override
+  String get workspaceBack => 'Back';
+
+  @override
+  String get workspaceForward => 'Forward';
+
+  @override
+  String get workspaceEmptyTitle => 'No note open';
+
+  @override
+  String get tabClose => 'Close tab';
+
+  @override
+  String get tabCloseOthers => 'Close other tabs';
+
+  @override
+  String get tabSplitRight => 'Split right';
+
+  @override
+  String get tabSplitDown => 'Split down';
+
+  @override
+  String get noteMissing => 'Note no longer exists';
+
+  @override
+  String get noteMalformedBanner =>
+      'This note contains invalid characters and cannot be read cleanly.';
+
+  @override
+  String get unsupportedFileTitle => 'Unsupported file type';
+
+  @override
+  String get openWithSystemApp => 'Open with default app';
+
+  @override
+  String get unsupportedFileAndroid =>
+      'This file type cannot be previewed in Tephra.';
+
+  @override
+  String get sidebarExplorer => 'Files';
+
+  @override
+  String get phoneMenu => 'Menu';
+
+  @override
+  String get modeReading => 'Reading view';
+
+  @override
+  String get modeSource => 'Source mode';
+
+  @override
+  String get commandToggleMode => 'Toggle reading / source view';
+
+  @override
+  String get commandAppOpenQuickSwitcher => 'Open quick switcher';
+
+  @override
+  String get commandAppOpenCommandPalette => 'Open command palette';
+
+  @override
+  String get commandAppOpenSettings => 'Open settings';
+
+  @override
+  String get commandAppOpenVault => 'Open another vault…';
+
+  @override
+  String get commandAppToggleLeftSidebar => 'Toggle left sidebar';
+
+  @override
+  String get commandWorkspaceCloseTab => 'Close tab';
+
+  @override
+  String get commandWorkspaceNextTab => 'Next tab';
+
+  @override
+  String get commandWorkspacePreviousTab => 'Previous tab';
+
+  @override
+  String get commandWorkspaceGoBack => 'Navigate back';
+
+  @override
+  String get commandWorkspaceGoForward => 'Navigate forward';
+
+  @override
+  String get commandWorkspaceSplitRight => 'Split right';
+
+  @override
+  String get commandWorkspaceSplitDown => 'Split down';
+
+  @override
+  String get commandWorkspaceClosePane => 'Close split';
+
+  @override
+  String get commandEditorToggleReadingView => 'Toggle reading view';
+
+  @override
+  String get commandNoteCreateNote => 'Create new note';
+
+  @override
+  String get palettePlaceholder => 'Type a command…';
+
+  @override
+  String get paletteNoResults => 'No matching commands';
+
+  @override
+  String get switcherPlaceholder => 'Type a note name…';
+
+  @override
+  String switcherCreate(String name) {
+    return 'Create “$name”';
+  }
+
+  @override
+  String get switcherNoResults => 'No matching notes';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsEditor => 'Editor';
+
+  @override
+  String get settingsFiles => 'Files & Links';
+
+  @override
+  String get settingsHotkeys => 'Hotkeys';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get settingsFontSize => 'Font size';
+
+  @override
+  String get settingsUseTab => 'Indent with tabs';
+
+  @override
+  String get settingsTabSize => 'Tab size';
+
+  @override
+  String get settingsReadableLineLength => 'Readable line length';
+
+  @override
+  String get settingsDefaultViewMode => 'Default view for new tabs';
+
+  @override
+  String get settingsAttachmentFolder => 'Attachment folder';
+
+  @override
+  String get settingsAttachmentFolderHelp =>
+      '/ = vault root, ./ = same folder as the note, ./attachments = subfolder of the note\'s folder, or a folder name';
+
+  @override
+  String get settingsNewNoteLocation => 'Default location for new notes';
+
+  @override
+  String get settingsNewNoteFolder => 'Folder for new notes';
+
+  @override
+  String get settingsTrashMode => 'Deleted files';
+
+  @override
+  String get settingsShowHidden => 'Show hidden folders';
+
+  @override
+  String get hotkeysTitle => 'Hotkeys';
+
+  @override
+  String get hotkeysSearch => 'Filter hotkeys…';
+
+  @override
+  String get hotkeysAdd => 'Add hotkey';
+
+  @override
+  String get hotkeysReset => 'Reset';
+
+  @override
+  String get hotkeysResetAll => 'Reset all';
+
+  @override
+  String get hotkeysPressKeys => 'Press hotkey combo…';
+
+  @override
+  String hotkeyConflictTitle(String commands) {
+    return 'Already used by $commands';
+  }
+
+  @override
+  String get hotkeyReplace => 'Replace';
+
+  @override
+  String get hotkeyKeepBoth => 'Keep both';
+
+  @override
+  String get newNoteUntitled => 'Untitled';
+
+  @override
+  String get codeCopied => 'Code copied to clipboard';
+
+  @override
+  String get codeRenderedLater => 'Rendered in a later version';
+
+  @override
+  String get footnoteMissing => 'Undefined footnote';
+
+  @override
+  String get footnotesTitle => 'Footnotes';
+
+  @override
+  String get readingLoading => 'Loading note…';
+
+  @override
+  String linkNotFound(String target) {
+    return '\"$target\" doesn\'t exist';
+  }
+
+  @override
+  String get linkCreate => 'Create';
+
+  @override
+  String get linkSchemeBlocked =>
+      'Opening this URL scheme is blocked for security';
+
+  @override
+  String imageNotFound(String name) {
+    return 'Image not found: $name';
+  }
+
+  @override
+  String embedNotFound(String target) {
+    return 'Embed not found: $target';
+  }
+
+  @override
+  String get embedOpenLater => 'Open this file type in a later version';
+
+  @override
+  String get fileChipOpen => 'Open';
+
+  @override
+  String get commandNoteSave => 'Save current note';
+
+  @override
+  String get commandNoteCreateFolder => 'Create new folder';
+
+  @override
+  String get commandNoteRenameNote => 'Rename current note';
+
+  @override
+  String get commandNoteDeleteNote => 'Delete current note';
+
+  @override
+  String get commandNoteDuplicateNote => 'Duplicate current note';
+
+  @override
+  String get commandNoteRevealInExplorer => 'Reveal in system explorer';
+
+  @override
+  String get commandExplorerCollapseAll => 'Collapse all folders';
+
+  @override
+  String get commandExplorerRevealActiveFile =>
+      'Reveal active file in explorer';
+
+  @override
+  String get explorerNewNote => 'New note';
+
+  @override
+  String get explorerNewFolder => 'New folder';
+
+  @override
+  String get explorerSort => 'Change sort order';
+
+  @override
+  String get explorerSortNameAsc => 'File name (A to Z)';
+
+  @override
+  String get explorerSortNameDesc => 'File name (Z to A)';
+
+  @override
+  String get explorerSortModifiedNew => 'Modified time (new to old)';
+
+  @override
+  String get explorerSortModifiedOld => 'Modified time (old to new)';
+
+  @override
+  String get explorerSortCreatedNew => 'Created time (new to old)';
+
+  @override
+  String get explorerSortCreatedOld => 'Created time (old to new)';
+
+  @override
+  String get explorerCollapseAll => 'Collapse all';
+
+  @override
+  String get explorerOpenInNewTab => 'Open in new tab';
+
+  @override
+  String get explorerRename => 'Rename';
+
+  @override
+  String get explorerDuplicate => 'Duplicate';
+
+  @override
+  String get explorerMoveTo => 'Move to…';
+
+  @override
+  String get explorerMoveHere => 'Move here';
+
+  @override
+  String get explorerReveal => 'Reveal in system explorer';
+
+  @override
+  String get explorerDelete => 'Delete';
+
+  @override
+  String explorerDeleteTitle(String name) {
+    return 'Delete “$name”?';
+  }
+
+  @override
+  String get explorerDeleteBodySystem => 'It will be moved to the Recycle Bin.';
+
+  @override
+  String get explorerDeleteBodyVault =>
+      'It will be moved to the vault\'s .trash folder.';
+
+  @override
+  String get explorerDeleteBodyPermanent =>
+      'It will be deleted permanently. This cannot be undone.';
+
+  @override
+  String explorerDeleteFolderExtra(int count) {
+    return 'All $count items inside are included.';
+  }
+
+  @override
+  String get explorerDeleteUnsaved =>
+      'Unsaved changes in open notes will be lost.';
+
+  @override
+  String get explorerNameEmpty => 'Name cannot be empty';
+
+  @override
+  String get explorerNameInvalid => 'Name contains invalid characters';
+
+  @override
+  String get explorerNameExists =>
+      'A file or folder with that name already exists';
+
+  @override
+  String get explorerPermissionDenied => 'Permission denied';
+
+  @override
+  String get explorerNotFound => 'File not found';
+
+  @override
+  String explorerLinksNotUpdatedNotice(String name) {
+    return 'Links to “$name” were not updated. Automatic link updates arrive in a later version.';
+  }
+
+  @override
+  String get explorerMoveExists =>
+      'A file with that name already exists in the destination folder';
+
+  @override
+  String get explorerUntitledFolder => 'Untitled folder';
+
+  @override
+  String get explorerEmpty => 'This vault has no notes yet';
+
+  @override
+  String get noteOpenElsewhere => 'This note is being edited in another tab.';
+
+  @override
+  String get editorReadOnlyHint =>
+      'This note is read-only because it contains invalid UTF-8.';
+
+  @override
+  String get modeReadingTooltip => 'Switch to reading view';
+
+  @override
+  String get modeSourceTooltip => 'Switch to source mode';
+
+  @override
+  String get findQueryHint => 'Find';
+
+  @override
+  String get findReplaceHint => 'Replace';
+
+  @override
+  String get findNoResults => 'No results';
+
+  @override
+  String findCounter(int current, int total) {
+    return '$current of $total';
+  }
+
+  @override
+  String get findInvalidRegex => 'Invalid regular expression';
+
+  @override
+  String findReplacedCount(int count) {
+    return 'Replaced $count occurrences';
+  }
+
+  @override
+  String get findMatchCase => 'Match case';
+
+  @override
+  String get findWholeWord => 'Whole word';
+
+  @override
+  String get findRegex => 'Regular expression';
+
+  @override
+  String get findNext => 'Next match';
+
+  @override
+  String get findPrevious => 'Previous match';
+
+  @override
+  String get findClose => 'Close';
+
+  @override
+  String get findReplaceOne => 'Replace';
+
+  @override
+  String get findReplaceAll => 'Replace all';
+
+  @override
+  String get commandEditorToggleBold => 'Toggle bold';
+
+  @override
+  String get commandEditorToggleItalic => 'Toggle italic';
+
+  @override
+  String get commandEditorToggleStrikethrough => 'Toggle strikethrough';
+
+  @override
+  String get commandEditorToggleHighlight => 'Toggle highlight';
+
+  @override
+  String get commandEditorToggleCode => 'Toggle inline code';
+
+  @override
+  String get commandEditorInsertLink => 'Insert link';
+
+  @override
+  String get commandEditorToggleBulletList => 'Toggle bullet list';
+
+  @override
+  String get commandEditorToggleNumberedList => 'Toggle numbered list';
+
+  @override
+  String get commandEditorToggleTask => 'Toggle task checkbox';
+
+  @override
+  String get commandEditorToggleQuote => 'Toggle quote';
+
+  @override
+  String get commandEditorCycleHeading => 'Cycle heading level';
+
+  @override
+  String get commandEditorIndentList => 'Indent';
+
+  @override
+  String get commandEditorOutdentList => 'Outdent';
+
+  @override
+  String get commandEditorUndo => 'Undo';
+
+  @override
+  String get commandEditorRedo => 'Redo';
+
+  @override
+  String get commandEditorFind => 'Find in note';
+
+  @override
+  String get commandEditorReplace => 'Find and replace in note';
+
+  @override
+  String get commandEditorMoveLineUp => 'Move line up';
+
+  @override
+  String get commandEditorMoveLineDown => 'Move line down';
+
+  @override
+  String get commandEditorDuplicateLine => 'Duplicate line';
+
+  @override
+  String conflictTitle(String name) {
+    return '“$name” changed on disk';
+  }
+
+  @override
+  String get conflictBody =>
+      'You have unsaved changes and this note was also changed outside Tephra. Choose which version to keep. Nothing is lost: the version you do not keep is saved as a copy.';
+
+  @override
+  String get conflictKeepMine => 'Keep mine';
+
+  @override
+  String get conflictTakeTheirs => 'Take theirs';
+
+  @override
+  String get conflictKeepBoth => 'Keep both';
+
+  @override
+  String get noteDeletedBanner => 'This note was deleted outside Tephra.';
+
+  @override
+  String get noteRecreate => 'Recreate file';
+
+  @override
+  String get saveStateSaved => 'Saved';
+
+  @override
+  String get saveStateUnsaved => 'Unsaved changes';
+
+  @override
+  String get saveStateSaving => 'Saving…';
+
+  @override
+  String get saveStateError => 'Couldn\'t save — tap to retry';
+
+  @override
+  String get saveFailed => 'Failed to save note';
+
+  @override
+  String get attachmentDropHint => 'Drop files to insert as attachments';
+
+  @override
+  String get attachmentFailed => 'Failed to insert attachment';
+
+  @override
+  String get attachmentTooLarge => 'Attachment is larger than 200 MB';
+
+  @override
+  String get attachmentPickPhoto => 'Photo library';
+
+  @override
+  String get attachmentTakePhoto => 'Take photo';
+
+  @override
+  String get attachmentPickFile => 'File';
+
+  @override
+  String get toolbarMore => 'More';
+
+  @override
+  String get commandEditorHideKeyboard => 'Hide keyboard';
+
+  @override
+  String get commandEditorInsertAttachment => 'Insert attachment…';
 }

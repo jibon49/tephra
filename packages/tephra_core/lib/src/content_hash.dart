@@ -1,0 +1,5 @@
+// © 2026 Tephra. All rights reserved.
+
+import 'package:crypto/crypto.dart';
+
+String contentHash(List<int> bytes) => sha256.convert(bytes).toString();
