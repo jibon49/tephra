@@ -8,12 +8,18 @@ import 'package:tephra_markdown/tephra_markdown.dart';
 import '../settings/providers.dart';
 import '../vault/providers.dart';
 import '../workspace/providers.dart';
+import 'attachment_service.dart';
 import 'editor_controller.dart';
 import 'editor_options.dart';
 import 'editor_registry.dart';
 
 export '../reading/link_actions.dart'
     show PendingJump, PendingJumpNotifier, pendingJumpProvider;
+
+/// Attachment service provider.
+final attachmentServiceProvider = Provider<AttachmentService>((ref) {
+  return AttachmentService(ref);
+});
 
 /// Single editor registry instance for the vault session.
 final editorRegistryProvider = Provider<EditorRegistry>((ref) {
@@ -36,9 +42,20 @@ final activeEditorProvider = Provider<EditorController?>((ref) {
   final activePath = ref.watch(activeNotePathProvider);
   final registry = ref.watch(editorRegistryProvider);
 
-  void onRegistryChanged() => ref.invalidateSelf();
+  var isDisposed = false;
+  void onRegistryChanged() {
+    scheduleMicrotask(() {
+      if (!isDisposed) {
+        ref.invalidateSelf();
+      }
+    });
+  }
+
   registry.addListener(onRegistryChanged);
-  ref.onDispose(() => registry.removeListener(onRegistryChanged));
+  ref.onDispose(() {
+    isDisposed = true;
+    registry.removeListener(onRegistryChanged);
+  });
 
   return registry.controllerFor(activePath);
 });

@@ -45,9 +45,11 @@ void main() {
       'editor.move-line-up': ['Alt+Up'],
       'editor.move-line-down': ['Alt+Down'],
       'editor.duplicate-line': ['Ctrl+Shift+D'],
+      'editor.insert-attachment': [],
+      'editor.hide-keyboard': [],
     };
 
-    test('all 20 editor.* commands exist with exact default shortcuts', () {
+    test('all 22 editor.* commands exist with exact default shortcuts', () {
       final registry = CommandRegistry();
       registerEditorCommands(registry);
 
@@ -280,7 +282,7 @@ void main() {
         runCmd('editor.redo');
         expect(controller.text, 'hello world');
 
-        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(milliseconds: 1500));
       },
     );
   });

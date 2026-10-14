@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/command_registry.dart';
 import '../commands/tephra_command.dart';
+import 'attachment_actions.dart';
 import 'helpers/block_format.dart';
 import 'helpers/indentation.dart';
 import 'helpers/inline_format.dart';
@@ -382,6 +383,34 @@ void registerEditorCommands(CommandRegistry registry) {
         final c = ref.read(activeEditorProvider);
         if (c == null) return;
         c.runPlan(duplicateLines(c.lines, c.engine.selection));
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'editor.insert-attachment',
+      label: (l10n) => l10n.commandEditorInsertAttachment,
+      icon: Icons.attach_file,
+      defaultShortcuts: const [],
+      showInMobileToolbar: true,
+      isAvailable: editorAvailable,
+      run: (ref, context) async {
+        await pickAndInsertAttachment(context, ref);
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'editor.hide-keyboard',
+      label: (l10n) => l10n.commandEditorHideKeyboard,
+      icon: Icons.keyboard_hide,
+      defaultShortcuts: const [],
+      showInMobileToolbar: true,
+      isAvailable: editorAvailable,
+      run: (ref, context) {
+        FocusManager.instance.primaryFocus?.unfocus();
       },
     ),
   );

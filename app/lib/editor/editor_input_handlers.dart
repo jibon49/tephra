@@ -7,7 +7,11 @@ import 'helpers/indentation.dart';
 import 'helpers/list_continuation.dart';
 
 /// Builds the engine input handlers for auto-pairing, list continuation, and indentation.
-EngineInputHandlers buildHandlers(EditorController c, AutoPairTracker tracker) {
+EngineInputHandlers buildHandlers(
+  EditorController c,
+  AutoPairTracker tracker, {
+  Future<bool> Function()? onPaste,
+}) {
   return EngineInputHandlers(
     onTypedText: (typed) {
       final v = c.lines;
@@ -59,7 +63,10 @@ EngineInputHandlers buildHandlers(EditorController c, AutoPairTracker tracker) {
       return true; // Always handled when inside editor to prevent focus traversal
     },
     onPaste: () async {
-      return false; // Hook for attachments in step 01.21
+      if (onPaste != null) {
+        return await onPaste();
+      }
+      return false;
     },
   );
 }

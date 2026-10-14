@@ -160,6 +160,8 @@ final class EditorController implements NoteEditorBinding {
 
   bool get hasFocus => engine.hasFocus;
 
+  Stream<bool> get focusChanges => engine.focusChanges;
+
   void focus() => engine.requestFocus();
 
   void revealOffset(int offset, {bool center = true}) {
@@ -269,7 +271,11 @@ final class EditorController implements NoteEditorBinding {
     }
   }
 
-  Widget buildView(BuildContext context, {bool autofocus = false}) {
+  Widget buildView(
+    BuildContext context, {
+    bool autofocus = false,
+    Future<bool> Function()? onPaste,
+  }) {
     final theme = Theme.of(context);
     final baseStyle = TextStyle(
       fontSize: options.fontSize,
@@ -282,7 +288,7 @@ final class EditorController implements NoteEditorBinding {
       options: options,
       readOnly: options.readOnly || document.isReadOnly,
       baseStyle: baseStyle,
-      handlers: buildHandlers(this, tracker),
+      handlers: buildHandlers(this, tracker, onPaste: onPaste),
       autofocus: autofocus,
     );
 

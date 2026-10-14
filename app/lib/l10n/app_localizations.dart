@@ -1299,6 +1299,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to save note'**
   String get saveFailed;
+
+  /// No description provided for @attachmentDropHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop files to insert as attachments'**
+  String get attachmentDropHint;
+
+  /// No description provided for @attachmentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to insert attachment'**
+  String get attachmentFailed;
+
+  /// No description provided for @attachmentTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment is larger than 200 MB'**
+  String get attachmentTooLarge;
+
+  /// No description provided for @attachmentPickPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library'**
+  String get attachmentPickPhoto;
+
+  /// No description provided for @attachmentTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get attachmentTakePhoto;
+
+  /// No description provided for @attachmentPickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get attachmentPickFile;
+
+  /// No description provided for @toolbarMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get toolbarMore;
+
+  /// No description provided for @commandEditorHideKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide keyboard'**
+  String get commandEditorHideKeyboard;
+
+  /// No description provided for @commandEditorInsertAttachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert attachment…'**
+  String get commandEditorInsertAttachment;
 }
 
 class _AppLocalizationsDelegate

@@ -12,7 +12,9 @@ import '../reading/providers.dart';
 import '../reading/reading_view.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
+import 'attachment_actions.dart';
 import 'editor_controller.dart';
+import 'editor_drop_target.dart';
 import 'engine/re_editor_engine.dart';
 import 'find/find_bar.dart';
 import 'find/find_controller.dart';
@@ -265,6 +267,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
     Widget editorContent = _controller!.buildView(
       context,
       autofocus: shouldAutofocus,
+      onPaste: () => handlePasteAttachment(_controller!, ref, context: context),
     );
 
     if (_controller!.options.readableLineLength && isDesktop) {
@@ -276,7 +279,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       );
     }
 
-    return ValueListenableBuilder<FindState>(
+    final mainContent = ValueListenableBuilder<FindState>(
       valueListenable: _controller!.findController,
       builder: (context, findState, _) {
         return Column(
@@ -310,5 +313,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
         );
       },
     );
+
+    return EditorDropTarget(controller: _controller, child: mainContent);
   }
 }

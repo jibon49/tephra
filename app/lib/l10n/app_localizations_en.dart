@@ -652,4 +652,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveFailed => 'Failed to save note';
+
+  @override
+  String get attachmentDropHint => 'Drop files to insert as attachments';
+
+  @override
+  String get attachmentFailed => 'Failed to insert attachment';
+
+  @override
+  String get attachmentTooLarge => 'Attachment is larger than 200 MB';
+
+  @override
+  String get attachmentPickPhoto => 'Photo library';
+
+  @override
+  String get attachmentTakePhoto => 'Take photo';
+
+  @override
+  String get attachmentPickFile => 'File';
+
+  @override
+  String get toolbarMore => 'More';
+
+  @override
+  String get commandEditorHideKeyboard => 'Hide keyboard';
+
+  @override
+  String get commandEditorInsertAttachment => 'Insert attachment…';
 }

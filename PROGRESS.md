@@ -134,7 +134,8 @@ Instructions: `instructions/phase-01-vault-editor.md`
 
 - [x] 01.20 Autosave, save indicator, external changes, three-way merge, conflict dialog
   - notes: Implemented three-way merge with exact context matching (5,000-line note merges in 30 ms vs < 500 ms budget), conflict resolution (keepMine, takeTheirs with recovery copy, keepBoth with timestamped conflict notes), NoteDocument 1000ms debounced autosave, external change detection with stat guard, silent reload, DeletedOnDiskBanner, SaveStateIndicator in status bar & phone header, note.save command, and AutosaveHost lifecycle flush; external pickup verified in 172-201 ms (< 1000 ms budget).
-- [ ] 01.21 Attachments (paste, drop, pick) and the phone keyboard toolbar
+- [x] 01.21 Attachments (paste, drop, pick) and the phone keyboard toolbar
+  - notes: Implemented AttachmentService with ambiguity resolution across vault, 200 MB budget, image byte sniffing (PNG, JPEG, GIF, WebP, BMP), Windows clipboard paste handling for images/files, file drop overlay, adaptive MobileToolbar with 48 dp buttons and keyboard dismiss, registered editor.insert-attachment and editor.hide-keyboard commands; all 42 tests passing.
 - [ ] 01.22 Round-trip proof, crash safety, performance budget, demo and exit gate
 
 ### Exit gate

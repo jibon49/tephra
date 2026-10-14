@@ -332,6 +332,15 @@
   "saveStateUnsaved": "Unsaved changes",
   "saveStateSaving": "Saving…",
   "saveStateError": "Couldn't save — tap to retry",
-  "saveFailed": "Failed to save note"
+  "saveFailed": "Failed to save note",
+  "attachmentDropHint": "Drop files to insert as attachments",
+  "attachmentFailed": "Failed to insert attachment",
+  "attachmentTooLarge": "Attachment is larger than 200 MB",
+  "attachmentPickPhoto": "Photo library",
+  "attachmentTakePhoto": "Take photo",
+  "attachmentPickFile": "File",
+  "toolbarMore": "More",
+  "commandEditorHideKeyboard": "Hide keyboard",
+  "commandEditorInsertAttachment": "Insert attachment…"
 }
 

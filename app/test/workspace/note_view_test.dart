@@ -115,7 +115,8 @@ void main() {
         container
             .read(workspaceProvider.notifier)
             .setMode(currentTabId, ViewMode.source);
-        await tester.pumpAndSettle();
+        await tester.pump();
+        await tester.pump();
 
         expect(find.byType(SourceEditorView), findsOneWidget);
         final controller2 = container

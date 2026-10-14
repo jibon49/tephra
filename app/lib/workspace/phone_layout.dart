@@ -1,11 +1,16 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/command_palette.dart';
 import '../commands/providers.dart';
 import '../commands/quick_switcher.dart';
+import '../editor/editor_controller.dart';
+import '../editor/mobile_toolbar.dart';
+import '../editor/providers.dart';
 import '../editor/save_state_indicator.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/providers.dart';
@@ -14,11 +19,34 @@ import 'providers.dart';
 import 'sidebar_registry.dart';
 import 'workspace_models.dart';
 
-class PhoneLayout extends ConsumerWidget {
+class PhoneLayout extends ConsumerStatefulWidget {
   const PhoneLayout({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PhoneLayout> createState() => _PhoneLayoutState();
+}
+
+class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
+  StreamSubscription<bool>? _focusSub;
+  EditorController? _subscribedEditor;
+
+  @override
+  void dispose() {
+    _focusSub?.cancel();
+    super.dispose();
+  }
+
+  void _updateFocusSubscription(EditorController? editor) {
+    if (_subscribedEditor == editor) return;
+    _focusSub?.cancel();
+    _subscribedEditor = editor;
+    _focusSub = editor?.focusChanges.listen((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final viewRegistry = ref.watch(viewRegistryProvider);
     final focusedTab = ref.watch(workspaceProvider.select((w) => w.focusedTab));
@@ -28,6 +56,9 @@ class PhoneLayout extends ConsumerWidget {
     final noteDoc = activeNotePath != null
         ? ref.watch(noteDocumentProvider(activeNotePath))
         : null;
+
+    final activeEditor = ref.watch(activeEditorProvider);
+    _updateFocusSubscription(activeEditor);
 
     final title = focusedTab != null
         ? viewRegistry.titleFor(focusedTab.content, l10n)
@@ -42,6 +73,12 @@ class PhoneLayout extends ConsumerWidget {
 
     final canGoBack = focusedTab?.canGoBack ?? false;
     final canGoForward = focusedTab?.canGoForward ?? false;
+
+    final isSourceMode = focusedTab?.mode == ViewMode.source;
+    final insets = MediaQuery.viewInsetsOf(context).bottom;
+    final hasFocus = activeEditor?.hasFocus ?? false;
+    final showMobileToolbar =
+        isSourceMode && activeEditor != null && (insets > 0 || hasFocus);
 
     return PopScope(
       canPop: !canGoBack,
@@ -146,14 +183,21 @@ class PhoneLayout extends ConsumerWidget {
             : null,
         body: focusedTab == null
             ? const EmptyWorkspaceView()
-            : KeyedSubtree(
-                key: ValueKey(focusedTab.id),
-                child: viewRegistry.build(
-                  context,
-                  ref,
-                  focusedTab.content,
-                  focusedTab.id,
-                ),
+            : Column(
+                children: [
+                  Expanded(
+                    child: KeyedSubtree(
+                      key: ValueKey(focusedTab.id),
+                      child: viewRegistry.build(
+                        context,
+                        ref,
+                        focusedTab.content,
+                        focusedTab.id,
+                      ),
+                    ),
+                  ),
+                  if (showMobileToolbar) const MobileToolbar(),
+                ],
               ),
       ),
     );
