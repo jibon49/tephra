@@ -193,7 +193,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Added drift 2.35.2, sqlite3 3.7.1, drift_dev 2.35.1, build_runner 2.16.1; license check 162 allowed / 0 unallowed; verified SQLite 3.45+ with FTS5, contentless_delete, trigram case-insensitive/Bangla matching, and unicode61 mark categories keeping Bangla words whole (8/8 smoke tests passed).
 - [x] 02.2 Index schema: drift tables, FTS tables, indices, migrations, database open + recovery
   - notes: Implemented 10 drift tables (Files, Notes, Aliases, Headings, Blocks, Links, Tags, Properties, Tasks, IndexMeta) and 2 FTS5 contentless tables (fts_words with unicode61 mark categories and fts_trigram); generated index_database.g.dart; implemented openIndexDatabase with WAL mode, corrupt recovery and wipeAll on parser version mismatch; 15 unit tests passing.
-- [ ] 02.3 Index models and `LineIndex`
+- [x] 02.3 Index models and `LineIndex`
+  - notes: Implemented all 15 index models (NoteSummary, FileRecord, LinkRecord, UnlinkedMention, TagCount, HeadingRecord, BlockRecord, AliasRecord, TaskRecord, FtsHit, PropertyKeyCount, IndexProgress, IndexEvent, IndexOptions, IndexStats), model_helpers collection equality, and re-used LineIndex from tephra_markdown; 22 unit tests passing.
 - [ ] 02.4 Note extraction: `ParsedNote` → index rows
 - [ ] 02.5 Link resolver, `NameTable`, heading and block matching
 - [ ] 02.6 `IndexerCore`: full index, reconcile, incremental updates, dirty targets (in-process)
