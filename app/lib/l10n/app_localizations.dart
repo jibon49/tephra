@@ -1533,6 +1533,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Undo last rename'**
   String get commandVaultUndoLastRename;
+
+  /// No description provided for @sidebarBacklinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Backlinks'**
+  String get sidebarBacklinks;
+
+  /// No description provided for @sidebarOutgoingLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Outgoing links'**
+  String get sidebarOutgoingLinks;
+
+  /// No description provided for @mentionChangedRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'The note was edited; mention list refreshed.'**
+  String get mentionChangedRefresh;
+
+  /// No description provided for @mentionLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Mention linked'**
+  String get mentionLinked;
+
+  /// No description provided for @linkedMentionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked mentions'**
+  String get linkedMentionsTitle;
+
+  /// No description provided for @unlinkedMentionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlinked mentions'**
+  String get unlinkedMentionsTitle;
+
+  /// No description provided for @linkMentionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get linkMentionAction;
+
+  /// No description provided for @unresolvedLinksSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Unresolved'**
+  String get unresolvedLinksSection;
+
+  /// No description provided for @createLinkAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createLinkAction;
+
+  /// No description provided for @collapseAllAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse all'**
+  String get collapseAllAction;
+
+  /// No description provided for @noActiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'No active note'**
+  String get noActiveNote;
+
+  /// No description provided for @sortAlphabeticalAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (A to Z)'**
+  String get sortAlphabeticalAsc;
+
+  /// No description provided for @sortAlphabeticalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (Z to A)'**
+  String get sortAlphabeticalDesc;
+
+  /// No description provided for @sortModifiedNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified time (new to old)'**
+  String get sortModifiedNew;
 }
 
 class _AppLocalizationsDelegate

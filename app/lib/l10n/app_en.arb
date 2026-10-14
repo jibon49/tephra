@@ -395,6 +395,20 @@
     }
   },
   "undoAction": "Undo",
-  "commandVaultUndoLastRename": "Undo last rename"
+  "commandVaultUndoLastRename": "Undo last rename",
+  "sidebarBacklinks": "Backlinks",
+  "sidebarOutgoingLinks": "Outgoing links",
+  "mentionChangedRefresh": "The note was edited; mention list refreshed.",
+  "mentionLinked": "Mention linked",
+  "linkedMentionsTitle": "Linked mentions",
+  "unlinkedMentionsTitle": "Unlinked mentions",
+  "linkMentionAction": "Link",
+  "unresolvedLinksSection": "Unresolved",
+  "createLinkAction": "Create",
+  "collapseAllAction": "Collapse all",
+  "noActiveNote": "No active note",
+  "sortAlphabeticalAsc": "File name (A to Z)",
+  "sortAlphabeticalDesc": "File name (Z to A)",
+  "sortModifiedNew": "Modified time (new to old)"
 }
 

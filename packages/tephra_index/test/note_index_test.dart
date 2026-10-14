@@ -259,5 +259,40 @@ tags: [p]
           .toList();
       expect(indexingDoneCounts, [200, 400, 450]);
     });
+
+    test('unlinkedMentions returns occurrences of stem and aliases', () async {
+      final uFs = MemoryVaultFileSystem();
+      await uFs.writeText(
+        VaultPath('Alpha.md'),
+        const TextDocument(text: '---\naliases: [Al1]\n---\n# Alpha'),
+      );
+      await uFs.writeText(
+        VaultPath('B.md'),
+        const TextDocument(text: 'I like alpha.\n[[Alpha]]'),
+      );
+      await uFs.writeText(
+        VaultPath('C.md'),
+        const TextDocument(text: 'al1 rules'),
+      );
+      await uFs.writeText(
+        VaultPath('D.md'),
+        const TextDocument(text: 'alphabet'),
+      );
+
+      final uIndex = await NoteIndex.open(':memory:', uFs);
+      await uIndex.reconcile();
+
+      final mentions = await uIndex.unlinkedMentions(VaultPath('Alpha.md'));
+      await uIndex.close();
+
+      expect(mentions.length, equals(2));
+      expect(mentions[0].source, equals(VaultPath('B.md')));
+      expect(mentions[0].line, equals(0));
+      expect(mentions[0].matchedText, equals('alpha'));
+
+      expect(mentions[1].source, equals(VaultPath('C.md')));
+      expect(mentions[1].line, equals(0));
+      expect(mentions[1].matchedText, equals('al1'));
+    });
   });
 }

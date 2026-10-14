@@ -1,6 +1,7 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:drift/drift.dart' hide Table, Column, Index;
 import 'package:sqlite3/sqlite3.dart' as sqlite;
@@ -14,6 +15,7 @@ import 'indexer/in_process_runner.dart';
 import 'indexer/index_runner.dart';
 import 'indexer/isolate_runner.dart';
 import 'links/link_resolver.dart';
+import 'links/mention_finder.dart';
 import 'links/name_table.dart';
 import 'model/alias_record.dart';
 import 'model/block_record.dart';
@@ -37,6 +39,7 @@ final class NoteIndex {
     required this._runner,
     required this._readerDb,
     required this._isIsolate,
+    required this._fs,
   }) {
     _progressSub = _runner.progress.listen((p) {
       _currentProgress = p;
@@ -69,7 +72,12 @@ final class NoteIndex {
         options: options,
       );
       await runner.core.loadNameTable();
-      return NoteIndex._(runner: runner, readerDb: opened.db, isIsolate: false);
+      return NoteIndex._(
+        runner: runner,
+        readerDb: opened.db,
+        isIsolate: false,
+        fs: fs,
+      );
     } else {
       final runner = await IsolateIndexRunner.create(
         rootDir: fs.rootDir,
@@ -77,13 +85,19 @@ final class NoteIndex {
         options: options,
       );
       final readerDb = openReaderIndexDatabase(dbFile);
-      return NoteIndex._(runner: runner, readerDb: readerDb, isIsolate: true);
+      return NoteIndex._(
+        runner: runner,
+        readerDb: readerDb,
+        isIsolate: true,
+        fs: fs,
+      );
     }
   }
 
   final IndexRunner _runner;
   final TephraIndexDatabase _readerDb;
   final bool _isIsolate;
+  final VaultFileSystem _fs;
 
   late final StreamSubscription<IndexProgress> _progressSub;
   late final StreamSubscription<IndexEvent> _eventsSub;
@@ -351,8 +365,100 @@ final class NoteIndex {
   }
 
   /// Returns unlinked mentions of [target].
-  Future<List<UnlinkedMention>> unlinkedMentions(VaultPath target) {
-    throw UnimplementedError('step 02.12');
+  Future<List<UnlinkedMention>> unlinkedMentions(VaultPath target) async {
+    final terms = <String>[target.stem];
+    final aliasRows = await (_readerDb.select(
+      _readerDb.aliases,
+    )..where((tbl) => tbl.path.equals(target.value))).get();
+    for (final a in aliasRows) {
+      terms.add(a.alias);
+    }
+
+    terms.removeWhere((t) => t.runes.length < 2);
+
+    final seen = <String>{};
+    final uniqueTerms = <String>[];
+    for (final t in terms) {
+      final lower = t.toLowerCase();
+      if (seen.add(lower)) {
+        uniqueTerms.add(t);
+      }
+    }
+
+    if (uniqueTerms.isEmpty) return const [];
+
+    final bool hasShortTerm = uniqueTerms.any((t) => t.runes.length < 3);
+    final Set<VaultPath> candidates;
+
+    if (hasShortTerm) {
+      final allNotesList = await allNotes();
+      candidates = allNotesList.map((n) => n.path).toSet();
+    } else {
+      candidates = <VaultPath>{};
+      for (final term in uniqueTerms) {
+        final ftsArg = 'body : "${term.replaceAll('"', '""')}"';
+        final rows = await _readerDb
+            .customSelect(
+              'SELECT n.path FROM fts_trigram JOIN notes n ON n.id = fts_trigram.rowid WHERE fts_trigram MATCH ?',
+              variables: [Variable.withString(ftsArg)],
+            )
+            .get();
+        for (final r in rows) {
+          candidates.add(VaultPath(r.read<String>('path')));
+        }
+      }
+    }
+
+    candidates.remove(target);
+    if (candidates.isEmpty) return const [];
+
+    final allMentions = <UnlinkedMention>[];
+    final candidateList = candidates.toList();
+
+    for (var i = 0; i < candidateList.length; i += 100) {
+      final endIdx = (i + 100 < candidateList.length)
+          ? i + 100
+          : candidateList.length;
+      final batchPaths = candidateList.sublist(i, endIdx);
+      final batchTexts = <(VaultPath, String)>[];
+
+      for (final p in batchPaths) {
+        try {
+          final doc = await _fs.readText(p);
+          if (!doc.malformed) {
+            batchTexts.add((p, doc.text));
+          }
+        } catch (_) {}
+      }
+
+      if (batchTexts.isNotEmpty) {
+        final batchMentions = await Isolate.run(() {
+          final list = <UnlinkedMention>[];
+          for (final (path, text) in batchTexts) {
+            list.addAll(findMentions(path, text, uniqueTerms));
+          }
+          return list;
+        });
+
+        allMentions.addAll(batchMentions);
+        if (allMentions.length >= 500) {
+          break;
+        }
+      }
+    }
+
+    var result = allMentions;
+    if (result.length > 500) {
+      result = result.sublist(0, 500);
+    }
+
+    result.sort((a, b) {
+      final cmp = a.source.compareTo(b.source);
+      if (cmp != 0) return cmp;
+      return a.start.compareTo(b.start);
+    });
+
+    return result;
   }
 
   /// Returns outgoing links from [source].

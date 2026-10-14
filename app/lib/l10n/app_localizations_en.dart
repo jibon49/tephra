@@ -810,4 +810,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandVaultUndoLastRename => 'Undo last rename';
+
+  @override
+  String get sidebarBacklinks => 'Backlinks';
+
+  @override
+  String get sidebarOutgoingLinks => 'Outgoing links';
+
+  @override
+  String get mentionChangedRefresh =>
+      'The note was edited; mention list refreshed.';
+
+  @override
+  String get mentionLinked => 'Mention linked';
+
+  @override
+  String get linkedMentionsTitle => 'Linked mentions';
+
+  @override
+  String get unlinkedMentionsTitle => 'Unlinked mentions';
+
+  @override
+  String get linkMentionAction => 'Link';
+
+  @override
+  String get unresolvedLinksSection => 'Unresolved';
+
+  @override
+  String get createLinkAction => 'Create';
+
+  @override
+  String get collapseAllAction => 'Collapse all';
+
+  @override
+  String get noActiveNote => 'No active note';
+
+  @override
+  String get sortAlphabeticalAsc => 'File name (A to Z)';
+
+  @override
+  String get sortAlphabeticalDesc => 'File name (Z to A)';
+
+  @override
+  String get sortModifiedNew => 'Modified time (new to old)';
 }
