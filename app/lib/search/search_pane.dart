@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_search/tephra_search.dart';
 
+import '../bookmarks/bookmark.dart';
+import '../bookmarks/providers.dart';
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../workspace/providers.dart';
@@ -246,13 +248,31 @@ class _SearchPaneState extends ConsumerState<SearchPane> {
                   ),
                   PopupMenuItem(
                     value: 'bookmark',
-                    enabled: false,
+                    enabled: searchState.query.trim().isNotEmpty,
                     child: Text(l10n.searchBookmarkThis),
                   ),
                 ],
                 onSelected: (val) {
                   if (val == 'copy') {
                     copyResultsToClipboard(context, ref, searchState.results);
+                  } else if (val == 'bookmark') {
+                    final q = searchState.query.trim();
+                    if (q.isNotEmpty) {
+                      ref
+                          .read(bookmarksProvider.notifier)
+                          .add(
+                            SearchBookmark(
+                              query: q,
+                              ctime: DateTime.now().millisecondsSinceEpoch,
+                            ),
+                          );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(l10n.bookmarkSearchAdded),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
                   }
                 },
               ),

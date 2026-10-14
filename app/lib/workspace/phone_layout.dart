@@ -30,6 +30,8 @@ class PhoneLayout extends ConsumerStatefulWidget {
 class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
   StreamSubscription<bool>? _focusSub;
   EditorController? _subscribedEditor;
+  int _activeDrawerIndex = 0;
+  int _activeEndDrawerIndex = 0;
 
   @override
   void dispose() {
@@ -67,10 +69,10 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
 
     final leftPanels = ref
         .watch(sidebarRegistryProvider.notifier)
-        .panelsFor(SidebarSide.left);
+        .phonePanelsFor(SidebarSide.left);
     final rightPanels = ref
         .watch(sidebarRegistryProvider.notifier)
-        .panelsFor(SidebarSide.right);
+        .phonePanelsFor(SidebarSide.right);
 
     final canGoBack = focusedTab?.canGoBack ?? false;
     final canGoForward = focusedTab?.canGoForward ?? false;
@@ -165,23 +167,103 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
         ),
         drawer: Drawer(
           child: leftPanels.isNotEmpty
-              ? Column(
-                  children: [
-                    DrawerHeader(
-                      child: Center(
-                        child: Text(
-                          session?.name ?? 'Tephra',
-                          style: Theme.of(context).textTheme.titleLarge,
+              ? SafeArea(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              session?.name ?? 'Tephra',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const Spacer(),
+                            for (var i = 0; i < leftPanels.length; i++)
+                              IconButton(
+                                iconSize: 20,
+                                icon: Icon(leftPanels[i].icon),
+                                tooltip: leftPanels[i].label(l10n),
+                                color:
+                                    i ==
+                                        (_activeDrawerIndex < leftPanels.length
+                                            ? _activeDrawerIndex
+                                            : 0)
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                onPressed: () =>
+                                    setState(() => _activeDrawerIndex = i),
+                              ),
+                          ],
                         ),
                       ),
-                    ),
-                    Expanded(child: leftPanels.first.builder(context, ref)),
-                  ],
+                      const Divider(height: 1),
+                      Expanded(
+                        child:
+                            leftPanels[_activeDrawerIndex < leftPanels.length
+                                    ? _activeDrawerIndex
+                                    : 0]
+                                .builder(context, ref),
+                      ),
+                    ],
+                  ),
                 )
               : Center(child: Text(l10n.sidebarExplorer)),
         ),
         endDrawer: rightPanels.isNotEmpty
-            ? Drawer(child: rightPanels.first.builder(context, ref))
+            ? Drawer(
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      if (rightPanels.length > 1) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              for (var i = 0; i < rightPanels.length; i++)
+                                IconButton(
+                                  iconSize: 20,
+                                  icon: Icon(rightPanels[i].icon),
+                                  tooltip: rightPanels[i].label(l10n),
+                                  color:
+                                      i ==
+                                          (_activeEndDrawerIndex <
+                                                  rightPanels.length
+                                              ? _activeEndDrawerIndex
+                                              : 0)
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                  onPressed: () =>
+                                      setState(() => _activeEndDrawerIndex = i),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const Divider(height: 1),
+                      ],
+                      Expanded(
+                        child:
+                            rightPanels[_activeEndDrawerIndex <
+                                        rightPanels.length
+                                    ? _activeEndDrawerIndex
+                                    : 0]
+                                .builder(context, ref),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             : null,
         body: focusedTab == null
             ? const EmptyWorkspaceView()

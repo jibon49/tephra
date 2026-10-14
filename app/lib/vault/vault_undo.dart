@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
+import '../bookmarks/providers.dart';
 import '../editor/edit_operation.dart';
 import '../editor/providers.dart';
 import '../explorer/providers.dart';
@@ -33,6 +34,7 @@ final class VaultOperation {
     required this.moves,
     required this.changes,
     this.folderMove,
+    this.oldBookmarksJson,
     DateTime? at,
   }) : at = at ?? DateTime.now();
 
@@ -44,6 +46,9 @@ final class VaultOperation {
 
   /// If this was a top-level folder move, (from, to).
   final (VaultPath from, VaultPath to)? folderMove;
+
+  /// Snapshot of bookmarks JSON before this operation.
+  final String? oldBookmarksJson;
 
   final DateTime at;
 }
@@ -174,6 +179,16 @@ final class VaultUndoStackNotifier extends Notifier<List<VaultOperation>> {
             conflicts++;
           }
         }
+      }
+    }
+
+    if (op.oldBookmarksJson != null) {
+      try {
+        await ref
+            .read(bookmarksProvider.notifier)
+            .restoreJson(op.oldBookmarksJson!);
+      } catch (_) {
+        // Ignore failure restoring bookmarks
       }
     }
 

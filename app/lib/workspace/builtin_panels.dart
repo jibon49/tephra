@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../bookmarks/bookmarks_pane.dart';
 import '../explorer/explorer_pane.dart';
 import '../links/backlinks_pane.dart';
 import '../links/outgoing_links_pane.dart';
 import '../outline/outline_pane.dart';
 import '../search/search_pane.dart';
+import '../tags/tags_pane.dart';
 import 'sidebar_registry.dart';
 
 /// Registers default sidebar panels for the workspace.
@@ -31,6 +33,16 @@ void registerBuiltinPanels(WidgetRef ref) {
       icon: Icons.search,
       builder: (context, ref) => const SearchPane(),
       order: 1,
+    ),
+  );
+  registry.register(
+    SidebarPanelSpec(
+      id: 'bookmarks',
+      side: SidebarSide.left,
+      label: (l) => l.sidebarBookmarks,
+      icon: Icons.bookmark_outline,
+      builder: (context, ref) => const BookmarksPane(),
+      order: 2,
     ),
   );
   registry.register(
@@ -61,6 +73,18 @@ void registerBuiltinPanels(WidgetRef ref) {
       icon: Icons.list_alt,
       builder: (context, ref) => const OutlinePane(),
       order: 2,
+    ),
+  );
+  registry.register(
+    SidebarPanelSpec(
+      id: 'tags',
+      side: SidebarSide.right,
+      phoneSide: SidebarSide.left,
+      label: (l) => l.sidebarTags,
+      icon: Icons.tag,
+      builder: (context, ref) => const TagsPane(),
+      order: 3,
+      phoneOrder: 3,
     ),
   );
 }

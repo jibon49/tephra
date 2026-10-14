@@ -1827,6 +1827,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recent searches'**
   String get searchHistoryTitle;
+
+  /// No description provided for @sidebarTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get sidebarTags;
+
+  /// No description provided for @sidebarBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get sidebarBookmarks;
+
+  /// No description provided for @tagSortNameAZ.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (A to Z)'**
+  String get tagSortNameAZ;
+
+  /// No description provided for @tagSortFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency (high to low)'**
+  String get tagSortFrequency;
+
+  /// No description provided for @tagShowNested.
+  ///
+  /// In en, this message translates to:
+  /// **'Show nested tags'**
+  String get tagShowNested;
+
+  /// No description provided for @tagShowFlat.
+  ///
+  /// In en, this message translates to:
+  /// **'Show flat list'**
+  String get tagShowFlat;
+
+  /// No description provided for @tagNoTags.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags found in vault'**
+  String get tagNoTags;
+
+  /// No description provided for @bookmarkCurrentFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark current file'**
+  String get bookmarkCurrentFile;
+
+  /// No description provided for @bookmarkRemoveCurrentFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get bookmarkRemoveCurrentFile;
+
+  /// No description provided for @bookmarkFileAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'File bookmarked'**
+  String get bookmarkFileAdded;
+
+  /// No description provided for @bookmarkFileRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark removed'**
+  String get bookmarkFileRemoved;
+
+  /// No description provided for @bookmarkAddSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark this search'**
+  String get bookmarkAddSearch;
+
+  /// No description provided for @bookmarkSearchAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Search bookmarked'**
+  String get bookmarkSearchAdded;
+
+  /// No description provided for @bookmarkNewGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'New bookmark group'**
+  String get bookmarkNewGroup;
+
+  /// No description provided for @bookmarkRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get bookmarkRename;
+
+  /// No description provided for @bookmarkRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get bookmarkRemove;
+
+  /// No description provided for @bookmarkMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get bookmarkMoveUp;
+
+  /// No description provided for @bookmarkMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get bookmarkMoveDown;
+
+  /// No description provided for @bookmarkMoveToGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to group...'**
+  String get bookmarkMoveToGroup;
+
+  /// No description provided for @bookmarkNoBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet'**
+  String get bookmarkNoBookmarks;
+
+  /// No description provided for @bookmarkGroupPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Group name'**
+  String get bookmarkGroupPrompt;
+
+  /// No description provided for @bookmarkRenamePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark title'**
+  String get bookmarkRenamePrompt;
+
+  /// No description provided for @bookmarkCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get bookmarkCreate;
+
+  /// No description provided for @bookmarkCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get bookmarkCancel;
+
+  /// No description provided for @bookmarkSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get bookmarkSave;
+
+  /// No description provided for @bookmarkRoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Root'**
+  String get bookmarkRoot;
+
+  /// No description provided for @commandBookmarkToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks: Bookmark current file'**
+  String get commandBookmarkToggle;
+
+  /// No description provided for @commandBookmarkHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks: Bookmark heading'**
+  String get commandBookmarkHeading;
+
+  /// No description provided for @commandBookmarkSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks: Bookmark this search'**
+  String get commandBookmarkSearch;
+
+  /// No description provided for @commandBookmarkNewGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks: New bookmark group'**
+  String get commandBookmarkNewGroup;
 }
 
 class _AppLocalizationsDelegate

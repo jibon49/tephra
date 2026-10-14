@@ -9,6 +9,8 @@ import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
+import '../bookmarks/bookmark.dart';
+import '../bookmarks/providers.dart';
 import '../core/providers.dart';
 import '../editor/edit_operation.dart';
 import '../editor/editor_controller.dart';
@@ -132,7 +134,7 @@ class _OutlinePaneState extends ConsumerState<OutlinePane> {
     }
   }
 
-  Future<void> _showPhoneHeadingMenu(
+  Future<void> _showHeadingMenu(
     BuildContext context,
     OutlineNode node,
     VaultPath activePath,
@@ -183,14 +185,22 @@ class _OutlinePaneState extends ConsumerState<OutlinePane> {
             ListTile(
               leading: const Icon(Icons.bookmark_outline),
               title: Text(l10n.bookmarkHeading),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.headingBookmarked),
-                    duration: const Duration(seconds: 2),
-                  ),
+                final bookmark = FileBookmark(
+                  path: activePath,
+                  subpath: '#${node.text}',
+                  ctime: DateTime.now().millisecondsSinceEpoch,
                 );
+                await ref.read(bookmarksProvider.notifier).add(bookmark);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.headingBookmarked),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
               },
             ),
           ],
@@ -374,9 +384,10 @@ class _OutlinePaneState extends ConsumerState<OutlinePane> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(4),
                   onTap: () => _jumpToHeading(node, activePath),
-                  onLongPress: isDesktop
-                      ? null
-                      : () => _showPhoneHeadingMenu(context, node, activePath),
+                  onLongPress: () =>
+                      _showHeadingMenu(context, node, activePath),
+                  onSecondaryTap: () =>
+                      _showHeadingMenu(context, node, activePath),
                   child: Padding(
                     padding: EdgeInsets.only(
                       left: 4.0 + 16.0 * node.depth,

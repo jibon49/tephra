@@ -981,4 +981,94 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchHistoryTitle => 'Recent searches';
+
+  @override
+  String get sidebarTags => 'Tags';
+
+  @override
+  String get sidebarBookmarks => 'Bookmarks';
+
+  @override
+  String get tagSortNameAZ => 'Name (A to Z)';
+
+  @override
+  String get tagSortFrequency => 'Frequency (high to low)';
+
+  @override
+  String get tagShowNested => 'Show nested tags';
+
+  @override
+  String get tagShowFlat => 'Show flat list';
+
+  @override
+  String get tagNoTags => 'No tags found in vault';
+
+  @override
+  String get bookmarkCurrentFile => 'Bookmark current file';
+
+  @override
+  String get bookmarkRemoveCurrentFile => 'Remove bookmark';
+
+  @override
+  String get bookmarkFileAdded => 'File bookmarked';
+
+  @override
+  String get bookmarkFileRemoved => 'Bookmark removed';
+
+  @override
+  String get bookmarkAddSearch => 'Bookmark this search';
+
+  @override
+  String get bookmarkSearchAdded => 'Search bookmarked';
+
+  @override
+  String get bookmarkNewGroup => 'New bookmark group';
+
+  @override
+  String get bookmarkRename => 'Rename';
+
+  @override
+  String get bookmarkRemove => 'Remove';
+
+  @override
+  String get bookmarkMoveUp => 'Move up';
+
+  @override
+  String get bookmarkMoveDown => 'Move down';
+
+  @override
+  String get bookmarkMoveToGroup => 'Move to group...';
+
+  @override
+  String get bookmarkNoBookmarks => 'No bookmarks yet';
+
+  @override
+  String get bookmarkGroupPrompt => 'Group name';
+
+  @override
+  String get bookmarkRenamePrompt => 'Bookmark title';
+
+  @override
+  String get bookmarkCreate => 'Create';
+
+  @override
+  String get bookmarkCancel => 'Cancel';
+
+  @override
+  String get bookmarkSave => 'Save';
+
+  @override
+  String get bookmarkRoot => 'Root';
+
+  @override
+  String get commandBookmarkToggle => 'Bookmarks: Bookmark current file';
+
+  @override
+  String get commandBookmarkHeading => 'Bookmarks: Bookmark heading';
+
+  @override
+  String get commandBookmarkSearch => 'Bookmarks: Bookmark this search';
+
+  @override
+  String get commandBookmarkNewGroup => 'Bookmarks: New bookmark group';
 }

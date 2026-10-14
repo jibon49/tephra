@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../bookmarks/bookmark_commands.dart';
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../search/copy_results.dart';
@@ -23,6 +24,7 @@ import 'tephra_command.dart';
 
 void registerBuiltinCommands(CommandRegistry registry) {
   registerIndexCommands(registry);
+  registerBookmarkCommands(registry);
   registry.register(
     TephraCommand(
       id: 'app.open-quick-switcher',
