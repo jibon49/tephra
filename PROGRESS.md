@@ -195,7 +195,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented 10 drift tables (Files, Notes, Aliases, Headings, Blocks, Links, Tags, Properties, Tasks, IndexMeta) and 2 FTS5 contentless tables (fts_words with unicode61 mark categories and fts_trigram); generated index_database.g.dart; implemented openIndexDatabase with WAL mode, corrupt recovery and wipeAll on parser version mismatch; 15 unit tests passing.
 - [x] 02.3 Index models and `LineIndex`
   - notes: Implemented all 15 index models (NoteSummary, FileRecord, LinkRecord, UnlinkedMention, TagCount, HeadingRecord, BlockRecord, AliasRecord, TaskRecord, FtsHit, PropertyKeyCount, IndexProgress, IndexEvent, IndexOptions, IndexStats), model_helpers collection equality, and re-used LineIndex from tephra_markdown; 22 unit tests passing.
-- [ ] 02.4 Note extraction: `ParsedNote` → index rows
+- [x] 02.4 Note extraction: `ParsedNote` → index rows
+  - notes: Pure deterministic NoteExtractor producing ExtractedNote with helpers link_target_key, word_counter, and property_typing; fixed block parser table continuation and list closing when followed by unindented blocks; 24 extract unit tests passing.
 - [ ] 02.5 Link resolver, `NameTable`, heading and block matching
 - [ ] 02.6 `IndexerCore`: full index, reconcile, incremental updates, dirty targets (in-process)
 - [ ] 02.7 `NoteIndex` facade, queries and the worker isolate
