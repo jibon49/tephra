@@ -212,13 +212,14 @@ void main() {
         options: const EditorOptions(),
       );
 
+      engine.setFocus(true);
       controller.apply(const EditOperation(0, 0, 'Edited '));
       expect(doc.isDirty, isTrue);
       expect(fs.writeCount, 0);
 
       // Blur
       engine.setFocus(false);
-      await pumpEventQueue();
+      await tester.pump();
 
       expect(fs.writeCount, 1);
       expect(doc.saveState, SaveState.saved);
@@ -237,7 +238,8 @@ void main() {
 
       final doc1 = store.acquire(path1);
       final doc2 = store.acquire(path2);
-      await pumpEventQueue();
+      await doc1.load();
+      await doc2.load();
 
       doc1.edit(const EditOperation(0, 0, 'A '));
       doc2.edit(const EditOperation(0, 0, 'B '));
@@ -288,7 +290,7 @@ void main() {
         },
       );
       final doc = store.acquire(path);
-      await pumpEventQueue();
+      await doc.load();
 
       doc.edit(const EditOperation(0, 0, 'Closing '));
       expect(doc.isDirty, isTrue);

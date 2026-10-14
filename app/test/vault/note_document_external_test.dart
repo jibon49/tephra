@@ -36,11 +36,9 @@ void main() {
       fs.dispose();
     });
 
-    testWidgets('clean doc reloads silently and revision increments', (
-      tester,
-    ) async {
+    test('clean doc reloads silently and revision increments', () async {
       final doc = store.acquire(path);
-      await pumpEventQueue();
+      await doc.load();
       final rev0 = doc.revision;
 
       fs.putText('note.md', 'Line 1\nLine 2 modified\nLine 3');
@@ -52,102 +50,93 @@ void main() {
       expect(doc.isDirty, isFalse);
     });
 
-    testWidgets(
-      'editor attached -> replaceAll called with keepCursor: true and the undo history cleared',
-      (tester) async {
-        final doc = store.acquire(path);
-        await pumpEventQueue();
+    test('editor attached -> replaceAll called with keepCursor: true and the undo history cleared', () async {
+      final doc = store.acquire(path);
+      await doc.load();
 
-        final engine = FakeEditorEngine(doc.text);
-        final controller = EditorController(
-          document: doc,
-          engine: engine,
-          parseService: const ParseService(),
-          options: const EditorOptions(),
-        );
+      final engine = FakeEditorEngine(doc.text);
+      final controller = EditorController(
+        document: doc,
+        engine: engine,
+        parseService: const ParseService(),
+        options: const EditorOptions(),
+      );
 
-        // Perform an edit then undo to make undo history non-empty
-        controller.apply(const EditOperation(0, 0, 'Temp '));
-        expect(controller.canUndo, isTrue);
-        controller.undo();
-        expect(doc.isDirty, isFalse);
+      // Perform an edit then undo to make undo history non-empty
+      controller.apply(const EditOperation(0, 0, 'Temp '));
+      expect(controller.canUndo, isTrue);
+      controller.undo();
+      expect(doc.isDirty, isFalse);
 
-        fs.putText('note.md', 'Line 1\nLine 2 changed\nLine 3');
-        fs.emit(FileModified(path));
-        await pumpEventQueue();
+      fs.putText('note.md', 'Line 1\nLine 2 changed\nLine 3');
+      fs.emit(FileModified(path));
+      await pumpEventQueue();
 
-        expect(controller.text, 'Line 1\nLine 2 changed\nLine 3');
-        expect(controller.canUndo, isFalse);
+      expect(controller.text, 'Line 1\nLine 2 changed\nLine 3');
+      expect(controller.canUndo, isFalse);
 
-        controller.dispose();
-      },
-    );
+      controller.dispose();
+    });
 
-    testWidgets(
-      'dirty doc + non-overlapping external change -> merged text, still dirty, then autosave writes the merged text',
-      (tester) async {
-        final lines = List.generate(20, (i) => 'Line ${i + 1}').join('\n');
-        await fs.writeText(path, TextDocument(text: lines));
-        final doc = store.acquire(path);
-        await pumpEventQueue();
+    test('dirty doc + non-overlapping external change -> merged text, still dirty, then autosave writes the merged text', () async {
+      final lines = List.generate(20, (i) => 'Line ${i + 1}').join('\n');
+      await fs.writeText(path, TextDocument(text: lines));
+      final doc = store.acquire(path);
+      await doc.load();
 
-        // Dirty edit at line 2: replace "Line 2" with "Line 2 mine"
-        final l2Pos = lines.indexOf('Line 2');
-        doc.edit(EditOperation(l2Pos, l2Pos + 6, 'Line 2 mine'));
-        expect(doc.isDirty, isTrue);
+      // Dirty edit at line 2: replace "Line 2" with "Line 2 mine"
+      final l2Pos = lines.indexOf('Line 2');
+      doc.edit(EditOperation(l2Pos, l2Pos + 6, 'Line 2 mine'));
+      expect(doc.isDirty, isTrue);
 
-        // External edit at line 18: replace "Line 18" with "Line 18 theirs"
-        final externalLines = lines.replaceFirst('Line 18', 'Line 18 theirs');
-        fs.putText('note.md', externalLines);
-        fs.emit(FileModified(path));
-        await pumpEventQueue();
+      // External edit at line 18: replace "Line 18" with "Line 18 theirs"
+      final externalLines = lines.replaceFirst('Line 18', 'Line 18 theirs');
+      fs.putText('note.md', externalLines);
+      fs.emit(FileModified(path));
+      await pumpEventQueue();
 
-        expect(doc.text, contains('Line 2 mine'));
-        expect(doc.text, contains('Line 18 theirs'));
-        expect(doc.isDirty, isTrue);
+      expect(doc.text, contains('Line 2 mine'));
+      expect(doc.text, contains('Line 18 theirs'));
+      expect(doc.isDirty, isTrue);
 
-        // Autosave writes the merged text after 1,000 ms
-        await tester.pump(const Duration(milliseconds: 1000));
-        await pumpEventQueue();
+      // Autosave writes the merged text after 1,000 ms
+      await Future<void>.delayed(const Duration(milliseconds: 1100));
+      await pumpEventQueue();
 
-        expect(doc.saveState, SaveState.saved);
-        expect(fs.textOf('note.md'), contains('Line 2 mine'));
-        expect(fs.textOf('note.md'), contains('Line 18 theirs'));
-      },
-    );
+      expect(doc.saveState, SaveState.saved);
+      expect(fs.textOf('note.md'), contains('Line 2 mine'));
+      expect(fs.textOf('note.md'), contains('Line 18 theirs'));
+    });
 
-    testWidgets(
-      'dirty + overlapping change -> pendingConflict set, no write happens while pending, save() returns conflict',
-      (tester) async {
-        final doc = store.acquire(path);
-        await pumpEventQueue();
+    test('dirty + overlapping change -> pendingConflict set, no write happens while pending, save() returns conflict', () async {
+      final doc = store.acquire(path);
+      await doc.load();
 
-        doc.edit(const EditOperation(0, 6, 'Mine'));
-        expect(doc.isDirty, isTrue);
+      doc.edit(const EditOperation(0, 6, 'Mine'));
+      expect(doc.isDirty, isTrue);
 
-        fs.putText('note.md', 'Theirs\nLine 2\nLine 3');
-        fs.emit(FileModified(path));
-        await pumpEventQueue();
+      fs.putText('note.md', 'Theirs\nLine 2\nLine 3');
+      fs.emit(FileModified(path));
+      await pumpEventQueue();
 
-        expect(doc.pendingConflict, isNotNull);
-        expect(doc.pendingConflict!.mine, startsWith('Mine'));
-        expect(doc.pendingConflict!.theirs.text, startsWith('Theirs'));
+      expect(doc.pendingConflict, isNotNull);
+      expect(doc.pendingConflict!.mine, startsWith('Mine'));
+      expect(doc.pendingConflict!.theirs.text, startsWith('Theirs'));
 
-        // Wait past autosave timer -> no write while conflict is pending
-        await tester.pump(const Duration(milliseconds: 1500));
-        expect(fs.textOf('note.md'), startsWith('Theirs'));
+      // Wait past autosave timer -> no write while conflict is pending
+      await Future<void>.delayed(const Duration(milliseconds: 1100));
+      expect(fs.textOf('note.md'), startsWith('Theirs'));
 
-        final outcome = await doc.save();
-        expect(outcome, SaveOutcome.conflict);
-        expect(fs.textOf('note.md'), startsWith('Theirs'));
-      },
-    );
+      final outcome = await doc.save();
+      expect(outcome, SaveOutcome.conflict);
+      expect(fs.textOf('note.md'), startsWith('Theirs'));
+    });
 
-    testWidgets(
+    test(
       'external change identical to what we wrote -> ignored (hash equal)',
-      (tester) async {
+      () async {
         final doc = store.acquire(path);
-        await pumpEventQueue();
+        await doc.load();
 
         doc.edit(const EditOperation(0, 0, 'New '));
         await doc.save();
@@ -160,18 +149,18 @@ void main() {
       },
     );
 
-    testWidgets(
+    test(
       'BOM/ending-only change -> base flags updated, text untouched',
-      (tester) async {
+      () async {
         final doc = store.acquire(path);
-        await pumpEventQueue();
+        await doc.load();
         expect(doc.base.lineEnding, LineEnding.lf);
 
         // External change with CRLF
         await fs.writeText(
           path,
           const TextDocument(
-            text: 'Line 1\r\nLine 2\r\nLine 3',
+            text: 'Line 1\nLine 2\nLine 3',
             lineEnding: LineEnding.crlf,
           ),
         );
@@ -183,27 +172,24 @@ void main() {
       },
     );
 
-    testWidgets(
-      'external change to a malformed file -> read-only banner, buffer untouched',
-      (tester) async {
-        final doc = store.acquire(path);
-        await pumpEventQueue();
-
-        doc.edit(const EditOperation(0, 0, 'Buffer text '));
-        expect(doc.isDirty, isTrue);
-
-        fs.putBytes('note.md', [0xFF, 0xFE, 0xFD]);
-        fs.emit(FileModified(path));
-        await pumpEventQueue();
-
-        expect(doc.isReadOnly, isTrue);
-        expect(doc.text, startsWith('Buffer text '));
-      },
-    );
-
-    testWidgets('FileDeleted -> isDeletedOnDisk, buffer kept', (tester) async {
+    test('external change to a malformed file -> read-only banner, buffer untouched', () async {
       final doc = store.acquire(path);
+      await doc.load();
+
+      doc.edit(const EditOperation(0, 0, 'Buffer text '));
+      expect(doc.isDirty, isTrue);
+
+      fs.putBytes('note.md', [0xFF, 0xFE, 0xFD]);
+      fs.emit(FileModified(path));
       await pumpEventQueue();
+
+      expect(doc.isReadOnly, isTrue);
+      expect(doc.text, startsWith('Buffer text '));
+    });
+
+    test('FileDeleted -> isDeletedOnDisk, buffer kept', () async {
+      final doc = store.acquire(path);
+      await doc.load();
 
       await fs.delete(path, mode: TrashMode.permanent);
       fs.emit(FileDeleted(path));
@@ -213,9 +199,9 @@ void main() {
       expect(doc.text, 'Line 1\nLine 2\nLine 3');
     });
 
-    testWidgets('re-creation -> reload/merge', (tester) async {
+    test('re-creation -> reload/merge', () async {
       final doc = store.acquire(path);
-      await pumpEventQueue();
+      await doc.load();
 
       await fs.delete(path, mode: TrashMode.permanent);
       fs.emit(FileDeleted(path));
@@ -230,9 +216,9 @@ void main() {
       expect(doc.text, 'Recreated externally');
     });
 
-    testWidgets('Recreate file writes the buffer', (tester) async {
+    test('Recreate file writes the buffer', () async {
       final doc = store.acquire(path);
-      await pumpEventQueue();
+      await doc.load();
 
       doc.edit(const EditOperation(0, 0, 'My restored work '));
       await fs.delete(path, mode: TrashMode.permanent);
@@ -246,29 +232,23 @@ void main() {
       expect(fs.textOf('note.md'), startsWith('My restored work '));
     });
 
-    testWidgets(
-      'stat guard: modify the file without emitting a watcher event, then save() notices external change',
-      (tester) async {
-        final doc = store.acquire(path);
-        await pumpEventQueue();
+    test('stat guard: modify the file without emitting a watcher event, then save() notices external change', () async {
+      final doc = store.acquire(path);
+      await doc.load();
 
-        doc.edit(const EditOperation(0, 6, 'Mine'));
-        expect(doc.isDirty, isTrue);
+      doc.edit(const EditOperation(0, 6, 'Mine'));
+      expect(doc.isDirty, isTrue);
 
-        // Advance clock and modify disk without emitting watcher event
-        clock.advance(const Duration(minutes: 5));
-        fs.putText('note.md', 'External silent modification\nLine 2\nLine 3');
+      // Advance clock and modify disk without emitting watcher event
+      clock.advance(const Duration(minutes: 5));
+      fs.putText('note.md', 'External silent modification\nLine 2\nLine 3');
 
-        // Attempting to save hits stat guard, merges or creates conflict
-        final outcome = await doc.save();
-        expect(outcome, SaveOutcome.conflict);
-        expect(doc.pendingConflict, isNotNull);
-        // Disk content preserved
-        expect(
-          fs.textOf('note.md'),
-          startsWith('External silent modification'),
-        );
-      },
-    );
+      // Attempting to save hits stat guard, merges or creates conflict
+      final outcome = await doc.save();
+      expect(outcome, SaveOutcome.conflict);
+      expect(doc.pendingConflict, isNotNull);
+      // Disk content preserved
+      expect(fs.textOf('note.md'), startsWith('External silent modification'));
+    });
   });
 }

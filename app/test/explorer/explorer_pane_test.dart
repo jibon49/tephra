@@ -259,8 +259,11 @@ void main() {
         // Open context menu and tap Delete
         await tester.tap(find.text('NoteA'), buttons: kSecondaryMouseButton);
         await tester.pumpAndSettle();
+        doc.edit(const EditOperation(0, 0, 'dirty '));
+        expect(doc.isDirty, isTrue);
         await tester.tap(find.text('Delete'));
-        await tester.pumpAndSettle();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200));
 
         expect(find.byType(AlertDialog), findsOneWidget);
         expect(

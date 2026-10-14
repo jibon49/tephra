@@ -27,6 +27,11 @@ void main() {
       'lifecycle state change to inactive saves dirty docs immediately',
       (tester) async {
         late NoteDocument doc;
+        addTearDown(() {
+          tester.binding.handleAppLifecycleStateChanged(
+            AppLifecycleState.resumed,
+          );
+        });
 
         await tester.pumpWidget(
           testApp(
@@ -42,7 +47,7 @@ void main() {
             fs: fs,
           ),
         );
-        await pumpEventQueue();
+        await tester.pumpAndSettle();
 
         doc.edit(const EditOperation(0, 0, 'Inactive '));
         expect(doc.isDirty, isTrue);
@@ -50,7 +55,7 @@ void main() {
         tester.binding.handleAppLifecycleStateChanged(
           AppLifecycleState.inactive,
         );
-        await pumpEventQueue();
+        await tester.pumpAndSettle();
 
         expect(doc.isDirty, isFalse);
         expect(fs.textOf('note.md'), startsWith('Inactive Initial'));
@@ -61,6 +66,11 @@ void main() {
       'lifecycle state change to paused saves dirty docs immediately',
       (tester) async {
         late NoteDocument doc;
+        addTearDown(() {
+          tester.binding.handleAppLifecycleStateChanged(
+            AppLifecycleState.resumed,
+          );
+        });
 
         await tester.pumpWidget(
           testApp(
@@ -76,13 +86,13 @@ void main() {
             fs: fs,
           ),
         );
-        await pumpEventQueue();
+        await tester.pumpAndSettle();
 
         doc.edit(const EditOperation(0, 0, 'Paused '));
         expect(doc.isDirty, isTrue);
 
         tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
-        await pumpEventQueue();
+        await tester.pumpAndSettle();
 
         expect(doc.isDirty, isFalse);
         expect(fs.textOf('note.md'), startsWith('Paused Initial'));
@@ -93,6 +103,11 @@ void main() {
       'lifecycle state change to hidden saves dirty docs immediately',
       (tester) async {
         late NoteDocument doc;
+        addTearDown(() {
+          tester.binding.handleAppLifecycleStateChanged(
+            AppLifecycleState.resumed,
+          );
+        });
 
         await tester.pumpWidget(
           testApp(
@@ -108,13 +123,13 @@ void main() {
             fs: fs,
           ),
         );
-        await pumpEventQueue();
+        await tester.pumpAndSettle();
 
         doc.edit(const EditOperation(0, 0, 'Hidden '));
         expect(doc.isDirty, isTrue);
 
         tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
-        await pumpEventQueue();
+        await tester.pumpAndSettle();
 
         expect(doc.isDirty, isFalse);
         expect(fs.textOf('note.md'), startsWith('Hidden Initial'));
