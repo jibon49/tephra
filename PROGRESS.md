@@ -218,7 +218,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented EmbedSlice AST slicing, EmbedContext recursion tracking (depth limit 5, circular embed detection), NoteEmbed with live text invalidation & accent border, ImageEmbed with width/height scaling, FileChip fallback, EmbedView dispatcher, PagePreviewController (max 3 nested popups, hover/long-press triggers), and PagePreviewPopup; all 16 embed and preview tests passing (31 total in test/links and test/reading/embeds).
 - [x] 02.15 Search query parser (`tephra_search`)
   - notes: Implemented SearchExpr AST (EmptyExpr, AndExpr, OrExpr, NotExpr, TermExpr, PhraseExpr, RegexExpr, OperatorExpr with 12 operators, PropertyExpr with exists/empty/matches), SearchSyntaxException with offset tracking, canonical printExpr, and recursive descent SearchParser; all 44 test matrix cases passing.
-- [ ] 02.16 Search engine: SQL/FTS compilation, verification, streaming, sorting, cancellation
+- [x] 02.16 Search engine: SQL/FTS compilation, verification, streaming, sorting, cancellation
+  - notes: Implemented SqlCompiler (FTS phrase escaping, exactness tracking, nested compound limits, 6 sort orders), NoteDoc, search_matcher evaluation (substrings, frontmatter, line/block/section units, task statuses, regexes, match-case scoping, de-duped Snippets), verifyBatch isolate runner, SearchEngine streaming with 20/100 batching and CancelToken, fixture vault test_vaults/search/ with 10 notes; all 101 tests in tephra_search passing (44/44 Obsidian parity queries Q1-Q44 verified).
 - [ ] 02.17 Search UI, search history, copy results, in-note highlights, ` ```query ` blocks
 - [ ] 02.18 Tags pane and bookmarks
 - [ ] 02.19 Fuzzy scorer and index-backed quick switcher

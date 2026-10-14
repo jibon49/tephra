@@ -14,6 +14,8 @@ dependencies:
     path: ../tephra_markdown
   tephra_index:
     path: ../tephra_index
+  tephra_vault:
+    path: ../tephra_vault
   logging: ^1.2.0
 
 dev_dependencies:
