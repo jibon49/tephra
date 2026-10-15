@@ -228,7 +228,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented FuzzyScorer pure ranking and character match range algorithm in tephra_search; upgraded quick switcher to be index-backed with notes, aliases, attachments (when switcherShowAttachments is enabled), and headings modes (#query and note#heading); wired Enter empty-result creation, Shift+Enter creation, Ctrl+Enter new tab, and mobile create row; 10,000-item ranking completes in 22 ms (budget < 50 ms); all 9 FuzzyScorer tests and 12 quick switcher widget tests pass.
 - [x] 02.20 Editor autocomplete core: popup, `[[` and `![[` links, headings, blocks, aliases
   - notes: Implemented AutocompleteController, AutocompleteRanker, lexical guard, insertion rules, and adaptive popup (desktop floating card with caret flip, mobile docked sheet above keyboard); fuzzy ranking 10,000 items in 3-4 ms (budget < 16 ms); 52 unit and widget tests passing.
-- [ ] 02.21 Autocomplete for tags and frontmatter keys and values
+- [x] 02.21 Autocomplete for tags and frontmatter keys and values
+  - notes: Implemented TagContext, PropertyKeyContext, PropertyValueContext, frontmatterRange scanner, yamlScalarForInsert, rankTags, rankPropertyKeys, rankPropertyValues, and Riverpod providers; 33 unit tests pass with zero analyzer issues.
 - [ ] 02.22 Date formatting, template engine, and the slash command menu
 - [ ] 02.23 Live Preview I: decoration model, incremental engine and inline widgets
 - [ ] 02.24 Live Preview II: editor adapter, reveal on the caret, mode toggle (Ctrl+Shift+E), default mode

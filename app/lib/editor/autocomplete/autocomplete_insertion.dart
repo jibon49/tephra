@@ -8,6 +8,7 @@ import 'package:tephra_index/tephra_index.dart';
 import 'autocomplete_context.dart';
 import 'autocomplete_item.dart';
 import 'block_candidates.dart';
+import 'yaml_scalar.dart';
 
 /// A template snippet with text and a relative caret position.
 final class Snippet {
@@ -277,4 +278,133 @@ Insertion buildLinkInsertion(
   // Fallback
   final edit = TextEdit(ctx.replaceStart, ctx.replaceEnd, item.primary);
   return Insertion([edit], ctx.replaceStart + item.primary.length);
+}
+
+/// Builds an [Insertion] for tag autocomplete context.
+Insertion buildTagInsertion(String text, TagContext ctx, AcItem item) {
+  final String tagText;
+  if (item.payload is TagCount) {
+    tagText = (item.payload as TagCount).tag;
+  } else {
+    tagText = item.primary.startsWith('#')
+        ? item.primary.substring(1)
+        : item.primary;
+  }
+
+  final String replacement;
+  if (ctx.inFrontmatter) {
+    replacement = yamlScalarForInsert(tagText);
+  } else {
+    replacement = tagText;
+  }
+
+  final edit = TextEdit(ctx.replaceStart, ctx.replaceEnd, replacement);
+  return Insertion([edit], ctx.replaceStart + replacement.length);
+}
+
+/// Builds an [Insertion] for property key autocomplete context.
+Insertion buildPropertyKeyInsertion(
+  String text,
+  PropertyKeyContext ctx,
+  AcItem item,
+) {
+  final String key;
+  final String? valueType;
+  if (item.payload is PropertyKeyCount) {
+    final pkc = item.payload as PropertyKeyCount;
+    key = pkc.key;
+    valueType = pkc.valueType;
+  } else {
+    key = item.primary;
+    valueType = item.secondary;
+  }
+
+  final keyLower = key.toLowerCase();
+  final isListKey =
+      valueType == 'multitext' ||
+      valueType == 'tags' ||
+      valueType == 'aliases' ||
+      keyLower == 'tags' ||
+      keyLower == 'aliases' ||
+      keyLower == 'cssclasses';
+
+  final String replacement;
+  if (isListKey) {
+    replacement = '$key:\n  - ';
+  } else {
+    replacement = '$key: ';
+  }
+
+  final edit = TextEdit(ctx.replaceStart, ctx.replaceEnd, replacement);
+  return Insertion(
+    [edit],
+    ctx.replaceStart + replacement.length,
+    continueCompletion: true,
+  );
+}
+
+/// Builds an [Insertion] for property value autocomplete context.
+Insertion buildPropertyValueInsertion(
+  String text,
+  PropertyValueContext ctx,
+  AcItem item, {
+  String? keyType,
+}) {
+  final String rawVal;
+  if (item.payload is TagCount) {
+    rawVal = (item.payload as TagCount).tag;
+  } else if (item.payload is String) {
+    rawVal = item.payload as String;
+  } else {
+    rawVal = item.primary.startsWith('#')
+        ? item.primary.substring(1)
+        : item.primary;
+  }
+
+  final replacement = yamlScalarForInsert(rawVal, keyType: keyType);
+  final edit = TextEdit(ctx.replaceStart, ctx.replaceEnd, replacement);
+  return Insertion([edit], ctx.replaceStart + replacement.length);
+}
+
+/// General entry point to build an [Insertion] across any autocomplete context.
+Insertion buildInsertion(
+  String text,
+  AutocompleteContext ctx,
+  AcItem item, {
+  required LinkFormatter formatter,
+  required VaultPath from,
+  required bool continueIntoSubpath,
+  VaultPath? targetNotePath,
+  Set<String>? takenBlockIds,
+  Random? rng,
+  Future<void> Function(VaultPath target, BlockCandidate candidate, String id)?
+  onExternalBlockCreated,
+  String? propertyKeyType,
+}) {
+  if (ctx is TagContext) {
+    return buildTagInsertion(text, ctx, item);
+  }
+  if (ctx is PropertyKeyContext) {
+    return buildPropertyKeyInsertion(text, ctx, item);
+  }
+  if (ctx is PropertyValueContext) {
+    return buildPropertyValueInsertion(
+      text,
+      ctx,
+      item,
+      keyType: propertyKeyType,
+    );
+  }
+  return buildLinkInsertion(
+    text,
+    ctx,
+    item,
+    formatter: formatter,
+    from: from,
+    continueIntoSubpath: continueIntoSubpath,
+    targetNotePath: targetNotePath,
+    takenBlockIds: takenBlockIds,
+    rng: rng,
+    onExternalBlockCreated: onExternalBlockCreated,
+  );
 }

@@ -26,6 +26,8 @@ import 'autocomplete_insertion.dart';
 import 'autocomplete_item.dart';
 import 'autocomplete_ranker.dart';
 import 'block_candidates.dart';
+import 'frontmatter_scanner.dart';
+import 'providers.dart';
 
 final _logger = Logger('autocomplete');
 
@@ -88,6 +90,7 @@ class AutocompleteController extends Notifier<AutocompleteState> {
 
   final _swallowed = <LogicalKeyboardKey>{};
   bool _isDisposed = false;
+  bool _forceValueAfterKey = false;
 
   @override
   AutocompleteState build() {
@@ -151,7 +154,13 @@ class AutocompleteController extends Notifier<AutocompleteState> {
 
     final text = editor.text;
     final caret = editor.selection.baseOffset;
-    final ctx = detectAutocompleteContext(text, caret, force: force);
+    final ctx = detectAutocompleteContext(
+      text,
+      caret,
+      force: force,
+      forceEmpty: _forceValueAfterKey,
+    );
+    _forceValueAfterKey = false;
 
     if (ctx == null) {
       _dismissedAt = null;
@@ -424,6 +433,162 @@ class AutocompleteController extends Notifier<AutocompleteState> {
       }
       return;
     }
+
+    if (ctx is TagContext) {
+      state = state.copyWith(context: ctx, loading: true);
+      try {
+        final tagList = await ref.read(tagListProvider.future);
+        if (_isDisposed) return;
+        if (currentSeq == _seq) {
+          final items = AutocompleteRanker.rankTags(
+            ctx.query,
+            tagList,
+            inFrontmatter: ctx.inFrontmatter,
+          );
+          state = state.copyWith(
+            context: ctx,
+            items: items,
+            selected: 0,
+            visible: items.isNotEmpty,
+            loading: false,
+          );
+          _updateKeyInterceptor();
+        }
+      } catch (_) {
+        if (_isDisposed) return;
+        if (currentSeq == _seq) {
+          state = state.copyWith(loading: false, visible: false);
+          _updateKeyInterceptor();
+        }
+      }
+      return;
+    }
+
+    if (ctx is PropertyKeyContext) {
+      state = state.copyWith(context: ctx, loading: true);
+      try {
+        final allKeys = await ref.read(propertyKeysProvider.future);
+        if (_isDisposed) return;
+        final fm = frontmatterRange(editor.text);
+        final existing = fm == null
+            ? const <String>{}
+            : extractFrontmatterKeys(editor.text, fm);
+        final available = allKeys
+            .where((k) => !existing.contains(k.key.toLowerCase()))
+            .toList();
+
+        if (currentSeq == _seq) {
+          final items = AutocompleteRanker.rankPropertyKeys(
+            ctx.query,
+            available,
+          );
+          state = state.copyWith(
+            context: ctx,
+            items: items,
+            selected: 0,
+            visible: items.isNotEmpty,
+            loading: false,
+          );
+          _updateKeyInterceptor();
+        }
+      } catch (_) {
+        if (_isDisposed) return;
+        if (currentSeq == _seq) {
+          state = state.copyWith(loading: false, visible: false);
+          _updateKeyInterceptor();
+        }
+      }
+      return;
+    }
+
+    if (ctx is PropertyValueContext) {
+      state = state.copyWith(context: ctx, loading: true);
+      try {
+        final keyLower = ctx.key.toLowerCase();
+        List<AcItem> items;
+        if (keyLower == 'tags' || keyLower == 'tag') {
+          final tagList = await ref.read(tagListProvider.future);
+          if (_isDisposed) return;
+          final fm = frontmatterRange(editor.text);
+          final existing = fm == null
+              ? const <String>{}
+              : extractValuesForProperty(
+                  editor.text,
+                  fm,
+                  ctx.key,
+                  inInlineList: ctx.inInlineList,
+                  caret: editor.selection.baseOffset,
+                );
+          final available = tagList
+              .where((t) => !existing.contains(t.tagLower))
+              .toList();
+          items = AutocompleteRanker.rankTags(
+            ctx.query,
+            available,
+            inFrontmatter: true,
+          );
+        } else if (keyLower == 'aliases') {
+          items = const [];
+        } else {
+          final allKeys = await ref.read(propertyKeysProvider.future);
+          final pkc = allKeys
+              .where((k) => k.key.toLowerCase() == keyLower)
+              .firstOrNull;
+          final valueType = pkc?.valueType;
+
+          List<String> rawValues;
+          if (valueType == 'checkbox') {
+            rawValues = const ['true', 'false'];
+          } else if (valueType == 'date') {
+            final now = DateTime.now();
+            final formatted =
+                '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+            rawValues = [formatted];
+          } else if (valueType == 'datetime') {
+            final now = DateTime.now();
+            final formatted =
+                '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}T${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+            rawValues = [formatted];
+          } else {
+            rawValues = await ref.read(propertyValuesProvider(ctx.key).future);
+          }
+
+          if (_isDisposed) return;
+          final fm = frontmatterRange(editor.text);
+          final existing = fm == null
+              ? const <String>{}
+              : extractValuesForProperty(
+                  editor.text,
+                  fm,
+                  ctx.key,
+                  inInlineList: ctx.inInlineList,
+                  caret: editor.selection.baseOffset,
+                );
+          final available = rawValues
+              .where((v) => !existing.contains(v.toLowerCase()))
+              .toList();
+          items = AutocompleteRanker.rankPropertyValues(ctx.query, available);
+        }
+
+        if (currentSeq == _seq) {
+          state = state.copyWith(
+            context: ctx,
+            items: items,
+            selected: 0,
+            visible: items.isNotEmpty,
+            loading: false,
+          );
+          _updateKeyInterceptor();
+        }
+      } catch (_) {
+        if (_isDisposed) return;
+        if (currentSeq == _seq) {
+          state = state.copyWith(loading: false, visible: false);
+          _updateKeyInterceptor();
+        }
+      }
+      return;
+    }
   }
 
   /// Hides the autocomplete popup and clears the context.
@@ -592,7 +757,18 @@ class AutocompleteController extends Notifier<AutocompleteState> {
       }
     }
 
-    final insertion = buildLinkInsertion(
+    String? propertyKeyType;
+    if (ctx is PropertyValueContext) {
+      try {
+        final allKeys = await ref.read(propertyKeysProvider.future);
+        final pkc = allKeys
+            .where((k) => k.key.toLowerCase() == ctx.key.toLowerCase())
+            .firstOrNull;
+        propertyKeyType = pkc?.valueType;
+      } catch (_) {}
+    }
+
+    final insertion = buildInsertion(
       editor.text,
       ctx,
       item,
@@ -604,7 +780,32 @@ class AutocompleteController extends Notifier<AutocompleteState> {
       onExternalBlockCreated: (target, candidate, id) async {
         await _handleExternalBlockCreated(target, candidate, id);
       },
+      propertyKeyType: propertyKeyType,
     );
+
+    if (ctx is PropertyKeyContext) {
+      final String key;
+      final String? valueType;
+      if (item.payload is PropertyKeyCount) {
+        final pkc = item.payload as PropertyKeyCount;
+        key = pkc.key;
+        valueType = pkc.valueType;
+      } else {
+        key = item.primary;
+        valueType = item.secondary;
+      }
+      final keyLower = key.toLowerCase();
+      final isListKey =
+          valueType == 'multitext' ||
+          valueType == 'tags' ||
+          valueType == 'aliases' ||
+          keyLower == 'tags' ||
+          keyLower == 'aliases' ||
+          keyLower == 'cssclasses';
+      if (!isListKey) {
+        _forceValueAfterKey = true;
+      }
+    }
 
     editor.applyEdits(insertion.edits);
     editor.select(insertion.caretAfter);
@@ -613,7 +814,7 @@ class AutocompleteController extends Notifier<AutocompleteState> {
       await effect();
     }
 
-    if (insertion.continueCompletion) {
+    if (insertion.continueCompletion || _forceValueAfterKey) {
       _onEditorEvent(force: true);
     } else {
       _hide();

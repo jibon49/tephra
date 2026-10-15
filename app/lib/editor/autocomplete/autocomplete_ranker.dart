@@ -510,4 +510,210 @@ abstract final class AutocompleteRanker {
     _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
     return top;
   }
+
+  /// Ranks tags by [FuzzyScorer.score] or frequency ([TagCount.count]) when [query] is empty.
+  ///
+  /// If [inFrontmatter] is true, [primary] does not include the `#` prefix.
+  static List<AcItem> rankTags(
+    String query,
+    List<TagCount> tags, {
+    int max = 50,
+    bool inFrontmatter = false,
+  }) {
+    final sw = Stopwatch()..start();
+    final q = query.trim();
+
+    if (q.isEmpty) {
+      final sorted = List<TagCount>.from(tags);
+      sorted.sort((a, b) {
+        final cmp = b.count.compareTo(a.count);
+        if (cmp != 0) return cmp;
+        return a.tagLower.compareTo(b.tagLower);
+      });
+
+      final result = sorted.take(max).map((t) {
+        final primary = inFrontmatter ? t.tag : '#${t.tag}';
+        return AcItem(
+          kind: AcKind.tag,
+          primary: primary,
+          secondary: '${t.count}',
+          score: 0,
+          matchRanges: const [],
+          payload: t,
+        );
+      }).toList();
+      sw.stop();
+      _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
+      return result;
+    }
+
+    final qLower = q.toLowerCase();
+    final scored = <(AcItem, int, int, String)>[];
+
+    for (var i = 0; i < tags.length; i++) {
+      final t = tags[i];
+      final s = FuzzyScorer.scoreLower(qLower, t.tagLower);
+      if (s != null) {
+        final primary = inFrontmatter ? t.tag : '#${t.tag}';
+        final rawRanges = FuzzyScorer.matchRanges(q, t.tag);
+        final matchRanges = inFrontmatter
+            ? rawRanges
+            : rawRanges.map((r) => (r.$1 + 1, r.$2 + 1)).toList();
+
+        scored.add((
+          AcItem(
+            kind: AcKind.tag,
+            primary: primary,
+            secondary: '${t.count}',
+            score: s,
+            matchRanges: matchRanges,
+            payload: t,
+          ),
+          s,
+          t.count,
+          t.tagLower,
+        ));
+      }
+    }
+
+    scored.sort((a, b) {
+      final cmp = b.$2.compareTo(a.$2);
+      if (cmp != 0) return cmp;
+      final countCmp = b.$3.compareTo(a.$3);
+      if (countCmp != 0) return countCmp;
+      return a.$4.compareTo(b.$4);
+    });
+
+    final top = scored.take(max).map((e) => e.$1).toList();
+    sw.stop();
+    _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
+    return top;
+  }
+
+  /// Ranks property keys using [FuzzyScorer.score] or frequency ([PropertyKeyCount.count]) when [query] is empty.
+  static List<AcItem> rankPropertyKeys(
+    String query,
+    List<PropertyKeyCount> keys, {
+    int max = 50,
+  }) {
+    final sw = Stopwatch()..start();
+    final q = query.trim();
+
+    if (q.isEmpty) {
+      final sorted = List<PropertyKeyCount>.from(keys);
+      sorted.sort((a, b) {
+        final cmp = b.count.compareTo(a.count);
+        if (cmp != 0) return cmp;
+        return a.key.toLowerCase().compareTo(b.key.toLowerCase());
+      });
+
+      final result = sorted.take(max).map((k) {
+        return AcItem(
+          kind: AcKind.propertyKey,
+          primary: k.key,
+          secondary: k.valueType,
+          score: 0,
+          matchRanges: const [],
+          payload: k,
+        );
+      }).toList();
+      sw.stop();
+      _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
+      return result;
+    }
+
+    final qLower = q.toLowerCase();
+    final scored = <(AcItem, int, int, String)>[];
+
+    for (var i = 0; i < keys.length; i++) {
+      final k = keys[i];
+      final keyLower = k.key.toLowerCase();
+      final s = FuzzyScorer.scoreLower(qLower, keyLower);
+      if (s != null) {
+        scored.add((
+          AcItem(
+            kind: AcKind.propertyKey,
+            primary: k.key,
+            secondary: k.valueType,
+            score: s,
+            matchRanges: FuzzyScorer.matchRanges(q, k.key),
+            payload: k,
+          ),
+          s,
+          k.count,
+          keyLower,
+        ));
+      }
+    }
+
+    scored.sort((a, b) {
+      final cmp = b.$2.compareTo(a.$2);
+      if (cmp != 0) return cmp;
+      final countCmp = b.$3.compareTo(a.$3);
+      if (countCmp != 0) return countCmp;
+      return a.$4.compareTo(b.$4);
+    });
+
+    final top = scored.take(max).map((e) => e.$1).toList();
+    sw.stop();
+    _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
+    return top;
+  }
+
+  /// Ranks property values using [FuzzyScorer.score] or preserves index order when [query] is empty.
+  static List<AcItem> rankPropertyValues(
+    String query,
+    List<String> values, {
+    int max = 50,
+  }) {
+    final sw = Stopwatch()..start();
+    final q = query.trim();
+
+    if (q.isEmpty) {
+      final result = values.take(max).map((v) {
+        return AcItem(
+          kind: AcKind.propertyValue,
+          primary: v,
+          score: 0,
+          matchRanges: const [],
+          payload: v,
+        );
+      }).toList();
+      sw.stop();
+      _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
+      return result;
+    }
+
+    final qLower = q.toLowerCase();
+    final scored = <(AcItem, int, int)>[];
+
+    for (var i = 0; i < values.length; i++) {
+      final v = values[i];
+      final s = FuzzyScorer.scoreLower(qLower, v.toLowerCase());
+      if (s != null) {
+        scored.add((
+          AcItem(
+            kind: AcKind.propertyValue,
+            primary: v,
+            score: s,
+            matchRanges: FuzzyScorer.matchRanges(q, v),
+            payload: v,
+          ),
+          s,
+          i,
+        ));
+      }
+    }
+
+    scored.sort((a, b) {
+      final cmp = b.$2.compareTo(a.$2);
+      if (cmp != 0) return cmp;
+      return a.$3.compareTo(b.$3);
+    });
+
+    final top = scored.take(max).map((e) => e.$1).toList();
+    sw.stop();
+    _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
+    return top;
+  }
 }
