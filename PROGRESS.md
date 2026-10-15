@@ -230,7 +230,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented AutocompleteController, AutocompleteRanker, lexical guard, insertion rules, and adaptive popup (desktop floating card with caret flip, mobile docked sheet above keyboard); fuzzy ranking 10,000 items in 3-4 ms (budget < 16 ms); 52 unit and widget tests passing.
 - [x] 02.21 Autocomplete for tags and frontmatter keys and values
   - notes: Implemented TagContext, PropertyKeyContext, PropertyValueContext, frontmatterRange scanner, yamlScalarForInsert, rankTags, rankPropertyKeys, rankPropertyValues, and Riverpod providers; 33 unit tests pass with zero analyzer issues.
-- [ ] 02.22 Date formatting, template engine, and the slash command menu
+- [x] 02.22 Date formatting, template engine, and the slash command menu
+  - notes: Implemented formatMoment/parseMoment/validateMomentFormat, applyTemplate, and dailyNotePath in tephra_core; VaultSettings templates and corePlugins.slashCommands with .obsidian/templates.json import; SlashContext detection, 26 slash commands, snippet_placement with container indentation preservation, autocomplete ranker and controller integration; 72 tephra_core tests and 107 app autocomplete tests pass with 0 analyzer issues.
 - [ ] 02.23 Live Preview I: decoration model, incremental engine and inline widgets
 - [ ] 02.24 Live Preview II: editor adapter, reveal on the caret, mode toggle (Ctrl+Shift+E), default mode
 - [ ] 02.25 Folding of headings and list items with persisted fold state

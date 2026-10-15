@@ -272,11 +272,25 @@ class _AutocompleteRow extends StatelessWidget {
           size: isDesktop ? 16 : 22,
           color: theme.colorScheme.secondary,
         );
-      default:
+      case AcKind.tag:
         leadingIcon = Icon(
-          Icons.text_snippet_outlined,
+          Icons.tag,
           size: isDesktop ? 16 : 22,
-          color: theme.colorScheme.onSurfaceVariant,
+          color: theme.colorScheme.tertiary,
+        );
+      case AcKind.propertyKey:
+      case AcKind.propertyValue:
+        leadingIcon = Icon(
+          Icons.tune,
+          size: isDesktop ? 16 : 22,
+          color: theme.colorScheme.secondary,
+        );
+      case AcKind.slash:
+      case AcKind.template:
+        leadingIcon = Icon(
+          Icons.flash_on_outlined,
+          size: isDesktop ? 16 : 22,
+          color: theme.colorScheme.primary,
         );
     }
 

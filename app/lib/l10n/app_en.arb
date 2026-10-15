@@ -527,7 +527,33 @@
     }
   },
   "autocompleteBlockMissing": "Target block not found",
-  "commandTriggerAutocomplete": "Trigger autocomplete"
+  "commandTriggerAutocomplete": "Trigger autocomplete",
+  "slashHeading1": "Heading 1",
+  "slashHeading2": "Heading 2",
+  "slashHeading3": "Heading 3",
+  "slashHeading4": "Heading 4",
+  "slashHeading5": "Heading 5",
+  "slashHeading6": "Heading 6",
+  "slashCalloutNote": "Callout: Note",
+  "slashCalloutAbstract": "Callout: Abstract",
+  "slashCalloutInfo": "Callout: Info",
+  "slashCalloutTodo": "Callout: To-do",
+  "slashCalloutTip": "Callout: Tip",
+  "slashCalloutSuccess": "Callout: Success",
+  "slashCalloutQuestion": "Callout: Question",
+  "slashCalloutWarning": "Callout: Warning",
+  "slashCalloutFailure": "Callout: Failure",
+  "slashCalloutDanger": "Callout: Danger",
+  "slashCalloutBug": "Callout: Bug",
+  "slashCalloutExample": "Callout: Example",
+  "slashCalloutQuote": "Callout: Quote",
+  "slashTable": "Table (3 × 3)",
+  "slashCodeBlock": "Code block",
+  "slashMathBlock": "Math block",
+  "slashHorizontalRule": "Horizontal rule",
+  "slashTask": "Task",
+  "slashToday": "Today's date",
+  "slashTemplate": "Insert template"
 }
 
 

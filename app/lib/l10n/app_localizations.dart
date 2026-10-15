@@ -2037,6 +2037,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Trigger autocomplete'**
   String get commandTriggerAutocomplete;
+
+  /// No description provided for @slashHeading1.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 1'**
+  String get slashHeading1;
+
+  /// No description provided for @slashHeading2.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 2'**
+  String get slashHeading2;
+
+  /// No description provided for @slashHeading3.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 3'**
+  String get slashHeading3;
+
+  /// No description provided for @slashHeading4.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 4'**
+  String get slashHeading4;
+
+  /// No description provided for @slashHeading5.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 5'**
+  String get slashHeading5;
+
+  /// No description provided for @slashHeading6.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 6'**
+  String get slashHeading6;
+
+  /// No description provided for @slashCalloutNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Note'**
+  String get slashCalloutNote;
+
+  /// No description provided for @slashCalloutAbstract.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Abstract'**
+  String get slashCalloutAbstract;
+
+  /// No description provided for @slashCalloutInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Info'**
+  String get slashCalloutInfo;
+
+  /// No description provided for @slashCalloutTodo.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: To-do'**
+  String get slashCalloutTodo;
+
+  /// No description provided for @slashCalloutTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Tip'**
+  String get slashCalloutTip;
+
+  /// No description provided for @slashCalloutSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Success'**
+  String get slashCalloutSuccess;
+
+  /// No description provided for @slashCalloutQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Question'**
+  String get slashCalloutQuestion;
+
+  /// No description provided for @slashCalloutWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Warning'**
+  String get slashCalloutWarning;
+
+  /// No description provided for @slashCalloutFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Failure'**
+  String get slashCalloutFailure;
+
+  /// No description provided for @slashCalloutDanger.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Danger'**
+  String get slashCalloutDanger;
+
+  /// No description provided for @slashCalloutBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Bug'**
+  String get slashCalloutBug;
+
+  /// No description provided for @slashCalloutExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Example'**
+  String get slashCalloutExample;
+
+  /// No description provided for @slashCalloutQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Quote'**
+  String get slashCalloutQuote;
+
+  /// No description provided for @slashTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Table (3 × 3)'**
+  String get slashTable;
+
+  /// No description provided for @slashCodeBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Code block'**
+  String get slashCodeBlock;
+
+  /// No description provided for @slashMathBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Math block'**
+  String get slashMathBlock;
+
+  /// No description provided for @slashHorizontalRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizontal rule'**
+  String get slashHorizontalRule;
+
+  /// No description provided for @slashTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get slashTask;
+
+  /// No description provided for @slashToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s date'**
+  String get slashToday;
+
+  /// No description provided for @slashTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert template'**
+  String get slashTemplate;
 }
 
 class _AppLocalizationsDelegate

@@ -8,8 +8,10 @@ import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_search/tephra_search.dart';
 
 import '../../commands/quick_switcher_items.dart';
+import '../../l10n/app_localizations.dart';
 import 'autocomplete_item.dart';
 import 'block_candidates.dart';
+import 'slash_commands.dart';
 
 final _logger = Logger('autocomplete');
 
@@ -712,6 +714,86 @@ abstract final class AutocompleteRanker {
     });
 
     final top = scored.take(max).map((e) => e.$1).toList();
+    sw.stop();
+    _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
+    return top;
+  }
+
+  /// Ranks slash commands using [FuzzyScorer.score] against command label or keywords
+  /// (keyword score - 50), or preserves list order when [query] is empty.
+  static List<AcItem> rankSlashCommands(
+    String query,
+    List<SlashCommand> commands,
+    AppLocalizations l10n,
+  ) {
+    final sw = Stopwatch()..start();
+    final q = query.trim();
+
+    if (q.isEmpty) {
+      final result = commands.map((cmd) {
+        return AcItem(
+          kind: AcKind.slash,
+          primary: cmd.label(l10n),
+          score: 0,
+          matchRanges: const [],
+          payload: cmd,
+        );
+      }).toList();
+      sw.stop();
+      _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
+      return result;
+    }
+
+    final qLower = q.toLowerCase();
+    final scored = <(AcItem, int, int)>[];
+
+    for (var i = 0; i < commands.length; i++) {
+      final cmd = commands[i];
+      final label = cmd.label(l10n);
+      final labelScore = FuzzyScorer.scoreLower(qLower, label.toLowerCase());
+
+      int? bestKeywordScore;
+      for (final kw in cmd.keywords) {
+        final kwScore = FuzzyScorer.scoreLower(qLower, kw.toLowerCase());
+        if (kwScore != null) {
+          final adjusted = kwScore - 50;
+          if (bestKeywordScore == null || adjusted > bestKeywordScore) {
+            bestKeywordScore = adjusted;
+          }
+        }
+      }
+
+      int? finalScore;
+      if (labelScore != null && bestKeywordScore != null) {
+        finalScore = math.max(labelScore, bestKeywordScore);
+      } else if (labelScore != null) {
+        finalScore = labelScore;
+      } else if (bestKeywordScore != null) {
+        finalScore = bestKeywordScore;
+      }
+
+      if (finalScore != null) {
+        scored.add((
+          AcItem(
+            kind: AcKind.slash,
+            primary: label,
+            score: finalScore,
+            matchRanges: FuzzyScorer.matchRanges(q, label),
+            payload: cmd,
+          ),
+          finalScore,
+          i,
+        ));
+      }
+    }
+
+    scored.sort((a, b) {
+      final cmp = b.$2.compareTo(a.$2);
+      if (cmp != 0) return cmp;
+      return a.$3.compareTo(b.$3);
+    });
+
+    final top = scored.map((e) => e.$1).toList();
     sw.stop();
     _logger.fine('perf autocomplete ${sw.elapsedMilliseconds} ms');
     return top;

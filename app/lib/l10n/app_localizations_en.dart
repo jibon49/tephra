@@ -1088,4 +1088,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandTriggerAutocomplete => 'Trigger autocomplete';
+
+  @override
+  String get slashHeading1 => 'Heading 1';
+
+  @override
+  String get slashHeading2 => 'Heading 2';
+
+  @override
+  String get slashHeading3 => 'Heading 3';
+
+  @override
+  String get slashHeading4 => 'Heading 4';
+
+  @override
+  String get slashHeading5 => 'Heading 5';
+
+  @override
+  String get slashHeading6 => 'Heading 6';
+
+  @override
+  String get slashCalloutNote => 'Callout: Note';
+
+  @override
+  String get slashCalloutAbstract => 'Callout: Abstract';
+
+  @override
+  String get slashCalloutInfo => 'Callout: Info';
+
+  @override
+  String get slashCalloutTodo => 'Callout: To-do';
+
+  @override
+  String get slashCalloutTip => 'Callout: Tip';
+
+  @override
+  String get slashCalloutSuccess => 'Callout: Success';
+
+  @override
+  String get slashCalloutQuestion => 'Callout: Question';
+
+  @override
+  String get slashCalloutWarning => 'Callout: Warning';
+
+  @override
+  String get slashCalloutFailure => 'Callout: Failure';
+
+  @override
+  String get slashCalloutDanger => 'Callout: Danger';
+
+  @override
+  String get slashCalloutBug => 'Callout: Bug';
+
+  @override
+  String get slashCalloutExample => 'Callout: Example';
+
+  @override
+  String get slashCalloutQuote => 'Callout: Quote';
+
+  @override
+  String get slashTable => 'Table (3 × 3)';
+
+  @override
+  String get slashCodeBlock => 'Code block';
+
+  @override
+  String get slashMathBlock => 'Math block';
+
+  @override
+  String get slashHorizontalRule => 'Horizontal rule';
+
+  @override
+  String get slashTask => 'Task';
+
+  @override
+  String get slashToday => 'Today\'s date';
+
+  @override
+  String get slashTemplate => 'Insert template';
 }

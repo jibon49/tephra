@@ -5,9 +5,12 @@ import 'dart:math';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_index/tephra_index.dart';
 
+import '../../settings/vault_settings.dart';
 import 'autocomplete_context.dart';
 import 'autocomplete_item.dart';
 import 'block_candidates.dart';
+import 'slash_commands.dart';
+import 'snippet_placement.dart';
 import 'yaml_scalar.dart';
 
 /// A template snippet with text and a relative caret position.
@@ -380,7 +383,20 @@ Insertion buildInsertion(
   Future<void> Function(VaultPath target, BlockCandidate candidate, String id)?
   onExternalBlockCreated,
   String? propertyKeyType,
+  SlashInput? slashInput,
 }) {
+  if (ctx is SlashContext) {
+    final cmd = item.payload as SlashCommand;
+    final input =
+        slashInput ??
+        SlashInput(
+          now: DateTime.now(),
+          settings: const VaultSettings(),
+          isLineZero: _isLineZero(text, ctx.slashStart),
+        );
+    final snippet = cmd.build(input);
+    return placeSlash(text, ctx, cmd, snippet);
+  }
   if (ctx is TagContext) {
     return buildTagInsertion(text, ctx, item);
   }
@@ -407,4 +423,11 @@ Insertion buildInsertion(
     rng: rng,
     onExternalBlockCreated: onExternalBlockCreated,
   );
+}
+
+bool _isLineZero(String text, int offset) {
+  for (var i = offset - 1; i >= 0; i--) {
+    if (text.codeUnitAt(i) == 0x0A) return false;
+  }
+  return true;
 }

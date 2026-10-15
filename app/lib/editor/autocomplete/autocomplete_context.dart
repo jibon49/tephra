@@ -152,6 +152,21 @@ final class PropertyValueContext extends AutocompleteContext {
       'PropertyValueContext(key: "$key", query: "$query", inInlineList: $inInlineList, forceEmpty: $forceEmpty, start: $replaceStart)';
 }
 
+final class SlashContext extends AutocompleteContext {
+  const SlashContext({
+    required super.replaceStart,
+    required super.replaceEnd,
+    required super.query,
+    required this.slashStart,
+  });
+
+  final int slashStart;
+
+  @override
+  String toString() =>
+      'SlashContext(query: "$query", slashStart: $slashStart, start: $replaceStart, end: $replaceEnd)';
+}
+
 /// Detects if the caret at [caret] in [text] is inside an autocomplete context.
 ///
 /// Returns `null` if the cursor is outside autocompletable constructs or inside
@@ -161,6 +176,7 @@ AutocompleteContext? detectAutocompleteContext(
   int caret, {
   bool force = false,
   bool forceEmpty = false,
+  bool slashCommands = true,
 }) {
   if (caret < 0 || caret > text.length) return null;
 
@@ -447,6 +463,22 @@ AutocompleteContext? detectAutocompleteContext(
       query: query,
       inFrontmatter: false,
     );
+  }
+
+  // 5. Slash command detection (body only; not in frontmatter; clean lexical guard)
+  if (slashCommands) {
+    final slashMatch = RegExp(r'(^|[ \t])/([^\s/]*)$').firstMatch(before);
+    if (slashMatch != null) {
+      final prefixLen = slashMatch.group(1)!.length;
+      final slashOffset = lineStart + slashMatch.start + prefixLen;
+      final query = slashMatch.group(2)!;
+      return SlashContext(
+        replaceStart: slashOffset,
+        replaceEnd: caret,
+        query: query,
+        slashStart: slashOffset,
+      );
+    }
   }
 
   return null;

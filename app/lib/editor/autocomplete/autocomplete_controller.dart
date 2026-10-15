@@ -28,6 +28,7 @@ import 'autocomplete_ranker.dart';
 import 'block_candidates.dart';
 import 'frontmatter_scanner.dart';
 import 'providers.dart';
+import 'slash_commands.dart';
 
 final _logger = Logger('autocomplete');
 
@@ -154,11 +155,13 @@ class AutocompleteController extends Notifier<AutocompleteState> {
 
     final text = editor.text;
     final caret = editor.selection.baseOffset;
+    final settings = ref.read(vaultSettingsProvider);
     final ctx = detectAutocompleteContext(
       text,
       caret,
       force: force,
       forceEmpty: _forceValueAfterKey,
+      slashCommands: settings.slashCommandsEnabled,
     );
     _forceValueAfterKey = false;
 
@@ -589,6 +592,35 @@ class AutocompleteController extends Notifier<AutocompleteState> {
       }
       return;
     }
+
+    if (ctx is SlashContext) {
+      final l10n = _getL10n();
+      if (l10n == null) return;
+      final availableCommands = defaultSlashCommands.where((cmd) {
+        if (cmd.isAvailable != null) {
+          return cmd.isAvailable!(ref);
+        }
+        return true;
+      }).toList();
+
+      final items = AutocompleteRanker.rankSlashCommands(
+        ctx.query,
+        availableCommands,
+        l10n,
+      );
+
+      if (currentSeq == _seq) {
+        state = state.copyWith(
+          context: ctx,
+          items: items,
+          selected: 0,
+          visible: items.isNotEmpty,
+          loading: false,
+        );
+        _updateKeyInterceptor();
+      }
+      return;
+    }
   }
 
   /// Hides the autocomplete popup and clears the context.
@@ -768,6 +800,12 @@ class AutocompleteController extends Notifier<AutocompleteState> {
       } catch (_) {}
     }
 
+    final slashInput = SlashInput(
+      now: DateTime.now(),
+      settings: settings,
+      isLineZero: _isLineZero(editor.text, ctx.replaceStart),
+    );
+
     final insertion = buildInsertion(
       editor.text,
       ctx,
@@ -781,6 +819,7 @@ class AutocompleteController extends Notifier<AutocompleteState> {
         await _handleExternalBlockCreated(target, candidate, id);
       },
       propertyKeyType: propertyKeyType,
+      slashInput: slashInput,
     );
 
     if (ctx is PropertyKeyContext) {
@@ -812,6 +851,13 @@ class AutocompleteController extends Notifier<AutocompleteState> {
 
     for (final effect in insertion.sideEffects) {
       await effect();
+    }
+
+    if (item.kind == AcKind.slash && item.payload is SlashCommand) {
+      final cmd = item.payload as SlashCommand;
+      if (cmd.id == 'template') {
+        // Will be wired in Step 02.27 when templates.insert-template command is registered.
+      }
     }
 
     if (insertion.continueCompletion || _forceValueAfterKey) {
@@ -891,5 +937,23 @@ class AutocompleteController extends Notifier<AutocompleteState> {
         );
       }
     } catch (_) {}
+  }
+
+  bool _isLineZero(String text, int offset) {
+    for (var i = offset - 1; i >= 0; i--) {
+      if (text.codeUnitAt(i) == 0x0A) return false;
+    }
+    return true;
+  }
+
+  AppLocalizations? _getL10n() {
+    try {
+      final key = ref.read(scaffoldMessengerKeyProvider);
+      final context = key.currentContext;
+      if (context != null) {
+        return AppLocalizations.of(context);
+      }
+    } catch (_) {}
+    return lookupAppLocalizations(const Locale('en'));
   }
 }

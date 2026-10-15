@@ -91,6 +91,69 @@ enum ExplorerSort {
   String toJson() => name;
 }
 
+/// Templates settings model.
+@immutable
+final class TemplatesSettings {
+  const TemplatesSettings({
+    this.folder = '',
+    this.dateFormat = 'YYYY-MM-DD',
+    this.timeFormat = 'HH:mm',
+  });
+
+  factory TemplatesSettings.fromMap(Map<String, Object?> map) {
+    return TemplatesSettings(
+      folder: map['folder'] as String? ?? '',
+      dateFormat: map['dateFormat'] as String? ?? 'YYYY-MM-DD',
+      timeFormat: map['timeFormat'] as String? ?? 'HH:mm',
+    );
+  }
+
+  final String folder;
+  final String dateFormat;
+  final String timeFormat;
+
+  Map<String, Object?> toMap() => {
+    'folder': folder,
+    'dateFormat': dateFormat,
+    'timeFormat': timeFormat,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TemplatesSettings &&
+          folder == other.folder &&
+          dateFormat == other.dateFormat &&
+          timeFormat == other.timeFormat;
+
+  @override
+  int get hashCode => Object.hash(folder, dateFormat, timeFormat);
+}
+
+/// Core plugins settings model.
+@immutable
+final class CorePluginsSettings {
+  const CorePluginsSettings({this.slashCommands = true});
+
+  factory CorePluginsSettings.fromMap(Map<String, Object?> map) {
+    return CorePluginsSettings(
+      slashCommands: map['slashCommands'] as bool? ?? true,
+    );
+  }
+
+  final bool slashCommands;
+
+  Map<String, Object?> toMap() => {'slashCommands': slashCommands};
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CorePluginsSettings && slashCommands == other.slashCommands;
+
+  @override
+  int get hashCode => slashCommands.hashCode;
+}
+
 /// Configuration settings for a single vault stored in `.tephra/settings.json`.
 @immutable
 final class VaultSettings {
@@ -107,7 +170,8 @@ final class VaultSettings {
     this.fontSize = 16.0,
     this.explorerSort = 'nameAsc',
     this.dailyNotes = const {},
-    this.templates = const {},
+    this.templates = defaultTemplates,
+    this.corePlugins = defaultCorePlugins,
     this.importedFromObsidian = false,
     this.newLinkFormat = 'shortest',
     this.useMarkdownLinks = false,
@@ -166,9 +230,20 @@ final class VaultSettings {
         : const <String, Object?>{};
 
     final rawTemplates = json['templates'];
-    final templates = rawTemplates is Map
-        ? rawTemplates.cast<String, Object?>()
-        : const <String, Object?>{};
+    final Map<String, Object?> templates;
+    if (rawTemplates is Map) {
+      templates = rawTemplates.cast<String, Object?>();
+    } else {
+      templates = defaultTemplates;
+    }
+
+    final rawCorePlugins = json['corePlugins'];
+    final Map<String, Object?> corePlugins;
+    if (rawCorePlugins is Map) {
+      corePlugins = rawCorePlugins.cast<String, Object?>();
+    } else {
+      corePlugins = defaultCorePlugins;
+    }
 
     final importedFromObsidian = json['importedFromObsidian'] as bool? ?? false;
 
@@ -204,6 +279,7 @@ final class VaultSettings {
       'explorerSort',
       'dailyNotes',
       'templates',
+      'corePlugins',
       'importedFromObsidian',
       'newLinkFormat',
       'useMarkdownLinks',
@@ -232,6 +308,7 @@ final class VaultSettings {
       explorerSort: explorerSort,
       dailyNotes: Map.unmodifiable(dailyNotes),
       templates: Map.unmodifiable(templates),
+      corePlugins: Map.unmodifiable(corePlugins),
       importedFromObsidian: importedFromObsidian,
       newLinkFormat: newLinkFormat,
       useMarkdownLinks: useMarkdownLinks,
@@ -240,6 +317,14 @@ final class VaultSettings {
       extra: Map.unmodifiable(extra),
     );
   }
+
+  static const defaultTemplates = <String, Object?>{
+    'folder': '',
+    'dateFormat': 'YYYY-MM-DD',
+    'timeFormat': 'HH:mm',
+  };
+
+  static const defaultCorePlugins = <String, Object?>{'slashCommands': true};
 
   final String attachmentFolder;
   final String newFileLocation;
@@ -254,6 +339,7 @@ final class VaultSettings {
   final String explorerSort;
   final Map<String, Object?> dailyNotes;
   final Map<String, Object?> templates;
+  final Map<String, Object?> corePlugins;
   final bool importedFromObsidian;
   final String newLinkFormat;
   final bool useMarkdownLinks;
@@ -279,6 +365,20 @@ final class VaultSettings {
     useMarkdownLinks: useMarkdownLinks,
   );
 
+  TemplatesSettings get templatesSettings =>
+      TemplatesSettings.fromMap(templates);
+
+  CorePluginsSettings get corePluginsSettings =>
+      CorePluginsSettings.fromMap(corePlugins);
+
+  String get templatesFolder => templates['folder'] as String? ?? '';
+  String get templatesDateFormat =>
+      templates['dateFormat'] as String? ?? 'YYYY-MM-DD';
+  String get templatesTimeFormat =>
+      templates['timeFormat'] as String? ?? 'HH:mm';
+  bool get slashCommandsEnabled =>
+      corePlugins['slashCommands'] as bool? ?? true;
+
   Map<String, Object?> toJson() {
     final map = <String, Object?>{
       'attachmentFolder': attachmentFolder,
@@ -294,6 +394,7 @@ final class VaultSettings {
       'explorerSort': explorerSort,
       'dailyNotes': dailyNotes,
       'templates': templates,
+      'corePlugins': corePlugins,
       'importedFromObsidian': importedFromObsidian,
       'newLinkFormat': newLinkFormat,
       'useMarkdownLinks': useMarkdownLinks,
@@ -318,6 +419,7 @@ final class VaultSettings {
     String? explorerSort,
     Map<String, Object?>? dailyNotes,
     Map<String, Object?>? templates,
+    Map<String, Object?>? corePlugins,
     bool? importedFromObsidian,
     String? newLinkFormat,
     bool? useMarkdownLinks,
@@ -339,6 +441,7 @@ final class VaultSettings {
       explorerSort: explorerSort ?? this.explorerSort,
       dailyNotes: dailyNotes ?? this.dailyNotes,
       templates: templates ?? this.templates,
+      corePlugins: corePlugins ?? this.corePlugins,
       importedFromObsidian: importedFromObsidian ?? this.importedFromObsidian,
       newLinkFormat: newLinkFormat ?? this.newLinkFormat,
       useMarkdownLinks: useMarkdownLinks ?? this.useMarkdownLinks,
@@ -365,6 +468,7 @@ final class VaultSettings {
           explorerSort == other.explorerSort &&
           mapEquals(dailyNotes, other.dailyNotes) &&
           mapEquals(templates, other.templates) &&
+          mapEquals(corePlugins, other.corePlugins) &&
           importedFromObsidian == other.importedFromObsidian &&
           newLinkFormat == other.newLinkFormat &&
           useMarkdownLinks == other.useMarkdownLinks &&
@@ -387,6 +491,7 @@ final class VaultSettings {
     explorerSort,
     Object.hashAll(dailyNotes.entries),
     Object.hashAll(templates.entries),
+    Object.hashAll(corePlugins.entries),
     importedFromObsidian,
     newLinkFormat,
     useMarkdownLinks,
