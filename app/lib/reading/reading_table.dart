@@ -8,9 +8,10 @@ import 'reading_scope.dart';
 
 /// Renders a GitHub-flavored Markdown table.
 class TableView extends StatelessWidget {
-  const TableView({super.key, required this.node});
+  const TableView({super.key, required this.node, this.onCellTap});
 
   final MdTable node;
+  final void Function(int row, int col)? onCellTap;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,8 @@ class TableView extends StatelessWidget {
 
     final rows = <TableRow>[];
 
-    for (final row in node.children) {
+    for (var r = 0; r < node.children.length; r++) {
+      final row = node.children[r];
       final isHeader = row.header;
       final cells = <Widget>[];
 
@@ -49,35 +51,41 @@ class TableView extends StatelessWidget {
               )
             : styles?.body;
 
+        Widget cellContent;
         if (i < row.children.length) {
           final cell = row.children[i];
-          cells.add(
-            ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 48),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                child: InlineText(
-                  nodes: cell.children,
-                  style: cellStyle,
-                  textAlign: textAlign,
-                ),
+          cellContent = ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 48),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: InlineText(
+                nodes: cell.children,
+                style: cellStyle,
+                textAlign: textAlign,
               ),
             ),
           );
         } else {
-          cells.add(
-            ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 48),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                child: SizedBox.shrink(),
-              ),
+          cellContent = ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 48),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: SizedBox.shrink(),
             ),
           );
         }
+
+        if (onCellTap != null) {
+          final rowIndex = r;
+          final colIndex = i;
+          cellContent = GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => onCellTap!(rowIndex, colIndex),
+            child: cellContent,
+          );
+        }
+
+        cells.add(cellContent);
       }
 
       rows.add(
