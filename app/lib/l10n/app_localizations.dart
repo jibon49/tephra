@@ -2193,6 +2193,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Insert template'**
   String get slashTemplate;
+
+  /// No description provided for @commandToggleEditingMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle Live Preview / Source mode'**
+  String get commandToggleEditingMode;
+
+  /// No description provided for @editingModeLivePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Preview'**
+  String get editingModeLivePreview;
+
+  /// No description provided for @editingModeSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source mode'**
+  String get editingModeSource;
+
+  /// No description provided for @settingEditorDefaultEditingMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Default editing mode'**
+  String get settingEditorDefaultEditingMode;
 }
 
 class _AppLocalizationsDelegate

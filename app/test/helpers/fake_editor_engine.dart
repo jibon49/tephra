@@ -1,8 +1,10 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
+import 'package:tephra/editor/editor_decorator.dart';
 import 'package:tephra/editor/editor_engine.dart';
 import 'package:tephra/editor/highlight/source_highlighter.dart';
 import 'package:tephra/editor/line_view.dart';
@@ -241,6 +243,26 @@ class FakeEditorEngine implements EditorEngine {
   void setHighlighter(SourceHighlighter highlighter) {
     this.highlighter = highlighter;
   }
+
+  EditorDecorator? decorator;
+  bool Function(int offset, PointerDeviceKind kind, bool control)?
+  tapInterceptor;
+  Rect? rangeRect;
+
+  @override
+  void setDecorator(EditorDecorator? decorator) {
+    this.decorator = decorator;
+  }
+
+  @override
+  void setTapInterceptor(
+    bool Function(int offset, PointerDeviceKind kind, bool control)? fn,
+  ) {
+    tapInterceptor = fn;
+  }
+
+  @override
+  Rect? rectForRange(int start, int end) => rangeRect;
 
   @override
   void repaintLines(int firstLine, int lastLine) {}

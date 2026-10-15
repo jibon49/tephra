@@ -9,6 +9,7 @@ import '../commands/command_palette.dart';
 import '../commands/providers.dart';
 import '../commands/quick_switcher.dart';
 import '../editor/editor_controller.dart';
+import '../editor/live_preview/editing_mode.dart';
 import '../editor/mobile_toolbar.dart';
 import '../editor/providers.dart';
 import '../editor/save_state_indicator.dart';
@@ -18,6 +19,7 @@ import 'empty_workspace_view.dart';
 import 'index_status.dart';
 import 'providers.dart';
 import 'sidebar_registry.dart';
+import 'tab_content.dart';
 import 'workspace_models.dart';
 
 class PhoneLayout extends ConsumerStatefulWidget {
@@ -140,6 +142,8 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
               icon: const Icon(Icons.more_vert),
               onSelected: (value) {
                 switch (value) {
+                  case 'toggle-editing-mode':
+                    ref.read(workspaceProvider.notifier).toggleEditingMode();
                   case 'palette':
                     showCommandPalette(context);
                   case 'switcher':
@@ -148,20 +152,33 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
                     Navigator.of(context).pushNamed('/settings');
                 }
               },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'palette',
-                  child: Text(l10n.commandAppOpenCommandPalette),
-                ),
-                PopupMenuItem(
-                  value: 'switcher',
-                  child: Text(l10n.commandAppOpenQuickSwitcher),
-                ),
-                PopupMenuItem(
-                  value: 'settings',
-                  child: Text(l10n.commandAppOpenSettings),
-                ),
-              ],
+              itemBuilder: (context) {
+                final isNote = focusedTab?.content is FileTabContent;
+                final fileContent = focusedTab?.content as FileTabContent?;
+                final targetModeLabel =
+                    fileContent?.editingMode == EditingMode.livePreview
+                    ? l10n.editingModeSource
+                    : l10n.editingModeLivePreview;
+                return [
+                  if (isNote)
+                    PopupMenuItem(
+                      value: 'toggle-editing-mode',
+                      child: Text(targetModeLabel),
+                    ),
+                  PopupMenuItem(
+                    value: 'palette',
+                    child: Text(l10n.commandAppOpenCommandPalette),
+                  ),
+                  PopupMenuItem(
+                    value: 'switcher',
+                    child: Text(l10n.commandAppOpenQuickSwitcher),
+                  ),
+                  PopupMenuItem(
+                    value: 'settings',
+                    child: Text(l10n.commandAppOpenSettings),
+                  ),
+                ];
+              },
             ),
           ],
         ),

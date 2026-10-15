@@ -2,6 +2,8 @@
 
 import 'package:tephra_core/tephra_core.dart';
 
+import '../editor/live_preview/editing_mode.dart';
+
 sealed class TabContent {
   const TabContent();
 
@@ -15,23 +17,43 @@ sealed class TabContent {
       final path = VaultPath.tryParse(pathStr);
       if (path == null) return null;
       final subpath = j['subpath'] as String?;
-      return FileTabContent(path, subpath: subpath);
+      final modeStr = j['mode'] as String?;
+      final editingMode = modeStr == 'source'
+          ? EditingMode.source
+          : EditingMode.livePreview;
+      return FileTabContent(path, subpath: subpath, editingMode: editingMode);
     }
     return null;
   }
 }
 
 final class FileTabContent extends TabContent {
-  const FileTabContent(this.path, {this.subpath});
+  const FileTabContent(
+    this.path, {
+    this.subpath,
+    this.editingMode = EditingMode.livePreview,
+  });
 
   final VaultPath path;
   final String? subpath;
+  final EditingMode editingMode;
+
+  FileTabContent copyWith({
+    VaultPath? path,
+    String? subpath,
+    EditingMode? editingMode,
+  }) => FileTabContent(
+    path ?? this.path,
+    subpath: subpath ?? this.subpath,
+    editingMode: editingMode ?? this.editingMode,
+  );
 
   @override
   Map<String, Object?> toJson() => {
     'kind': 'file',
     'path': path.value,
     if (subpath != null) 'subpath': subpath,
+    'mode': editingMode.name,
   };
 
   @override
@@ -40,11 +62,13 @@ final class FileTabContent extends TabContent {
       other is FileTabContent &&
           other.runtimeType == runtimeType &&
           other.path == path &&
-          other.subpath == subpath;
+          other.subpath == subpath &&
+          other.editingMode == editingMode;
 
   @override
-  int get hashCode => Object.hash(path, subpath);
+  int get hashCode => Object.hash(path, subpath, editingMode);
 
   @override
-  String toString() => 'FileTabContent(path: $path, subpath: $subpath)';
+  String toString() =>
+      'FileTabContent(path: $path, subpath: $subpath, mode: $editingMode)';
 }

@@ -126,6 +126,33 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          ListTile(
+            title: Text(l10n.settingEditorDefaultEditingMode),
+            trailing: DropdownButton<String>(
+              value: vaultSettings.editorSettings.defaultEditingMode,
+              onChanged: (val) {
+                if (val != null) {
+                  ref
+                      .read(vaultSettingsProvider.notifier)
+                      .update(
+                        (s) => s.copyWith(
+                          editor: {...s.editor, 'defaultEditingMode': val},
+                        ),
+                      );
+                }
+              },
+              items: [
+                DropdownMenuItem(
+                  value: 'livePreview',
+                  child: Text(l10n.editingModeLivePreview),
+                ),
+                DropdownMenuItem(
+                  value: 'source',
+                  child: Text(l10n.editingModeSource),
+                ),
+              ],
+            ),
+          ),
           const Divider(),
 
           // --- Files ---

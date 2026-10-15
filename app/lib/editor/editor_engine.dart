@@ -1,7 +1,10 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'dart:ui';
+
 import 'package:flutter/widgets.dart';
 
+import 'editor_decorator.dart';
 import 'editor_options.dart';
 import 'highlight/source_highlighter.dart';
 import 'line_view.dart';
@@ -132,6 +135,17 @@ abstract interface class EditorEngine {
 
   /// Sets the token highlighter for per-line rendering.
   void setHighlighter(SourceHighlighter highlighter);
+
+  /// Sets the line decorator (e.g. for Live Preview mode). Passing null restores Source mode highlighting.
+  void setDecorator(EditorDecorator? decorator);
+
+  /// Installs an interceptor for tap/pointer events on the editor.
+  void setTapInterceptor(
+    bool Function(int offset, PointerDeviceKind kind, bool control)? fn,
+  );
+
+  /// Global screen coordinates of [start] to [end] range, or null if unrendered.
+  Rect? rectForRange(int start, int end);
 
   /// Requests repainting of line indices from [firstLine] to [lastLine].
   void repaintLines(int firstLine, int lastLine);

@@ -154,6 +154,35 @@ final class CorePluginsSettings {
   int get hashCode => slashCommands.hashCode;
 }
 
+/// Default editor settings.
+const defaultEditor = <String, Object?>{'defaultEditingMode': 'livePreview'};
+
+/// Editor settings model.
+@immutable
+final class EditorSettings {
+  const EditorSettings({this.defaultEditingMode = 'livePreview'});
+
+  factory EditorSettings.fromMap(Map<String, Object?> map) {
+    var mode = map['defaultEditingMode'] as String? ?? 'livePreview';
+    if (mode != 'livePreview' && mode != 'source') {
+      mode = 'livePreview';
+    }
+    return EditorSettings(defaultEditingMode: mode);
+  }
+
+  final String defaultEditingMode;
+
+  Map<String, Object?> toMap() => {'defaultEditingMode': defaultEditingMode};
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EditorSettings && defaultEditingMode == other.defaultEditingMode;
+
+  @override
+  int get hashCode => defaultEditingMode.hashCode;
+}
+
 /// Configuration settings for a single vault stored in `.tephra/settings.json`.
 @immutable
 final class VaultSettings {
@@ -172,6 +201,7 @@ final class VaultSettings {
     this.dailyNotes = const {},
     this.templates = defaultTemplates,
     this.corePlugins = defaultCorePlugins,
+    this.editor = defaultEditor,
     this.importedFromObsidian = false,
     this.newLinkFormat = 'shortest',
     this.useMarkdownLinks = false,
@@ -245,6 +275,14 @@ final class VaultSettings {
       corePlugins = defaultCorePlugins;
     }
 
+    final rawEditor = json['editor'];
+    final Map<String, Object?> editor;
+    if (rawEditor is Map) {
+      editor = rawEditor.cast<String, Object?>();
+    } else {
+      editor = defaultEditor;
+    }
+
     final importedFromObsidian = json['importedFromObsidian'] as bool? ?? false;
 
     var newLinkFormat = json['newLinkFormat'] as String? ?? 'shortest';
@@ -280,6 +318,7 @@ final class VaultSettings {
       'dailyNotes',
       'templates',
       'corePlugins',
+      'editor',
       'importedFromObsidian',
       'newLinkFormat',
       'useMarkdownLinks',
@@ -309,6 +348,7 @@ final class VaultSettings {
       dailyNotes: Map.unmodifiable(dailyNotes),
       templates: Map.unmodifiable(templates),
       corePlugins: Map.unmodifiable(corePlugins),
+      editor: Map.unmodifiable(editor),
       importedFromObsidian: importedFromObsidian,
       newLinkFormat: newLinkFormat,
       useMarkdownLinks: useMarkdownLinks,
@@ -340,6 +380,7 @@ final class VaultSettings {
   final Map<String, Object?> dailyNotes;
   final Map<String, Object?> templates;
   final Map<String, Object?> corePlugins;
+  final Map<String, Object?> editor;
   final bool importedFromObsidian;
   final String newLinkFormat;
   final bool useMarkdownLinks;
@@ -371,6 +412,8 @@ final class VaultSettings {
   CorePluginsSettings get corePluginsSettings =>
       CorePluginsSettings.fromMap(corePlugins);
 
+  EditorSettings get editorSettings => EditorSettings.fromMap(editor);
+
   String get templatesFolder => templates['folder'] as String? ?? '';
   String get templatesDateFormat =>
       templates['dateFormat'] as String? ?? 'YYYY-MM-DD';
@@ -395,6 +438,7 @@ final class VaultSettings {
       'dailyNotes': dailyNotes,
       'templates': templates,
       'corePlugins': corePlugins,
+      'editor': editor,
       'importedFromObsidian': importedFromObsidian,
       'newLinkFormat': newLinkFormat,
       'useMarkdownLinks': useMarkdownLinks,
@@ -420,6 +464,7 @@ final class VaultSettings {
     Map<String, Object?>? dailyNotes,
     Map<String, Object?>? templates,
     Map<String, Object?>? corePlugins,
+    Map<String, Object?>? editor,
     bool? importedFromObsidian,
     String? newLinkFormat,
     bool? useMarkdownLinks,
@@ -442,6 +487,7 @@ final class VaultSettings {
       dailyNotes: dailyNotes ?? this.dailyNotes,
       templates: templates ?? this.templates,
       corePlugins: corePlugins ?? this.corePlugins,
+      editor: editor ?? this.editor,
       importedFromObsidian: importedFromObsidian ?? this.importedFromObsidian,
       newLinkFormat: newLinkFormat ?? this.newLinkFormat,
       useMarkdownLinks: useMarkdownLinks ?? this.useMarkdownLinks,
@@ -469,6 +515,7 @@ final class VaultSettings {
           mapEquals(dailyNotes, other.dailyNotes) &&
           mapEquals(templates, other.templates) &&
           mapEquals(corePlugins, other.corePlugins) &&
+          mapEquals(editor, other.editor) &&
           importedFromObsidian == other.importedFromObsidian &&
           newLinkFormat == other.newLinkFormat &&
           useMarkdownLinks == other.useMarkdownLinks &&
@@ -477,7 +524,7 @@ final class VaultSettings {
           mapEquals(extra, other.extra);
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     attachmentFolder,
     newFileLocation,
     newFileFolder,
@@ -492,11 +539,12 @@ final class VaultSettings {
     Object.hashAll(dailyNotes.entries),
     Object.hashAll(templates.entries),
     Object.hashAll(corePlugins.entries),
+    Object.hashAll(editor.entries),
     importedFromObsidian,
     newLinkFormat,
     useMarkdownLinks,
     alwaysUpdateLinks,
     Object.hashAll(excludedFolders),
     Object.hashAll(extra.entries),
-  );
+  ]);
 }

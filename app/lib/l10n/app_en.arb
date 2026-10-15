@@ -553,7 +553,11 @@
   "slashHorizontalRule": "Horizontal rule",
   "slashTask": "Task",
   "slashToday": "Today's date",
-  "slashTemplate": "Insert template"
+  "slashTemplate": "Insert template",
+  "commandToggleEditingMode": "Toggle Live Preview / Source mode",
+  "editingModeLivePreview": "Live Preview",
+  "editingModeSource": "Source mode",
+  "settingEditorDefaultEditingMode": "Default editing mode"
 }
 
 

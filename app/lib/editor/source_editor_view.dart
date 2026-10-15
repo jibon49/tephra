@@ -2,6 +2,8 @@
 
 import 'dart:async';
 
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +19,8 @@ import '../reading/reading_view.dart';
 import '../search/search_highlights.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
+import '../workspace/providers.dart';
+import '../workspace/tab_content.dart';
 import 'attachment_actions.dart';
 import 'autocomplete/autocomplete_overlay.dart';
 import 'editor_controller.dart';
@@ -24,6 +28,10 @@ import 'editor_drop_target.dart';
 import 'engine/re_editor_engine.dart';
 import 'find/find_bar.dart';
 import 'find/find_controller.dart';
+import 'live_preview/editing_mode.dart';
+import 'live_preview/live_preview_session.dart';
+import 'live_preview/lp_decoration.dart';
+import 'live_preview/reveal.dart' hide TextRange;
 import 'providers.dart';
 
 /// Full Source mode editor widget wrapping [EditorController] and its engine view.
@@ -47,6 +55,7 @@ class SourceEditorView extends ConsumerStatefulWidget {
 
 class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
   EditorController? _controller;
+  LivePreviewSession? _session;
   StreamSubscription<void>? _selectionSub;
   StreamSubscription<void>? _editsSub;
   bool _isWaitingForEditor = false;
@@ -83,6 +92,8 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       if (!_isWaitingForEditor) {
         setState(() {
           _isWaitingForEditor = true;
+          _session?.dispose();
+          _session = null;
           _controller?.dispose();
           _controller = null;
         });
@@ -133,6 +144,95 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
         registry: registry,
       );
       _controller = controller;
+
+      final session = LivePreviewSession(target: controller, useWidgets: false);
+      _session = session;
+
+      final currentTab = ref.read(workspaceProvider).findTab(widget.tabId);
+      final currentFileContent = currentTab?.content as FileTabContent?;
+      final initialMode =
+          currentFileContent?.editingMode ?? EditingMode.livePreview;
+      if (initialMode == EditingMode.livePreview) {
+        controller.setDecorator(session.decorator);
+      } else {
+        controller.setDecorator(null);
+      }
+
+      controller.setTapInterceptor((offset, kind, control) {
+        if (!mounted || _session == null) return false;
+        final tab = ref.read(workspaceProvider).findTab(widget.tabId);
+        final fileContent = tab?.content as FileTabContent?;
+        final isLivePreview =
+            (fileContent?.editingMode ?? EditingMode.livePreview) ==
+            EditingMode.livePreview;
+        if (!isLivePreview) return false;
+
+        final decorations = _session!.engine.decorationsFor(offset, offset + 1);
+        LpStyle? linkStyle;
+        for (final d in decorations) {
+          if (d is LpStyle &&
+              (d.kind == LpStyleKind.internalLink ||
+                  d.kind == LpStyleKind.externalLink)) {
+            if (offset >= d.start && offset < d.end) {
+              linkStyle = d;
+              break;
+            }
+          }
+        }
+        if (linkStyle == null) return false;
+
+        final active = _session!.active;
+        final lineDecos = _session!.engine.decorationsFor(
+          linkStyle.start,
+          linkStyle.end,
+        );
+        for (final d in lineDecos) {
+          if (d.reveal != null && isRevealed(d, active)) {
+            return false;
+          }
+        }
+
+        final isMouse = kind == PointerDeviceKind.mouse;
+        if (isMouse && !control) {
+          return false;
+        }
+
+        final isExternal = linkStyle.kind == LpStyleKind.externalLink;
+        if (isExternal) {
+          final url = linkStyle.data;
+          if (url != null) {
+            final uri = Uri.tryParse(url);
+            if (uri != null) {
+              launchUrl(uri, mode: LaunchMode.externalApplication);
+              return true;
+            }
+          }
+        } else {
+          var target = linkStyle.data ?? '';
+          String? heading;
+          String? blockRef;
+          if (target.contains('#^')) {
+            final parts = target.split('#^');
+            target = parts[0];
+            blockRef = parts[1];
+          } else if (target.contains('#')) {
+            final parts = target.split('#');
+            target = parts[0];
+            heading = parts[1];
+          }
+          ref
+              .read(linkNavigatorProvider)
+              .open(
+                from: widget.path,
+                target: target,
+                heading: heading,
+                blockRef: blockRef,
+                newTab: isMouse && control,
+              );
+          return true;
+        }
+        return false;
+      });
 
       _selectionSub = controller.selectionChanges.listen((_) {
         if (mounted) {
@@ -201,6 +301,8 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
   void didUpdateWidget(SourceEditorView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.path != oldWidget.path) {
+      _session?.dispose();
+      _session = null;
       _controller?.dispose();
       _controller = null;
       _selectionSub?.cancel();
@@ -221,6 +323,8 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
     _doc?.removeListener(_onDocChanged);
     _selectionSub?.cancel();
     _editsSub?.cancel();
+    _session?.dispose();
+    _session = null;
     _controller?.dispose();
     _controller = null;
     super.dispose();
@@ -335,6 +439,18 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
 
     if (_controller == null) {
       return const Center(child: CircularProgressIndicator());
+    }
+
+    final ws = ref.watch(workspaceProvider);
+    final currentTab = ws.findTab(widget.tabId);
+    final currentFileContent = currentTab?.content as FileTabContent?;
+    final currentEditingMode =
+        currentFileContent?.editingMode ?? EditingMode.livePreview;
+    final targetDecorator = currentEditingMode == EditingMode.livePreview
+        ? _session?.decorator
+        : null;
+    if (_controller!.decorator != targetDecorator) {
+      _controller!.setDecorator(targetDecorator);
     }
 
     final shouldAutofocus = ref.read(focusEditorOnOpenProvider);

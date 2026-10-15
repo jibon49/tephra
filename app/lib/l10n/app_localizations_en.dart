@@ -1166,4 +1166,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get slashTemplate => 'Insert template';
+
+  @override
+  String get commandToggleEditingMode => 'Toggle Live Preview / Source mode';
+
+  @override
+  String get editingModeLivePreview => 'Live Preview';
+
+  @override
+  String get editingModeSource => 'Source mode';
+
+  @override
+  String get settingEditorDefaultEditingMode => 'Default editing mode';
 }

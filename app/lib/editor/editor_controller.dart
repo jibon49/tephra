@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:tephra_core/tephra_core.dart';
@@ -11,6 +12,7 @@ import 'package:tephra_markdown/tephra_markdown.dart';
 import '../reading/parse_service.dart';
 import '../vault/note_document.dart';
 import 'edit_operation.dart';
+import 'editor_decorator.dart';
 import 'editor_engine.dart';
 import 'editor_input_handlers.dart';
 import 'editor_options.dart';
@@ -19,6 +21,7 @@ import 'find/find_controller.dart';
 import 'helpers/auto_pair.dart';
 import 'highlight/source_highlighter.dart';
 import 'line_view.dart';
+import 'live_preview/live_preview_session.dart';
 import 'offset_map_utils.dart';
 
 /// Single change event emitted by [EditorController].
@@ -41,7 +44,8 @@ final class EditorEdit {
 }
 
 /// Controller connecting a [NoteDocument] to an [EditorEngine] with parse-driven highlighting.
-final class EditorController implements NoteEditorBinding {
+final class EditorController
+    implements NoteEditorBinding, LivePreviewEditorTarget {
   EditorController({
     required this.document,
     required this.engine,
@@ -117,8 +121,10 @@ final class EditorController implements NoteEditorBinding {
 
   VaultPath get path => document.path;
 
+  @override
   String get text => engine.text;
 
+  @override
   TextSelection get selection {
     final v = engine.lines;
     final sel = engine.selection;
@@ -141,8 +147,10 @@ final class EditorController implements NoteEditorBinding {
     );
   }
 
+  @override
   Stream<EditorEdit> get edits => _editsController.stream;
 
+  @override
   Stream<void> get selectionChanges => _selectionChangesController.stream;
 
   Stream<ParsedNote> get parsedChanges => _parsedChangesController.stream;
@@ -171,6 +179,27 @@ final class EditorController implements NoteEditorBinding {
 
   Rect? caretRectGlobal() => engine.caretRectGlobal();
 
+  EditorDecorator? _decorator;
+  EditorDecorator? get decorator => _decorator;
+
+  /// Sets the line decorator (e.g. for Live Preview mode). Passing null restores Source mode highlighting.
+  void setDecorator(EditorDecorator? d) {
+    _decorator = d;
+    engine.setDecorator(d);
+  }
+
+  /// Installs an interceptor for pointer/tap events on the editor.
+  void setTapInterceptor(
+    bool Function(int offset, PointerDeviceKind kind, bool control)? fn,
+  ) {
+    engine.setTapInterceptor(fn);
+  }
+
+  /// Global screen coordinates of [start] to [end] range, or null if unrendered.
+  Rect? rectForRange(int start, int end) {
+    return engine.rectForRange(start, end);
+  }
+
   /// Focus node of the editor input widget.
   FocusNode get focusNode => engine.focusNode;
 
@@ -184,6 +213,7 @@ final class EditorController implements NoteEditorBinding {
   }
 
   /// Current IME composing range, or [TextRange.empty] when none.
+  @override
   TextRange get composing => engine.composing;
 
   void updateOptions(EditorOptions o) {

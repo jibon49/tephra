@@ -10,8 +10,13 @@ final class TextRange {
   const TextRange.collapsed(int offset) : start = offset, end = offset;
   const TextRange.range(this.start, this.end);
 
+  static const TextRange empty = TextRange(start: -1, end: -1);
+
   final int start;
   final int end;
+
+  bool get isValid => start >= 0 && end >= 0;
+  bool get isCollapsed => start == end;
 
   @override
   bool operator ==(Object other) =>
