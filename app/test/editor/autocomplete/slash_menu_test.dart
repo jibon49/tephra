@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tephra/commands/command_registry.dart';
 import 'package:tephra/commands/providers.dart';
 import 'package:tephra/commands/tephra_command.dart';
 import 'package:tephra/editor/autocomplete/autocomplete_context.dart';
@@ -81,7 +82,11 @@ void main() {
     });
 
     test('the template item is hidden while the command is unregistered', () {
-      final container = ProviderContainer();
+      final container = ProviderContainer(
+        overrides: [
+          commandRegistryProvider.overrideWith((ref) => CommandRegistry()),
+        ],
+      );
       addTearDown(container.dispose);
 
       final ref = container.read(_testRefProvider);

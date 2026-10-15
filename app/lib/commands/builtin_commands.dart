@@ -12,6 +12,7 @@ import '../search/copy_results.dart';
 import '../search/providers.dart';
 import '../search/search_screen.dart';
 import '../vault/note_document.dart';
+import '../vault/note_tools/note_tools_commands.dart';
 import '../vault/providers.dart';
 import '../vault/vault_undo.dart';
 import '../workspace/open_file.dart';
@@ -29,6 +30,7 @@ void registerBuiltinCommands(CommandRegistry registry) {
   registerBookmarkCommands(registry);
   registerEditingModeCommands(registry);
   registerFoldCommands(registry);
+  registerNoteToolsCommands(registry);
   registry.register(
     TephraCommand(
       id: 'app.open-quick-switcher',

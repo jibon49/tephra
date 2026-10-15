@@ -1274,4 +1274,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get propertiesInDocumentSource => 'Source';
+
+  @override
+  String get commandOpenToday => 'Open today\'s daily note';
+
+  @override
+  String get commandOpenPreviousDaily => 'Open previous daily note';
+
+  @override
+  String get commandOpenNextDaily => 'Open next daily note';
+
+  @override
+  String get commandInsertTemplate => 'Insert template';
+
+  @override
+  String get commandCreateUniqueNote => 'Create unique note';
+
+  @override
+  String get dailyFormatInvalid => 'Daily note format is invalid';
+
+  @override
+  String get dailyTemplateMissing => 'Daily note template file is missing';
+
+  @override
+  String get dailyNoNeighbour => 'No daily note found in that direction';
+
+  @override
+  String get templatesFolderNotSet => 'Templates folder is not configured';
+
+  @override
+  String get templateUnreadable => 'Template file could not be read';
+
+  @override
+  String get settingsDailyNotes => 'Daily notes';
+
+  @override
+  String get settingsTemplates => 'Templates';
+
+  @override
+  String get settingsUniqueNote => 'Unique note creator';
+
+  @override
+  String get settingDailyFormat => 'Date format';
+
+  @override
+  String get settingDailyFolder => 'New file location';
+
+  @override
+  String get settingDailyTemplate => 'Template file location';
+
+  @override
+  String get settingDailyOpenOnStartup => 'Open on startup';
+
+  @override
+  String get settingTemplatesFolder => 'Template folder location';
+
+  @override
+  String get settingTemplatesDateFormat => 'Date format';
+
+  @override
+  String get settingTemplatesTimeFormat => 'Time format';
+
+  @override
+  String get settingUniquePrefix => 'Unique note prefix';
+
+  @override
+  String settingFormatPreview(String preview) {
+    return 'Preview: $preview';
+  }
+
+  @override
+  String get openSettings => 'Open settings';
 }

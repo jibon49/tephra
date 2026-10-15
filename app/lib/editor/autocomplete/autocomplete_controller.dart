@@ -12,11 +12,14 @@ import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
+import '../../commands/providers.dart';
 import '../../commands/quick_switcher_items.dart';
 import '../../core/providers.dart';
 import '../../explorer/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../outline/outline_tree.dart';
+import '../../vault/note_tools/providers.dart';
+import '../../vault/note_tools/template_service.dart';
 import '../../vault/providers.dart';
 import '../../workspace/providers.dart';
 import '../editor_controller.dart';
@@ -856,7 +859,19 @@ class AutocompleteController extends Notifier<AutocompleteState> {
     if (item.kind == AcKind.slash && item.payload is SlashCommand) {
       final cmd = item.payload as SlashCommand;
       if (cmd.id == 'template') {
-        // Will be wired in Step 02.27 when templates.insert-template command is registered.
+        final reg = ref.read(commandRegistryProvider);
+        final insertCmd = reg.byId('templates.insert-template');
+        final smKey = ref.read(scaffoldMessengerKeyProvider);
+        final buildContext = smKey.currentContext;
+        if (insertCmd != null && buildContext != null && buildContext.mounted) {
+          unawaited(
+            executeInsertTemplate(
+              buildContext,
+              templateService: ref.read(templateServiceProvider),
+              editor: editor,
+            ),
+          );
+        }
       }
     }
 

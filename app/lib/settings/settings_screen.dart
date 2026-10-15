@@ -5,9 +5,11 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tephra_core/tephra_core.dart';
 
 import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
+import '../vault/note_tools/template_picker.dart';
 import 'hotkeys_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -20,6 +22,7 @@ class SettingsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final appSettings = ref.watch(appSettingsProvider);
     final vaultSettings = ref.watch(vaultSettingsProvider);
+    final clock = ref.watch(clockProvider);
 
     final isAndroid = !kIsWeb && Platform.isAndroid;
 
@@ -409,6 +412,186 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const Divider(),
 
+          // --- Daily notes ---
+          _SectionHeader(title: l10n.settingsDailyNotes),
+          SwitchListTile(
+            title: Text(l10n.settingsDailyNotes),
+            value: vaultSettings.corePluginsSettings.dailyNotes,
+            onChanged: (val) {
+              ref.read(vaultSettingsProvider.notifier).update((s) {
+                final plugins = Map<String, Object?>.from(s.corePlugins);
+                plugins['dailyNotes'] = val;
+                return s.copyWith(corePlugins: plugins);
+              });
+            },
+          ),
+          if (vaultSettings.corePluginsSettings.dailyNotes) ...[
+            _FormatSettingTile(
+              title: l10n.settingDailyFormat,
+              initialValue: vaultSettings.dailyNotesSettings.format,
+              validator: (f) =>
+                  validateMomentFormat(f, forFileName: true, requireDate: true),
+              onSaved: (f) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.dailyNotes);
+                  m['format'] = f;
+                  return s.copyWith(dailyNotes: m);
+                });
+              },
+              clock: clock,
+            ),
+            _PathPickerTile(
+              title: l10n.settingDailyFolder,
+              initialValue: vaultSettings.dailyNotesSettings.folder,
+              icon: Icons.folder_open,
+              onPick: () => _pickFolderDialog(context, ref),
+              onSaved: (f) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.dailyNotes);
+                  m['folder'] = f;
+                  return s.copyWith(dailyNotes: m);
+                });
+              },
+            ),
+            _PathPickerTile(
+              title: l10n.settingDailyTemplate,
+              initialValue: vaultSettings.dailyNotesSettings.template,
+              icon: Icons.description_outlined,
+              onPick: () => _pickTemplateDialog(context, ref),
+              onSaved: (t) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.dailyNotes);
+                  m['template'] = t;
+                  return s.copyWith(dailyNotes: m);
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text(l10n.settingDailyOpenOnStartup),
+              value: vaultSettings.dailyNotesSettings.openOnStartup,
+              onChanged: (val) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.dailyNotes);
+                  m['openOnStartup'] = val;
+                  return s.copyWith(dailyNotes: m);
+                });
+              },
+            ),
+          ],
+          const Divider(),
+
+          // --- Templates ---
+          _SectionHeader(title: l10n.settingsTemplates),
+          SwitchListTile(
+            title: Text(l10n.settingsTemplates),
+            value: vaultSettings.corePluginsSettings.templates,
+            onChanged: (val) {
+              ref.read(vaultSettingsProvider.notifier).update((s) {
+                final plugins = Map<String, Object?>.from(s.corePlugins);
+                plugins['templates'] = val;
+                return s.copyWith(corePlugins: plugins);
+              });
+            },
+          ),
+          if (vaultSettings.corePluginsSettings.templates) ...[
+            _PathPickerTile(
+              title: l10n.settingTemplatesFolder,
+              initialValue: vaultSettings.templatesSettings.folder,
+              icon: Icons.folder_open,
+              onPick: () => _pickFolderDialog(context, ref),
+              onSaved: (f) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.templates);
+                  m['folder'] = f;
+                  return s.copyWith(templates: m);
+                });
+              },
+            ),
+            _FormatSettingTile(
+              title: l10n.settingTemplatesDateFormat,
+              initialValue: vaultSettings.templatesSettings.dateFormat,
+              validator: (f) => validateMomentFormat(f),
+              onSaved: (f) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.templates);
+                  m['dateFormat'] = f;
+                  return s.copyWith(templates: m);
+                });
+              },
+              clock: clock,
+            ),
+            _FormatSettingTile(
+              title: l10n.settingTemplatesTimeFormat,
+              initialValue: vaultSettings.templatesSettings.timeFormat,
+              validator: (f) => validateMomentFormat(f),
+              onSaved: (f) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.templates);
+                  m['timeFormat'] = f;
+                  return s.copyWith(templates: m);
+                });
+              },
+              clock: clock,
+            ),
+          ],
+          const Divider(),
+
+          // --- Unique note creator ---
+          _SectionHeader(title: l10n.settingsUniqueNote),
+          SwitchListTile(
+            title: Text(l10n.settingsUniqueNote),
+            value: vaultSettings.corePluginsSettings.uniqueNoteCreator,
+            onChanged: (val) {
+              ref.read(vaultSettingsProvider.notifier).update((s) {
+                final plugins = Map<String, Object?>.from(s.corePlugins);
+                plugins['uniqueNoteCreator'] = val;
+                return s.copyWith(corePlugins: plugins);
+              });
+            },
+          ),
+          if (vaultSettings.corePluginsSettings.uniqueNoteCreator) ...[
+            _FormatSettingTile(
+              title: l10n.settingUniquePrefix,
+              initialValue: vaultSettings.uniqueNoteSettings.prefixFormat,
+              validator: (f) => validateMomentFormat(f, forFileName: true),
+              onSaved: (f) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.uniqueNote);
+                  m['prefixFormat'] = f;
+                  return s.copyWith(uniqueNote: m);
+                });
+              },
+              clock: clock,
+            ),
+            _PathPickerTile(
+              title: l10n.settingDailyFolder,
+              initialValue: vaultSettings.uniqueNoteSettings.folder,
+              icon: Icons.folder_open,
+              onPick: () => _pickFolderDialog(context, ref),
+              onSaved: (f) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.uniqueNote);
+                  m['folder'] = f;
+                  return s.copyWith(uniqueNote: m);
+                });
+              },
+            ),
+            _PathPickerTile(
+              title: l10n.settingDailyTemplate,
+              initialValue: vaultSettings.uniqueNoteSettings.template,
+              icon: Icons.description_outlined,
+              onPick: () => _pickTemplateDialog(context, ref),
+              onSaved: (t) {
+                ref.read(vaultSettingsProvider.notifier).update((s) {
+                  final m = Map<String, Object?>.from(s.uniqueNote);
+                  m['template'] = t;
+                  return s.copyWith(uniqueNote: m);
+                });
+              },
+            ),
+          ],
+          const Divider(),
+
           // --- About ---
           _SectionHeader(title: l10n.settingsAbout),
           const ListTile(
@@ -519,4 +702,247 @@ class _SectionHeader extends StatelessWidget {
       ),
     );
   }
+}
+
+class _FormatSettingTile extends StatefulWidget {
+  const _FormatSettingTile({
+    required this.title,
+    required this.initialValue,
+    required this.validator,
+    required this.onSaved,
+    required this.clock,
+  });
+
+  final String title;
+  final String initialValue;
+  final MomentFormatError? Function(String format) validator;
+  final ValueChanged<String> onSaved;
+  final Clock clock;
+
+  @override
+  State<_FormatSettingTile> createState() => _FormatSettingTileState();
+}
+
+class _FormatSettingTileState extends State<_FormatSettingTile> {
+  late final TextEditingController _controller;
+  String? _errorText;
+  String _preview = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+    _updateState(widget.initialValue);
+  }
+
+  @override
+  void didUpdateWidget(_FormatSettingTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue;
+      _updateState(widget.initialValue);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _updateState(String format) {
+    final err = widget.validator(format);
+    setState(() {
+      if (err != null) {
+        _errorText = 'Invalid format ($err)';
+        _preview = '';
+      } else {
+        _errorText = null;
+        _preview = formatMoment(widget.clock.now(), format);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return ListTile(
+      title: Text(widget.title),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 6),
+          TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              isDense: true,
+              border: const OutlineInputBorder(),
+              errorText: _errorText,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+            ),
+            onChanged: (val) {
+              final trimmed = val.trim();
+              _updateState(trimmed);
+              if (widget.validator(trimmed) == null) {
+                widget.onSaved(trimmed);
+              }
+            },
+          ),
+          if (_errorText == null && _preview.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              l10n.settingFormatPreview(_preview),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: Theme.of(context).hintColor),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PathPickerTile extends StatefulWidget {
+  const _PathPickerTile({
+    required this.title,
+    required this.initialValue,
+    required this.onSaved,
+    required this.onPick,
+    required this.icon,
+  });
+
+  final String title;
+  final String initialValue;
+  final ValueChanged<String> onSaved;
+  final Future<String?> Function() onPick;
+  final IconData icon;
+
+  @override
+  State<_PathPickerTile> createState() => _PathPickerTileState();
+}
+
+class _PathPickerTileState extends State<_PathPickerTile> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void didUpdateWidget(_PathPickerTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(widget.title),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  isDense: true,
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                onSubmitted: (val) => widget.onSaved(val.trim()),
+                onChanged: (val) => widget.onSaved(val.trim()),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              icon: Icon(widget.icon),
+              onPressed: () async {
+                final picked = await widget.onPick();
+                if (picked != null) {
+                  _controller.text = picked;
+                  widget.onSaved(picked);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<String?> _pickFolderDialog(BuildContext context, WidgetRef ref) async {
+  final l10n = AppLocalizations.of(context);
+  final index = await ref.read(noteIndexProvider.future);
+  final all = await index.allFiles();
+  final folderSet = <String>{''};
+  for (final f in all) {
+    var p = f.path.parent;
+    while (p != null && p != VaultPath.root) {
+      folderSet.add(p.value);
+      p = p.parent;
+    }
+  }
+  final folders = folderSet.toList()..sort();
+
+  if (!context.mounted) return null;
+  return showDialog<String>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Select folder'),
+      content: SizedBox(
+        width: 400,
+        height: 300,
+        child: ListView.builder(
+          itemCount: folders.length,
+          itemBuilder: (ctx, i) {
+            final f = folders[i];
+            final label = f.isEmpty ? '/ (Vault root)' : f;
+            return ListTile(
+              leading: const Icon(Icons.folder_outlined),
+              title: Text(label),
+              onTap: () => Navigator.of(ctx).pop(f),
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(null),
+          child: Text(l10n.commonCancel),
+        ),
+      ],
+    ),
+  );
+}
+
+Future<String?> _pickTemplateDialog(BuildContext context, WidgetRef ref) async {
+  final index = await ref.read(noteIndexProvider.future);
+  final all = await index.allFiles();
+  final mdFiles = all
+      .map((f) => f.path)
+      .where((p) => p.value.toLowerCase().endsWith('.md'))
+      .toList();
+  if (!context.mounted) return null;
+  final chosen = await showTemplatePicker(context, templates: mdFiles);
+  return chosen?.value;
 }

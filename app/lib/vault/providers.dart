@@ -12,6 +12,7 @@ import 'indexing_vault_file_system.dart';
 import 'note_creator.dart';
 import 'note_document.dart';
 import 'note_document_store.dart';
+import 'note_tools/providers.dart';
 import 'vault_session.dart';
 
 /// Notifier managing the currently active [VaultSession].
@@ -102,7 +103,10 @@ final vaultNameProvider = Provider<String>((ref) {
 });
 
 final vaultOpenedHooksProvider = Provider<List<Future<void> Function(Ref ref)>>(
-  (ref) => [(ref) => ref.read(workspaceProvider.notifier).restore()],
+  (ref) => [
+    (ref) => ref.read(workspaceProvider.notifier).restore(),
+    (ref) => ref.read(dailyStartupProvider).run(),
+  ],
 );
 
 final noteCreatorProvider = Provider<NoteCreator>((ref) => NoteCreator(ref));

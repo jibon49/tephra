@@ -4,6 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
+import '../vault/note_tools/note_tools_settings.dart';
+
+export '../vault/note_tools/note_tools_settings.dart';
+
 /// Where new files should be created by default.
 enum NewFileLocation {
   root,
@@ -133,25 +137,46 @@ final class TemplatesSettings {
 /// Core plugins settings model.
 @immutable
 final class CorePluginsSettings {
-  const CorePluginsSettings({this.slashCommands = true});
+  const CorePluginsSettings({
+    this.slashCommands = true,
+    this.dailyNotes = true,
+    this.templates = true,
+    this.uniqueNoteCreator = false,
+  });
 
   factory CorePluginsSettings.fromMap(Map<String, Object?> map) {
     return CorePluginsSettings(
       slashCommands: map['slashCommands'] as bool? ?? true,
+      dailyNotes: map['dailyNotes'] as bool? ?? true,
+      templates: map['templates'] as bool? ?? true,
+      uniqueNoteCreator: map['uniqueNoteCreator'] as bool? ?? false,
     );
   }
 
   final bool slashCommands;
+  final bool dailyNotes;
+  final bool templates;
+  final bool uniqueNoteCreator;
 
-  Map<String, Object?> toMap() => {'slashCommands': slashCommands};
+  Map<String, Object?> toMap() => {
+    'slashCommands': slashCommands,
+    'dailyNotes': dailyNotes,
+    'templates': templates,
+    'uniqueNoteCreator': uniqueNoteCreator,
+  };
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CorePluginsSettings && slashCommands == other.slashCommands;
+      other is CorePluginsSettings &&
+          slashCommands == other.slashCommands &&
+          dailyNotes == other.dailyNotes &&
+          templates == other.templates &&
+          uniqueNoteCreator == other.uniqueNoteCreator;
 
   @override
-  int get hashCode => slashCommands.hashCode;
+  int get hashCode =>
+      Object.hash(slashCommands, dailyNotes, templates, uniqueNoteCreator);
 }
 
 /// Default editor settings.
@@ -238,6 +263,7 @@ final class VaultSettings {
     this.explorerSort = 'nameAsc',
     this.dailyNotes = const {},
     this.templates = defaultTemplates,
+    this.uniqueNote = const {},
     this.corePlugins = defaultCorePlugins,
     this.editor = defaultEditor,
     this.importedFromObsidian = false,
@@ -305,6 +331,11 @@ final class VaultSettings {
       templates = defaultTemplates;
     }
 
+    final rawUnique = json['uniqueNote'];
+    final uniqueNote = rawUnique is Map
+        ? rawUnique.cast<String, Object?>()
+        : const <String, Object?>{};
+
     final rawCorePlugins = json['corePlugins'];
     final Map<String, Object?> corePlugins;
     if (rawCorePlugins is Map) {
@@ -355,6 +386,7 @@ final class VaultSettings {
       'explorerSort',
       'dailyNotes',
       'templates',
+      'uniqueNote',
       'corePlugins',
       'editor',
       'importedFromObsidian',
@@ -385,6 +417,7 @@ final class VaultSettings {
       explorerSort: explorerSort,
       dailyNotes: Map.unmodifiable(dailyNotes),
       templates: Map.unmodifiable(templates),
+      uniqueNote: Map.unmodifiable(uniqueNote),
       corePlugins: Map.unmodifiable(corePlugins),
       editor: Map.unmodifiable(editor),
       importedFromObsidian: importedFromObsidian,
@@ -402,7 +435,25 @@ final class VaultSettings {
     'timeFormat': 'HH:mm',
   };
 
-  static const defaultCorePlugins = <String, Object?>{'slashCommands': true};
+  static const defaultDailyNotes = <String, Object?>{
+    'format': 'YYYY-MM-DD',
+    'folder': '',
+    'template': '',
+    'openOnStartup': false,
+  };
+
+  static const defaultUniqueNote = <String, Object?>{
+    'prefixFormat': 'YYYYMMDDHHmm',
+    'folder': '',
+    'template': '',
+  };
+
+  static const defaultCorePlugins = <String, Object?>{
+    'slashCommands': true,
+    'dailyNotes': true,
+    'templates': true,
+    'uniqueNoteCreator': false,
+  };
 
   final String attachmentFolder;
   final String newFileLocation;
@@ -417,6 +468,7 @@ final class VaultSettings {
   final String explorerSort;
   final Map<String, Object?> dailyNotes;
   final Map<String, Object?> templates;
+  final Map<String, Object?> uniqueNote;
   final Map<String, Object?> corePlugins;
   final Map<String, Object?> editor;
   final bool importedFromObsidian;
@@ -443,6 +495,12 @@ final class VaultSettings {
     format: newLinkFormatEnum,
     useMarkdownLinks: useMarkdownLinks,
   );
+
+  DailyNotesSettings get dailyNotesSettings =>
+      DailyNotesSettings.fromMap(dailyNotes);
+
+  UniqueNoteSettings get uniqueNoteSettings =>
+      UniqueNoteSettings.fromMap(uniqueNote);
 
   TemplatesSettings get templatesSettings =>
       TemplatesSettings.fromMap(templates);
@@ -478,6 +536,7 @@ final class VaultSettings {
       'explorerSort': explorerSort,
       'dailyNotes': dailyNotes,
       'templates': templates,
+      'uniqueNote': uniqueNote,
       'corePlugins': corePlugins,
       'editor': editor,
       'importedFromObsidian': importedFromObsidian,
@@ -504,6 +563,7 @@ final class VaultSettings {
     String? explorerSort,
     Map<String, Object?>? dailyNotes,
     Map<String, Object?>? templates,
+    Map<String, Object?>? uniqueNote,
     Map<String, Object?>? corePlugins,
     Map<String, Object?>? editor,
     bool? importedFromObsidian,
@@ -527,6 +587,7 @@ final class VaultSettings {
       explorerSort: explorerSort ?? this.explorerSort,
       dailyNotes: dailyNotes ?? this.dailyNotes,
       templates: templates ?? this.templates,
+      uniqueNote: uniqueNote ?? this.uniqueNote,
       corePlugins: corePlugins ?? this.corePlugins,
       editor: editor ?? this.editor,
       importedFromObsidian: importedFromObsidian ?? this.importedFromObsidian,
@@ -555,6 +616,7 @@ final class VaultSettings {
           explorerSort == other.explorerSort &&
           mapEquals(dailyNotes, other.dailyNotes) &&
           mapEquals(templates, other.templates) &&
+          mapEquals(uniqueNote, other.uniqueNote) &&
           mapEquals(corePlugins, other.corePlugins) &&
           mapEquals(editor, other.editor) &&
           importedFromObsidian == other.importedFromObsidian &&
@@ -579,6 +641,7 @@ final class VaultSettings {
     explorerSort,
     Object.hashAll(dailyNotes.entries),
     Object.hashAll(templates.entries),
+    Object.hashAll(uniqueNote.entries),
     Object.hashAll(corePlugins.entries),
     Object.hashAll(editor.entries),
     importedFromObsidian,

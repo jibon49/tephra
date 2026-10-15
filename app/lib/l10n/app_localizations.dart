@@ -2409,6 +2409,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Source'**
   String get propertiesInDocumentSource;
+
+  /// No description provided for @commandOpenToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Open today\'s daily note'**
+  String get commandOpenToday;
+
+  /// No description provided for @commandOpenPreviousDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Open previous daily note'**
+  String get commandOpenPreviousDaily;
+
+  /// No description provided for @commandOpenNextDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Open next daily note'**
+  String get commandOpenNextDaily;
+
+  /// No description provided for @commandInsertTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert template'**
+  String get commandInsertTemplate;
+
+  /// No description provided for @commandCreateUniqueNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Create unique note'**
+  String get commandCreateUniqueNote;
+
+  /// No description provided for @dailyFormatInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily note format is invalid'**
+  String get dailyFormatInvalid;
+
+  /// No description provided for @dailyTemplateMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily note template file is missing'**
+  String get dailyTemplateMissing;
+
+  /// No description provided for @dailyNoNeighbour.
+  ///
+  /// In en, this message translates to:
+  /// **'No daily note found in that direction'**
+  String get dailyNoNeighbour;
+
+  /// No description provided for @templatesFolderNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates folder is not configured'**
+  String get templatesFolderNotSet;
+
+  /// No description provided for @templateUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'Template file could not be read'**
+  String get templateUnreadable;
+
+  /// No description provided for @settingsDailyNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily notes'**
+  String get settingsDailyNotes;
+
+  /// No description provided for @settingsTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get settingsTemplates;
+
+  /// No description provided for @settingsUniqueNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique note creator'**
+  String get settingsUniqueNote;
+
+  /// No description provided for @settingDailyFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Date format'**
+  String get settingDailyFormat;
+
+  /// No description provided for @settingDailyFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'New file location'**
+  String get settingDailyFolder;
+
+  /// No description provided for @settingDailyTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Template file location'**
+  String get settingDailyTemplate;
+
+  /// No description provided for @settingDailyOpenOnStartup.
+  ///
+  /// In en, this message translates to:
+  /// **'Open on startup'**
+  String get settingDailyOpenOnStartup;
+
+  /// No description provided for @settingTemplatesFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Template folder location'**
+  String get settingTemplatesFolder;
+
+  /// No description provided for @settingTemplatesDateFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Date format'**
+  String get settingTemplatesDateFormat;
+
+  /// No description provided for @settingTemplatesTimeFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Time format'**
+  String get settingTemplatesTimeFormat;
+
+  /// No description provided for @settingUniquePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique note prefix'**
+  String get settingUniquePrefix;
+
+  /// No description provided for @settingFormatPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview: {preview}'**
+  String settingFormatPreview(String preview);
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get openSettings;
 }
 
 class _AppLocalizationsDelegate

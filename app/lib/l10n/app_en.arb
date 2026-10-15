@@ -589,7 +589,37 @@
   "settingEditorPropertiesInDocument": "Properties in document",
   "propertiesInDocumentVisible": "Visible",
   "propertiesInDocumentHidden": "Hidden",
-  "propertiesInDocumentSource": "Source"
+  "propertiesInDocumentSource": "Source",
+  "commandOpenToday": "Open today's daily note",
+  "commandOpenPreviousDaily": "Open previous daily note",
+  "commandOpenNextDaily": "Open next daily note",
+  "commandInsertTemplate": "Insert template",
+  "commandCreateUniqueNote": "Create unique note",
+  "dailyFormatInvalid": "Daily note format is invalid",
+  "dailyTemplateMissing": "Daily note template file is missing",
+  "dailyNoNeighbour": "No daily note found in that direction",
+  "templatesFolderNotSet": "Templates folder is not configured",
+  "templateUnreadable": "Template file could not be read",
+  "settingsDailyNotes": "Daily notes",
+  "settingsTemplates": "Templates",
+  "settingsUniqueNote": "Unique note creator",
+  "settingDailyFormat": "Date format",
+  "settingDailyFolder": "New file location",
+  "settingDailyTemplate": "Template file location",
+  "settingDailyOpenOnStartup": "Open on startup",
+  "settingTemplatesFolder": "Template folder location",
+  "settingTemplatesDateFormat": "Date format",
+  "settingTemplatesTimeFormat": "Time format",
+  "settingUniquePrefix": "Unique note prefix",
+  "settingFormatPreview": "Preview: {preview}",
+  "@settingFormatPreview": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "openSettings": "Open settings"
 }
 
 
