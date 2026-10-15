@@ -139,5 +139,11 @@ abstract interface class EditorEngine {
   /// Builds the engine's Flutter widget.
   Widget buildView(BuildContext context, EditorViewConfig config);
 
+  /// Focus node of the editor input widget.
+  FocusNode get focusNode;
+
+  /// Active IME composing range, or [TextRange.empty] if none.
+  TextRange get composing;
+
   void dispose();
 }

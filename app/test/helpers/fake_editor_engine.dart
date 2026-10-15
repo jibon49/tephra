@@ -35,6 +35,15 @@ class FakeEditorEngine implements EditorEngine {
 
   bool _hasFocus = false;
   SourceHighlighter? highlighter;
+  final FocusNode _focusNode = FocusNode();
+  TextRange _composing = TextRange.empty;
+
+  @override
+  FocusNode get focusNode => _focusNode;
+
+  @override
+  TextRange get composing => _composing;
+  set composing(TextRange r) => _composing = r;
 
   @override
   LineView get lines => _lines;
@@ -223,8 +232,10 @@ class FakeEditorEngine implements EditorEngine {
   @override
   void reveal(int offset, {required bool center}) {}
 
+  Rect? globalCaretRect;
+
   @override
-  Rect? caretRectGlobal() => null;
+  Rect? caretRectGlobal() => globalCaretRect;
 
   @override
   void setHighlighter(SourceHighlighter highlighter) {
@@ -241,6 +252,7 @@ class FakeEditorEngine implements EditorEngine {
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _changeController.close();
     _selectionController.close();
     _focusController.close();

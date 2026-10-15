@@ -2007,6 +2007,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bookmarks: New bookmark group'**
   String get commandBookmarkNewGroup;
+
+  /// No description provided for @autocompleteNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get autocompleteNoResults;
+
+  /// No description provided for @autocompleteContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue into subpath'**
+  String get autocompleteContinue;
+
+  /// Notification when a block ID is automatically generated
+  ///
+  /// In en, this message translates to:
+  /// **'Added block ID ^{id}'**
+  String autocompleteBlockCreated(String id);
+
+  /// No description provided for @autocompleteBlockMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Target block not found'**
+  String get autocompleteBlockMissing;
+
+  /// No description provided for @commandTriggerAutocomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger autocomplete'**
+  String get commandTriggerAutocomplete;
 }
 
 class _AppLocalizationsDelegate

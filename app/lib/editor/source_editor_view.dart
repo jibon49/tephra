@@ -18,6 +18,7 @@ import '../search/search_highlights.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import 'attachment_actions.dart';
+import 'autocomplete/autocomplete_overlay.dart';
 import 'editor_controller.dart';
 import 'editor_drop_target.dart';
 import 'engine/re_editor_engine.dart';
@@ -403,6 +404,14 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       },
     );
 
-    return EditorDropTarget(controller: _controller, child: mainContent);
+    final dropTarget = EditorDropTarget(
+      controller: _controller,
+      child: mainContent,
+    );
+    return AutocompleteOverlay(
+      tabId: widget.tabId,
+      controller: _controller!,
+      child: dropTarget,
+    );
   }
 }

@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
 import '../reading/parse_service.dart';
@@ -170,6 +171,21 @@ final class EditorController implements NoteEditorBinding {
 
   Rect? caretRectGlobal() => engine.caretRectGlobal();
 
+  /// Focus node of the editor input widget.
+  FocusNode get focusNode => engine.focusNode;
+
+  /// Installs [fn] as [focusNode.onKeyEvent]. Passing `null` removes it.
+  void setKeyInterceptor(KeyEventResult Function(KeyEvent event)? fn) {
+    if (fn == null) {
+      focusNode.onKeyEvent = null;
+    } else {
+      focusNode.onKeyEvent = (FocusNode node, KeyEvent event) => fn(event);
+    }
+  }
+
+  /// Current IME composing range, or [TextRange.empty] when none.
+  TextRange get composing => engine.composing;
+
   void updateOptions(EditorOptions o) {
     options = o;
   }
@@ -182,17 +198,25 @@ final class EditorController implements NoteEditorBinding {
     }
   }
 
-  void applyEdits(List<EditOperation> ops) {
+  void applyEdits(List<dynamic> ops) {
     if (ops.isEmpty) return;
 
+    final operations = ops.map((op) {
+      if (op is EditOperation) return op;
+      if (op is TextEdit) {
+        return EditOperation(op.start, op.end, op.replacement);
+      }
+      throw ArgumentError('Unsupported edit operation: ${op.runtimeType}');
+    }).toList();
+
     final currentText = text;
-    for (final op in ops) {
+    for (final op in operations) {
       if (!op.isValidFor(currentText)) {
         throw ArgumentError('Invalid edit operation for current text: $op');
       }
     }
 
-    final sorted = List<EditOperation>.from(ops)
+    final sorted = List<EditOperation>.from(operations)
       ..sort((a, b) => a.start.compareTo(b.start));
 
     for (var i = 0; i < sorted.length - 1; i++) {

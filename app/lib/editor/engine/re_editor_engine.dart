@@ -93,6 +93,18 @@ class ReEditorEngine implements EditorEngine {
   }
 
   @override
+  FocusNode get focusNode => _focusNode;
+
+  @override
+  TextRange get composing {
+    final c = _controller.value.composing;
+    if (!c.isValid || c == const TextRange(start: -1, end: -1)) {
+      return TextRange.empty;
+    }
+    return c;
+  }
+
+  @override
   LineView get lines => _ReEditorLineView(_controller);
 
   @override

@@ -1,5 +1,7 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tephra/editor/edit_operation.dart';
 import 'package:tephra/editor/editor_controller.dart';
@@ -9,6 +11,7 @@ import 'package:tephra/reading/parse_service.dart';
 import 'package:tephra/vault/note_document.dart';
 import 'package:tephra/vault/note_document_store.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../helpers/fake_editor_engine.dart';
@@ -336,5 +339,64 @@ void main() {
         controller.dispose();
       },
     );
+
+    test('focusNode, setKeyInterceptor, and composing work as expected', () {
+      final engine = FakeEditorEngine(doc.text);
+      final controller = EditorController(
+        document: doc,
+        engine: engine,
+        options: const EditorOptions(),
+        parseService: const ParseService(),
+        registry: registry,
+      );
+
+      expect(controller.focusNode, equals(engine.focusNode));
+      expect(controller.composing, equals(TextRange.empty));
+
+      engine.composing = const TextRange(start: 2, end: 5);
+      expect(controller.composing, equals(const TextRange(start: 2, end: 5)));
+
+      var intercepted = false;
+      controller.setKeyInterceptor((event) {
+        intercepted = true;
+        return KeyEventResult.handled;
+      });
+
+      expect(controller.focusNode.onKeyEvent, isNotNull);
+      final res = controller.focusNode.onKeyEvent!(
+        controller.focusNode,
+        const KeyDownEvent(
+          physicalKey: PhysicalKeyboardKey.keyA,
+          logicalKey: LogicalKeyboardKey.keyA,
+          timeStamp: Duration.zero,
+        ),
+      );
+      expect(res, equals(KeyEventResult.handled));
+      expect(intercepted, isTrue);
+
+      controller.setKeyInterceptor(null);
+      expect(controller.focusNode.onKeyEvent, isNull);
+
+      controller.dispose();
+    });
+
+    test('applyEdits accepts List<TextEdit>', () {
+      final engine = FakeEditorEngine('Hello World');
+      final controller = EditorController(
+        document: doc,
+        engine: engine,
+        options: const EditorOptions(),
+        parseService: const ParseService(),
+        registry: registry,
+      );
+
+      controller.applyEdits([
+        const TextEdit(0, 5, 'Hi'),
+        const TextEdit(6, 11, 'Universe'),
+      ]);
+
+      expect(controller.text, equals('Hi Universe'));
+      controller.dispose();
+    });
   });
 }

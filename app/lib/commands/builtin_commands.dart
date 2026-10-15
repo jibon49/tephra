@@ -229,6 +229,26 @@ void registerBuiltinCommands(CommandRegistry registry) {
 
   registry.register(
     TephraCommand(
+      id: 'editor.trigger-autocomplete',
+      label: (l10n) => l10n.commandTriggerAutocomplete,
+      icon: Icons.auto_awesome,
+      defaultShortcuts: const [
+        SingleActivator(LogicalKeyboardKey.space, control: true),
+      ],
+      isAvailable: (ref) => ref.read(activeEditorProvider) != null,
+      run: (ref, context) {
+        final focusedTab = ref.read(workspaceProvider).focusedTab;
+        if (focusedTab != null) {
+          ref
+              .read(autocompleteControllerProvider(focusedTab.id).notifier)
+              .trigger(force: true);
+        }
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
       id: 'note.create-note',
       label: (l10n) => l10n.commandNoteCreateNote,
       icon: Icons.add,

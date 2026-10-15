@@ -23,9 +23,11 @@ abstract final class FuzzyScorer {
 
   /// Score of [candidate] for [query]; null = no match. Higher is better. Case-insensitive.
   static int? score(String query, String candidate) {
-    final q = query.trim().toLowerCase();
-    final c = candidate.toLowerCase();
+    return scoreLower(query.trim().toLowerCase(), candidate.toLowerCase());
+  }
 
+  /// Score of pre-lowercased [c] for pre-lowercased and trimmed [q].
+  static int? scoreLower(String q, String c) {
     // 1. q empty -> 0
     if (q.isEmpty) return 0;
 

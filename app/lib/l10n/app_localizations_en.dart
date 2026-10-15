@@ -1071,4 +1071,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandBookmarkNewGroup => 'Bookmarks: New bookmark group';
+
+  @override
+  String get autocompleteNoResults => 'No results';
+
+  @override
+  String get autocompleteContinue => 'Continue into subpath';
+
+  @override
+  String autocompleteBlockCreated(String id) {
+    return 'Added block ID ^$id';
+  }
+
+  @override
+  String get autocompleteBlockMissing => 'Target block not found';
+
+  @override
+  String get commandTriggerAutocomplete => 'Trigger autocomplete';
 }

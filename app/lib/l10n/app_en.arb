@@ -514,7 +514,20 @@
   "commandBookmarkToggle": "Bookmarks: Bookmark current file",
   "commandBookmarkHeading": "Bookmarks: Bookmark heading",
   "commandBookmarkSearch": "Bookmarks: Bookmark this search",
-  "commandBookmarkNewGroup": "Bookmarks: New bookmark group"
+  "commandBookmarkNewGroup": "Bookmarks: New bookmark group",
+  "autocompleteNoResults": "No results",
+  "autocompleteContinue": "Continue into subpath",
+  "autocompleteBlockCreated": "Added block ID ^{id}",
+  "@autocompleteBlockCreated": {
+    "description": "Notification when a block ID is automatically generated",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "autocompleteBlockMissing": "Target block not found",
+  "commandTriggerAutocomplete": "Trigger autocomplete"
 }
 
 
