@@ -18,6 +18,7 @@ import 'editor_input_handlers.dart';
 import 'editor_options.dart';
 import 'editor_registry.dart';
 import 'find/find_controller.dart';
+import 'folding/fold_controller.dart';
 import 'helpers/auto_pair.dart';
 import 'highlight/source_highlighter.dart';
 import 'line_view.dart';
@@ -173,7 +174,15 @@ final class EditorController
 
   void focus() => engine.requestFocus();
 
+  FoldController? _foldController;
+  FoldController? get foldController => _foldController;
+
+  void setFoldController(FoldController? fc) {
+    _foldController = fc;
+  }
+
   void revealOffset(int offset, {bool center = true}) {
+    _foldController?.revealOffset(offset);
     engine.reveal(offset, center: center);
   }
 
@@ -344,6 +353,7 @@ final class EditorController
       baseStyle: baseStyle,
       handlers: buildHandlers(this, tracker, onPaste: onPaste),
       autofocus: autofocus,
+      foldController: _foldController,
     );
 
     return engine.buildView(context, config);

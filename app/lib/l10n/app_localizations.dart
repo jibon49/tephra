@@ -2217,6 +2217,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Default editing mode'**
   String get settingEditorDefaultEditingMode;
+
+  /// No description provided for @settingEditorFoldHeadings.
+  ///
+  /// In en, this message translates to:
+  /// **'Fold heading'**
+  String get settingEditorFoldHeadings;
+
+  /// No description provided for @settingEditorFoldIndent.
+  ///
+  /// In en, this message translates to:
+  /// **'Fold indent'**
+  String get settingEditorFoldIndent;
+
+  /// No description provided for @commandToggleFold.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle fold'**
+  String get commandToggleFold;
+
+  /// No description provided for @commandFoldAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Fold all'**
+  String get commandFoldAll;
+
+  /// No description provided for @commandUnfoldAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfold all'**
+  String get commandUnfoldAll;
 }
 
 class _AppLocalizationsDelegate

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../bookmarks/bookmark_commands.dart';
+import '../editor/folding/fold_commands.dart';
 import '../editor/live_preview/editing_mode_commands.dart';
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
@@ -27,6 +28,7 @@ void registerBuiltinCommands(CommandRegistry registry) {
   registerIndexCommands(registry);
   registerBookmarkCommands(registry);
   registerEditingModeCommands(registry);
+  registerFoldCommands(registry);
   registry.register(
     TephraCommand(
       id: 'app.open-quick-switcher',

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import 'editor_decorator.dart';
 import 'editor_options.dart';
+import 'folding/fold_controller.dart';
 import 'highlight/source_highlighter.dart';
 import 'line_view.dart';
 
@@ -79,6 +80,7 @@ final class EditorViewConfig {
     required this.baseStyle,
     required this.handlers,
     this.autofocus = false,
+    this.foldController,
   });
 
   final EditorOptions options;
@@ -86,6 +88,7 @@ final class EditorViewConfig {
   final TextStyle baseStyle;
   final EngineInputHandlers handlers;
   final bool autofocus;
+  final FoldController? foldController;
 }
 
 /// Abstract contract for editor engine implementations.

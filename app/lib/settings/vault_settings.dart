@@ -155,32 +155,55 @@ final class CorePluginsSettings {
 }
 
 /// Default editor settings.
-const defaultEditor = <String, Object?>{'defaultEditingMode': 'livePreview'};
+const defaultEditor = <String, Object?>{
+  'defaultEditingMode': 'livePreview',
+  'foldHeadings': true,
+  'foldIndent': true,
+};
 
 /// Editor settings model.
 @immutable
 final class EditorSettings {
-  const EditorSettings({this.defaultEditingMode = 'livePreview'});
+  const EditorSettings({
+    this.defaultEditingMode = 'livePreview',
+    this.foldHeadings = true,
+    this.foldIndent = true,
+  });
 
   factory EditorSettings.fromMap(Map<String, Object?> map) {
     var mode = map['defaultEditingMode'] as String? ?? 'livePreview';
     if (mode != 'livePreview' && mode != 'source') {
       mode = 'livePreview';
     }
-    return EditorSettings(defaultEditingMode: mode);
+    final foldHeadings = map['foldHeadings'] as bool? ?? true;
+    final foldIndent = map['foldIndent'] as bool? ?? true;
+    return EditorSettings(
+      defaultEditingMode: mode,
+      foldHeadings: foldHeadings,
+      foldIndent: foldIndent,
+    );
   }
 
   final String defaultEditingMode;
+  final bool foldHeadings;
+  final bool foldIndent;
 
-  Map<String, Object?> toMap() => {'defaultEditingMode': defaultEditingMode};
+  Map<String, Object?> toMap() => {
+    'defaultEditingMode': defaultEditingMode,
+    'foldHeadings': foldHeadings,
+    'foldIndent': foldIndent,
+  };
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is EditorSettings && defaultEditingMode == other.defaultEditingMode;
+      other is EditorSettings &&
+          defaultEditingMode == other.defaultEditingMode &&
+          foldHeadings == other.foldHeadings &&
+          foldIndent == other.foldIndent;
 
   @override
-  int get hashCode => defaultEditingMode.hashCode;
+  int get hashCode => Object.hash(defaultEditingMode, foldHeadings, foldIndent);
 }
 
 /// Configuration settings for a single vault stored in `.tephra/settings.json`.
@@ -413,6 +436,8 @@ final class VaultSettings {
       CorePluginsSettings.fromMap(corePlugins);
 
   EditorSettings get editorSettings => EditorSettings.fromMap(editor);
+  bool get foldHeadings => editorSettings.foldHeadings;
+  bool get foldIndent => editorSettings.foldIndent;
 
   String get templatesFolder => templates['folder'] as String? ?? '';
   String get templatesDateFormat =>

@@ -11,6 +11,7 @@ import 'package:tephra_vault/tephra_vault.dart';
 import '../bookmarks/providers.dart';
 import '../core/providers.dart';
 import '../editor/edit_operation.dart';
+import '../editor/folding/providers.dart';
 import '../editor/providers.dart';
 import '../explorer/providers.dart';
 import '../l10n/app_localizations.dart';
@@ -213,13 +214,14 @@ final class LinkRenameService {
     ref.read(explorerSelectedProvider.notifier).select(to);
     ref.read(vaultRevisionProvider.notifier).bump();
 
-    // 10. Retarget bookmarks and record old JSON for undo
+    // 10. Retarget bookmarks and foldStore, and record old JSON for undo
     final oldBookmarksJson = await ref
         .read(bookmarksProvider.notifier)
         .rawJson();
     await ref
         .read(bookmarksProvider.notifier)
         .retarget(moves, folderMove: folderMove);
+    await ref.read(foldStoreProvider).retarget(moves);
 
     // 11. Undo stack and snackbar
     final op = VaultOperation(

@@ -10,9 +10,12 @@ import 'package:re_editor/re_editor.dart';
 
 import '../editor_decorator.dart';
 import '../editor_engine.dart';
+import '../folding/fold_controller.dart';
+import '../folding/fold_gutter.dart';
 import '../highlight/source_highlighter.dart';
 import '../line_view.dart';
 import '../offset_map_utils.dart';
+import 're_editor_chunk_analyzer.dart';
 
 /// Adapter implementing [EditorEngine] on top of `re_editor`'s [CodeEditor].
 class ReEditorEngine implements EditorEngine {
@@ -47,6 +50,19 @@ class ReEditorEngine implements EditorEngine {
 
   /// Feeds a text editing value into the engine's intercepting controller.
   void edit(TextEditingValue value) => _controller.edit(value);
+
+  /// Collapses lines from [start] to [end] natively in `re_editor`.
+  void collapseChunk(int start, int end) =>
+      _controller.collapseChunk(start, end);
+
+  /// Expands lines at [index] natively in `re_editor`.
+  void expandChunk(int index) => _controller.expandChunk(index);
+
+  /// Returns true if the line at [index] is currently collapsed.
+  bool isLineCollapsed(int index) {
+    if (index < 0 || index >= _controller.codeLines.length) return false;
+    return _controller.codeLines[index].chunkParent;
+  }
 
   /// Simulates typing text character-by-character at the current cursor position.
   void typeText(String text) {
@@ -438,8 +454,18 @@ class ReEditorEngine implements EditorEngine {
       autofocus: config.autofocus,
       focusNode: _focusNode,
       scrollController: _scrollController,
-      chunkAnalyzer: const NonCodeChunkAnalyzer(),
-      indicatorBuilder: null,
+      chunkAnalyzer: MarkdownChunkAnalyzer(
+        foldHeadings: config.foldController?.foldHeadings ?? true,
+        foldIndent: config.foldController?.foldIndent ?? true,
+      ),
+      indicatorBuilder: config.foldController != null
+          ? (context, editingController, chunkController, notifier) {
+              return _ReEditorFoldGutter(
+                controller: config.foldController!,
+                indicatorNotifier: notifier,
+              );
+            }
+          : null,
       style: CodeEditorStyle(
         fontSize: config.options.fontSize,
         fontHeight: 1.5,
@@ -701,5 +727,70 @@ class _CustomCodeScrollController extends CodeScrollController {
   void bindEditor(GlobalKey key) {
     editorKey = key;
     super.bindEditor(key);
+  }
+}
+
+final class _ReEditorFoldGutter extends StatefulWidget {
+  const _ReEditorFoldGutter({
+    required this.controller,
+    required this.indicatorNotifier,
+  });
+
+  final FoldController controller;
+  final ValueNotifier<CodeIndicatorValue?> indicatorNotifier;
+
+  @override
+  State<_ReEditorFoldGutter> createState() => _ReEditorFoldGutterState();
+}
+
+final class _ReEditorFoldGutterState extends State<_ReEditorFoldGutter> {
+  late final ValueNotifier<List<FoldGutterParagraph>?> _paragraphsNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _paragraphsNotifier = ValueNotifier(
+      _convert(widget.indicatorNotifier.value),
+    );
+    widget.indicatorNotifier.addListener(_onIndicatorChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant _ReEditorFoldGutter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.indicatorNotifier != widget.indicatorNotifier) {
+      oldWidget.indicatorNotifier.removeListener(_onIndicatorChanged);
+      widget.indicatorNotifier.addListener(_onIndicatorChanged);
+      _paragraphsNotifier.value = _convert(widget.indicatorNotifier.value);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.indicatorNotifier.removeListener(_onIndicatorChanged);
+    _paragraphsNotifier.dispose();
+    super.dispose();
+  }
+
+  void _onIndicatorChanged() {
+    _paragraphsNotifier.value = _convert(widget.indicatorNotifier.value);
+  }
+
+  static List<FoldGutterParagraph>? _convert(CodeIndicatorValue? val) {
+    if (val == null) return null;
+    return val.paragraphs
+        .map(
+          (p) =>
+              FoldGutterParagraph(index: p.index, top: p.top, height: p.height),
+        )
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FoldGutter(
+      controller: widget.controller,
+      paragraphsNotifier: _paragraphsNotifier,
+    );
   }
 }

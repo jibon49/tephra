@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
+import '../editor/folding/providers.dart';
 import '../links/providers.dart';
 import '../settings/providers.dart';
 import '../vault/providers.dart';
@@ -134,6 +135,7 @@ final class ExplorerService {
     await fs.delete(path, mode: mode);
     ref.read(noteDocumentStoreProvider).discardPath(path);
     ref.read(workspaceProvider.notifier).removePath(path);
+    await ref.read(foldStoreProvider).remove(path);
     if (ref.read(explorerSelectedProvider) == path) {
       ref.read(explorerSelectedProvider.notifier).select(null);
     }

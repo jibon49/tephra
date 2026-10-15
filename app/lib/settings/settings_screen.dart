@@ -153,6 +153,29 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          SwitchListTile(
+            title: Text(l10n.settingEditorFoldHeadings),
+            value: vaultSettings.editorSettings.foldHeadings,
+            onChanged: (val) {
+              ref
+                  .read(vaultSettingsProvider.notifier)
+                  .update(
+                    (s) =>
+                        s.copyWith(editor: {...s.editor, 'foldHeadings': val}),
+                  );
+            },
+          ),
+          SwitchListTile(
+            title: Text(l10n.settingEditorFoldIndent),
+            value: vaultSettings.editorSettings.foldIndent,
+            onChanged: (val) {
+              ref
+                  .read(vaultSettingsProvider.notifier)
+                  .update(
+                    (s) => s.copyWith(editor: {...s.editor, 'foldIndent': val}),
+                  );
+            },
+          ),
           const Divider(),
 
           // --- Files ---

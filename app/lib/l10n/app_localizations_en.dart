@@ -1178,4 +1178,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingEditorDefaultEditingMode => 'Default editing mode';
+
+  @override
+  String get settingEditorFoldHeadings => 'Fold heading';
+
+  @override
+  String get settingEditorFoldIndent => 'Fold indent';
+
+  @override
+  String get commandToggleFold => 'Toggle fold';
+
+  @override
+  String get commandFoldAll => 'Fold all';
+
+  @override
+  String get commandUnfoldAll => 'Unfold all';
 }

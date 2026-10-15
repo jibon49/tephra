@@ -557,7 +557,12 @@
   "commandToggleEditingMode": "Toggle Live Preview / Source mode",
   "editingModeLivePreview": "Live Preview",
   "editingModeSource": "Source mode",
-  "settingEditorDefaultEditingMode": "Default editing mode"
+  "settingEditorDefaultEditingMode": "Default editing mode",
+  "settingEditorFoldHeadings": "Fold heading",
+  "settingEditorFoldIndent": "Fold indent",
+  "commandToggleFold": "Toggle fold",
+  "commandFoldAll": "Fold all",
+  "commandUnfoldAll": "Unfold all"
 }
 
 

@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_index/tephra_index.dart';
+import 'package:tephra_markdown/tephra_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
@@ -17,6 +18,7 @@ import '../links/providers.dart';
 import '../reading/providers.dart';
 import '../reading/reading_view.dart';
 import '../search/search_highlights.dart';
+import '../settings/providers.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import '../workspace/providers.dart';
@@ -28,6 +30,7 @@ import 'editor_drop_target.dart';
 import 'engine/re_editor_engine.dart';
 import 'find/find_bar.dart';
 import 'find/find_controller.dart';
+import 'folding/providers.dart';
 import 'live_preview/editing_mode.dart';
 import 'live_preview/live_preview_session.dart';
 import 'live_preview/lp_decoration.dart';
@@ -58,6 +61,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
   LivePreviewSession? _session;
   StreamSubscription<void>? _selectionSub;
   StreamSubscription<void>? _editsSub;
+  StreamSubscription<ParsedNote>? _parsedSub;
   bool _isWaitingForEditor = false;
   bool _isCreatingController = false;
   NoteDocument? _doc;
@@ -94,8 +98,13 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
           _isWaitingForEditor = true;
           _session?.dispose();
           _session = null;
+          _selectionSub?.cancel();
+          _editsSub?.cancel();
+          _parsedSub?.cancel();
           _controller?.dispose();
           _controller = null;
+          ref.read(foldControllerProvider(widget.tabId)).detachEngine();
+          ref.read(foldStoreProvider).flush();
         });
       }
       return;
@@ -136,12 +145,19 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       final registry = ref.read(editorRegistryProvider);
 
       final engine = ReEditorEngine(doc.text);
+      final foldController = ref.read(foldControllerProvider(widget.tabId));
       final controller = EditorController(
         document: doc,
         engine: engine,
         options: options,
         parseService: parseService,
         registry: registry,
+      );
+      controller.setFoldController(foldController);
+      foldController.attachEngine(
+        onCollapse: engine.collapseChunk,
+        onExpand: engine.expandChunk,
+        isCollapsed: engine.isLineCollapsed,
       );
       _controller = controller;
 
@@ -234,14 +250,44 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
         return false;
       });
 
+      doc.parsed().then((parsedDoc) {
+        if (!mounted) return;
+        final settings = ref.read(vaultSettingsProvider);
+        foldController.updateParse(
+          doc.text,
+          parsedDoc,
+          foldHeadings: settings.foldHeadings,
+          foldIndent: settings.foldIndent,
+        );
+        foldController.restoreFromStore();
+      });
+
       _selectionSub = controller.selectionChanges.listen((_) {
         if (mounted) {
-          widget.onOffsetChanged?.call(controller.selection.baseOffset);
+          final offset = controller.selection.baseOffset;
+          widget.onOffsetChanged?.call(offset);
+          foldController.revealOffset(offset);
         }
       });
 
-      _editsSub = controller.edits.listen((_) {
+      _editsSub = controller.edits.listen((edit) {
         clearNoteSearchHighlights(ref, widget.path);
+        foldController.handleEdit(
+          edit.start,
+          edit.deletedLength,
+          edit.insertedText.length,
+        );
+      });
+
+      _parsedSub = controller.parsedChanges.listen((parsedDoc) {
+        if (!mounted) return;
+        final settings = ref.read(vaultSettingsProvider);
+        foldController.updateParse(
+          controller.text,
+          parsedDoc,
+          foldHeadings: settings.foldHeadings,
+          foldIndent: settings.foldIndent,
+        );
       });
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -307,7 +353,11 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       _controller = null;
       _selectionSub?.cancel();
       _editsSub?.cancel();
+      _parsedSub?.cancel();
       _doc?.removeListener(_onDocChanged);
+      ref.read(foldControllerProvider(oldWidget.tabId)).detachEngine();
+      ref.read(foldStoreProvider).flush();
+      ref.invalidate(foldControllerProvider(widget.tabId));
       _initDocAndEditor();
     } else {
       _controller?.updateOptions(
@@ -323,10 +373,13 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
     _doc?.removeListener(_onDocChanged);
     _selectionSub?.cancel();
     _editsSub?.cancel();
+    _parsedSub?.cancel();
     _session?.dispose();
     _session = null;
     _controller?.dispose();
     _controller = null;
+    ref.read(foldControllerProvider(widget.tabId)).detachEngine();
+    ref.read(foldStoreProvider).flush();
     super.dispose();
   }
 
@@ -409,6 +462,15 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       _controller?.updateOptions(
         next.copyWith(readOnly: _doc?.isReadOnly ?? false),
       );
+    });
+
+    ref.listen(vaultSettingsProvider, (_, next) {
+      ref
+          .read(foldControllerProvider(widget.tabId))
+          .updateSettings(
+            foldHeadings: next.foldHeadings,
+            foldIndent: next.foldIndent,
+          );
     });
 
     if (_isWaitingForEditor && _doc != null) {
