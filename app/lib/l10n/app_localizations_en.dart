@@ -1193,4 +1193,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandUnfoldAll => 'Unfold all';
+
+  @override
+  String get propertiesTitle => 'Properties';
+
+  @override
+  String get propertiesAdd => 'Add property';
+
+  @override
+  String get propertiesRemove => 'Remove property';
+
+  @override
+  String get propertiesMoveUp => 'Move up';
+
+  @override
+  String get propertiesMoveDown => 'Move down';
+
+  @override
+  String get propertiesChangeType => 'Change type';
+
+  @override
+  String get propertiesEditAsYaml => 'Edit as YAML';
+
+  @override
+  String get propertiesKeyExists => 'Property already exists';
+
+  @override
+  String get propertiesInvalidTag => 'Invalid tag';
+
+  @override
+  String get propertiesInvalidNumber => 'Invalid number';
+
+  @override
+  String get propertiesInvalidYaml => 'Invalid YAML frontmatter';
+
+  @override
+  String get propertiesApply => 'Apply';
+
+  @override
+  String get propertiesRevert => 'Revert';
+
+  @override
+  String get propertiesConvertFailed => 'Cannot convert to type, value kept';
+
+  @override
+  String get propertiesUnsupportedValue => 'Unsupported value';
+
+  @override
+  String get propertyTypeText => 'Text';
+
+  @override
+  String get propertyTypeMultitext => 'List';
+
+  @override
+  String get propertyTypeNumber => 'Number';
+
+  @override
+  String get propertyTypeCheckbox => 'Checkbox';
+
+  @override
+  String get propertyTypeDate => 'Date';
+
+  @override
+  String get propertyTypeDatetime => 'Date & time';
+
+  @override
+  String get propertyTypeAliases => 'Aliases';
+
+  @override
+  String get propertyTypeTags => 'Tags';
+
+  @override
+  String get settingEditorPropertiesInDocument => 'Properties in document';
+
+  @override
+  String get propertiesInDocumentVisible => 'Visible';
+
+  @override
+  String get propertiesInDocumentHidden => 'Hidden';
+
+  @override
+  String get propertiesInDocumentSource => 'Source';
 }

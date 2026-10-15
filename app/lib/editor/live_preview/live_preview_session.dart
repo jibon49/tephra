@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import '../editor_controller.dart';
 import 'live_preview_decorator.dart';
 import 'live_preview_engine.dart';
+import 'lp_options.dart';
 import 'reveal.dart' as reveal;
 
 /// Target interface consumed by [LivePreviewSession].
@@ -26,13 +27,21 @@ final class LivePreviewSession {
     required this.target,
     LivePreviewEngine? engine,
     this.useWidgets = false,
-  }) : engine = engine ?? LivePreviewEngine() {
+    LpOptions options = const LpOptions(),
+  }) : engine = engine ?? LivePreviewEngine(options: options) {
     decorator = LivePreviewDecorator(this);
     this.engine.setText(target.text);
     _lastActive = _computeActive();
 
     _editsSub = target.edits.listen(_onEdit);
     _selectionSub = target.selectionChanges.listen(_onSelectionChange);
+  }
+
+  void updateOptions(LpOptions newOptions) {
+    if (engine.options == newOptions) return;
+    engine.options = newOptions;
+    engine.setText(target.text, sync: true);
+    decorator.notifyChanges();
   }
 
   final LivePreviewEditorTarget target;

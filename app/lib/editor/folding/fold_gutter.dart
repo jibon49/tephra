@@ -73,7 +73,10 @@ class _FoldGutterState extends State<FoldGutter> {
   }
 
   void _onParagraphsChanged() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override

@@ -159,6 +159,7 @@ const defaultEditor = <String, Object?>{
   'defaultEditingMode': 'livePreview',
   'foldHeadings': true,
   'foldIndent': true,
+  'propertiesInDocument': 'visible',
 };
 
 /// Editor settings model.
@@ -168,6 +169,7 @@ final class EditorSettings {
     this.defaultEditingMode = 'livePreview',
     this.foldHeadings = true,
     this.foldIndent = true,
+    this.propertiesInDocument = 'visible',
   });
 
   factory EditorSettings.fromMap(Map<String, Object?> map) {
@@ -177,21 +179,28 @@ final class EditorSettings {
     }
     final foldHeadings = map['foldHeadings'] as bool? ?? true;
     final foldIndent = map['foldIndent'] as bool? ?? true;
+    var props = map['propertiesInDocument'] as String? ?? 'visible';
+    if (props != 'visible' && props != 'hidden' && props != 'source') {
+      props = 'visible';
+    }
     return EditorSettings(
       defaultEditingMode: mode,
       foldHeadings: foldHeadings,
       foldIndent: foldIndent,
+      propertiesInDocument: props,
     );
   }
 
   final String defaultEditingMode;
   final bool foldHeadings;
   final bool foldIndent;
+  final String propertiesInDocument;
 
   Map<String, Object?> toMap() => {
     'defaultEditingMode': defaultEditingMode,
     'foldHeadings': foldHeadings,
     'foldIndent': foldIndent,
+    'propertiesInDocument': propertiesInDocument,
   };
 
   @override
@@ -200,10 +209,16 @@ final class EditorSettings {
       other is EditorSettings &&
           defaultEditingMode == other.defaultEditingMode &&
           foldHeadings == other.foldHeadings &&
-          foldIndent == other.foldIndent;
+          foldIndent == other.foldIndent &&
+          propertiesInDocument == other.propertiesInDocument;
 
   @override
-  int get hashCode => Object.hash(defaultEditingMode, foldHeadings, foldIndent);
+  int get hashCode => Object.hash(
+    defaultEditingMode,
+    foldHeadings,
+    foldIndent,
+    propertiesInDocument,
+  );
 }
 
 /// Configuration settings for a single vault stored in `.tephra/settings.json`.
@@ -438,6 +453,7 @@ final class VaultSettings {
   EditorSettings get editorSettings => EditorSettings.fromMap(editor);
   bool get foldHeadings => editorSettings.foldHeadings;
   bool get foldIndent => editorSettings.foldIndent;
+  String get propertiesInDocument => editorSettings.propertiesInDocument;
 
   String get templatesFolder => templates['folder'] as String? ?? '';
   String get templatesDateFormat =>

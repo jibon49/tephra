@@ -176,6 +176,37 @@ class SettingsScreen extends ConsumerWidget {
                   );
             },
           ),
+          ListTile(
+            title: Text(l10n.settingEditorPropertiesInDocument),
+            trailing: DropdownButton<String>(
+              value: vaultSettings.propertiesInDocument,
+              onChanged: (val) {
+                if (val != null) {
+                  ref
+                      .read(vaultSettingsProvider.notifier)
+                      .update(
+                        (s) => s.copyWith(
+                          editor: {...s.editor, 'propertiesInDocument': val},
+                        ),
+                      );
+                }
+              },
+              items: [
+                DropdownMenuItem(
+                  value: 'visible',
+                  child: Text(l10n.propertiesInDocumentVisible),
+                ),
+                DropdownMenuItem(
+                  value: 'hidden',
+                  child: Text(l10n.propertiesInDocumentHidden),
+                ),
+                DropdownMenuItem(
+                  value: 'source',
+                  child: Text(l10n.propertiesInDocumentSource),
+                ),
+              ],
+            ),
+          ),
           const Divider(),
 
           // --- Files ---

@@ -11,9 +11,9 @@ Format rules:
 
 ## Current status
 
-- Current phase: **01**
-- Current step: **01.7**
-- Last gate passed: **00**
+- Current phase: **02**
+- Current step: **02.26**
+- Last gate passed: **01**
 
 ## Phase 00 — Foundation
 
@@ -238,7 +238,8 @@ Instructions: `instructions/phase-02-links-index-search.md`
   - notes: Implemented EditingMode (livePreview, source), EditorDecorator adapter for ReEditorEngine with O(1) line starts and spanBuilder decoration hook, buildLpLine with style priorities and length invariant, LivePreviewSession with caret/selection change suppression and IME freeze, editor.toggle-editing-mode on Ctrl+Shift+E, phone overflow menu toggle item, settings dropdown, tap interceptor for rendered links, and workspace.json per-tab persistence. Engine: A (re_editor), widget mode: documented styled-source fallback (Spike check 7), kLpHideMode: zeroSize on Windows and Android (tested: 0 writes across all syntax and edge notes in live_preview_no_write_test). Not verified on real Android device.
 - [x] 02.25 Folding of headings and list items with persisted fold state
   - notes: Implemented pure fold region extractor (computeFoldRegions) with heading hierarchies & nested list detection, FoldState with edit mapping and anchor pruning, per-device FoldStore with 1s debounced atomic updates & 500-note LRU cap in .tephra/workspace.json, FoldController with collapse/expand engine drivers & caret revealOffset, FoldGutter with responsive hover chevron and 48x48 dp mobile touch target, ReEditorChunkAnalyzer in editor/engine/ keeping strict engine isolation, registered fold commands & settings switches; 27 folding tests and engine isolation test passing.
-- [ ] 02.26 Properties editor (typed widgets, type registry, `yaml_edit`)
+- [x] 02.26 Properties editor (typed widgets, type registry, `yaml_edit`)
+  - notes: Implemented PropertyType enum (8 types), FrontmatterEditor with minimal single TextEdit generation using yaml_edit (preserves untouched formatting and comments), PropertyValueCodec conversion rules, PropertyTypeRegistry (.tephra/types.json read/write, .obsidian/types.json read-only import, corrupt file backup, 4-tier type resolution), 6 typed value fields with fuzzy chip suggestions, responsive PropertyRow with reorderable list and 48dp mobile touch targets, RawYamlEditor with revert/apply, PropertiesPanel integrated into SourceEditorView above editor when propertiesInDocument is 'visible', LpOptions.hideFrontmatter synchronization, all 27 l10n strings; 35 unit/widget tests passing.
 - [ ] 02.27 Daily notes, templates and the unique note creator
 - [ ] 02.28 Web preview guard, performance harness, bench vault with demo pack, recorded budgets
 

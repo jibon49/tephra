@@ -2247,6 +2247,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unfold all'**
   String get commandUnfoldAll;
+
+  /// No description provided for @propertiesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties'**
+  String get propertiesTitle;
+
+  /// No description provided for @propertiesAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add property'**
+  String get propertiesAdd;
+
+  /// No description provided for @propertiesRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove property'**
+  String get propertiesRemove;
+
+  /// No description provided for @propertiesMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get propertiesMoveUp;
+
+  /// No description provided for @propertiesMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get propertiesMoveDown;
+
+  /// No description provided for @propertiesChangeType.
+  ///
+  /// In en, this message translates to:
+  /// **'Change type'**
+  String get propertiesChangeType;
+
+  /// No description provided for @propertiesEditAsYaml.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit as YAML'**
+  String get propertiesEditAsYaml;
+
+  /// No description provided for @propertiesKeyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'Property already exists'**
+  String get propertiesKeyExists;
+
+  /// No description provided for @propertiesInvalidTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid tag'**
+  String get propertiesInvalidTag;
+
+  /// No description provided for @propertiesInvalidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid number'**
+  String get propertiesInvalidNumber;
+
+  /// No description provided for @propertiesInvalidYaml.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid YAML frontmatter'**
+  String get propertiesInvalidYaml;
+
+  /// No description provided for @propertiesApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get propertiesApply;
+
+  /// No description provided for @propertiesRevert.
+  ///
+  /// In en, this message translates to:
+  /// **'Revert'**
+  String get propertiesRevert;
+
+  /// No description provided for @propertiesConvertFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot convert to type, value kept'**
+  String get propertiesConvertFailed;
+
+  /// No description provided for @propertiesUnsupportedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported value'**
+  String get propertiesUnsupportedValue;
+
+  /// No description provided for @propertyTypeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get propertyTypeText;
+
+  /// No description provided for @propertyTypeMultitext.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get propertyTypeMultitext;
+
+  /// No description provided for @propertyTypeNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get propertyTypeNumber;
+
+  /// No description provided for @propertyTypeCheckbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkbox'**
+  String get propertyTypeCheckbox;
+
+  /// No description provided for @propertyTypeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get propertyTypeDate;
+
+  /// No description provided for @propertyTypeDatetime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & time'**
+  String get propertyTypeDatetime;
+
+  /// No description provided for @propertyTypeAliases.
+  ///
+  /// In en, this message translates to:
+  /// **'Aliases'**
+  String get propertyTypeAliases;
+
+  /// No description provided for @propertyTypeTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get propertyTypeTags;
+
+  /// No description provided for @settingEditorPropertiesInDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties in document'**
+  String get settingEditorPropertiesInDocument;
+
+  /// No description provided for @propertiesInDocumentVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible'**
+  String get propertiesInDocumentVisible;
+
+  /// No description provided for @propertiesInDocumentHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get propertiesInDocumentHidden;
+
+  /// No description provided for @propertiesInDocumentSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get propertiesInDocumentSource;
 }
 
 class _AppLocalizationsDelegate

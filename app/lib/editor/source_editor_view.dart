@@ -15,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
 import '../links/providers.dart';
+import '../properties/properties_panel.dart';
 import '../reading/providers.dart';
 import '../reading/reading_view.dart';
 import '../search/search_highlights.dart';
@@ -30,10 +31,13 @@ import 'editor_drop_target.dart';
 import 'engine/re_editor_engine.dart';
 import 'find/find_bar.dart';
 import 'find/find_controller.dart';
+import 'folding/fold_controller.dart';
+import 'folding/fold_store.dart';
 import 'folding/providers.dart';
 import 'live_preview/editing_mode.dart';
 import 'live_preview/live_preview_session.dart';
 import 'live_preview/lp_decoration.dart';
+import 'live_preview/lp_options.dart';
 import 'live_preview/reveal.dart' hide TextRange;
 import 'providers.dart';
 
@@ -59,6 +63,8 @@ class SourceEditorView extends ConsumerStatefulWidget {
 class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
   EditorController? _controller;
   LivePreviewSession? _session;
+  FoldController? _foldController;
+  FoldStore? _foldStore;
   StreamSubscription<void>? _selectionSub;
   StreamSubscription<void>? _editsSub;
   StreamSubscription<ParsedNote>? _parsedSub;
@@ -146,6 +152,8 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
 
       final engine = ReEditorEngine(doc.text);
       final foldController = ref.read(foldControllerProvider(widget.tabId));
+      _foldController = foldController;
+      _foldStore = ref.read(foldStoreProvider);
       final controller = EditorController(
         document: doc,
         engine: engine,
@@ -161,7 +169,13 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       );
       _controller = controller;
 
-      final session = LivePreviewSession(target: controller, useWidgets: false);
+      final vaultSettings = ref.read(vaultSettingsProvider);
+      final hideFrontmatter = vaultSettings.propertiesInDocument != 'source';
+      final session = LivePreviewSession(
+        target: controller,
+        useWidgets: false,
+        options: LpOptions(hideFrontmatter: hideFrontmatter),
+      );
       _session = session;
 
       final currentTab = ref.read(workspaceProvider).findTab(widget.tabId);
@@ -378,8 +392,8 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
     _session = null;
     _controller?.dispose();
     _controller = null;
-    ref.read(foldControllerProvider(widget.tabId)).detachEngine();
-    ref.read(foldStoreProvider).flush();
+    _foldController?.detachEngine();
+    _foldStore?.flush();
     super.dispose();
   }
 
@@ -523,6 +537,13 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
     final isDesktop = MediaQuery.sizeOf(context).width >= 840;
     final horizontalPadding = isDesktop ? 32.0 : 16.0;
 
+    final vaultSettings = ref.watch(vaultSettingsProvider);
+    final hideFrontmatter = vaultSettings.propertiesInDocument != 'source';
+    _session?.updateOptions(LpOptions(hideFrontmatter: hideFrontmatter));
+    final showProperties =
+        currentEditingMode == EditingMode.livePreview &&
+        vaultSettings.propertiesInDocument == 'visible';
+
     Widget editorContent = _controller!.buildView(
       context,
       autofocus: shouldAutofocus,
@@ -555,6 +576,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
           children: [
             if (findState.isOpen)
               FindBar(controller: _controller!.findController),
+            if (showProperties) PropertiesPanel(controller: _controller!),
             if (_doc != null && _doc!.isReadOnly)
               Container(
                 key: const ValueKey('note.malformedBanner'),
