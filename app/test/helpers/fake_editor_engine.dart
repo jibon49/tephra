@@ -1,8 +1,10 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
+import 'package:tephra/editor/editor_decorator.dart';
 import 'package:tephra/editor/editor_engine.dart';
 import 'package:tephra/editor/highlight/source_highlighter.dart';
 import 'package:tephra/editor/line_view.dart';
@@ -35,6 +37,15 @@ class FakeEditorEngine implements EditorEngine {
 
   bool _hasFocus = false;
   SourceHighlighter? highlighter;
+  final FocusNode _focusNode = FocusNode();
+  TextRange _composing = TextRange.empty;
+
+  @override
+  FocusNode get focusNode => _focusNode;
+
+  @override
+  TextRange get composing => _composing;
+  set composing(TextRange r) => _composing = r;
 
   @override
   LineView get lines => _lines;
@@ -223,13 +234,35 @@ class FakeEditorEngine implements EditorEngine {
   @override
   void reveal(int offset, {required bool center}) {}
 
+  Rect? globalCaretRect;
+
   @override
-  Rect? caretRectGlobal() => null;
+  Rect? caretRectGlobal() => globalCaretRect;
 
   @override
   void setHighlighter(SourceHighlighter highlighter) {
     this.highlighter = highlighter;
   }
+
+  EditorDecorator? decorator;
+  bool Function(int offset, PointerDeviceKind kind, bool control)?
+  tapInterceptor;
+  Rect? rangeRect;
+
+  @override
+  void setDecorator(EditorDecorator? decorator) {
+    this.decorator = decorator;
+  }
+
+  @override
+  void setTapInterceptor(
+    bool Function(int offset, PointerDeviceKind kind, bool control)? fn,
+  ) {
+    tapInterceptor = fn;
+  }
+
+  @override
+  Rect? rectForRange(int start, int end) => rangeRect;
 
   @override
   void repaintLines(int firstLine, int lastLine) {}
@@ -241,6 +274,7 @@ class FakeEditorEngine implements EditorEngine {
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _changeController.close();
     _selectionController.close();
     _focusController.close();

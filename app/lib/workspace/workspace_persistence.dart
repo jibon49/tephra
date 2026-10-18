@@ -39,7 +39,14 @@ final class WorkspacePersistence {
     };
 
     await _jsonStore.update(fs, _workspacePath, (map) {
-      map[deviceId] = entry;
+      final existingDevice = map[deviceId];
+      if (existingDevice is Map) {
+        final merged = Map<String, Object?>.from(existingDevice);
+        merged.addAll(entry);
+        map[deviceId] = merged;
+      } else {
+        map[deviceId] = entry;
+      }
     });
   }
 

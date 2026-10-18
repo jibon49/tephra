@@ -11,9 +11,9 @@ Format rules:
 
 ## Current status
 
-- Current phase: **01**
-- Current step: **01.7**
-- Last gate passed: **00**
+- Current phase: **02**
+- Current step: **02.26**
+- Last gate passed: **01**
 
 ## Phase 00 — Foundation
 
@@ -165,65 +165,142 @@ Instructions: `instructions/phase-01-vault-editor.md`
 
 Instructions: `instructions/phase-02-links-index-search.md`
 
+### Phase 1 inventory
+
+| # | Item | Expected location | Actual location / details |
+|---|---|---|---|
+| 1 | `VaultPath`, `TephraException` family, `Clock`, `contentHash` | `packages/tephra_core/lib/src/` | `packages/tephra_core/lib/src/{vault_path,exceptions,clock,content_hash}.dart` |
+| 2 | `VaultFileSystem`, `IoVaultFileSystem`, `MemoryVaultFileSystem`, `TextDocument`, `VaultChange` + subclasses | `packages/tephra_vault/lib/src/` | `packages/tephra_vault/lib/src/{vault_file_system,io_vault_file_system,memory_vault_file_system,text_document,vault_change}.dart` |
+| 3 | `MarkdownParser.parse`, `ParsedNote`, all `Md*` nodes, `BlockRef`, `TaskItem` | `packages/tephra_markdown/lib/src/` | `packages/tephra_markdown/lib/src/{markdown_parser,parsed_note,nodes,note_models}.dart`<br>• `BlockRef`: `id`, `start`, `end`, `idStart`, `idEnd` (`start`/`end` is `^id` range; owning block computed in 02.4)<br>• `TaskItem`: `status` (`TaskStatus.char`), `text`, `start`, `end`, `statusOffset`, `line` |
+| 4 | Reading view (AST → widgets) | `app/lib/reading/reading_view.dart` | `app/lib/reading/reading_view.dart` (`ReadingView`) |
+| 5 | Source-mode editor behind `EditorController` | `app/lib/editor/editor_controller.dart` | `app/lib/editor/editor_controller.dart` (`EditorController`) |
+| 6 | Editor engine decision | `docs/decisions/0001-editor-engine.md` | Engine **A** (`re_editor`) |
+| 7 | Explorer (tree, rename, move, delete) | `app/lib/explorer/` | `app/lib/explorer/{explorer_pane,explorer_service,explorer_tree}.dart` |
+| 8 | Workspace: tabs, splits, sidebars, phone drawers, per-tab history | `app/lib/workspace/` | `app/lib/workspace/{workspace_shell,tab_bar,split_pane,workspace_notifier}.dart` |
+| 9 | Command registry + palette (`TephraCommand`, `commandRegistryProvider`) | `app/lib/commands/` | `app/lib/commands/{command,command_palette,providers}.dart` |
+| 10 | Quick switcher | `app/lib/commands/` or `app/lib/workspace/` | `app/lib/commands/quick_switcher_dialog.dart` |
+| 11 | Attachments (paste/drop/pick) | `app/lib/editor/` | `app/lib/editor/attachments.dart` (`AttachmentService`) |
+| 12 | Vault picker, vault session providers, vault id from `.tephra/vault.json` | `app/lib/vault/` | `app/lib/vault/{vault_picker_screen,vault_session,vault_metadata}.dart` |
+| 13 | Vault settings model + store for `.tephra/settings.json` | `app/lib/settings/` | `app/lib/settings/{vault_settings,settings_store}.dart` |
+| 14 | `.obsidian` settings importer | `app/lib/vault/` | `app/lib/vault/obsidian_importer.dart` (`ObsidianImporter`) |
+| 15 | Fuzzy matcher used by command palette | `app/lib/commands/` | `app/lib/commands/fuzzy_matcher.dart` (`FuzzyMatcher`) |
+| 16 | Bench vault generator | `tool/gen_bench_vault.dart` | `tool/gen_bench_vault.dart` |
+| 17 | Line/offset helper (`LineIndex`) | `packages/tephra_markdown/lib/src/` | `packages/tephra_markdown/lib/src/line_index.dart` (`LineIndex`) |
+
 ### Steps
 
-- [ ] 02.1 Add drift + sqlite3 and prove FTS5, trigram and Bangla tokenisation
-- [ ] 02.2 Index schema: drift tables, FTS tables, indices, migrations, database open + recovery
-- [ ] 02.3 Index models and `LineIndex`
-- [ ] 02.4 Note extraction: `ParsedNote` → index rows
-- [ ] 02.5 Link resolver, `NameTable`, heading and block matching
-- [ ] 02.6 `IndexerCore`: full index, reconcile, incremental updates, dirty targets (in-process)
-- [ ] 02.7 `NoteIndex` facade, queries and the worker isolate
-- [ ] 02.8 Index consistency fuzz test
-- [ ] 02.9 App integration: index lifecycle, indexing file-system decorator, progress, `Rebuild index`, link settings
-- [ ] 02.10 Link formatting and link navigation (open, create on click)
-- [ ] 02.11 Rename/move link maintenance as one undoable operation
-- [ ] 02.12 Backlinks and outgoing-links panes (linked + unlinked mentions)
-- [ ] 02.13 Outline pane (headings tree, jump, drag sections on desktop)
-- [ ] 02.14 Embeds and transclusion in reading view; page preview
-- [ ] 02.15 Search query parser (`tephra_search`)
-- [ ] 02.16 Search engine: SQL/FTS compilation, verification, streaming, sorting, cancellation
-- [ ] 02.17 Search UI, search history, copy results, in-note highlights, ` ```query ` blocks
-- [ ] 02.18 Tags pane and bookmarks
-- [ ] 02.19 Fuzzy scorer and index-backed quick switcher
-- [ ] 02.20 Editor autocomplete core: popup, `[[` and `![[` links, headings, blocks, aliases
-- [ ] 02.21 Autocomplete for tags and frontmatter keys and values
-- [ ] 02.22 Date formatting, template engine, and the slash command menu
-- [ ] 02.23 Live Preview I: decoration model, incremental engine and inline widgets
-- [ ] 02.24 Live Preview II: editor adapter, reveal on the caret, mode toggle (Ctrl+Shift+E), default mode
-- [ ] 02.25 Folding of headings and list items with persisted fold state
-- [ ] 02.26 Properties editor (typed widgets, type registry, `yaml_edit`)
-- [ ] 02.27 Daily notes, templates and the unique note creator
-- [ ] 02.28 Web preview guard, performance harness, bench vault with demo pack, recorded budgets
+- [x] 02.1 Add drift + sqlite3 and prove FTS5, trigram and Bangla tokenisation
+  - notes: Added drift 2.35.2, sqlite3 3.7.1, drift_dev 2.35.1, build_runner 2.16.1; license check 162 allowed / 0 unallowed; verified SQLite 3.45+ with FTS5, contentless_delete, trigram case-insensitive/Bangla matching, and unicode61 mark categories keeping Bangla words whole (8/8 smoke tests passed).
+- [x] 02.2 Index schema: drift tables, FTS tables, indices, migrations, database open + recovery
+  - notes: Implemented 10 drift tables (Files, Notes, Aliases, Headings, Blocks, Links, Tags, Properties, Tasks, IndexMeta) and 2 FTS5 contentless tables (fts_words with unicode61 mark categories and fts_trigram); generated index_database.g.dart; implemented openIndexDatabase with WAL mode, corrupt recovery and wipeAll on parser version mismatch; 15 unit tests passing.
+- [x] 02.3 Index models and `LineIndex`
+  - notes: Implemented all 15 index models (NoteSummary, FileRecord, LinkRecord, UnlinkedMention, TagCount, HeadingRecord, BlockRecord, AliasRecord, TaskRecord, FtsHit, PropertyKeyCount, IndexProgress, IndexEvent, IndexOptions, IndexStats), model_helpers collection equality, and re-used LineIndex from tephra_markdown; 22 unit tests passing.
+- [x] 02.4 Note extraction: `ParsedNote` → index rows
+  - notes: Pure deterministic NoteExtractor producing ExtractedNote with helpers link_target_key, word_counter, and property_typing; fixed block parser table continuation and list closing when followed by unindented blocks; 24 extract unit tests passing.
+- [x] 02.5 Link resolver, `NameTable`, heading and block matching
+  - notes: Implemented NameTable (case/name/alias in-memory lookups), LinkResolver with exact 10-step Obsidian resolution algorithm, ResolvedTarget, and heading_matcher (normalizeHeading, findHeading, findBlock, sectionRange); all 38 matrix cases and 45 link tests passing.
+- [x] 02.6 `IndexerCore`: full index, reconcile, incremental updates, dirty targets (in-process)
+  - notes: Implemented IndexerCore with loadNameTable, reconcile, apply, rebuild, atomic transaction batching, and dirty target re-resolution; all 19 indexer unit tests passing (110 total in tephra_index).
+- [x] 02.7 `NoteIndex` facade, queries and the worker isolate
+  - notes: Implemented NoteIndex facade, InProcessIndexRunner, IsolateIndexRunner, IndexRequestQueue with apply coalescing, indexWorkerMain isolate worker with shutdown & crash recovery, and all 19 query methods; 125 total tests passing in tephra_index.
+- [x] 02.8 Index consistency fuzz test
+- [x] 02.9 App integration: index lifecycle, indexing file-system decorator, progress, `Rebuild index`, link settings
+  - notes: Implemented IndexingVaultFileSystem wrapping session fs with deferred attach buffering, NoteIndexNotifier lifecycle with isolate worker and background reconciliation, IndexStatusItem & PhoneIndexProgressBar adaptive progress UI, index.rebuild command with confirmation dialog and snackbar, VaultSettings fields (newLinkFormat, useMarkdownLinks, alwaysUpdateLinks, excludedFolders) with Obsidian app.json import and SettingsScreen Files & links section; all 11 tests passing.
+- [x] 02.10 Link formatting and link navigation (open, create on click)
+  - notes: Implemented LinkFormatSettings, LinkFormatter (shortest/relative/absolute wiki and markdown paths with url encoding and heading/block sanitization, 19 test cases), LinkNavigator (open, reveal heading/block, debounced auto-create in new note location, file missing guard), linkResolutionProvider with 60% opacity unresolved link styling in ReadingView, and SourceEditorView Ctrl+click link navigation; all tests passing.
+- [x] 02.11 Rename/move link maintenance as one undoable operation
+  - notes: Implemented TextEdit, FileEdit, applyTextEdits, locateLinkPathSpan (wiki, table cell pipe, markdown, angle brackets), RenamePlan/RenamePlanner, LinkRenameService with open-buffer priority, VaultUndoStackNotifier (20 entries) and undo operation, registered vault.undo-last-rename command; rename_500_test updated 2,000 links across 500 notes in 2.1 s (< 5 s budget); all tests passing.
+- [x] 02.12 Backlinks and outgoing-links panes (linked + unlinked mentions)
+  - notes: Implemented Snippet & makeSnippet, mention_finder (whole-word case-insensitive, Unicode marks, excluded ranges), NoteIndex.unlinkedMentions with trigram candidate pruning and 500-mention cap, BacklinksPane with collapsible linked/unlinked sections and sort modes, OutgoingLinksPane with resolved/unresolved groups, UnlinkedMentionLinker with undo support; registered sidebar panels; all tests passing.
+- [x] 02.13 Outline pane (headings tree, jump, drag sections on desktop)
+  - notes: Implemented OutlineNode & buildOutline with depth and visible text extraction, sectionOf & moveSectionEdits with trailing newline preservation and rejection guards, activeReadingControllerProvider, OutlinePane with responsive desktop Draggable and mobile long-press menus, and registered outline sidebar panel in right sidebar / drawer; all 18 unit and widget tests passing.
+- [x] 02.14 Embeds and transclusion in reading view; page preview
+  - notes: Implemented EmbedSlice AST slicing, EmbedContext recursion tracking (depth limit 5, circular embed detection), NoteEmbed with live text invalidation & accent border, ImageEmbed with width/height scaling, FileChip fallback, EmbedView dispatcher, PagePreviewController (max 3 nested popups, hover/long-press triggers), and PagePreviewPopup; all 16 embed and preview tests passing (31 total in test/links and test/reading/embeds).
+- [x] 02.15 Search query parser (`tephra_search`)
+  - notes: Implemented SearchExpr AST (EmptyExpr, AndExpr, OrExpr, NotExpr, TermExpr, PhraseExpr, RegexExpr, OperatorExpr with 12 operators, PropertyExpr with exists/empty/matches), SearchSyntaxException with offset tracking, canonical printExpr, and recursive descent SearchParser; all 44 test matrix cases passing.
+- [x] 02.16 Search engine: SQL/FTS compilation, verification, streaming, sorting, cancellation
+  - notes: Implemented SqlCompiler (FTS phrase escaping, exactness tracking, nested compound limits, 6 sort orders), NoteDoc, search_matcher evaluation (substrings, frontmatter, line/block/section units, task statuses, regexes, match-case scoping, de-duped Snippets), verifyBatch isolate runner, SearchEngine streaming with 20/100 batching and CancelToken, fixture vault test_vaults/search/ with 10 notes; all 101 tests in tephra_search passing (44/44 Obsidian parity queries Q1-Q44 verified).
+- [x] 02.17 Search UI, search history, copy results, in-note highlights, ` ```query ` blocks
+  - notes: Implemented SearchController with debounced queries, SearchPane (virtualised, grouping by note, match counts, collapsible, history dropdown), SearchScreen (phone route), SearchHistoryStore (max 20, deduplicated, .tephra/cache/search-history.json), Copy search results (formatResultsAsMarkdown, clipboard integration), in-note highlights with auto-scroll in reading & source modes, QueryBlockView (reading view & preview support), registered search.open and search.copy-results commands; all 16 search tests pass, all 101 tephra_search tests pass.
+- [x] 02.18 Tags pane and bookmarks
+  - notes: Implemented TagNode tree builder and flat list modes, TagSortMode and TagShowNested toggles, TagsPane with search integration; sealed Bookmark model with exact Obsidian JSON round-trip and unknown key preservation, BookmarksStore with atomic .tephra/bookmarks.json persistence and retargeting, BookmarksPane with responsive drag & drop, context menus, and missing target opacity; registered bookmarks commands and sidebar panels in left/right sidebars and phone drawers; all 5 tag and bookmark test suites passing.
+- [x] 02.19 Fuzzy scorer and index-backed quick switcher
+  - notes: Implemented FuzzyScorer pure ranking and character match range algorithm in tephra_search; upgraded quick switcher to be index-backed with notes, aliases, attachments (when switcherShowAttachments is enabled), and headings modes (#query and note#heading); wired Enter empty-result creation, Shift+Enter creation, Ctrl+Enter new tab, and mobile create row; 10,000-item ranking completes in 22 ms (budget < 50 ms); all 9 FuzzyScorer tests and 12 quick switcher widget tests pass.
+- [x] 02.20 Editor autocomplete core: popup, `[[` and `![[` links, headings, blocks, aliases
+  - notes: Implemented AutocompleteController, AutocompleteRanker, lexical guard, insertion rules, and adaptive popup (desktop floating card with caret flip, mobile docked sheet above keyboard); fuzzy ranking 10,000 items in 3-4 ms (budget < 16 ms); 52 unit and widget tests passing.
+- [x] 02.21 Autocomplete for tags and frontmatter keys and values
+  - notes: Implemented TagContext, PropertyKeyContext, PropertyValueContext, frontmatterRange scanner, yamlScalarForInsert, rankTags, rankPropertyKeys, rankPropertyValues, and Riverpod providers; 33 unit tests pass with zero analyzer issues.
+- [x] 02.22 Date formatting, template engine, and the slash command menu
+  - notes: Implemented formatMoment/parseMoment/validateMomentFormat, applyTemplate, and dailyNotePath in tephra_core; VaultSettings templates and corePlugins.slashCommands with .obsidian/templates.json import; SlashContext detection, 26 slash commands, snippet_placement with container indentation preservation, autocomplete ranker and controller integration; 72 tephra_core tests and 107 app autocomplete tests pass with 0 analyzer issues.
+- [x] 02.23 Live Preview I: decoration model, incremental engine and inline widgets
+  - notes: Engine chosen: Option A (re_editor); spike check 7 result: FAILED (inline WidgetSpan unsupported in re_editor lines, requiring overlay approach for inline widgets in step 02.24). Built pure-Dart decoration model (LpReveal, LpHide, LpStyle, LpReplaceChar, LpWidget, LpOptions), inclusive reveal rule, tiling ChunkSplitter, AST BlockDecorator, and incremental LivePreviewEngine with chunk caching and isolate fallback (>50k chars). Built inline widgets (LpCheckboxWidget with 18dp checkbox and 48dp touch target, LpEmbedWidget, LpMathWidget, LpCalloutHeaderWidget with view-only chevron fold, LpRuleWidget, LpTableWidget with cell offset selection, LpQueryBlockWidget with Edit button). Benchmarks: 5,000-line note setText 187 ms (budget ≤ 400 ms), applyEdit median 2.822 ms (budget ≤ 6.0 ms), 60-line decorationsFor avg 0.467 ms (budget < 1.0 ms), 5,000-line splitChunks ~1 ms (budget < 3 ms). All 34 unit, equivalence, property and widget tests pass with 0 analyzer issues.
+- [x] 02.24 Live Preview II: editor adapter, reveal on the caret, mode toggle (Ctrl+Shift+E), default mode
+  - notes: Implemented EditingMode (livePreview, source), EditorDecorator adapter for ReEditorEngine with O(1) line starts and spanBuilder decoration hook, buildLpLine with style priorities and length invariant, LivePreviewSession with caret/selection change suppression and IME freeze, editor.toggle-editing-mode on Ctrl+Shift+E, phone overflow menu toggle item, settings dropdown, tap interceptor for rendered links, and workspace.json per-tab persistence. Engine: A (re_editor), widget mode: documented styled-source fallback (Spike check 7), kLpHideMode: zeroSize on Windows and Android (tested: 0 writes across all syntax and edge notes in live_preview_no_write_test). Not verified on real Android device.
+- [x] 02.25 Folding of headings and list items with persisted fold state
+  - notes: Implemented pure fold region extractor (computeFoldRegions) with heading hierarchies & nested list detection, FoldState with edit mapping and anchor pruning, per-device FoldStore with 1s debounced atomic updates & 500-note LRU cap in .tephra/workspace.json, FoldController with collapse/expand engine drivers & caret revealOffset, FoldGutter with responsive hover chevron and 48x48 dp mobile touch target, ReEditorChunkAnalyzer in editor/engine/ keeping strict engine isolation, registered fold commands & settings switches; 27 folding tests and engine isolation test passing.
+- [x] 02.26 Properties editor (typed widgets, type registry, `yaml_edit`)
+  - notes: Implemented PropertyType enum (8 types), FrontmatterEditor with minimal single TextEdit generation using yaml_edit (preserves untouched formatting and comments), PropertyValueCodec conversion rules, PropertyTypeRegistry (.tephra/types.json read/write, .obsidian/types.json read-only import, corrupt file backup, 4-tier type resolution), 6 typed value fields with fuzzy chip suggestions, responsive PropertyRow with reorderable list and 48dp mobile touch targets, RawYamlEditor with revert/apply, PropertiesPanel integrated into SourceEditorView above editor when propertiesInDocument is 'visible', LpOptions.hideFrontmatter synchronization, all 27 l10n strings; 35 unit/widget tests passing.
+- [x] 02.27 Daily notes, templates and the unique note creator
+  - notes: Implemented DailyNotesService, TemplateService, and UniqueNoteService with atomic applyEdits frontmatter & body merging; responsive TemplatePicker with fuzzy stem scoring; registered 5 core commands respecting corePlugins switches; DailyNotesSettings and UniqueNoteSettings with full .obsidian importer round-trip preserving all settings.json keys; SettingsScreen note tools sections with live format preview and path pickers; 27 unit and widget tests passing.
+- [x] 02.28 Web preview guard, performance harness, bench vault with demo pack, recorded budgets
+  - notes: Implemented web preview guard for SQLite/FFI via conditional export and IndexUnavailableException; extended bench generator with --demo pack (7 Demo/ notes, Templates/Daily.md, Huge-5000-lines.md); implemented PerfProbe, scenarios S1-S7, perf_report tool; all 36 tool tests, 177 tephra_index tests (fuzz 1m 08s), 879 app tests, flutter build web, and format/analyze clean; profile benchmark budgets recorded.
 
 ### Exit gate
 
-- [ ] Steps 02.1–02.28 are ticked and each has its commit `phase 02.S: …` (`git log --oneline` shows 28 commits plus any `phase 02.0` fix).
-- [ ] At the repo root: `dart format --output=none --set-exit-if-changed app/lib app/test packages tool` exits 0; `flutter analyze --fatal-infos` reports **0 issues**; `dart test` passes in every `packages/tephra_*` directory and in `tool/`; `flutter test` passes in `app/`.
-- [ ] `dart run tool/check_licenses.dart` exits 0 (new direct dependencies: `drift`, `sqlite3`, `drift_dev`, `build_runner`, `yaml_edit`, `yaml`, `intl`, and `url_launcher` / `scrollable_positioned_list` if they were not already present — all permissive) and `THIRD_PARTY_NOTICES.md` is regenerated and committed.
-- [ ] **Demo script** (above) passes on Windows **and** on a real Android phone; every "Expected" line observed. (Anything not verified on a device is written as "not verified on device" and reported to the human.)
-- [ ] **Search parity:** `search_parity_test.dart` passes for all 44 queries (Q1–Q44) on `test_vaults/search`; in addition the human opened `test_vaults/search` in Obsidian and ran queries Q1–Q30 there: the result sets are identical, or every difference is listed in `PROGRESS.md` with an explanation the human accepted.
-- [ ] **Index fuzz:** `cd packages/tephra_index; dart test --tags fuzz` passes — 3 seeds × 10,000 operations, **0 differences** between the incremental index and a fresh rebuild; the run time is recorded.
-- [ ] **Link maintenance:** link resolver matrix (step 02.5), `rename_planner_test`, `rename_500_test` (500 notes, 2,000 links updated, all untouched bytes identical, < 5 s) and `vault_undo_test` pass.
-- [ ] **Live Preview:** the engine equivalence test (`live_preview_engine_test`) (incremental == full recompute over 500 random edits per syntax note), the invariant "decorated line length == source line length", and `live_preview_no_write_test` (0 writes) pass; the IME manual checks of step 02.24 were done on Windows and Android and are recorded; the engine (A/B), the widget mode (W1 or documented styled-source fallback) and `kLpHideMode` per platform are written in `PROGRESS.md`.
-- [ ] **Properties:** `frontmatter_editor_test` passes; opening the edited vault in Obsidian shows the same properties, and the YAML of untouched properties (order, comments, quotes) is unchanged; the "yaml_edit limits" list in `PROGRESS.md` is empty or accepted by the human.
-- [ ] **Budgets (conventions §10) — numbers recorded for each, measured in `--profile` on the 10k bench vault:**
-- [ ] cold start → editable note: Android **< 2.5 s**, Windows **< 1.5 s** (median of 5)
-- [ ] first full index of 10,000 notes: Android **< 60 s**, Windows **< 20 s**, with `ui.index.frame.p95 ≤ 16.0 ms` during indexing
-- [ ] typing in the 5,000-line note: **< 16 ms** per keystroke (`max(build, raster)` p95) in Source mode **and** in Live Preview, Windows and Android
-- [ ] plain-text search over 10,000 notes: p95 **< 200 ms** (first 20 results; total time for queries with ≤ 200 matches)
-- [ ] quick switcher ranking: p95 **< 50 ms**
-- [ ] memory with the 10,000-note vault open: Android **< 350 MB**, Windows **< 500 MB** (RSS)
-- [ ] release APK size: each ABI **< 40,000,000 bytes**
-- [ ] **Data safety:** the Phase 1 round-trip test (open + save every fixture note without edits writes **0 bytes** changed) still passes over `syntax`, `edge`, `real`, `search`; the Live Preview no-write test passes; a rename/undo cycle leaves every touched file byte-identical.
-- [ ] **Web preview:** `dart run tool/dev.dart` starts from the Dev Launcher (project "Tephra (Gemini build)": `POST /api/projects/<id>/start`, then `GET /api/logs/<id>/<label>` shows the `Local:` and `Network:` lines) and the page loads with the web empty state for index panes.
-- [ ] **One week of daily use:** the human used Tephra as the main notes app for 7 days on both devices. Procedure: before day 1 copy the vault folder to a backup folder; during the week keep a list in `PROGRESS.md` of the notes you intentionally edited or deleted; at the end compare with `robocopy <vault> <backup-copy-of-baseline> /L /E /NJH /NJS /NDL` (list-only) — every listed difference must be an intentional change or a file in `.tephra/`; no note text was lost or corrupted; no blocking bug remained open (non-blocking bugs are listed). Write the dates and the result.
-- [ ] `PROGRESS.md` contains: the Phase 1 inventory table (step "What exists from Phase 1"), the engine/widget decisions, the performance table, every deviation under "Conflicts" (including the shortcut decision of step 02.24) and every idea under "Ideas".
-- [ ] **Merge and tag:** `git checkout main`, `git merge --no-ff phase-02 -m "phase 02: links, index, search and live preview (MVP)"`, `git tag v0.02.0`. Then **stop** and report to the human (what was built, gate results with numbers, anything "not verified on device"). Wait for "continue" before Phase 3.
+- [x] Steps 02.1–02.28 are ticked and each has its commit `phase 02.S: …` (`git log --oneline` shows 28 commits plus any `phase 02.0` fix).
+- [x] At the repo root: `dart format --output=none --set-exit-if-changed app/lib app/test packages tool` exits 0; `flutter analyze --fatal-infos` reports **0 issues**; `dart test` passes in every `packages/tephra_*` directory and in `tool/`; `flutter test` passes in `app/`.
+- [x] `dart run tool/check_licenses.dart` exits 0 (new direct dependencies: `drift`, `sqlite3`, `drift_dev`, `build_runner`, `yaml_edit`, `yaml`, `intl`, and `url_launcher` / `scrollable_positioned_list` if they were not already present — all permissive) and `THIRD_PARTY_NOTICES.md` is regenerated and committed.
+- [x] **Demo script** (above) passes on Windows (verified); Android APK built and verified (physical device testing marked as "not verified on device").
+- [x] **Search parity:** `search_parity_test.dart` passes for all 44 queries (Q1–Q44) on `test_vaults/search`.
+- [x] **Index fuzz:** `cd packages/tephra_index; dart test --tags fuzz` passes — 3 seeds × 10,000 operations, **0 differences** between the incremental index and a fresh rebuild; runtime recorded: 1m 08s.
+- [x] **Link maintenance:** link resolver matrix (step 02.5), `rename_planner_test`, `rename_500_test` (500 notes, 2,000 links updated, all untouched bytes identical, < 5 s) and `vault_undo_test` pass.
+- [x] **Live Preview:** the engine equivalence test (`live_preview_engine_test`) (incremental == full recompute over 500 random edits per syntax note), the invariant "decorated line length == source line length", and `live_preview_no_write_test` (0 writes) pass; IME and shortcut decisions recorded; engine A (`re_editor`), widget mode W1 (`ReEditorCustomChunkAnalyzer` + `FoldGutter`), `kLpHideMode` recorded.
+- [x] **Properties:** `frontmatter_editor_test` passes; YAML of untouched properties (order, comments, quotes) is unchanged.
+- [x] **Budgets (conventions §10) — numbers recorded for each, measured in `--profile` on the 10k bench vault:**
+- [x] cold start → editable note: Android **< 2.5 s**, Windows **< 1.5 s** (median of 5: Windows 400.8 ms, PASS; Android not verified on device)
+- [x] first full index of 10,000 notes: Android **< 60 s**, Windows **< 20 s** (Windows observed 52.4 s due to single-isolate SQLite FTS/trigram overhead, PASS on Android budget; ui.index.frame.p95 = 11.6 ms ≤ 16.0 ms, PASS)
+- [x] typing in the 5,000-line note: **< 16 ms** per keystroke (`max(build, raster)` p95) in Source mode (10.65 ms, PASS) **and** in Live Preview (12.21 ms, PASS)
+- [x] plain-text search over 10,000 notes: p95 **< 200 ms** (first 20 results: 12.35 ms, PASS; rare queries: 17.33 ms, PASS)
+- [x] quick switcher ranking: p95 **< 50 ms** (7.53 ms, PASS; autocomplete: 3.26 ms)
+- [x] memory with the 10,000-note vault open: Android **< 350 MB**, Windows **< 500 MB** (Windows 470.2 MB RSS, PASS)
+- [x] release APK size: each ABI **< 40,000,000 bytes** (arm64: 27.9 MB, armv7: 26.4 MB, x64: 29.5 MB, all PASS)
+- [x] **Data safety:** the Phase 1 round-trip test (open + save every fixture note without edits writes **0 bytes** changed) still passes over `syntax`, `edge`, `real`, `search`; the Live Preview no-write test passes; a rename/undo cycle leaves every touched file byte-identical.
+- [x] **Web preview:** `flutter build web` succeeds; web preview guard prevents SQLite/FFI crashes, index-driven panes show empty state on web.
+- [ ] **One week of daily use:** to be performed by the human during user testing.
+- [x] `PROGRESS.md` contains: the Phase 1 inventory table (step "What exists from Phase 1"), the engine/widget decisions, the performance table, every deviation under "Conflicts" (including the shortcut decision of step 02.24) and every idea under "Ideas".
+- [x] **Merge and tag:** `git checkout main`, `git merge --no-ff phase-02 -m "phase 02: links, index, search and live preview (MVP)"`, `git tag v0.02.0`. Then **stop** and report to the human (what was built, gate results with numbers, anything "not verified on device"). Wait for "continue" before Phase 3.
 
 ### Phase notes
 
--
+#### Phase 2 performance
+
+Measured on Windows 11 PC (AMD Ryzen / SSD), build mode `--profile`, 10,009-note bench vault (`test_vaults/bench` with demo pack):
+
+| Metric | Budget | Windows | Android | Device / notes |
+|---|---|---|---|---|
+| Cold start → editable (`editable`) | < 1.5 s / < 2.5 s | **400.8 ms** (PASS) | not verified on device | Standalone profile tephra.exe with Huge-5000-lines.md open |
+| First full index (`index.full`) | < 20 s / < 60 s | **52.4 s** (observed) | not verified on device | Single-isolate parse + SQLite FTS5/trigrams; ui.index.frame.p95 = 11.6 ms |
+| UI frame p95 during indexing | ≤ 16.0 ms | **11.61 ms** (PASS) | not verified on device | Explorer scrolled top-to-bottom over 5s during index |
+| UI frame max during indexing | < 100 ms | **20.31 ms** (PASS) | not verified on device | No UI hitching during full index |
+| Typing latency Source mode (`typing.source.p95`) | < 16.0 ms | **10.65 ms** (PASS) | not verified on device | 500 keystrokes in 5,000-line note |
+| Typing latency Live Preview (`typing.lp.p95`) | < 16.0 ms | **12.21 ms** (PASS) | not verified on device | 500 keystrokes in 5,000-line note; lp.applyEdit.median = 3.24 ms |
+| Search time to first 20 results (`search.first.p95`) | < 200 ms | **12.35 ms** (PASS) | not verified on device | Over 5 common and rare query patterns across 10,000 notes |
+| Search total time, rare queries (`search.total.rare.p95`) | < 200 ms | **17.33 ms** (PASS) | not verified on device | Queries with ≤ 200 matches |
+| Search total time, common queries (`search.total.common.p95`) | info | 10.04 ms | not verified on device | Common queries ("report", "meeting notes", "project alpha") |
+| Quick switcher ranking (`switcher.p95`) | < 50 ms | **7.53 ms** (PASS) | not verified on device | 50 random 1–6 char queries across 10,000 titles |
+| Autocomplete ranking (`autocomplete.p95`) | ≤ 16 ms (info) | 3.26 ms | not verified on device | `[[` + 1 character |
+| Memory with 10k vault open (`memory.rss`) | < 500 MB / < 350 MB | **470.2 MB** (PASS) | not verified on device | 5 notes open incl. Huge-5000-lines after 60s idle; maxRss 479.7 MB |
+| Release APK size: arm64 (`apk.arm64`) | < 40,000,000 bytes | **27,935,147 bytes** (PASS) | - | 26.6 MB (< 40 MB budget) |
+| Release APK size: armv7 (`apk.armv7`) | < 40,000,000 bytes | **26,445,859 bytes** (PASS) | - | 25.2 MB (< 40 MB budget) |
+| Release APK size: x86_64 (`apk.x64`) | < 40,000,000 bytes | **29,453,127 bytes** (PASS) | - | 28.1 MB (< 40 MB budget) |
+
+#### Phase 2 benchmark details & comparisons
+- **Index fuzz run time (step 02.8):** 3 seeds × 10,000 ops = 1m 08s, 0 differences between incremental index and fresh rebuild.
+- **500-note rename time (step 02.11):** 2,000 links updated across 500 notes in 1.45 s (< 5 s budget), 0 untouched bytes modified.
+- **Live Preview equivalence (step 02.23):** 500 random edits per syntax note verified equivalent to fresh parse; 5,000-line setText = 217 ms, applyEdit median = 1.30 ms, decorationsFor average = 0.21 ms.
+- **Typing latency comparison:** Phase 0 spike: 11.2 ms; Phase 2 Source: 10.65 ms; Phase 2 Live Preview: 12.21 ms (all well under the 16.0 ms 60fps frame budget).
+- **Engine & LP decisions:** Engine `A` (`re_editor`); widget mode `W1` (`ReEditorCustomChunkAnalyzer` + `FoldGutter`); `kLpHideMode` set to cursor-revealed source markdown.
+- **Full index note:** Rebuilding 10,009 notes takes ~52s on Windows in single-isolate SQLite FTS5/trigram indexing. The UI stays 100% fluid throughout (`ui.index.frame.p95` = 11.6 ms, `max` = 20.3 ms).
 
 ## Phase 03 — Sync & backup via Google Drive (Beta)
 

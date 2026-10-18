@@ -1,7 +1,12 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'package:flutter/foundation.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_vault/tephra_vault.dart';
+
+import '../vault/note_tools/note_tools_settings.dart';
+
+export '../vault/note_tools/note_tools_settings.dart';
 
 /// Where new files should be created by default.
 enum NewFileLocation {
@@ -90,6 +95,157 @@ enum ExplorerSort {
   String toJson() => name;
 }
 
+/// Templates settings model.
+@immutable
+final class TemplatesSettings {
+  const TemplatesSettings({
+    this.folder = '',
+    this.dateFormat = 'YYYY-MM-DD',
+    this.timeFormat = 'HH:mm',
+  });
+
+  factory TemplatesSettings.fromMap(Map<String, Object?> map) {
+    return TemplatesSettings(
+      folder: map['folder'] as String? ?? '',
+      dateFormat: map['dateFormat'] as String? ?? 'YYYY-MM-DD',
+      timeFormat: map['timeFormat'] as String? ?? 'HH:mm',
+    );
+  }
+
+  final String folder;
+  final String dateFormat;
+  final String timeFormat;
+
+  Map<String, Object?> toMap() => {
+    'folder': folder,
+    'dateFormat': dateFormat,
+    'timeFormat': timeFormat,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TemplatesSettings &&
+          folder == other.folder &&
+          dateFormat == other.dateFormat &&
+          timeFormat == other.timeFormat;
+
+  @override
+  int get hashCode => Object.hash(folder, dateFormat, timeFormat);
+}
+
+/// Core plugins settings model.
+@immutable
+final class CorePluginsSettings {
+  const CorePluginsSettings({
+    this.slashCommands = true,
+    this.dailyNotes = true,
+    this.templates = true,
+    this.uniqueNoteCreator = false,
+  });
+
+  factory CorePluginsSettings.fromMap(Map<String, Object?> map) {
+    return CorePluginsSettings(
+      slashCommands: map['slashCommands'] as bool? ?? true,
+      dailyNotes: map['dailyNotes'] as bool? ?? true,
+      templates: map['templates'] as bool? ?? true,
+      uniqueNoteCreator: map['uniqueNoteCreator'] as bool? ?? false,
+    );
+  }
+
+  final bool slashCommands;
+  final bool dailyNotes;
+  final bool templates;
+  final bool uniqueNoteCreator;
+
+  Map<String, Object?> toMap() => {
+    'slashCommands': slashCommands,
+    'dailyNotes': dailyNotes,
+    'templates': templates,
+    'uniqueNoteCreator': uniqueNoteCreator,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CorePluginsSettings &&
+          slashCommands == other.slashCommands &&
+          dailyNotes == other.dailyNotes &&
+          templates == other.templates &&
+          uniqueNoteCreator == other.uniqueNoteCreator;
+
+  @override
+  int get hashCode =>
+      Object.hash(slashCommands, dailyNotes, templates, uniqueNoteCreator);
+}
+
+/// Default editor settings.
+const defaultEditor = <String, Object?>{
+  'defaultEditingMode': 'livePreview',
+  'foldHeadings': true,
+  'foldIndent': true,
+  'propertiesInDocument': 'visible',
+};
+
+/// Editor settings model.
+@immutable
+final class EditorSettings {
+  const EditorSettings({
+    this.defaultEditingMode = 'livePreview',
+    this.foldHeadings = true,
+    this.foldIndent = true,
+    this.propertiesInDocument = 'visible',
+  });
+
+  factory EditorSettings.fromMap(Map<String, Object?> map) {
+    var mode = map['defaultEditingMode'] as String? ?? 'livePreview';
+    if (mode != 'livePreview' && mode != 'source') {
+      mode = 'livePreview';
+    }
+    final foldHeadings = map['foldHeadings'] as bool? ?? true;
+    final foldIndent = map['foldIndent'] as bool? ?? true;
+    var props = map['propertiesInDocument'] as String? ?? 'visible';
+    if (props != 'visible' && props != 'hidden' && props != 'source') {
+      props = 'visible';
+    }
+    return EditorSettings(
+      defaultEditingMode: mode,
+      foldHeadings: foldHeadings,
+      foldIndent: foldIndent,
+      propertiesInDocument: props,
+    );
+  }
+
+  final String defaultEditingMode;
+  final bool foldHeadings;
+  final bool foldIndent;
+  final String propertiesInDocument;
+
+  Map<String, Object?> toMap() => {
+    'defaultEditingMode': defaultEditingMode,
+    'foldHeadings': foldHeadings,
+    'foldIndent': foldIndent,
+    'propertiesInDocument': propertiesInDocument,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EditorSettings &&
+          defaultEditingMode == other.defaultEditingMode &&
+          foldHeadings == other.foldHeadings &&
+          foldIndent == other.foldIndent &&
+          propertiesInDocument == other.propertiesInDocument;
+
+  @override
+  int get hashCode => Object.hash(
+    defaultEditingMode,
+    foldHeadings,
+    foldIndent,
+    propertiesInDocument,
+  );
+}
+
 /// Configuration settings for a single vault stored in `.tephra/settings.json`.
 @immutable
 final class VaultSettings {
@@ -106,8 +262,15 @@ final class VaultSettings {
     this.fontSize = 16.0,
     this.explorerSort = 'nameAsc',
     this.dailyNotes = const {},
-    this.templates = const {},
+    this.templates = defaultTemplates,
+    this.uniqueNote = const {},
+    this.corePlugins = defaultCorePlugins,
+    this.editor = defaultEditor,
     this.importedFromObsidian = false,
+    this.newLinkFormat = 'shortest',
+    this.useMarkdownLinks = false,
+    this.alwaysUpdateLinks = true,
+    this.excludedFolders = const [],
     this.extra = const {},
   });
 
@@ -161,11 +324,53 @@ final class VaultSettings {
         : const <String, Object?>{};
 
     final rawTemplates = json['templates'];
-    final templates = rawTemplates is Map
-        ? rawTemplates.cast<String, Object?>()
+    final Map<String, Object?> templates;
+    if (rawTemplates is Map) {
+      templates = rawTemplates.cast<String, Object?>();
+    } else {
+      templates = defaultTemplates;
+    }
+
+    final rawUnique = json['uniqueNote'];
+    final uniqueNote = rawUnique is Map
+        ? rawUnique.cast<String, Object?>()
         : const <String, Object?>{};
 
+    final rawCorePlugins = json['corePlugins'];
+    final Map<String, Object?> corePlugins;
+    if (rawCorePlugins is Map) {
+      corePlugins = rawCorePlugins.cast<String, Object?>();
+    } else {
+      corePlugins = defaultCorePlugins;
+    }
+
+    final rawEditor = json['editor'];
+    final Map<String, Object?> editor;
+    if (rawEditor is Map) {
+      editor = rawEditor.cast<String, Object?>();
+    } else {
+      editor = defaultEditor;
+    }
+
     final importedFromObsidian = json['importedFromObsidian'] as bool? ?? false;
+
+    var newLinkFormat = json['newLinkFormat'] as String? ?? 'shortest';
+    if (newLinkFormat != 'shortest' &&
+        newLinkFormat != 'relative' &&
+        newLinkFormat != 'absolute') {
+      newLinkFormat = 'shortest';
+    }
+
+    final useMarkdownLinks = json['useMarkdownLinks'] as bool? ?? false;
+    final alwaysUpdateLinks = json['alwaysUpdateLinks'] as bool? ?? true;
+
+    final rawExcluded = json['excludedFolders'];
+    final excludedFolders = rawExcluded is List
+        ? rawExcluded
+              .map((e) => e.toString())
+              .where((e) => e.isNotEmpty)
+              .toList()
+        : const <String>[];
 
     const knownKeys = {
       'attachmentFolder',
@@ -181,7 +386,14 @@ final class VaultSettings {
       'explorerSort',
       'dailyNotes',
       'templates',
+      'uniqueNote',
+      'corePlugins',
+      'editor',
       'importedFromObsidian',
+      'newLinkFormat',
+      'useMarkdownLinks',
+      'alwaysUpdateLinks',
+      'excludedFolders',
     };
 
     final extra = <String, Object?>{};
@@ -205,10 +417,43 @@ final class VaultSettings {
       explorerSort: explorerSort,
       dailyNotes: Map.unmodifiable(dailyNotes),
       templates: Map.unmodifiable(templates),
+      uniqueNote: Map.unmodifiable(uniqueNote),
+      corePlugins: Map.unmodifiable(corePlugins),
+      editor: Map.unmodifiable(editor),
       importedFromObsidian: importedFromObsidian,
+      newLinkFormat: newLinkFormat,
+      useMarkdownLinks: useMarkdownLinks,
+      alwaysUpdateLinks: alwaysUpdateLinks,
+      excludedFolders: List.unmodifiable(excludedFolders),
       extra: Map.unmodifiable(extra),
     );
   }
+
+  static const defaultTemplates = <String, Object?>{
+    'folder': '',
+    'dateFormat': 'YYYY-MM-DD',
+    'timeFormat': 'HH:mm',
+  };
+
+  static const defaultDailyNotes = <String, Object?>{
+    'format': 'YYYY-MM-DD',
+    'folder': '',
+    'template': '',
+    'openOnStartup': false,
+  };
+
+  static const defaultUniqueNote = <String, Object?>{
+    'prefixFormat': 'YYYYMMDDHHmm',
+    'folder': '',
+    'template': '',
+  };
+
+  static const defaultCorePlugins = <String, Object?>{
+    'slashCommands': true,
+    'dailyNotes': true,
+    'templates': true,
+    'uniqueNoteCreator': false,
+  };
 
   final String attachmentFolder;
   final String newFileLocation;
@@ -223,7 +468,14 @@ final class VaultSettings {
   final String explorerSort;
   final Map<String, Object?> dailyNotes;
   final Map<String, Object?> templates;
+  final Map<String, Object?> uniqueNote;
+  final Map<String, Object?> corePlugins;
+  final Map<String, Object?> editor;
   final bool importedFromObsidian;
+  final String newLinkFormat;
+  final bool useMarkdownLinks;
+  final bool alwaysUpdateLinks;
+  final List<String> excludedFolders;
   final Map<String, Object?> extra;
 
   NewFileLocation get newFileLocationEnum =>
@@ -236,6 +488,38 @@ final class VaultSettings {
   ViewModeSetting get viewMode => ViewModeSetting.fromString(defaultViewMode);
 
   ExplorerSort get explorerSortEnum => ExplorerSort.fromString(explorerSort);
+
+  NewLinkFormat get newLinkFormatEnum => NewLinkFormat.fromJson(newLinkFormat);
+
+  LinkFormatSettings get linkFormatSettings => LinkFormatSettings(
+    format: newLinkFormatEnum,
+    useMarkdownLinks: useMarkdownLinks,
+  );
+
+  DailyNotesSettings get dailyNotesSettings =>
+      DailyNotesSettings.fromMap(dailyNotes);
+
+  UniqueNoteSettings get uniqueNoteSettings =>
+      UniqueNoteSettings.fromMap(uniqueNote);
+
+  TemplatesSettings get templatesSettings =>
+      TemplatesSettings.fromMap(templates);
+
+  CorePluginsSettings get corePluginsSettings =>
+      CorePluginsSettings.fromMap(corePlugins);
+
+  EditorSettings get editorSettings => EditorSettings.fromMap(editor);
+  bool get foldHeadings => editorSettings.foldHeadings;
+  bool get foldIndent => editorSettings.foldIndent;
+  String get propertiesInDocument => editorSettings.propertiesInDocument;
+
+  String get templatesFolder => templates['folder'] as String? ?? '';
+  String get templatesDateFormat =>
+      templates['dateFormat'] as String? ?? 'YYYY-MM-DD';
+  String get templatesTimeFormat =>
+      templates['timeFormat'] as String? ?? 'HH:mm';
+  bool get slashCommandsEnabled =>
+      corePlugins['slashCommands'] as bool? ?? true;
 
   Map<String, Object?> toJson() {
     final map = <String, Object?>{
@@ -252,7 +536,14 @@ final class VaultSettings {
       'explorerSort': explorerSort,
       'dailyNotes': dailyNotes,
       'templates': templates,
+      'uniqueNote': uniqueNote,
+      'corePlugins': corePlugins,
+      'editor': editor,
       'importedFromObsidian': importedFromObsidian,
+      'newLinkFormat': newLinkFormat,
+      'useMarkdownLinks': useMarkdownLinks,
+      'alwaysUpdateLinks': alwaysUpdateLinks,
+      'excludedFolders': excludedFolders,
     };
     map.addAll(extra);
     return map;
@@ -272,7 +563,14 @@ final class VaultSettings {
     String? explorerSort,
     Map<String, Object?>? dailyNotes,
     Map<String, Object?>? templates,
+    Map<String, Object?>? uniqueNote,
+    Map<String, Object?>? corePlugins,
+    Map<String, Object?>? editor,
     bool? importedFromObsidian,
+    String? newLinkFormat,
+    bool? useMarkdownLinks,
+    bool? alwaysUpdateLinks,
+    List<String>? excludedFolders,
     Map<String, Object?>? extra,
   }) {
     return VaultSettings(
@@ -289,7 +587,14 @@ final class VaultSettings {
       explorerSort: explorerSort ?? this.explorerSort,
       dailyNotes: dailyNotes ?? this.dailyNotes,
       templates: templates ?? this.templates,
+      uniqueNote: uniqueNote ?? this.uniqueNote,
+      corePlugins: corePlugins ?? this.corePlugins,
+      editor: editor ?? this.editor,
       importedFromObsidian: importedFromObsidian ?? this.importedFromObsidian,
+      newLinkFormat: newLinkFormat ?? this.newLinkFormat,
+      useMarkdownLinks: useMarkdownLinks ?? this.useMarkdownLinks,
+      alwaysUpdateLinks: alwaysUpdateLinks ?? this.alwaysUpdateLinks,
+      excludedFolders: excludedFolders ?? this.excludedFolders,
       extra: extra ?? this.extra,
     );
   }
@@ -311,11 +616,18 @@ final class VaultSettings {
           explorerSort == other.explorerSort &&
           mapEquals(dailyNotes, other.dailyNotes) &&
           mapEquals(templates, other.templates) &&
+          mapEquals(uniqueNote, other.uniqueNote) &&
+          mapEquals(corePlugins, other.corePlugins) &&
+          mapEquals(editor, other.editor) &&
           importedFromObsidian == other.importedFromObsidian &&
+          newLinkFormat == other.newLinkFormat &&
+          useMarkdownLinks == other.useMarkdownLinks &&
+          alwaysUpdateLinks == other.alwaysUpdateLinks &&
+          listEquals(excludedFolders, other.excludedFolders) &&
           mapEquals(extra, other.extra);
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     attachmentFolder,
     newFileLocation,
     newFileFolder,
@@ -329,7 +641,14 @@ final class VaultSettings {
     explorerSort,
     Object.hashAll(dailyNotes.entries),
     Object.hashAll(templates.entries),
+    Object.hashAll(uniqueNote.entries),
+    Object.hashAll(corePlugins.entries),
+    Object.hashAll(editor.entries),
     importedFromObsidian,
+    newLinkFormat,
+    useMarkdownLinks,
+    alwaysUpdateLinks,
+    Object.hashAll(excludedFolders),
     Object.hashAll(extra.entries),
-  );
+  ]);
 }

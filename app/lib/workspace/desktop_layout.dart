@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../search/providers.dart';
 import 'empty_workspace_view.dart';
 import 'pane_view.dart';
 import 'providers.dart';
@@ -125,78 +126,92 @@ class _DesktopLayoutState extends ConsumerState<DesktopLayout> {
     final showLeft = state.leftSidebarVisible && leftPanels.isNotEmpty;
     final showRight = state.rightSidebarVisible && rightPanels.isNotEmpty;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (showLeft) ...[
-          SizedBox(
-            width: state.leftSidebarWidth,
-            child: Container(
-              color: theme.colorScheme.surfaceContainerHighest.withAlpha(20),
-              child: _buildSidebarContent(
-                leftPanels,
-                _activeLeftPanelIndex,
-                (idx) => setState(() => _activeLeftPanelIndex = idx),
-              ),
-            ),
-          ),
-          MouseRegion(
-            cursor: SystemMouseCursors.resizeColumn,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onHorizontalDragUpdate: (details) {
-                ref
-                    .read(workspaceProvider.notifier)
-                    .setLeftSidebarWidth(
-                      state.leftSidebarWidth + details.delta.dx,
-                    );
-              },
+    ref.listen<String?>(activeLeftSidebarPanelProvider, (prev, next) {
+      if (next != null) {
+        final idx = leftPanels.indexWhere((p) => p.id == next);
+        if (idx != -1) {
+          setState(() => _activeLeftPanelIndex = idx);
+          ref.read(workspaceProvider.notifier).setLeftSidebarVisible(true);
+        }
+        ref.read(activeLeftSidebarPanelProvider.notifier).select(null);
+      }
+    });
+
+    return Material(
+      color: theme.colorScheme.surface,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (showLeft) ...[
+            SizedBox(
+              width: state.leftSidebarWidth,
               child: Container(
-                width: 6,
-                color: theme.dividerColor.withAlpha(40),
+                color: theme.colorScheme.surfaceContainerHighest.withAlpha(20),
+                child: _buildSidebarContent(
+                  leftPanels,
+                  _activeLeftPanelIndex,
+                  (idx) => setState(() => _activeLeftPanelIndex = idx),
+                ),
               ),
             ),
+            MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onHorizontalDragUpdate: (details) {
+                  ref
+                      .read(workspaceProvider.notifier)
+                      .setLeftSidebarWidth(
+                        state.leftSidebarWidth + details.delta.dx,
+                      );
+                },
+                child: Container(
+                  width: 6,
+                  color: theme.dividerColor.withAlpha(40),
+                ),
+              ),
+            ),
+          ],
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(child: _buildPanes(state)),
+                const StatusBar(),
+              ],
+            ),
           ),
-        ],
-        Expanded(
-          child: Column(
-            children: [
-              Expanded(child: _buildPanes(state)),
-              const StatusBar(),
-            ],
-          ),
-        ),
-        if (showRight) ...[
-          MouseRegion(
-            cursor: SystemMouseCursors.resizeColumn,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onHorizontalDragUpdate: (details) {
-                ref
-                    .read(workspaceProvider.notifier)
-                    .setRightSidebarWidth(
-                      state.rightSidebarWidth - details.delta.dx,
-                    );
-              },
+          if (showRight) ...[
+            MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onHorizontalDragUpdate: (details) {
+                  ref
+                      .read(workspaceProvider.notifier)
+                      .setRightSidebarWidth(
+                        state.rightSidebarWidth - details.delta.dx,
+                      );
+                },
+                child: Container(
+                  width: 6,
+                  color: theme.dividerColor.withAlpha(40),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: state.rightSidebarWidth,
               child: Container(
-                width: 6,
-                color: theme.dividerColor.withAlpha(40),
+                color: theme.colorScheme.surfaceContainerHighest.withAlpha(20),
+                child: _buildSidebarContent(
+                  rightPanels,
+                  _activeRightPanelIndex,
+                  (idx) => setState(() => _activeRightPanelIndex = idx),
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            width: state.rightSidebarWidth,
-            child: Container(
-              color: theme.colorScheme.surfaceContainerHighest.withAlpha(20),
-              child: _buildSidebarContent(
-                rightPanels,
-                _activeRightPanelIndex,
-                (idx) => setState(() => _activeRightPanelIndex = idx),
-              ),
-            ),
-          ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

@@ -9,14 +9,17 @@ import '../commands/command_palette.dart';
 import '../commands/providers.dart';
 import '../commands/quick_switcher.dart';
 import '../editor/editor_controller.dart';
+import '../editor/live_preview/editing_mode.dart';
 import '../editor/mobile_toolbar.dart';
 import '../editor/providers.dart';
 import '../editor/save_state_indicator.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/providers.dart';
 import 'empty_workspace_view.dart';
+import 'index_status.dart';
 import 'providers.dart';
 import 'sidebar_registry.dart';
+import 'tab_content.dart';
 import 'workspace_models.dart';
 
 class PhoneLayout extends ConsumerStatefulWidget {
@@ -29,6 +32,8 @@ class PhoneLayout extends ConsumerStatefulWidget {
 class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
   StreamSubscription<bool>? _focusSub;
   EditorController? _subscribedEditor;
+  int _activeDrawerIndex = 0;
+  int _activeEndDrawerIndex = 0;
 
   @override
   void dispose() {
@@ -66,10 +71,10 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
 
     final leftPanels = ref
         .watch(sidebarRegistryProvider.notifier)
-        .panelsFor(SidebarSide.left);
+        .phonePanelsFor(SidebarSide.left);
     final rightPanels = ref
         .watch(sidebarRegistryProvider.notifier)
-        .panelsFor(SidebarSide.right);
+        .phonePanelsFor(SidebarSide.right);
 
     final canGoBack = focusedTab?.canGoBack ?? false;
     final canGoForward = focusedTab?.canGoForward ?? false;
@@ -90,6 +95,7 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
+          bottom: const PhoneIndexProgressBar(),
           leading: Builder(
             builder: (ctx) => IconButton(
               key: const Key('phone.menu'),
@@ -136,6 +142,8 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
               icon: const Icon(Icons.more_vert),
               onSelected: (value) {
                 switch (value) {
+                  case 'toggle-editing-mode':
+                    ref.read(workspaceProvider.notifier).toggleEditingMode();
                   case 'palette':
                     showCommandPalette(context);
                   case 'switcher':
@@ -144,42 +152,135 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
                     Navigator.of(context).pushNamed('/settings');
                 }
               },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'palette',
-                  child: Text(l10n.commandAppOpenCommandPalette),
-                ),
-                PopupMenuItem(
-                  value: 'switcher',
-                  child: Text(l10n.commandAppOpenQuickSwitcher),
-                ),
-                PopupMenuItem(
-                  value: 'settings',
-                  child: Text(l10n.commandAppOpenSettings),
-                ),
-              ],
+              itemBuilder: (context) {
+                final isNote = focusedTab?.content is FileTabContent;
+                final fileContent = focusedTab?.content as FileTabContent?;
+                final targetModeLabel =
+                    fileContent?.editingMode == EditingMode.livePreview
+                    ? l10n.editingModeSource
+                    : l10n.editingModeLivePreview;
+                return [
+                  if (isNote)
+                    PopupMenuItem(
+                      value: 'toggle-editing-mode',
+                      child: Text(targetModeLabel),
+                    ),
+                  PopupMenuItem(
+                    value: 'palette',
+                    child: Text(l10n.commandAppOpenCommandPalette),
+                  ),
+                  PopupMenuItem(
+                    value: 'switcher',
+                    child: Text(l10n.commandAppOpenQuickSwitcher),
+                  ),
+                  PopupMenuItem(
+                    value: 'settings',
+                    child: Text(l10n.commandAppOpenSettings),
+                  ),
+                ];
+              },
             ),
           ],
         ),
         drawer: Drawer(
           child: leftPanels.isNotEmpty
-              ? Column(
-                  children: [
-                    DrawerHeader(
-                      child: Center(
-                        child: Text(
-                          session?.name ?? 'Tephra',
-                          style: Theme.of(context).textTheme.titleLarge,
+              ? SafeArea(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              session?.name ?? 'Tephra',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const Spacer(),
+                            for (var i = 0; i < leftPanels.length; i++)
+                              IconButton(
+                                iconSize: 20,
+                                icon: Icon(leftPanels[i].icon),
+                                tooltip: leftPanels[i].label(l10n),
+                                color:
+                                    i ==
+                                        (_activeDrawerIndex < leftPanels.length
+                                            ? _activeDrawerIndex
+                                            : 0)
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                onPressed: () =>
+                                    setState(() => _activeDrawerIndex = i),
+                              ),
+                          ],
                         ),
                       ),
-                    ),
-                    Expanded(child: leftPanels.first.builder(context, ref)),
-                  ],
+                      const Divider(height: 1),
+                      Expanded(
+                        child:
+                            leftPanels[_activeDrawerIndex < leftPanels.length
+                                    ? _activeDrawerIndex
+                                    : 0]
+                                .builder(context, ref),
+                      ),
+                    ],
+                  ),
                 )
               : Center(child: Text(l10n.sidebarExplorer)),
         ),
         endDrawer: rightPanels.isNotEmpty
-            ? Drawer(child: rightPanels.first.builder(context, ref))
+            ? Drawer(
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      if (rightPanels.length > 1) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              for (var i = 0; i < rightPanels.length; i++)
+                                IconButton(
+                                  iconSize: 20,
+                                  icon: Icon(rightPanels[i].icon),
+                                  tooltip: rightPanels[i].label(l10n),
+                                  color:
+                                      i ==
+                                          (_activeEndDrawerIndex <
+                                                  rightPanels.length
+                                              ? _activeEndDrawerIndex
+                                              : 0)
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                  onPressed: () =>
+                                      setState(() => _activeEndDrawerIndex = i),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const Divider(height: 1),
+                      ],
+                      Expanded(
+                        child:
+                            rightPanels[_activeEndDrawerIndex <
+                                        rightPanels.length
+                                    ? _activeEndDrawerIndex
+                                    : 0]
+                                .builder(context, ref),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             : null,
         body: focusedTab == null
             ? const EmptyWorkspaceView()

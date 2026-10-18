@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/hotkey_host.dart';
+import '../core/perf/perf_runner.dart';
 import '../editor/save_state_indicator.dart';
 import '../vault/providers.dart';
 import 'builtin_panels.dart';
 import 'desktop_layout.dart';
+import 'index_status.dart';
 import 'phone_layout.dart';
 import 'providers.dart';
 import 'status_bar_registry.dart';
@@ -36,9 +38,19 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
             return Text(
               activePath.value,
               style: Theme.of(context).textTheme.labelSmall,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             );
           },
           order: 0,
+        ),
+      );
+      registry.register(
+        const StatusBarItemSpec(
+          id: 'status.index',
+          alignment: StatusBarAlignment.left,
+          order: 50,
+          builder: _buildIndexStatus,
         ),
       );
       registry.register(
@@ -54,6 +66,12 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
           },
         ),
       );
+      if (const bool.fromEnvironment('TEPHRA_AUTO_BENCH')) {
+        Future<void>.delayed(const Duration(seconds: 2), () async {
+          if (!mounted) return;
+          await runBenchmarks(context, ref);
+        });
+      }
     });
   }
 
@@ -69,3 +87,6 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
     );
   }
 }
+
+Widget _buildIndexStatus(BuildContext context, WidgetRef ref) =>
+    const IndexStatusItem();

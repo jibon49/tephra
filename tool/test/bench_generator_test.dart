@@ -191,4 +191,121 @@ void main() {
     // Clean up dummy
     dummyFile.deleteSync();
   });
+
+  test('demo pack off by default', () {
+    final temp = Directory.systemTemp.createTempSync('tephra_bench_demo_off_');
+    addTearDown(() {
+      if (temp.existsSync()) temp.deleteSync(recursive: true);
+    });
+
+    final report = generateBenchVault(
+      BenchOptions(count: 200, seed: 1, outDir: temp.path),
+    );
+    expect(report.demoNotes, 0);
+    expect(Directory(p.join(temp.path, 'Demo')).existsSync(), isFalse);
+    expect(
+      File(p.join(temp.path, 'Templates', 'Daily.md')).existsSync(),
+      isFalse,
+    );
+    expect(File(p.join(temp.path, 'Huge-5000-lines.md')).existsSync(), isFalse);
+  });
+
+  test('demo pack writes the notes', () {
+    final temp = Directory.systemTemp.createTempSync('tephra_bench_demo_on_');
+    addTearDown(() {
+      if (temp.existsSync()) temp.deleteSync(recursive: true);
+    });
+
+    final report = generateBenchVault(
+      BenchOptions(count: 200, seed: 1, outDir: temp.path, demoPack: true),
+    );
+    expect(report.demoNotes, 7);
+    expect(
+      File(p.join(temp.path, 'Demo', 'Quokka Hub.md')).existsSync(),
+      isTrue,
+    );
+    expect(File(p.join(temp.path, 'Demo', 'Linker 1.md')).existsSync(), isTrue);
+    expect(File(p.join(temp.path, 'Demo', 'Linker 2.md')).existsSync(), isTrue);
+    expect(File(p.join(temp.path, 'Demo', 'Linker 3.md')).existsSync(), isTrue);
+    expect(
+      File(p.join(temp.path, 'Demo', 'Mention 1.md')).existsSync(),
+      isTrue,
+    );
+    expect(
+      File(p.join(temp.path, 'Demo', 'Mention 2.md')).existsSync(),
+      isTrue,
+    );
+    expect(
+      File(p.join(temp.path, 'Demo', 'Report Task.md')).existsSync(),
+      isTrue,
+    );
+
+    final daily = File(p.join(temp.path, 'Templates', 'Daily.md'));
+    expect(daily.existsSync(), isTrue);
+    expect(daily.readAsStringSync(), contains('{{date:'));
+
+    final huge = File(p.join(temp.path, 'Huge-5000-lines.md'));
+    expect(huge.existsSync(), isTrue);
+  });
+
+  test('quokka hub appears only in the demo notes', () {
+    final temp = Directory.systemTemp.createTempSync('tephra_bench_quokka_');
+    addTearDown(() {
+      if (temp.existsSync()) temp.deleteSync(recursive: true);
+    });
+
+    generateBenchVault(
+      BenchOptions(count: 2000, seed: 42, outDir: temp.path, demoPack: true),
+    );
+
+    final filesWithQuokkaHub = <String>[];
+    for (final entity in temp.listSync(recursive: true)) {
+      if (entity is File && entity.path.endsWith('.md')) {
+        final content = entity.readAsStringSync().toLowerCase();
+        if (content.contains('quokka hub')) {
+          filesWithQuokkaHub.add(
+            p.relative(entity.path, from: temp.path).replaceAll(r'\', '/'),
+          );
+        }
+      }
+    }
+    filesWithQuokkaHub.sort();
+
+    expect(
+      filesWithQuokkaHub,
+      equals([
+        'Demo/Linker 1.md',
+        'Demo/Linker 2.md',
+        'Demo/Linker 3.md',
+        'Demo/Mention 1.md',
+        'Demo/Mention 2.md',
+        'Demo/Quokka Hub.md',
+      ]),
+    );
+  });
+
+  test('huge note copied', () {
+    final temp = Directory.systemTemp.createTempSync('tephra_bench_huge_');
+    addTearDown(() {
+      if (temp.existsSync()) temp.deleteSync(recursive: true);
+    });
+
+    final tempSource = File(p.join(temp.path, 'source-huge.md'))
+      ..writeAsStringSync('Custom huge note content\n');
+    final outDir = Directory(p.join(temp.path, 'vault'))..createSync();
+
+    generateBenchVault(
+      BenchOptions(
+        count: 50,
+        seed: 1,
+        outDir: outDir.path,
+        demoPack: true,
+        hugeNoteSource: tempSource.path,
+      ),
+    );
+
+    final copied = File(p.join(outDir.path, 'Huge-5000-lines.md'));
+    expect(copied.existsSync(), isTrue);
+    expect(copied.readAsBytesSync(), equals(tempSource.readAsBytesSync()));
+  });
 }

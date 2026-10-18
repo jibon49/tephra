@@ -18,6 +18,7 @@ void main() {
           'kind': 'file',
           'path': 'folder/note.md',
           'subpath': '#heading-1',
+          'mode': 'livePreview',
         }),
       );
 
@@ -26,7 +27,10 @@ void main() {
 
       final withoutSub = FileTabContent(VaultPath('root.md'));
       final jsonWithoutSub = withoutSub.toJson();
-      expect(jsonWithoutSub, equals({'kind': 'file', 'path': 'root.md'}));
+      expect(
+        jsonWithoutSub,
+        equals({'kind': 'file', 'path': 'root.md', 'mode': 'livePreview'}),
+      );
 
       final restoredWithoutSub = TabContent.fromJson(jsonWithoutSub);
       expect(restoredWithoutSub, equals(withoutSub));

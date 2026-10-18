@@ -252,15 +252,6 @@
   "explorerNameExists": "A file or folder with that name already exists",
   "explorerPermissionDenied": "Permission denied",
   "explorerNotFound": "File not found",
-  "explorerLinksNotUpdatedNotice": "Links to “{name}” were not updated. Automatic link updates arrive in a later version.",
-  "@explorerLinksNotUpdatedNotice": {
-    "description": "Notice snackbar after file rename or move",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "explorerMoveExists": "A file with that name already exists in the destination folder",
   "explorerUntitledFolder": "Untitled folder",
   "explorerEmpty": "This vault has no notes yet",
@@ -341,6 +332,297 @@
   "attachmentPickFile": "File",
   "toolbarMore": "More",
   "commandEditorHideKeyboard": "Hide keyboard",
-  "commandEditorInsertAttachment": "Insert attachment…"
+  "commandEditorInsertAttachment": "Insert attachment…",
+  "indexStatusScanning": "Scanning vault…",
+  "indexStatusIndexing": "Indexing {done} / {total}",
+  "@indexStatusIndexing": {
+    "description": "Progress shown while indexing notes",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "indexStatusResolving": "Resolving links…",
+  "commandRebuildIndex": "Rebuild index",
+  "rebuildIndexConfirmTitle": "Rebuild index",
+  "rebuildIndexConfirmBody": "Rebuild the search index for this vault? Tephra stays usable while it runs.",
+  "rebuildIndexDone": "Index rebuilt",
+  "excludedFoldersRebuildPrompt": "Changing excluded folders requires rebuilding the search index. Rebuild now?",
+  "settingsFilesAndLinks": "Files & links",
+  "settingsNewLinkFormat": "New link format",
+  "settingsNewLinkFormatShortest": "Shortest path when possible",
+  "settingsNewLinkFormatRelative": "Relative path to file",
+  "settingsNewLinkFormatAbsolute": "Absolute path in vault",
+  "settingsUseWikilinks": "Use [[Wikilinks]]",
+  "settingsAlwaysUpdateLinks": "Automatically update internal links",
+  "settingsExcludedFolders": "Excluded folders",
+  "settingsExcludedFoldersAdd": "Add folder…",
+  "settingsExcludedFoldersEmpty": "No excluded folders",
+  "linkHeadingNotFound": "Heading or block not found",
+  "linkTargetFileMissing": "\"{name}\" doesn't exist in this vault",
+  "@linkTargetFileMissing": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "linkInvalidTarget": "Invalid link target",
+  "renameTargetExists": "A file or folder with that name already exists",
+  "renameUpdateLinksTitle": "Update links",
+  "renameUpdateLinksPrompt": "Update {links, plural, =1{1 link} other{{links} links}} in {files, plural, =1{1 file} other{{files} files}}?",
+  "@renameUpdateLinksPrompt": {
+    "description": "Dialog prompt asking whether to update links across notes after a file rename or move",
+    "placeholders": {
+      "links": { "type": "int" },
+      "files": { "type": "int" }
+    }
+  },
+  "renameUpdateLinksActionUpdate": "Update",
+  "renameUpdateLinksActionDontUpdate": "Don't update",
+  "renameLinksUpdated": "{links, plural, =1{Updated 1 link} other{Updated {links} links}} in {files, plural, =1{1 file} other{{files} files}}",
+  "@renameLinksUpdated": {
+    "description": "Toast message after links are updated on rename or move",
+    "placeholders": {
+      "links": { "type": "int" },
+      "files": { "type": "int" }
+    }
+  },
+  "undoRenameDone": "Undo rename completed",
+  "undoRenamePartial": "Undo finished; {count, plural, =1{1 file had changed and was left as it is} other{{count} files had changed and were left as they are}}",
+  "@undoRenamePartial": {
+    "description": "Toast message after undoing a rename operation when some files conflicted",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "undoAction": "Undo",
+  "commandVaultUndoLastRename": "Undo last rename",
+  "sidebarBacklinks": "Backlinks",
+  "sidebarOutgoingLinks": "Outgoing links",
+  "mentionChangedRefresh": "The note was edited; mention list refreshed.",
+  "mentionLinked": "Mention linked",
+  "linkedMentionsTitle": "Linked mentions",
+  "unlinkedMentionsTitle": "Unlinked mentions",
+  "linkMentionAction": "Link",
+  "unresolvedLinksSection": "Unresolved",
+  "createLinkAction": "Create",
+  "collapseAllAction": "Collapse all",
+  "noActiveNote": "No active note",
+  "sortAlphabeticalAsc": "File name (A to Z)",
+  "sortAlphabeticalDesc": "File name (Z to A)",
+  "sortModifiedNew": "Modified time (new to old)",
+  "sidebarOutline": "Outline",
+  "outlineNoHeadings": "No headings found",
+  "copyLinkToHeading": "Copy link to heading",
+  "headingLinkCopied": "Link to heading copied",
+  "bookmarkHeading": "Bookmark heading",
+  "headingBookmarked": "Heading bookmarked",
+  "embedTooDeep": "Embed depth limit reached",
+  "embedCircular": "Circular embed",
+  "embedSectionNotFound": "Section or block not found",
+  "embedMediaLaterPhase": "Playing and viewing this file type arrives in a later version",
+  "previewNotCreated": "“{target}” is not created yet. Click to create.",
+  "@previewNotCreated": {
+    "description": "Page preview message for unresolved note target",
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "previewCreate": "Create",
+  "searchTabTitle": "Search",
+  "searchFieldHint": "Search…",
+  "searchMatchCase": "Match case",
+  "searchSortFileNameAsc": "File name (A to Z)",
+  "searchSortFileNameDesc": "File name (Z to A)",
+  "searchSortModifiedDesc": "Modified time (new to old)",
+  "searchSortModifiedAsc": "Modified time (old to new)",
+  "searchSortCreatedDesc": "Created time (new to old)",
+  "searchSortCreatedAsc": "Created time (old to new)",
+  "searchCollapseAll": "Collapse results",
+  "searchExpandAll": "Expand results",
+  "searchCopyResults": "Copy search results",
+  "searchBookmarkThis": "Bookmark this search",
+  "searchResultCount": "{count, plural, =1{1 result} other{{count} results}}",
+  "@searchResultCount": {
+    "description": "Number of results found",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchMatchedFileName": "(matched file name)",
+  "searchResultsCopied": "Search results copied to clipboard",
+  "searchSyntaxError": "Search syntax error at character {offset}",
+  "@searchSyntaxError": {
+    "description": "Search query syntax error description",
+    "placeholders": {
+      "offset": {
+        "type": "int"
+      }
+    }
+  },
+  "queryBlockHeader": "{count, plural, =1{1 result} other{{count} results}}",
+  "@queryBlockHeader": {
+    "description": "Header for query block showing number of matching notes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queryBlockShowAll": "Show all {count} results",
+  "@queryBlockShowAll": {
+    "description": "Button in query block to show full results in search pane",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commandSearchOpen": "Search: Search in all files",
+  "commandSearchCopyResults": "Search: Copy search results",
+  "searchNoResults": "No notes match your search.",
+  "searchHistoryTitle": "Recent searches",
+  "sidebarTags": "Tags",
+  "sidebarBookmarks": "Bookmarks",
+  "tagSortNameAZ": "Name (A to Z)",
+  "tagSortFrequency": "Frequency (high to low)",
+  "tagShowNested": "Show nested tags",
+  "tagShowFlat": "Show flat list",
+  "tagNoTags": "No tags found in vault",
+  "bookmarkCurrentFile": "Bookmark current file",
+  "bookmarkRemoveCurrentFile": "Remove bookmark",
+  "bookmarkFileAdded": "File bookmarked",
+  "bookmarkFileRemoved": "Bookmark removed",
+  "bookmarkAddSearch": "Bookmark this search",
+  "bookmarkSearchAdded": "Search bookmarked",
+  "bookmarkNewGroup": "New bookmark group",
+  "bookmarkRename": "Rename",
+  "bookmarkRemove": "Remove",
+  "bookmarkMoveUp": "Move up",
+  "bookmarkMoveDown": "Move down",
+  "bookmarkMoveToGroup": "Move to group...",
+  "bookmarkNoBookmarks": "No bookmarks yet",
+  "bookmarkGroupPrompt": "Group name",
+  "bookmarkRenamePrompt": "Bookmark title",
+  "bookmarkCreate": "Create",
+  "bookmarkCancel": "Cancel",
+  "bookmarkSave": "Save",
+  "bookmarkRoot": "Root",
+  "commandBookmarkToggle": "Bookmarks: Bookmark current file",
+  "commandBookmarkHeading": "Bookmarks: Bookmark heading",
+  "commandBookmarkSearch": "Bookmarks: Bookmark this search",
+  "commandBookmarkNewGroup": "Bookmarks: New bookmark group",
+  "autocompleteNoResults": "No results",
+  "autocompleteContinue": "Continue into subpath",
+  "autocompleteBlockCreated": "Added block ID ^{id}",
+  "@autocompleteBlockCreated": {
+    "description": "Notification when a block ID is automatically generated",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "autocompleteBlockMissing": "Target block not found",
+  "commandTriggerAutocomplete": "Trigger autocomplete",
+  "slashHeading1": "Heading 1",
+  "slashHeading2": "Heading 2",
+  "slashHeading3": "Heading 3",
+  "slashHeading4": "Heading 4",
+  "slashHeading5": "Heading 5",
+  "slashHeading6": "Heading 6",
+  "slashCalloutNote": "Callout: Note",
+  "slashCalloutAbstract": "Callout: Abstract",
+  "slashCalloutInfo": "Callout: Info",
+  "slashCalloutTodo": "Callout: To-do",
+  "slashCalloutTip": "Callout: Tip",
+  "slashCalloutSuccess": "Callout: Success",
+  "slashCalloutQuestion": "Callout: Question",
+  "slashCalloutWarning": "Callout: Warning",
+  "slashCalloutFailure": "Callout: Failure",
+  "slashCalloutDanger": "Callout: Danger",
+  "slashCalloutBug": "Callout: Bug",
+  "slashCalloutExample": "Callout: Example",
+  "slashCalloutQuote": "Callout: Quote",
+  "slashTable": "Table (3 × 3)",
+  "slashCodeBlock": "Code block",
+  "slashMathBlock": "Math block",
+  "slashHorizontalRule": "Horizontal rule",
+  "slashTask": "Task",
+  "slashToday": "Today's date",
+  "slashTemplate": "Insert template",
+  "commandToggleEditingMode": "Toggle Live Preview / Source mode",
+  "editingModeLivePreview": "Live Preview",
+  "editingModeSource": "Source mode",
+  "settingEditorDefaultEditingMode": "Default editing mode",
+  "settingEditorFoldHeadings": "Fold heading",
+  "settingEditorFoldIndent": "Fold indent",
+  "commandToggleFold": "Toggle fold",
+  "commandFoldAll": "Fold all",
+  "commandUnfoldAll": "Unfold all",
+  "propertiesTitle": "Properties",
+  "propertiesAdd": "Add property",
+  "propertiesRemove": "Remove property",
+  "propertiesMoveUp": "Move up",
+  "propertiesMoveDown": "Move down",
+  "propertiesChangeType": "Change type",
+  "propertiesEditAsYaml": "Edit as YAML",
+  "propertiesKeyExists": "Property already exists",
+  "propertiesInvalidTag": "Invalid tag",
+  "propertiesInvalidNumber": "Invalid number",
+  "propertiesInvalidYaml": "Invalid YAML frontmatter",
+  "propertiesApply": "Apply",
+  "propertiesRevert": "Revert",
+  "propertiesConvertFailed": "Cannot convert to type, value kept",
+  "propertiesUnsupportedValue": "Unsupported value",
+  "propertyTypeText": "Text",
+  "propertyTypeMultitext": "List",
+  "propertyTypeNumber": "Number",
+  "propertyTypeCheckbox": "Checkbox",
+  "propertyTypeDate": "Date",
+  "propertyTypeDatetime": "Date & time",
+  "propertyTypeAliases": "Aliases",
+  "propertyTypeTags": "Tags",
+  "settingEditorPropertiesInDocument": "Properties in document",
+  "propertiesInDocumentVisible": "Visible",
+  "propertiesInDocumentHidden": "Hidden",
+  "propertiesInDocumentSource": "Source",
+  "commandOpenToday": "Open today's daily note",
+  "commandOpenPreviousDaily": "Open previous daily note",
+  "commandOpenNextDaily": "Open next daily note",
+  "commandInsertTemplate": "Insert template",
+  "commandCreateUniqueNote": "Create unique note",
+  "dailyFormatInvalid": "Daily note format is invalid",
+  "dailyTemplateMissing": "Daily note template file is missing",
+  "dailyNoNeighbour": "No daily note found in that direction",
+  "templatesFolderNotSet": "Templates folder is not configured",
+  "templateUnreadable": "Template file could not be read",
+  "settingsDailyNotes": "Daily notes",
+  "settingsTemplates": "Templates",
+  "settingsUniqueNote": "Unique note creator",
+  "settingDailyFormat": "Date format",
+  "settingDailyFolder": "New file location",
+  "settingDailyTemplate": "Template file location",
+  "settingDailyOpenOnStartup": "Open on startup",
+  "settingTemplatesFolder": "Template folder location",
+  "settingTemplatesDateFormat": "Date format",
+  "settingTemplatesTimeFormat": "Time format",
+  "settingUniquePrefix": "Unique note prefix",
+  "settingFormatPreview": "Preview: {preview}",
+  "@settingFormatPreview": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "openSettings": "Open settings",
+  "indexUnavailableOnWeb": "Search and links are not available in the web preview.",
+  "commandRunBenchmarks": "Run performance benchmarks"
 }
+
+
 

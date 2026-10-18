@@ -47,17 +47,41 @@ final class ObsidianImporter {
     final imported = <String>[];
     final skipped = <String>[];
 
-    var attachmentFolder = '/';
-    var newFileLocation = 'root';
-    var newFileFolder = '';
-    var trashMode = 'vaultTrash';
-    var useTab = true;
-    var tabSize = 4;
-    var readableLineLength = true;
-    var defaultViewMode = 'source';
+    final existingRaw = await store.readMap(
+      fs,
+      VaultSettingsStore.settingsPath,
+    );
 
-    Map<String, Object?> dailyNotes = const {};
-    Map<String, Object?> templates = const {};
+    var attachmentFolder = existingRaw['attachmentFolder'] as String? ?? '/';
+    var newFileLocation = existingRaw['newFileLocation'] as String? ?? 'root';
+    var newFileFolder = existingRaw['newFileFolder'] as String? ?? '';
+    var trashMode = existingRaw['trashMode'] as String? ?? 'vaultTrash';
+    var useTab = existingRaw['useTab'] as bool? ?? true;
+    var tabSize = existingRaw['tabSize'] as int? ?? 4;
+    var readableLineLength = existingRaw['readableLineLength'] as bool? ?? true;
+    var defaultViewMode = existingRaw['defaultViewMode'] as String? ?? 'source';
+    var newLinkFormat = existingRaw['newLinkFormat'] as String? ?? 'shortest';
+    var useMarkdownLinks = existingRaw['useMarkdownLinks'] as bool? ?? false;
+    var alwaysUpdateLinks = existingRaw['alwaysUpdateLinks'] as bool? ?? true;
+    var excludedFolders = existingRaw['excludedFolders'] is List
+        ? (existingRaw['excludedFolders'] as List)
+              .map((e) => e.toString())
+              .toList()
+        : <String>[];
+
+    final existingDaily = existingRaw['dailyNotes'] is Map
+        ? Map<String, Object?>.from(existingRaw['dailyNotes'] as Map)
+        : <String, Object?>{};
+    final existingTemplates = existingRaw['templates'] is Map
+        ? Map<String, Object?>.from(existingRaw['templates'] as Map)
+        : <String, Object?>{};
+    final existingUnique = existingRaw['uniqueNote'] is Map
+        ? Map<String, Object?>.from(existingRaw['uniqueNote'] as Map)
+        : <String, Object?>{};
+
+    Map<String, Object?> dailyNotes = existingDaily;
+    Map<String, Object?> templates = existingTemplates;
+    Map<String, Object?> uniqueNote = existingUnique;
 
     // 1. app.json
     final appJsonPath = VaultPath('.obsidian/app.json');
@@ -67,48 +91,83 @@ final class ObsidianImporter {
         final doc = await fs.readText(appJsonPath);
         final decoded = json.decode(doc.text);
         if (decoded is Map<String, Object?>) {
-          if (decoded['attachmentFolderPath'] is String) {
+          if (!existingRaw.containsKey('attachmentFolder') &&
+              decoded['attachmentFolderPath'] is String) {
             attachmentFolder = decoded['attachmentFolderPath'] as String;
           }
 
           final loc = decoded['newFileLocation'];
-          if (loc == 'root' || loc == 'current' || loc == 'folder') {
+          if (!existingRaw.containsKey('newFileLocation') &&
+              (loc == 'root' || loc == 'current' || loc == 'folder')) {
             newFileLocation = loc as String;
           }
 
-          if (decoded['newFileFolderPath'] is String) {
+          if (!existingRaw.containsKey('newFileFolder') &&
+              decoded['newFileFolderPath'] is String) {
             newFileFolder = decoded['newFileFolderPath'] as String;
           }
 
-          if (decoded['useTab'] is bool) {
+          if (!existingRaw.containsKey('useTab') && decoded['useTab'] is bool) {
             useTab = decoded['useTab'] as bool;
           }
 
-          if (decoded['tabSize'] is int) {
+          if (!existingRaw.containsKey('tabSize') &&
+              decoded['tabSize'] is int) {
             final sz = decoded['tabSize'] as int;
             if (sz >= 2 && sz <= 8) {
               tabSize = sz;
             }
           }
 
-          if (decoded['readableLineLength'] is bool) {
+          if (!existingRaw.containsKey('readableLineLength') &&
+              decoded['readableLineLength'] is bool) {
             readableLineLength = decoded['readableLineLength'] as bool;
           }
 
-          final trash = decoded['trashOption'];
-          if (trash == 'system') {
-            trashMode = 'system';
-          } else if (trash == 'local') {
-            trashMode = 'vaultTrash';
-          } else if (trash == 'none') {
-            trashMode = 'permanent';
+          if (!existingRaw.containsKey('trashMode')) {
+            final trash = decoded['trashOption'];
+            if (trash == 'system') {
+              trashMode = 'system';
+            } else if (trash == 'local') {
+              trashMode = 'vaultTrash';
+            } else if (trash == 'none') {
+              trashMode = 'permanent';
+            }
           }
 
-          final viewMode = decoded['defaultViewMode'];
-          if (viewMode == 'preview') {
-            defaultViewMode = 'reading';
-          } else {
-            defaultViewMode = 'source';
+          if (!existingRaw.containsKey('defaultViewMode')) {
+            final viewMode = decoded['defaultViewMode'];
+            if (viewMode == 'preview') {
+              defaultViewMode = 'reading';
+            } else {
+              defaultViewMode = 'source';
+            }
+          }
+
+          if (!existingRaw.containsKey('newLinkFormat') &&
+              decoded['newLinkFormat'] is String) {
+            final f = decoded['newLinkFormat'] as String;
+            if (f == 'shortest' || f == 'relative' || f == 'absolute') {
+              newLinkFormat = f;
+            }
+          }
+
+          if (!existingRaw.containsKey('useMarkdownLinks') &&
+              decoded['useMarkdownLinks'] is bool) {
+            useMarkdownLinks = decoded['useMarkdownLinks'] as bool;
+          }
+
+          if (!existingRaw.containsKey('alwaysUpdateLinks') &&
+              decoded['alwaysUpdateLinks'] is bool) {
+            alwaysUpdateLinks = decoded['alwaysUpdateLinks'] as bool;
+          }
+
+          if (!existingRaw.containsKey('excludedFolders') &&
+              decoded['userIgnoreFilters'] is List) {
+            excludedFolders = (decoded['userIgnoreFilters'] as List)
+                .map((e) => e.toString())
+                .where((e) => e.isNotEmpty)
+                .toList();
           }
 
           imported.add('app.json');
@@ -129,11 +188,22 @@ final class ObsidianImporter {
         final doc = await fs.readText(dailyPath);
         final decoded = json.decode(doc.text);
         if (decoded is Map<String, Object?>) {
-          final m = <String, Object?>{};
-          if (decoded['folder'] is String) m['folder'] = decoded['folder'];
-          if (decoded['format'] is String) m['format'] = decoded['format'];
-          if (decoded['template'] is String) {
+          final m = Map<String, Object?>.from(existingDaily);
+          if (!existingDaily.containsKey('folder') &&
+              decoded['folder'] is String) {
+            m['folder'] = decoded['folder'];
+          }
+          if (!existingDaily.containsKey('format') &&
+              decoded['format'] is String) {
+            m['format'] = decoded['format'];
+          }
+          if (!existingDaily.containsKey('template') &&
+              decoded['template'] is String) {
             m['template'] = decoded['template'];
+          }
+          if (!existingDaily.containsKey('openOnStartup') &&
+              decoded['autorun'] is bool) {
+            m['openOnStartup'] = decoded['autorun'];
           }
           dailyNotes = m;
           imported.add('daily-notes.json');
@@ -154,12 +224,17 @@ final class ObsidianImporter {
         final doc = await fs.readText(tmplPath);
         final decoded = json.decode(doc.text);
         if (decoded is Map<String, Object?>) {
-          final m = <String, Object?>{};
-          if (decoded['folder'] is String) m['folder'] = decoded['folder'];
-          if (decoded['dateFormat'] is String) {
+          final m = Map<String, Object?>.from(existingTemplates);
+          if (!existingTemplates.containsKey('folder') &&
+              decoded['folder'] is String) {
+            m['folder'] = decoded['folder'];
+          }
+          if (!existingTemplates.containsKey('dateFormat') &&
+              decoded['dateFormat'] is String) {
             m['dateFormat'] = decoded['dateFormat'];
           }
-          if (decoded['timeFormat'] is String) {
+          if (!existingTemplates.containsKey('timeFormat') &&
+              decoded['timeFormat'] is String) {
             m['timeFormat'] = decoded['timeFormat'];
           }
           templates = m;
@@ -170,6 +245,38 @@ final class ObsidianImporter {
       } catch (e, st) {
         _log.warning('Failed to parse .obsidian/templates.json: $e', e, st);
         skipped.add('templates.json');
+      }
+    }
+
+    // 3b. zk-prefixer.json
+    final zkPath = VaultPath('.obsidian/zk-prefixer.json');
+    final zkStat = await fs.stat(zkPath);
+    if (zkStat != null && !zkStat.isFolder) {
+      try {
+        final doc = await fs.readText(zkPath);
+        final decoded = json.decode(doc.text);
+        if (decoded is Map<String, Object?>) {
+          final m = Map<String, Object?>.from(existingUnique);
+          if (!existingUnique.containsKey('prefixFormat') &&
+              decoded['format'] is String) {
+            m['prefixFormat'] = decoded['format'];
+          }
+          if (!existingUnique.containsKey('folder') &&
+              decoded['folder'] is String) {
+            m['folder'] = decoded['folder'];
+          }
+          if (!existingUnique.containsKey('template') &&
+              decoded['template'] is String) {
+            m['template'] = decoded['template'];
+          }
+          uniqueNote = m;
+          imported.add('zk-prefixer.json');
+        } else {
+          skipped.add('zk-prefixer.json');
+        }
+      } catch (e, st) {
+        _log.warning('Failed to parse .obsidian/zk-prefixer.json: $e', e, st);
+        skipped.add('zk-prefixer.json');
       }
     }
 
@@ -250,7 +357,12 @@ final class ObsidianImporter {
       defaultViewMode: defaultViewMode,
       dailyNotes: dailyNotes,
       templates: templates,
+      uniqueNote: uniqueNote,
       importedFromObsidian: true,
+      newLinkFormat: newLinkFormat,
+      useMarkdownLinks: useMarkdownLinks,
+      alwaysUpdateLinks: alwaysUpdateLinks,
+      excludedFolders: excludedFolders,
     );
 
     await VaultSettingsStore(fs).save(vaultSettings);

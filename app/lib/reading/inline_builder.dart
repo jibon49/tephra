@@ -1,11 +1,14 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
-import 'reading_images.dart';
+import 'embeds/embed_view.dart';
 import 'reading_scope.dart';
 
 /// Returns true if [node] is hidden from the reading view.
@@ -20,13 +23,64 @@ final class InlineBuildResult {
   final List<GestureRecognizer> recognizers;
 }
 
+/// Tap gesture recognizer that also detects long-press gestures for link previews.
+class LinkGestureRecognizer extends TapGestureRecognizer {
+  LinkGestureRecognizer({super.debugOwner});
+
+  GestureLongPressCallback? onLongPress;
+  Timer? _longPressTimer;
+  Offset? _longPressPosition;
+  bool _didLongPress = false;
+
+  bool get didLongPress => _didLongPress;
+  Offset? get longPressPosition => _longPressPosition;
+
+  @override
+  void addAllowedPointer(PointerDownEvent event) {
+    super.addAllowedPointer(event);
+    _didLongPress = false;
+    _longPressPosition = event.position;
+    _longPressTimer?.cancel();
+    _longPressTimer = Timer(kLongPressTimeout, () {
+      _didLongPress = true;
+      resolve(GestureDisposition.accepted);
+      onLongPress?.call();
+    });
+  }
+
+  @override
+  void handleEvent(PointerEvent event) {
+    super.handleEvent(event);
+    if (event is PointerMoveEvent) {
+      if (_longPressPosition != null &&
+          (event.position - _longPressPosition!).distance > kTouchSlop) {
+        _longPressTimer?.cancel();
+      }
+    } else if (event is PointerUpEvent || event is PointerCancelEvent) {
+      _longPressTimer?.cancel();
+    }
+  }
+
+  @override
+  void rejectGesture(int pointer) {
+    _longPressTimer?.cancel();
+    super.rejectGesture(pointer);
+  }
+
+  @override
+  void dispose() {
+    _longPressTimer?.cancel();
+    super.dispose();
+  }
+}
+
 /// Builds rich inline spans from Markdown AST nodes.
 final class InlineBuilder {
   const InlineBuilder._();
 
   /// Injectable recognizer factory for testing recognizer disposal.
   static TapGestureRecognizer Function() recognizerFactory =
-      TapGestureRecognizer.new;
+      LinkGestureRecognizer.new;
 
   /// Builds an [InlineSpan] and collects all gesture recognizers for [nodes].
   static InlineBuildResult build(
@@ -56,7 +110,22 @@ final class InlineBuilder {
     buildNode = (MdNode node, TextStyle currentStyle) {
       switch (node) {
         case MdText():
-          return TextSpan(text: node.text, style: currentStyle);
+          final highlights = scope?.searchHighlights;
+          if (highlights == null || highlights.isEmpty) {
+            return TextSpan(text: node.text, style: currentStyle);
+          }
+          final overlapping = highlights
+              .where((h) => h.$1 < node.end && h.$2 > node.start)
+              .toList();
+          if (overlapping.isEmpty) {
+            return TextSpan(text: node.text, style: currentStyle);
+          }
+          return _buildHighlightedTextSpan(
+            node,
+            currentStyle,
+            overlapping,
+            theme,
+          );
 
         case MdEmphasis():
           final s = currentStyle.copyWith(fontStyle: FontStyle.italic);
@@ -164,7 +233,7 @@ final class InlineBuilder {
             if (scope != null) {
               return WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
-                child: ReadingMarkdownImage(
+                child: EmbedView.markdown(
                   url: node.url,
                   alt: alt,
                   from: scope.path,
@@ -174,21 +243,73 @@ final class InlineBuilder {
             return TextSpan(text: alt, style: currentStyle);
           }
 
+          final isExternal = Uri.tryParse(node.url)?.hasScheme == true;
+          final pathPart = isExternal
+              ? ''
+              : LinkFormatter.decodeMarkdownPath(node.url.split('#').first);
+          final fragment = !isExternal && node.url.contains('#')
+              ? node.url.split('#').last
+              : null;
+          final heading = fragment != null && !fragment.startsWith('^')
+              ? fragment
+              : null;
+          final blockRef = fragment != null && fragment.startsWith('^')
+              ? fragment.substring(1)
+              : null;
+
           final recognizer = recognizerFactory();
           recognizers.add(recognizer);
+
+          if (recognizer is LinkGestureRecognizer &&
+              !isExternal &&
+              pathPart.isNotEmpty) {
+            recognizer.onLongPress = () {
+              scope?.onLinkLongPress?.call(
+                context,
+                pathPart,
+                heading,
+                blockRef,
+                recognizer.longPressPosition ?? Offset.zero,
+              );
+            };
+          }
+
           recognizer.onTap = () {
+            if (recognizer is LinkGestureRecognizer &&
+                recognizer.didLongPress) {
+              return;
+            }
             final isCtrl = HardwareKeyboard.instance.isControlPressed;
             scope?.onOpenMarkdownLink?.call(node.url, newTab: isCtrl);
           };
 
-          final isExternal = Uri.tryParse(node.url)?.hasScheme == true;
+          final isUnresolvedLink =
+              !isExternal &&
+              pathPart.isNotEmpty &&
+              (scope?.unresolvedLinks.contains(pathPart) ?? false);
+          final baseColor = styles?.linkColor ?? theme.colorScheme.primary;
+          final linkColor = isUnresolvedLink
+              ? baseColor.withValues(alpha: 0.6)
+              : baseColor;
           final s = TextStyle(
-            color: styles?.linkColor ?? theme.colorScheme.primary,
+            color: linkColor,
             decoration: isExternal ? TextDecoration.underline : null,
           );
           return TextSpan(
             style: s,
             recognizer: recognizer,
+            onEnter: !isExternal && pathPart.isNotEmpty
+                ? (event) => scope?.onLinkEnter?.call(
+                    context,
+                    pathPart,
+                    heading,
+                    blockRef,
+                    event.position,
+                  )
+                : null,
+            onExit: !isExternal && pathPart.isNotEmpty
+                ? (_) => scope?.onLinkExit?.call(pathPart)
+                : null,
             children: buildChildren(node.children, s),
           );
 
@@ -197,7 +318,7 @@ final class InlineBuilder {
             if (scope != null) {
               return WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
-                child: ReadingWikiEmbed(node: node, from: scope.path),
+                child: EmbedView.wiki(node: node, from: scope.path),
               );
             }
             return TextSpan(text: node.target, style: currentStyle);
@@ -223,6 +344,18 @@ final class InlineBuilder {
           final recognizer = recognizerFactory();
           recognizers.add(recognizer);
 
+          if (recognizer is LinkGestureRecognizer && node.target.isNotEmpty) {
+            recognizer.onLongPress = () {
+              scope?.onLinkLongPress?.call(
+                context,
+                node.target,
+                node.heading,
+                node.blockRef,
+                recognizer.longPressPosition ?? Offset.zero,
+              );
+            };
+          }
+
           void handleTap(bool newTab) {
             scope?.onOpenWikiLink?.call(
               WikiLinkTap(
@@ -235,16 +368,41 @@ final class InlineBuilder {
           }
 
           recognizer.onTap = () {
+            if (recognizer is LinkGestureRecognizer &&
+                recognizer.didLongPress) {
+              return;
+            }
             final isCtrl = HardwareKeyboard.instance.isControlPressed;
             handleTap(isCtrl);
           };
           recognizer.onSecondaryTapUp = (_) => handleTap(true);
           recognizer.onTertiaryTapUp = (_) => handleTap(true);
 
-          final s = TextStyle(
-            color: styles?.linkColor ?? theme.colorScheme.primary,
+          final isUnresolved =
+              node.target.isNotEmpty &&
+              (scope?.unresolvedLinks.contains(node.target) ?? false);
+          final baseWikiColor = styles?.linkColor ?? theme.colorScheme.primary;
+          final wikiLinkColor = isUnresolved
+              ? baseWikiColor.withValues(alpha: 0.6)
+              : baseWikiColor;
+          final s = TextStyle(color: wikiLinkColor);
+          return TextSpan(
+            text: displayText,
+            style: s,
+            recognizer: recognizer,
+            onEnter: node.target.isNotEmpty
+                ? (event) => scope?.onLinkEnter?.call(
+                    context,
+                    node.target,
+                    node.heading,
+                    node.blockRef,
+                    event.position,
+                  )
+                : null,
+            onExit: node.target.isNotEmpty
+                ? (_) => scope?.onLinkExit?.call(node.target)
+                : null,
           );
-          return TextSpan(text: displayText, style: s, recognizer: recognizer);
 
         case MdFootnoteRef():
           final num = scope?.footnoteNumbers[node.label]?.toString() ?? '?';
@@ -306,5 +464,72 @@ final class InlineBuilder {
       TextSpan(style: baseStyle, children: children),
       recognizers,
     );
+  }
+
+  static InlineSpan _buildHighlightedTextSpan(
+    MdText node,
+    TextStyle currentStyle,
+    List<(int, int)> ranges,
+    ThemeData theme,
+  ) {
+    final text = node.text;
+    final nodeStart = node.start;
+
+    final localRanges = <(int, int)>[];
+    for (final r in ranges) {
+      final start = (r.$1 - nodeStart).clamp(0, text.length);
+      final end = (r.$2 - nodeStart).clamp(start, text.length);
+      if (end > start) {
+        localRanges.add((start, end));
+      }
+    }
+
+    if (localRanges.isEmpty) {
+      return TextSpan(text: text, style: currentStyle);
+    }
+
+    localRanges.sort((a, b) => a.$1.compareTo(b.$1));
+    final merged = <(int, int)>[];
+    for (final r in localRanges) {
+      if (merged.isEmpty) {
+        merged.add(r);
+      } else {
+        final last = merged.last;
+        if (r.$1 <= last.$2) {
+          merged[merged.length - 1] = (
+            last.$1,
+            last.$2 > r.$2 ? last.$2 : r.$2,
+          );
+        } else {
+          merged.add(r);
+        }
+      }
+    }
+
+    final highlightStyle = currentStyle.copyWith(
+      backgroundColor: theme.colorScheme.primaryContainer.withAlpha(180),
+      fontWeight: FontWeight.bold,
+    );
+
+    final spans = <InlineSpan>[];
+    var cursor = 0;
+
+    for (final r in merged) {
+      if (r.$1 > cursor) {
+        spans.add(
+          TextSpan(text: text.substring(cursor, r.$1), style: currentStyle),
+        );
+      }
+      spans.add(
+        TextSpan(text: text.substring(r.$1, r.$2), style: highlightStyle),
+      );
+      cursor = r.$2;
+    }
+
+    if (cursor < text.length) {
+      spans.add(TextSpan(text: text.substring(cursor), style: currentStyle));
+    }
+
+    return TextSpan(children: spans);
   }
 }

@@ -481,11 +481,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get explorerNotFound => 'File not found';
 
   @override
-  String explorerLinksNotUpdatedNotice(String name) {
-    return 'Links to “$name” were not updated. Automatic link updates arrive in a later version.';
-  }
-
-  @override
   String get explorerMoveExists =>
       'A file with that name already exists in the destination folder';
 
@@ -679,4 +674,682 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandEditorInsertAttachment => 'Insert attachment…';
+
+  @override
+  String get indexStatusScanning => 'Scanning vault…';
+
+  @override
+  String indexStatusIndexing(int done, int total) {
+    return 'Indexing $done / $total';
+  }
+
+  @override
+  String get indexStatusResolving => 'Resolving links…';
+
+  @override
+  String get commandRebuildIndex => 'Rebuild index';
+
+  @override
+  String get rebuildIndexConfirmTitle => 'Rebuild index';
+
+  @override
+  String get rebuildIndexConfirmBody =>
+      'Rebuild the search index for this vault? Tephra stays usable while it runs.';
+
+  @override
+  String get rebuildIndexDone => 'Index rebuilt';
+
+  @override
+  String get excludedFoldersRebuildPrompt =>
+      'Changing excluded folders requires rebuilding the search index. Rebuild now?';
+
+  @override
+  String get settingsFilesAndLinks => 'Files & links';
+
+  @override
+  String get settingsNewLinkFormat => 'New link format';
+
+  @override
+  String get settingsNewLinkFormatShortest => 'Shortest path when possible';
+
+  @override
+  String get settingsNewLinkFormatRelative => 'Relative path to file';
+
+  @override
+  String get settingsNewLinkFormatAbsolute => 'Absolute path in vault';
+
+  @override
+  String get settingsUseWikilinks => 'Use [[Wikilinks]]';
+
+  @override
+  String get settingsAlwaysUpdateLinks => 'Automatically update internal links';
+
+  @override
+  String get settingsExcludedFolders => 'Excluded folders';
+
+  @override
+  String get settingsExcludedFoldersAdd => 'Add folder…';
+
+  @override
+  String get settingsExcludedFoldersEmpty => 'No excluded folders';
+
+  @override
+  String get linkHeadingNotFound => 'Heading or block not found';
+
+  @override
+  String linkTargetFileMissing(String name) {
+    return '\"$name\" doesn\'t exist in this vault';
+  }
+
+  @override
+  String get linkInvalidTarget => 'Invalid link target';
+
+  @override
+  String get renameTargetExists =>
+      'A file or folder with that name already exists';
+
+  @override
+  String get renameUpdateLinksTitle => 'Update links';
+
+  @override
+  String renameUpdateLinksPrompt(int links, int files) {
+    String _temp0 = intl.Intl.pluralLogic(
+      links,
+      locale: localeName,
+      other: '$links links',
+      one: '1 link',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      files,
+      locale: localeName,
+      other: '$files files',
+      one: '1 file',
+    );
+    return 'Update $_temp0 in $_temp1?';
+  }
+
+  @override
+  String get renameUpdateLinksActionUpdate => 'Update';
+
+  @override
+  String get renameUpdateLinksActionDontUpdate => 'Don\'t update';
+
+  @override
+  String renameLinksUpdated(int links, int files) {
+    String _temp0 = intl.Intl.pluralLogic(
+      links,
+      locale: localeName,
+      other: 'Updated $links links',
+      one: 'Updated 1 link',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      files,
+      locale: localeName,
+      other: '$files files',
+      one: '1 file',
+    );
+    return '$_temp0 in $_temp1';
+  }
+
+  @override
+  String get undoRenameDone => 'Undo rename completed';
+
+  @override
+  String undoRenamePartial(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files had changed and were left as they are',
+      one: '1 file had changed and was left as it is',
+    );
+    return 'Undo finished; $_temp0';
+  }
+
+  @override
+  String get undoAction => 'Undo';
+
+  @override
+  String get commandVaultUndoLastRename => 'Undo last rename';
+
+  @override
+  String get sidebarBacklinks => 'Backlinks';
+
+  @override
+  String get sidebarOutgoingLinks => 'Outgoing links';
+
+  @override
+  String get mentionChangedRefresh =>
+      'The note was edited; mention list refreshed.';
+
+  @override
+  String get mentionLinked => 'Mention linked';
+
+  @override
+  String get linkedMentionsTitle => 'Linked mentions';
+
+  @override
+  String get unlinkedMentionsTitle => 'Unlinked mentions';
+
+  @override
+  String get linkMentionAction => 'Link';
+
+  @override
+  String get unresolvedLinksSection => 'Unresolved';
+
+  @override
+  String get createLinkAction => 'Create';
+
+  @override
+  String get collapseAllAction => 'Collapse all';
+
+  @override
+  String get noActiveNote => 'No active note';
+
+  @override
+  String get sortAlphabeticalAsc => 'File name (A to Z)';
+
+  @override
+  String get sortAlphabeticalDesc => 'File name (Z to A)';
+
+  @override
+  String get sortModifiedNew => 'Modified time (new to old)';
+
+  @override
+  String get sidebarOutline => 'Outline';
+
+  @override
+  String get outlineNoHeadings => 'No headings found';
+
+  @override
+  String get copyLinkToHeading => 'Copy link to heading';
+
+  @override
+  String get headingLinkCopied => 'Link to heading copied';
+
+  @override
+  String get bookmarkHeading => 'Bookmark heading';
+
+  @override
+  String get headingBookmarked => 'Heading bookmarked';
+
+  @override
+  String get embedTooDeep => 'Embed depth limit reached';
+
+  @override
+  String get embedCircular => 'Circular embed';
+
+  @override
+  String get embedSectionNotFound => 'Section or block not found';
+
+  @override
+  String get embedMediaLaterPhase =>
+      'Playing and viewing this file type arrives in a later version';
+
+  @override
+  String previewNotCreated(String target) {
+    return '“$target” is not created yet. Click to create.';
+  }
+
+  @override
+  String get previewCreate => 'Create';
+
+  @override
+  String get searchTabTitle => 'Search';
+
+  @override
+  String get searchFieldHint => 'Search…';
+
+  @override
+  String get searchMatchCase => 'Match case';
+
+  @override
+  String get searchSortFileNameAsc => 'File name (A to Z)';
+
+  @override
+  String get searchSortFileNameDesc => 'File name (Z to A)';
+
+  @override
+  String get searchSortModifiedDesc => 'Modified time (new to old)';
+
+  @override
+  String get searchSortModifiedAsc => 'Modified time (old to new)';
+
+  @override
+  String get searchSortCreatedDesc => 'Created time (new to old)';
+
+  @override
+  String get searchSortCreatedAsc => 'Created time (old to new)';
+
+  @override
+  String get searchCollapseAll => 'Collapse results';
+
+  @override
+  String get searchExpandAll => 'Expand results';
+
+  @override
+  String get searchCopyResults => 'Copy search results';
+
+  @override
+  String get searchBookmarkThis => 'Bookmark this search';
+
+  @override
+  String searchResultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count results',
+      one: '1 result',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchMatchedFileName => '(matched file name)';
+
+  @override
+  String get searchResultsCopied => 'Search results copied to clipboard';
+
+  @override
+  String searchSyntaxError(int offset) {
+    return 'Search syntax error at character $offset';
+  }
+
+  @override
+  String queryBlockHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count results',
+      one: '1 result',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String queryBlockShowAll(int count) {
+    return 'Show all $count results';
+  }
+
+  @override
+  String get commandSearchOpen => 'Search: Search in all files';
+
+  @override
+  String get commandSearchCopyResults => 'Search: Copy search results';
+
+  @override
+  String get searchNoResults => 'No notes match your search.';
+
+  @override
+  String get searchHistoryTitle => 'Recent searches';
+
+  @override
+  String get sidebarTags => 'Tags';
+
+  @override
+  String get sidebarBookmarks => 'Bookmarks';
+
+  @override
+  String get tagSortNameAZ => 'Name (A to Z)';
+
+  @override
+  String get tagSortFrequency => 'Frequency (high to low)';
+
+  @override
+  String get tagShowNested => 'Show nested tags';
+
+  @override
+  String get tagShowFlat => 'Show flat list';
+
+  @override
+  String get tagNoTags => 'No tags found in vault';
+
+  @override
+  String get bookmarkCurrentFile => 'Bookmark current file';
+
+  @override
+  String get bookmarkRemoveCurrentFile => 'Remove bookmark';
+
+  @override
+  String get bookmarkFileAdded => 'File bookmarked';
+
+  @override
+  String get bookmarkFileRemoved => 'Bookmark removed';
+
+  @override
+  String get bookmarkAddSearch => 'Bookmark this search';
+
+  @override
+  String get bookmarkSearchAdded => 'Search bookmarked';
+
+  @override
+  String get bookmarkNewGroup => 'New bookmark group';
+
+  @override
+  String get bookmarkRename => 'Rename';
+
+  @override
+  String get bookmarkRemove => 'Remove';
+
+  @override
+  String get bookmarkMoveUp => 'Move up';
+
+  @override
+  String get bookmarkMoveDown => 'Move down';
+
+  @override
+  String get bookmarkMoveToGroup => 'Move to group...';
+
+  @override
+  String get bookmarkNoBookmarks => 'No bookmarks yet';
+
+  @override
+  String get bookmarkGroupPrompt => 'Group name';
+
+  @override
+  String get bookmarkRenamePrompt => 'Bookmark title';
+
+  @override
+  String get bookmarkCreate => 'Create';
+
+  @override
+  String get bookmarkCancel => 'Cancel';
+
+  @override
+  String get bookmarkSave => 'Save';
+
+  @override
+  String get bookmarkRoot => 'Root';
+
+  @override
+  String get commandBookmarkToggle => 'Bookmarks: Bookmark current file';
+
+  @override
+  String get commandBookmarkHeading => 'Bookmarks: Bookmark heading';
+
+  @override
+  String get commandBookmarkSearch => 'Bookmarks: Bookmark this search';
+
+  @override
+  String get commandBookmarkNewGroup => 'Bookmarks: New bookmark group';
+
+  @override
+  String get autocompleteNoResults => 'No results';
+
+  @override
+  String get autocompleteContinue => 'Continue into subpath';
+
+  @override
+  String autocompleteBlockCreated(String id) {
+    return 'Added block ID ^$id';
+  }
+
+  @override
+  String get autocompleteBlockMissing => 'Target block not found';
+
+  @override
+  String get commandTriggerAutocomplete => 'Trigger autocomplete';
+
+  @override
+  String get slashHeading1 => 'Heading 1';
+
+  @override
+  String get slashHeading2 => 'Heading 2';
+
+  @override
+  String get slashHeading3 => 'Heading 3';
+
+  @override
+  String get slashHeading4 => 'Heading 4';
+
+  @override
+  String get slashHeading5 => 'Heading 5';
+
+  @override
+  String get slashHeading6 => 'Heading 6';
+
+  @override
+  String get slashCalloutNote => 'Callout: Note';
+
+  @override
+  String get slashCalloutAbstract => 'Callout: Abstract';
+
+  @override
+  String get slashCalloutInfo => 'Callout: Info';
+
+  @override
+  String get slashCalloutTodo => 'Callout: To-do';
+
+  @override
+  String get slashCalloutTip => 'Callout: Tip';
+
+  @override
+  String get slashCalloutSuccess => 'Callout: Success';
+
+  @override
+  String get slashCalloutQuestion => 'Callout: Question';
+
+  @override
+  String get slashCalloutWarning => 'Callout: Warning';
+
+  @override
+  String get slashCalloutFailure => 'Callout: Failure';
+
+  @override
+  String get slashCalloutDanger => 'Callout: Danger';
+
+  @override
+  String get slashCalloutBug => 'Callout: Bug';
+
+  @override
+  String get slashCalloutExample => 'Callout: Example';
+
+  @override
+  String get slashCalloutQuote => 'Callout: Quote';
+
+  @override
+  String get slashTable => 'Table (3 × 3)';
+
+  @override
+  String get slashCodeBlock => 'Code block';
+
+  @override
+  String get slashMathBlock => 'Math block';
+
+  @override
+  String get slashHorizontalRule => 'Horizontal rule';
+
+  @override
+  String get slashTask => 'Task';
+
+  @override
+  String get slashToday => 'Today\'s date';
+
+  @override
+  String get slashTemplate => 'Insert template';
+
+  @override
+  String get commandToggleEditingMode => 'Toggle Live Preview / Source mode';
+
+  @override
+  String get editingModeLivePreview => 'Live Preview';
+
+  @override
+  String get editingModeSource => 'Source mode';
+
+  @override
+  String get settingEditorDefaultEditingMode => 'Default editing mode';
+
+  @override
+  String get settingEditorFoldHeadings => 'Fold heading';
+
+  @override
+  String get settingEditorFoldIndent => 'Fold indent';
+
+  @override
+  String get commandToggleFold => 'Toggle fold';
+
+  @override
+  String get commandFoldAll => 'Fold all';
+
+  @override
+  String get commandUnfoldAll => 'Unfold all';
+
+  @override
+  String get propertiesTitle => 'Properties';
+
+  @override
+  String get propertiesAdd => 'Add property';
+
+  @override
+  String get propertiesRemove => 'Remove property';
+
+  @override
+  String get propertiesMoveUp => 'Move up';
+
+  @override
+  String get propertiesMoveDown => 'Move down';
+
+  @override
+  String get propertiesChangeType => 'Change type';
+
+  @override
+  String get propertiesEditAsYaml => 'Edit as YAML';
+
+  @override
+  String get propertiesKeyExists => 'Property already exists';
+
+  @override
+  String get propertiesInvalidTag => 'Invalid tag';
+
+  @override
+  String get propertiesInvalidNumber => 'Invalid number';
+
+  @override
+  String get propertiesInvalidYaml => 'Invalid YAML frontmatter';
+
+  @override
+  String get propertiesApply => 'Apply';
+
+  @override
+  String get propertiesRevert => 'Revert';
+
+  @override
+  String get propertiesConvertFailed => 'Cannot convert to type, value kept';
+
+  @override
+  String get propertiesUnsupportedValue => 'Unsupported value';
+
+  @override
+  String get propertyTypeText => 'Text';
+
+  @override
+  String get propertyTypeMultitext => 'List';
+
+  @override
+  String get propertyTypeNumber => 'Number';
+
+  @override
+  String get propertyTypeCheckbox => 'Checkbox';
+
+  @override
+  String get propertyTypeDate => 'Date';
+
+  @override
+  String get propertyTypeDatetime => 'Date & time';
+
+  @override
+  String get propertyTypeAliases => 'Aliases';
+
+  @override
+  String get propertyTypeTags => 'Tags';
+
+  @override
+  String get settingEditorPropertiesInDocument => 'Properties in document';
+
+  @override
+  String get propertiesInDocumentVisible => 'Visible';
+
+  @override
+  String get propertiesInDocumentHidden => 'Hidden';
+
+  @override
+  String get propertiesInDocumentSource => 'Source';
+
+  @override
+  String get commandOpenToday => 'Open today\'s daily note';
+
+  @override
+  String get commandOpenPreviousDaily => 'Open previous daily note';
+
+  @override
+  String get commandOpenNextDaily => 'Open next daily note';
+
+  @override
+  String get commandInsertTemplate => 'Insert template';
+
+  @override
+  String get commandCreateUniqueNote => 'Create unique note';
+
+  @override
+  String get dailyFormatInvalid => 'Daily note format is invalid';
+
+  @override
+  String get dailyTemplateMissing => 'Daily note template file is missing';
+
+  @override
+  String get dailyNoNeighbour => 'No daily note found in that direction';
+
+  @override
+  String get templatesFolderNotSet => 'Templates folder is not configured';
+
+  @override
+  String get templateUnreadable => 'Template file could not be read';
+
+  @override
+  String get settingsDailyNotes => 'Daily notes';
+
+  @override
+  String get settingsTemplates => 'Templates';
+
+  @override
+  String get settingsUniqueNote => 'Unique note creator';
+
+  @override
+  String get settingDailyFormat => 'Date format';
+
+  @override
+  String get settingDailyFolder => 'New file location';
+
+  @override
+  String get settingDailyTemplate => 'Template file location';
+
+  @override
+  String get settingDailyOpenOnStartup => 'Open on startup';
+
+  @override
+  String get settingTemplatesFolder => 'Template folder location';
+
+  @override
+  String get settingTemplatesDateFormat => 'Date format';
+
+  @override
+  String get settingTemplatesTimeFormat => 'Time format';
+
+  @override
+  String get settingUniquePrefix => 'Unique note prefix';
+
+  @override
+  String settingFormatPreview(String preview) {
+    return 'Preview: $preview';
+  }
+
+  @override
+  String get openSettings => 'Open settings';
+
+  @override
+  String get indexUnavailableOnWeb =>
+      'Search and links are not available in the web preview.';
+
+  @override
+  String get commandRunBenchmarks => 'Run performance benchmarks';
 }

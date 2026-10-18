@@ -976,12 +976,6 @@ abstract class AppLocalizations {
   /// **'File not found'**
   String get explorerNotFound;
 
-  /// Notice snackbar after file rename or move
-  ///
-  /// In en, this message translates to:
-  /// **'Links to “{name}” were not updated. Automatic link updates arrive in a later version.'**
-  String explorerLinksNotUpdatedNotice(String name);
-
   /// No description provided for @explorerMoveExists.
   ///
   /// In en, this message translates to:
@@ -1353,6 +1347,1218 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Insert attachment…'**
   String get commandEditorInsertAttachment;
+
+  /// No description provided for @indexStatusScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning vault…'**
+  String get indexStatusScanning;
+
+  /// Progress shown while indexing notes
+  ///
+  /// In en, this message translates to:
+  /// **'Indexing {done} / {total}'**
+  String indexStatusIndexing(int done, int total);
+
+  /// No description provided for @indexStatusResolving.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolving links…'**
+  String get indexStatusResolving;
+
+  /// No description provided for @commandRebuildIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild index'**
+  String get commandRebuildIndex;
+
+  /// No description provided for @rebuildIndexConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild index'**
+  String get rebuildIndexConfirmTitle;
+
+  /// No description provided for @rebuildIndexConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild the search index for this vault? Tephra stays usable while it runs.'**
+  String get rebuildIndexConfirmBody;
+
+  /// No description provided for @rebuildIndexDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Index rebuilt'**
+  String get rebuildIndexDone;
+
+  /// No description provided for @excludedFoldersRebuildPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing excluded folders requires rebuilding the search index. Rebuild now?'**
+  String get excludedFoldersRebuildPrompt;
+
+  /// No description provided for @settingsFilesAndLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Files & links'**
+  String get settingsFilesAndLinks;
+
+  /// No description provided for @settingsNewLinkFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'New link format'**
+  String get settingsNewLinkFormat;
+
+  /// No description provided for @settingsNewLinkFormatShortest.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortest path when possible'**
+  String get settingsNewLinkFormatShortest;
+
+  /// No description provided for @settingsNewLinkFormatRelative.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative path to file'**
+  String get settingsNewLinkFormatRelative;
+
+  /// No description provided for @settingsNewLinkFormatAbsolute.
+  ///
+  /// In en, this message translates to:
+  /// **'Absolute path in vault'**
+  String get settingsNewLinkFormatAbsolute;
+
+  /// No description provided for @settingsUseWikilinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Use [[Wikilinks]]'**
+  String get settingsUseWikilinks;
+
+  /// No description provided for @settingsAlwaysUpdateLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically update internal links'**
+  String get settingsAlwaysUpdateLinks;
+
+  /// No description provided for @settingsExcludedFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded folders'**
+  String get settingsExcludedFolders;
+
+  /// No description provided for @settingsExcludedFoldersAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add folder…'**
+  String get settingsExcludedFoldersAdd;
+
+  /// No description provided for @settingsExcludedFoldersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No excluded folders'**
+  String get settingsExcludedFoldersEmpty;
+
+  /// No description provided for @linkHeadingNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading or block not found'**
+  String get linkHeadingNotFound;
+
+  /// No description provided for @linkTargetFileMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" doesn\'t exist in this vault'**
+  String linkTargetFileMissing(String name);
+
+  /// No description provided for @linkInvalidTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid link target'**
+  String get linkInvalidTarget;
+
+  /// No description provided for @renameTargetExists.
+  ///
+  /// In en, this message translates to:
+  /// **'A file or folder with that name already exists'**
+  String get renameTargetExists;
+
+  /// No description provided for @renameUpdateLinksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update links'**
+  String get renameUpdateLinksTitle;
+
+  /// Dialog prompt asking whether to update links across notes after a file rename or move
+  ///
+  /// In en, this message translates to:
+  /// **'Update {links, plural, =1{1 link} other{{links} links}} in {files, plural, =1{1 file} other{{files} files}}?'**
+  String renameUpdateLinksPrompt(int links, int files);
+
+  /// No description provided for @renameUpdateLinksActionUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get renameUpdateLinksActionUpdate;
+
+  /// No description provided for @renameUpdateLinksActionDontUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t update'**
+  String get renameUpdateLinksActionDontUpdate;
+
+  /// Toast message after links are updated on rename or move
+  ///
+  /// In en, this message translates to:
+  /// **'{links, plural, =1{Updated 1 link} other{Updated {links} links}} in {files, plural, =1{1 file} other{{files} files}}'**
+  String renameLinksUpdated(int links, int files);
+
+  /// No description provided for @undoRenameDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo rename completed'**
+  String get undoRenameDone;
+
+  /// Toast message after undoing a rename operation when some files conflicted
+  ///
+  /// In en, this message translates to:
+  /// **'Undo finished; {count, plural, =1{1 file had changed and was left as it is} other{{count} files had changed and were left as they are}}'**
+  String undoRenamePartial(int count);
+
+  /// No description provided for @undoAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undoAction;
+
+  /// No description provided for @commandVaultUndoLastRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo last rename'**
+  String get commandVaultUndoLastRename;
+
+  /// No description provided for @sidebarBacklinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Backlinks'**
+  String get sidebarBacklinks;
+
+  /// No description provided for @sidebarOutgoingLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Outgoing links'**
+  String get sidebarOutgoingLinks;
+
+  /// No description provided for @mentionChangedRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'The note was edited; mention list refreshed.'**
+  String get mentionChangedRefresh;
+
+  /// No description provided for @mentionLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Mention linked'**
+  String get mentionLinked;
+
+  /// No description provided for @linkedMentionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked mentions'**
+  String get linkedMentionsTitle;
+
+  /// No description provided for @unlinkedMentionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlinked mentions'**
+  String get unlinkedMentionsTitle;
+
+  /// No description provided for @linkMentionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get linkMentionAction;
+
+  /// No description provided for @unresolvedLinksSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Unresolved'**
+  String get unresolvedLinksSection;
+
+  /// No description provided for @createLinkAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createLinkAction;
+
+  /// No description provided for @collapseAllAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse all'**
+  String get collapseAllAction;
+
+  /// No description provided for @noActiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'No active note'**
+  String get noActiveNote;
+
+  /// No description provided for @sortAlphabeticalAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (A to Z)'**
+  String get sortAlphabeticalAsc;
+
+  /// No description provided for @sortAlphabeticalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (Z to A)'**
+  String get sortAlphabeticalDesc;
+
+  /// No description provided for @sortModifiedNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified time (new to old)'**
+  String get sortModifiedNew;
+
+  /// No description provided for @sidebarOutline.
+  ///
+  /// In en, this message translates to:
+  /// **'Outline'**
+  String get sidebarOutline;
+
+  /// No description provided for @outlineNoHeadings.
+  ///
+  /// In en, this message translates to:
+  /// **'No headings found'**
+  String get outlineNoHeadings;
+
+  /// No description provided for @copyLinkToHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link to heading'**
+  String get copyLinkToHeading;
+
+  /// No description provided for @headingLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link to heading copied'**
+  String get headingLinkCopied;
+
+  /// No description provided for @bookmarkHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark heading'**
+  String get bookmarkHeading;
+
+  /// No description provided for @headingBookmarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading bookmarked'**
+  String get headingBookmarked;
+
+  /// No description provided for @embedTooDeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Embed depth limit reached'**
+  String get embedTooDeep;
+
+  /// No description provided for @embedCircular.
+  ///
+  /// In en, this message translates to:
+  /// **'Circular embed'**
+  String get embedCircular;
+
+  /// No description provided for @embedSectionNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Section or block not found'**
+  String get embedSectionNotFound;
+
+  /// No description provided for @embedMediaLaterPhase.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing and viewing this file type arrives in a later version'**
+  String get embedMediaLaterPhase;
+
+  /// Page preview message for unresolved note target
+  ///
+  /// In en, this message translates to:
+  /// **'“{target}” is not created yet. Click to create.'**
+  String previewNotCreated(String target);
+
+  /// No description provided for @previewCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get previewCreate;
+
+  /// No description provided for @searchTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchTabTitle;
+
+  /// No description provided for @searchFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search…'**
+  String get searchFieldHint;
+
+  /// No description provided for @searchMatchCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Match case'**
+  String get searchMatchCase;
+
+  /// No description provided for @searchSortFileNameAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (A to Z)'**
+  String get searchSortFileNameAsc;
+
+  /// No description provided for @searchSortFileNameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'File name (Z to A)'**
+  String get searchSortFileNameDesc;
+
+  /// No description provided for @searchSortModifiedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified time (new to old)'**
+  String get searchSortModifiedDesc;
+
+  /// No description provided for @searchSortModifiedAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified time (old to new)'**
+  String get searchSortModifiedAsc;
+
+  /// No description provided for @searchSortCreatedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Created time (new to old)'**
+  String get searchSortCreatedDesc;
+
+  /// No description provided for @searchSortCreatedAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Created time (old to new)'**
+  String get searchSortCreatedAsc;
+
+  /// No description provided for @searchCollapseAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse results'**
+  String get searchCollapseAll;
+
+  /// No description provided for @searchExpandAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand results'**
+  String get searchExpandAll;
+
+  /// No description provided for @searchCopyResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy search results'**
+  String get searchCopyResults;
+
+  /// No description provided for @searchBookmarkThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark this search'**
+  String get searchBookmarkThis;
+
+  /// Number of results found
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 result} other{{count} results}}'**
+  String searchResultCount(int count);
+
+  /// No description provided for @searchMatchedFileName.
+  ///
+  /// In en, this message translates to:
+  /// **'(matched file name)'**
+  String get searchMatchedFileName;
+
+  /// No description provided for @searchResultsCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Search results copied to clipboard'**
+  String get searchResultsCopied;
+
+  /// Search query syntax error description
+  ///
+  /// In en, this message translates to:
+  /// **'Search syntax error at character {offset}'**
+  String searchSyntaxError(int offset);
+
+  /// Header for query block showing number of matching notes
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 result} other{{count} results}}'**
+  String queryBlockHeader(int count);
+
+  /// Button in query block to show full results in search pane
+  ///
+  /// In en, this message translates to:
+  /// **'Show all {count} results'**
+  String queryBlockShowAll(int count);
+
+  /// No description provided for @commandSearchOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Search: Search in all files'**
+  String get commandSearchOpen;
+
+  /// No description provided for @commandSearchCopyResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Search: Copy search results'**
+  String get commandSearchCopyResults;
+
+  /// No description provided for @searchNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes match your search.'**
+  String get searchNoResults;
+
+  /// No description provided for @searchHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent searches'**
+  String get searchHistoryTitle;
+
+  /// No description provided for @sidebarTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get sidebarTags;
+
+  /// No description provided for @sidebarBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get sidebarBookmarks;
+
+  /// No description provided for @tagSortNameAZ.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (A to Z)'**
+  String get tagSortNameAZ;
+
+  /// No description provided for @tagSortFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency (high to low)'**
+  String get tagSortFrequency;
+
+  /// No description provided for @tagShowNested.
+  ///
+  /// In en, this message translates to:
+  /// **'Show nested tags'**
+  String get tagShowNested;
+
+  /// No description provided for @tagShowFlat.
+  ///
+  /// In en, this message translates to:
+  /// **'Show flat list'**
+  String get tagShowFlat;
+
+  /// No description provided for @tagNoTags.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags found in vault'**
+  String get tagNoTags;
+
+  /// No description provided for @bookmarkCurrentFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark current file'**
+  String get bookmarkCurrentFile;
+
+  /// No description provided for @bookmarkRemoveCurrentFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get bookmarkRemoveCurrentFile;
+
+  /// No description provided for @bookmarkFileAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'File bookmarked'**
+  String get bookmarkFileAdded;
+
+  /// No description provided for @bookmarkFileRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark removed'**
+  String get bookmarkFileRemoved;
+
+  /// No description provided for @bookmarkAddSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark this search'**
+  String get bookmarkAddSearch;
+
+  /// No description provided for @bookmarkSearchAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Search bookmarked'**
+  String get bookmarkSearchAdded;
+
+  /// No description provided for @bookmarkNewGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'New bookmark group'**
+  String get bookmarkNewGroup;
+
+  /// No description provided for @bookmarkRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get bookmarkRename;
+
+  /// No description provided for @bookmarkRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get bookmarkRemove;
+
+  /// No description provided for @bookmarkMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get bookmarkMoveUp;
+
+  /// No description provided for @bookmarkMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get bookmarkMoveDown;
+
+  /// No description provided for @bookmarkMoveToGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to group...'**
+  String get bookmarkMoveToGroup;
+
+  /// No description provided for @bookmarkNoBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet'**
+  String get bookmarkNoBookmarks;
+
+  /// No description provided for @bookmarkGroupPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Group name'**
+  String get bookmarkGroupPrompt;
+
+  /// No description provided for @bookmarkRenamePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark title'**
+  String get bookmarkRenamePrompt;
+
+  /// No description provided for @bookmarkCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get bookmarkCreate;
+
+  /// No description provided for @bookmarkCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get bookmarkCancel;
+
+  /// No description provided for @bookmarkSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get bookmarkSave;
+
+  /// No description provided for @bookmarkRoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Root'**
+  String get bookmarkRoot;
+
+  /// No description provided for @commandBookmarkToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks: Bookmark current file'**
+  String get commandBookmarkToggle;
+
+  /// No description provided for @commandBookmarkHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks: Bookmark heading'**
+  String get commandBookmarkHeading;
+
+  /// No description provided for @commandBookmarkSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks: Bookmark this search'**
+  String get commandBookmarkSearch;
+
+  /// No description provided for @commandBookmarkNewGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks: New bookmark group'**
+  String get commandBookmarkNewGroup;
+
+  /// No description provided for @autocompleteNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get autocompleteNoResults;
+
+  /// No description provided for @autocompleteContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue into subpath'**
+  String get autocompleteContinue;
+
+  /// Notification when a block ID is automatically generated
+  ///
+  /// In en, this message translates to:
+  /// **'Added block ID ^{id}'**
+  String autocompleteBlockCreated(String id);
+
+  /// No description provided for @autocompleteBlockMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Target block not found'**
+  String get autocompleteBlockMissing;
+
+  /// No description provided for @commandTriggerAutocomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger autocomplete'**
+  String get commandTriggerAutocomplete;
+
+  /// No description provided for @slashHeading1.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 1'**
+  String get slashHeading1;
+
+  /// No description provided for @slashHeading2.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 2'**
+  String get slashHeading2;
+
+  /// No description provided for @slashHeading3.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 3'**
+  String get slashHeading3;
+
+  /// No description provided for @slashHeading4.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 4'**
+  String get slashHeading4;
+
+  /// No description provided for @slashHeading5.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 5'**
+  String get slashHeading5;
+
+  /// No description provided for @slashHeading6.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 6'**
+  String get slashHeading6;
+
+  /// No description provided for @slashCalloutNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Note'**
+  String get slashCalloutNote;
+
+  /// No description provided for @slashCalloutAbstract.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Abstract'**
+  String get slashCalloutAbstract;
+
+  /// No description provided for @slashCalloutInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Info'**
+  String get slashCalloutInfo;
+
+  /// No description provided for @slashCalloutTodo.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: To-do'**
+  String get slashCalloutTodo;
+
+  /// No description provided for @slashCalloutTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Tip'**
+  String get slashCalloutTip;
+
+  /// No description provided for @slashCalloutSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Success'**
+  String get slashCalloutSuccess;
+
+  /// No description provided for @slashCalloutQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Question'**
+  String get slashCalloutQuestion;
+
+  /// No description provided for @slashCalloutWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Warning'**
+  String get slashCalloutWarning;
+
+  /// No description provided for @slashCalloutFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Failure'**
+  String get slashCalloutFailure;
+
+  /// No description provided for @slashCalloutDanger.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Danger'**
+  String get slashCalloutDanger;
+
+  /// No description provided for @slashCalloutBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Bug'**
+  String get slashCalloutBug;
+
+  /// No description provided for @slashCalloutExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Example'**
+  String get slashCalloutExample;
+
+  /// No description provided for @slashCalloutQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Callout: Quote'**
+  String get slashCalloutQuote;
+
+  /// No description provided for @slashTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Table (3 × 3)'**
+  String get slashTable;
+
+  /// No description provided for @slashCodeBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Code block'**
+  String get slashCodeBlock;
+
+  /// No description provided for @slashMathBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Math block'**
+  String get slashMathBlock;
+
+  /// No description provided for @slashHorizontalRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizontal rule'**
+  String get slashHorizontalRule;
+
+  /// No description provided for @slashTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get slashTask;
+
+  /// No description provided for @slashToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s date'**
+  String get slashToday;
+
+  /// No description provided for @slashTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert template'**
+  String get slashTemplate;
+
+  /// No description provided for @commandToggleEditingMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle Live Preview / Source mode'**
+  String get commandToggleEditingMode;
+
+  /// No description provided for @editingModeLivePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Preview'**
+  String get editingModeLivePreview;
+
+  /// No description provided for @editingModeSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source mode'**
+  String get editingModeSource;
+
+  /// No description provided for @settingEditorDefaultEditingMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Default editing mode'**
+  String get settingEditorDefaultEditingMode;
+
+  /// No description provided for @settingEditorFoldHeadings.
+  ///
+  /// In en, this message translates to:
+  /// **'Fold heading'**
+  String get settingEditorFoldHeadings;
+
+  /// No description provided for @settingEditorFoldIndent.
+  ///
+  /// In en, this message translates to:
+  /// **'Fold indent'**
+  String get settingEditorFoldIndent;
+
+  /// No description provided for @commandToggleFold.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle fold'**
+  String get commandToggleFold;
+
+  /// No description provided for @commandFoldAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Fold all'**
+  String get commandFoldAll;
+
+  /// No description provided for @commandUnfoldAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfold all'**
+  String get commandUnfoldAll;
+
+  /// No description provided for @propertiesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties'**
+  String get propertiesTitle;
+
+  /// No description provided for @propertiesAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add property'**
+  String get propertiesAdd;
+
+  /// No description provided for @propertiesRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove property'**
+  String get propertiesRemove;
+
+  /// No description provided for @propertiesMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get propertiesMoveUp;
+
+  /// No description provided for @propertiesMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get propertiesMoveDown;
+
+  /// No description provided for @propertiesChangeType.
+  ///
+  /// In en, this message translates to:
+  /// **'Change type'**
+  String get propertiesChangeType;
+
+  /// No description provided for @propertiesEditAsYaml.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit as YAML'**
+  String get propertiesEditAsYaml;
+
+  /// No description provided for @propertiesKeyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'Property already exists'**
+  String get propertiesKeyExists;
+
+  /// No description provided for @propertiesInvalidTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid tag'**
+  String get propertiesInvalidTag;
+
+  /// No description provided for @propertiesInvalidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid number'**
+  String get propertiesInvalidNumber;
+
+  /// No description provided for @propertiesInvalidYaml.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid YAML frontmatter'**
+  String get propertiesInvalidYaml;
+
+  /// No description provided for @propertiesApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get propertiesApply;
+
+  /// No description provided for @propertiesRevert.
+  ///
+  /// In en, this message translates to:
+  /// **'Revert'**
+  String get propertiesRevert;
+
+  /// No description provided for @propertiesConvertFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot convert to type, value kept'**
+  String get propertiesConvertFailed;
+
+  /// No description provided for @propertiesUnsupportedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported value'**
+  String get propertiesUnsupportedValue;
+
+  /// No description provided for @propertyTypeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get propertyTypeText;
+
+  /// No description provided for @propertyTypeMultitext.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get propertyTypeMultitext;
+
+  /// No description provided for @propertyTypeNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get propertyTypeNumber;
+
+  /// No description provided for @propertyTypeCheckbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkbox'**
+  String get propertyTypeCheckbox;
+
+  /// No description provided for @propertyTypeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get propertyTypeDate;
+
+  /// No description provided for @propertyTypeDatetime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & time'**
+  String get propertyTypeDatetime;
+
+  /// No description provided for @propertyTypeAliases.
+  ///
+  /// In en, this message translates to:
+  /// **'Aliases'**
+  String get propertyTypeAliases;
+
+  /// No description provided for @propertyTypeTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get propertyTypeTags;
+
+  /// No description provided for @settingEditorPropertiesInDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties in document'**
+  String get settingEditorPropertiesInDocument;
+
+  /// No description provided for @propertiesInDocumentVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible'**
+  String get propertiesInDocumentVisible;
+
+  /// No description provided for @propertiesInDocumentHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get propertiesInDocumentHidden;
+
+  /// No description provided for @propertiesInDocumentSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get propertiesInDocumentSource;
+
+  /// No description provided for @commandOpenToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Open today\'s daily note'**
+  String get commandOpenToday;
+
+  /// No description provided for @commandOpenPreviousDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Open previous daily note'**
+  String get commandOpenPreviousDaily;
+
+  /// No description provided for @commandOpenNextDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Open next daily note'**
+  String get commandOpenNextDaily;
+
+  /// No description provided for @commandInsertTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert template'**
+  String get commandInsertTemplate;
+
+  /// No description provided for @commandCreateUniqueNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Create unique note'**
+  String get commandCreateUniqueNote;
+
+  /// No description provided for @dailyFormatInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily note format is invalid'**
+  String get dailyFormatInvalid;
+
+  /// No description provided for @dailyTemplateMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily note template file is missing'**
+  String get dailyTemplateMissing;
+
+  /// No description provided for @dailyNoNeighbour.
+  ///
+  /// In en, this message translates to:
+  /// **'No daily note found in that direction'**
+  String get dailyNoNeighbour;
+
+  /// No description provided for @templatesFolderNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates folder is not configured'**
+  String get templatesFolderNotSet;
+
+  /// No description provided for @templateUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'Template file could not be read'**
+  String get templateUnreadable;
+
+  /// No description provided for @settingsDailyNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily notes'**
+  String get settingsDailyNotes;
+
+  /// No description provided for @settingsTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get settingsTemplates;
+
+  /// No description provided for @settingsUniqueNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique note creator'**
+  String get settingsUniqueNote;
+
+  /// No description provided for @settingDailyFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Date format'**
+  String get settingDailyFormat;
+
+  /// No description provided for @settingDailyFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'New file location'**
+  String get settingDailyFolder;
+
+  /// No description provided for @settingDailyTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Template file location'**
+  String get settingDailyTemplate;
+
+  /// No description provided for @settingDailyOpenOnStartup.
+  ///
+  /// In en, this message translates to:
+  /// **'Open on startup'**
+  String get settingDailyOpenOnStartup;
+
+  /// No description provided for @settingTemplatesFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Template folder location'**
+  String get settingTemplatesFolder;
+
+  /// No description provided for @settingTemplatesDateFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Date format'**
+  String get settingTemplatesDateFormat;
+
+  /// No description provided for @settingTemplatesTimeFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Time format'**
+  String get settingTemplatesTimeFormat;
+
+  /// No description provided for @settingUniquePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique note prefix'**
+  String get settingUniquePrefix;
+
+  /// No description provided for @settingFormatPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview: {preview}'**
+  String settingFormatPreview(String preview);
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get openSettings;
+
+  /// No description provided for @indexUnavailableOnWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and links are not available in the web preview.'**
+  String get indexUnavailableOnWeb;
+
+  /// No description provided for @commandRunBenchmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Run performance benchmarks'**
+  String get commandRunBenchmarks;
 }
 
 class _AppLocalizationsDelegate

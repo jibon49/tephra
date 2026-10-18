@@ -226,6 +226,11 @@ void _processLine({
           curTip.updateEnd(cursor.lineEnd);
         } else {
           // Start paragraph
+          var target = curTip;
+          while (target.type == BlockType.list) {
+            _closeAll(target);
+            target = target.parent ?? root;
+          }
           cursor.advanceToNextNonSpace();
           final para = BlockNode(
             type: BlockType.paragraph,
@@ -233,7 +238,7 @@ void _processLine({
             end: cursor.lineEnd,
           );
           para.segments.add((cursor.offset, cursor.lineEnd));
-          curTip.addChild(para);
+          target.addChild(para);
         }
       }
     }
@@ -356,6 +361,14 @@ _ContinueResult _continueBlock(
     case BlockType.table:
       if (cursor.blank) {
         return _ContinueResult.notMatched;
+      }
+      if (options.obsidian) {
+        final lineRest = cursor.text
+            .substring(cursor.nextNonSpaceOffset, cursor.lineEnd)
+            .trim();
+        if (RegExp(r'^\^[A-Za-z0-9-]+$').hasMatch(lineRest)) {
+          return _ContinueResult.notMatched;
+        }
       }
       return _ContinueResult.matched;
 

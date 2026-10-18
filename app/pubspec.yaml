@@ -42,9 +42,13 @@ dependencies:
   permission_handler: ^13.0.2
   device_info_plus: ^13.3.0
   scrollable_positioned_list: ^0.3.8
+  yaml_edit: ^2.2.4
+  yaml: ^3.1.4
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
   plugin_platform_interface: ^2.1.8
   url_launcher_platform_interface: ^2.3.2

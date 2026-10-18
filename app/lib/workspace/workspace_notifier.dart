@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 
+import '../editor/live_preview/editing_mode.dart';
 import '../settings/providers.dart';
 import '../vault/providers.dart';
 import 'providers.dart';
@@ -59,11 +60,20 @@ final class WorkspaceNotifier extends Notifier<WorkspaceState> {
     bool newTab = false,
     bool background = false,
     String? subpath,
-  }) => openContent(
-    FileTabContent(path, subpath: subpath),
-    newTab: newTab,
-    background: background,
-  );
+    EditingMode? editingMode,
+  }) {
+    final mode =
+        editingMode ??
+        (ref.read(vaultSettingsProvider).editorSettings.defaultEditingMode ==
+                'source'
+            ? EditingMode.source
+            : EditingMode.livePreview);
+    return openContent(
+      FileTabContent(path, subpath: subpath, editingMode: mode),
+      newTab: newTab,
+      background: background,
+    );
+  }
 
   void openContent(
     TabContent content, {
@@ -97,10 +107,18 @@ final class WorkspaceNotifier extends Notifier<WorkspaceState> {
         if (activeTab.content == content) {
           return;
         }
+
+        var effectiveContent = content;
+        if (activeTab.content is FileTabContent && content is FileTabContent) {
+          effectiveContent = content.copyWith(
+            editingMode: (activeTab.content as FileTabContent).editingMode,
+          );
+        }
+
         var newHistory = activeTab.history
             .sublist(0, activeTab.historyIndex + 1)
             .toList();
-        newHistory.add(content);
+        newHistory.add(effectiveContent);
         var newIndex = newHistory.length - 1;
         if (newHistory.length > 100) {
           newHistory = newHistory.sublist(newHistory.length - 100);
@@ -355,6 +373,54 @@ final class WorkspaceNotifier extends Notifier<WorkspaceState> {
           ? ViewMode.source
           : ViewMode.reading;
       setMode(tab.id, newMode);
+    }
+  }
+
+  void toggleEditingMode() {
+    final tab = state.focusedTab;
+    if (tab == null) return;
+    final content = tab.content;
+    if (content is! FileTabContent) return;
+
+    if (tab.mode == ViewMode.reading) {
+      setMode(tab.id, ViewMode.source);
+      return;
+    }
+
+    final newEditingMode = content.editingMode == EditingMode.livePreview
+        ? EditingMode.source
+        : EditingMode.livePreview;
+
+    setEditingMode(tab.id, newEditingMode);
+  }
+
+  void setEditingMode(String tabId, EditingMode mode) {
+    var modified = false;
+    final panes = <PaneState>[];
+    for (final p in state.panes) {
+      final tabs = <TabState>[];
+      for (final t in p.tabs) {
+        if (t.id == tabId && t.content is FileTabContent) {
+          final fileContent = t.content as FileTabContent;
+          if (fileContent.editingMode != mode) {
+            final newHistory = List<TabContent>.of(t.history);
+            newHistory[t.historyIndex] = fileContent.copyWith(
+              editingMode: mode,
+            );
+            tabs.add(t.copyWith(history: newHistory));
+            modified = true;
+          } else {
+            tabs.add(t);
+          }
+        } else {
+          tabs.add(t);
+        }
+      }
+      panes.add(p.copyWith(tabs: tabs));
+    }
+    if (modified) {
+      state = state.copyWith(panes: panes);
+      _scheduleSave();
     }
   }
 

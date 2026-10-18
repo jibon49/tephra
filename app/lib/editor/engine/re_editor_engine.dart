@@ -2,15 +2,20 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:re_editor/re_editor.dart';
 
+import '../editor_decorator.dart';
 import '../editor_engine.dart';
+import '../folding/fold_controller.dart';
+import '../folding/fold_gutter.dart';
 import '../highlight/source_highlighter.dart';
 import '../line_view.dart';
 import '../offset_map_utils.dart';
+import 're_editor_chunk_analyzer.dart';
 
 /// Adapter implementing [EditorEngine] on top of `re_editor`'s [CodeEditor].
 class ReEditorEngine implements EditorEngine {
@@ -19,7 +24,8 @@ class ReEditorEngine implements EditorEngine {
   }
 
   late final _InterceptingCodeLineController _controller;
-  late final CodeScrollController _scrollController = CodeScrollController();
+  late final _CustomCodeScrollController _scrollController =
+      _CustomCodeScrollController();
   late final FocusNode _focusNode = FocusNode();
 
   final _changeController = StreamController<EngineChange>.broadcast(
@@ -29,6 +35,11 @@ class ReEditorEngine implements EditorEngine {
   final _focusController = StreamController<bool>.broadcast(sync: true);
 
   SourceHighlighter? _highlighter;
+  EditorDecorator? _decorator;
+  bool Function(int offset, PointerDeviceKind kind, bool control)?
+  _tapInterceptor;
+  DateTime? _suppressSelectionUntil;
+  List<int> _lineStarts = const [0];
   late List<String> _prevLines;
   bool _isUndoRedo = false;
   bool _isDisposed = false;
@@ -39,6 +50,19 @@ class ReEditorEngine implements EditorEngine {
 
   /// Feeds a text editing value into the engine's intercepting controller.
   void edit(TextEditingValue value) => _controller.edit(value);
+
+  /// Collapses lines from [start] to [end] natively in `re_editor`.
+  void collapseChunk(int start, int end) =>
+      _controller.collapseChunk(start, end);
+
+  /// Expands lines at [index] natively in `re_editor`.
+  void expandChunk(int index) => _controller.expandChunk(index);
+
+  /// Returns true if the line at [index] is currently collapsed.
+  bool isLineCollapsed(int index) {
+    if (index < 0 || index >= _controller.codeLines.length) return false;
+    return _controller.codeLines[index].chunkParent;
+  }
 
   /// Simulates typing text character-by-character at the current cursor position.
   void typeText(String text) {
@@ -74,6 +98,18 @@ class ReEditorEngine implements EditorEngine {
             required TextSpan textSpan,
             required TextStyle style,
           }) {
+            if (_decorator != null) {
+              final lineStart = index < _lineStarts.length
+                  ? _lineStarts[index]
+                  : 0;
+              final lineEnd = lineStart + codeLine.text.length;
+              return _decorator!.decorateLine(
+                lineStart: lineStart,
+                lineEnd: lineEnd,
+                plain: textSpan,
+                base: style,
+              );
+            }
             if (_highlighter != null) {
               return _highlighter!.spanFor(
                 index,
@@ -88,8 +124,21 @@ class ReEditorEngine implements EditorEngine {
     _controller = _InterceptingCodeLineController(delegate: base);
 
     _prevLines = _extractLines(_controller.codeLines);
+    _rebuildLineStarts();
     _controller.addListener(_onControllerChanged);
     _focusNode.addListener(_onFocusChanged);
+  }
+
+  @override
+  FocusNode get focusNode => _focusNode;
+
+  @override
+  TextRange get composing {
+    final c = _controller.value.composing;
+    if (!c.isValid || c == const TextRange(start: -1, end: -1)) {
+      return TextRange.empty;
+    }
+    return c;
   }
 
   @override
@@ -152,6 +201,7 @@ class ReEditorEngine implements EditorEngine {
     }
     _controller.codeLines = CodeLines.fromText(text);
     _prevLines = _extractLines(_controller.codeLines);
+    _rebuildLineStarts();
   }
 
   @override
@@ -263,11 +313,92 @@ class ReEditorEngine implements EditorEngine {
   }
 
   @override
-  Rect? caretRectGlobal() => null;
+  Rect? caretRectGlobal() {
+    final render = _scrollController.editorKey?.currentContext
+        ?.findRenderObject();
+    if (render == null || render is! RenderBox) return null;
+    final dynamic fieldRender = render;
+    try {
+      final sel = selection.extent;
+      final pos = CodeLinePosition(index: sel.line, offset: sel.col);
+      final Offset? top =
+          // ignore: avoid_dynamic_calls // _CodeFieldRender is a private class in package:re_editor
+          fieldRender.calculateTextPositionScreenOffset(pos, false) as Offset?;
+      final Offset? bottom =
+          // ignore: avoid_dynamic_calls // _CodeFieldRender is a private class in package:re_editor
+          fieldRender.calculateTextPositionScreenOffset(pos, true) as Offset?;
+      if (top == null || bottom == null) return null;
+      return Rect.fromPoints(top, bottom);
+    } catch (_) {
+      return null;
+    }
+  }
 
   @override
   void setHighlighter(SourceHighlighter highlighter) {
     _highlighter = highlighter;
+  }
+
+  @override
+  void setDecorator(EditorDecorator? decorator) {
+    if (_decorator != decorator) {
+      _decorator?.changes.removeListener(_onDecoratorChanged);
+      _decorator = decorator;
+      _decorator?.changes.addListener(_onDecoratorChanged);
+      _controller.forceRepaint();
+    }
+  }
+
+  void _onDecoratorChanged() {
+    if (_isDisposed) return;
+    try {
+      _controller.forceRepaint();
+    } catch (_) {
+      // Re-editor may still be updating its line paragraphs during an active edit.
+      // A post-frame callback ensures repaint occurs after layout.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_isDisposed) {
+          try {
+            _controller.forceRepaint();
+          } catch (_) {}
+        }
+      });
+    }
+  }
+
+  @override
+  void setTapInterceptor(
+    bool Function(int offset, PointerDeviceKind kind, bool control)? fn,
+  ) {
+    _tapInterceptor = fn;
+  }
+
+  @override
+  Rect? rectForRange(int start, int end) {
+    final render = _scrollController.editorKey?.currentContext
+        ?.findRenderObject();
+    if (render == null || render is! RenderBox) return null;
+    final dynamic fieldRender = render;
+    try {
+      final startPos = posOf(lines, start);
+      final endPos = posOf(lines, end);
+      final Offset? startOffset =
+          // ignore: avoid_dynamic_calls // _CodeFieldRender is a private class in package:re_editor
+          fieldRender.calculateTextPositionScreenOffset(
+            CodeLinePosition(index: startPos.line, offset: startPos.col),
+            false,
+          ) as Offset?;
+      final Offset? endOffset =
+          // ignore: avoid_dynamic_calls // _CodeFieldRender is a private class in package:re_editor
+          fieldRender.calculateTextPositionScreenOffset(
+            CodeLinePosition(index: endPos.line, offset: endPos.col),
+            true,
+          ) as Offset?;
+      if (startOffset == null || endOffset == null) return null;
+      return Rect.fromPoints(startOffset, endOffset);
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
@@ -328,7 +459,7 @@ class ReEditorEngine implements EditorEngine {
       ),
     };
 
-    return CodeEditor(
+    final editorWidget = CodeEditor(
       controller: _controller,
       autocompleteSymbols: false,
       wordWrap: true,
@@ -336,8 +467,18 @@ class ReEditorEngine implements EditorEngine {
       autofocus: config.autofocus,
       focusNode: _focusNode,
       scrollController: _scrollController,
-      chunkAnalyzer: const NonCodeChunkAnalyzer(),
-      indicatorBuilder: null,
+      chunkAnalyzer: MarkdownChunkAnalyzer(
+        foldHeadings: config.foldController?.foldHeadings ?? true,
+        foldIndent: config.foldController?.foldIndent ?? true,
+      ),
+      indicatorBuilder: config.foldController != null
+          ? (context, editingController, chunkController, notifier) {
+              return _ReEditorFoldGutter(
+                controller: config.foldController!,
+                indicatorNotifier: notifier,
+              );
+            }
+          : null,
       style: CodeEditorStyle(
         fontSize: config.options.fontSize,
         fontHeight: 1.5,
@@ -349,6 +490,41 @@ class ReEditorEngine implements EditorEngine {
       shortcutsActivatorsBuilder: const _NoCommandShortcuts(),
       shortcutOverrideActions: overrideActions,
     );
+
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (event) {
+        if (_tapInterceptor == null) return;
+        final render = _scrollController.editorKey?.currentContext
+            ?.findRenderObject();
+        if (render == null || render is! RenderBox) return;
+        final dynamic fieldRender = render;
+        try {
+          final local = render.globalToLocal(event.position);
+          final CodeLinePosition? linePos =
+              // ignore: avoid_dynamic_calls // _CodeFieldRender is a private class in package:re_editor
+              fieldRender.calculateTextPosition(local) as CodeLinePosition?;
+          if (linePos != null) {
+            final lineIndex = linePos.index;
+            final lineOffset = linePos.offset;
+            final lineStart = lineIndex < _lineStarts.length
+                ? _lineStarts[lineIndex]
+                : 0;
+            final offset = lineStart + lineOffset;
+            final isCtrl =
+                HardwareKeyboard.instance.isControlPressed ||
+                HardwareKeyboard.instance.isMetaPressed;
+            final handled = _tapInterceptor!(offset, event.kind, isCtrl);
+            if (handled) {
+              _suppressSelectionUntil = DateTime.now().add(
+                const Duration(milliseconds: 300),
+              );
+            }
+          }
+        } catch (_) {}
+      },
+      child: editorWidget,
+    );
   }
 
   void _onControllerChanged() {
@@ -356,9 +532,15 @@ class ReEditorEngine implements EditorEngine {
 
     final currentLines = _extractLines(_controller.codeLines);
     if (_linesEqual(_prevLines, currentLines)) {
+      if (_suppressSelectionUntil != null &&
+          DateTime.now().isBefore(_suppressSelectionUntil!)) {
+        return;
+      }
       _selectionController.add(null);
       return;
     }
+
+    _rebuildLineStarts();
 
     // Compute diff between _prevLines and currentLines
     var top = 0;
@@ -417,6 +599,17 @@ class ReEditorEngine implements EditorEngine {
     );
   }
 
+  void _rebuildLineStarts() {
+    final codeLines = _controller.codeLines;
+    final starts = List<int>.filled(codeLines.length, 0);
+    var offset = 0;
+    for (var i = 0; i < codeLines.length; i++) {
+      starts[i] = offset;
+      offset += codeLines[i].text.length + 1;
+    }
+    _lineStarts = starts;
+  }
+
   void _onFocusChanged() {
     if (!_isDisposed) {
       _focusController.add(_focusNode.hasFocus);
@@ -436,6 +629,7 @@ class ReEditorEngine implements EditorEngine {
     if (_isDisposed) return;
     _isDisposed = true;
 
+    _decorator?.changes.removeListener(_onDecoratorChanged);
     _controller.removeListener(_onControllerChanged);
     _focusNode.removeListener(_onFocusChanged);
 
@@ -537,4 +731,79 @@ List<String> _extractLines(CodeLines codeLines) {
     list.add(codeLines[i].text);
   }
   return list;
+}
+
+class _CustomCodeScrollController extends CodeScrollController {
+  GlobalKey? editorKey;
+
+  @override
+  void bindEditor(GlobalKey key) {
+    editorKey = key;
+    super.bindEditor(key);
+  }
+}
+
+final class _ReEditorFoldGutter extends StatefulWidget {
+  const _ReEditorFoldGutter({
+    required this.controller,
+    required this.indicatorNotifier,
+  });
+
+  final FoldController controller;
+  final ValueNotifier<CodeIndicatorValue?> indicatorNotifier;
+
+  @override
+  State<_ReEditorFoldGutter> createState() => _ReEditorFoldGutterState();
+}
+
+final class _ReEditorFoldGutterState extends State<_ReEditorFoldGutter> {
+  late final ValueNotifier<List<FoldGutterParagraph>?> _paragraphsNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _paragraphsNotifier = ValueNotifier(
+      _convert(widget.indicatorNotifier.value),
+    );
+    widget.indicatorNotifier.addListener(_onIndicatorChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant _ReEditorFoldGutter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.indicatorNotifier != widget.indicatorNotifier) {
+      oldWidget.indicatorNotifier.removeListener(_onIndicatorChanged);
+      widget.indicatorNotifier.addListener(_onIndicatorChanged);
+      _paragraphsNotifier.value = _convert(widget.indicatorNotifier.value);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.indicatorNotifier.removeListener(_onIndicatorChanged);
+    _paragraphsNotifier.dispose();
+    super.dispose();
+  }
+
+  void _onIndicatorChanged() {
+    _paragraphsNotifier.value = _convert(widget.indicatorNotifier.value);
+  }
+
+  static List<FoldGutterParagraph>? _convert(CodeIndicatorValue? val) {
+    if (val == null) return null;
+    return val.paragraphs
+        .map(
+          (p) =>
+              FoldGutterParagraph(index: p.index, top: p.top, height: p.height),
+        )
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FoldGutter(
+      controller: widget.controller,
+      paragraphsNotifier: _paragraphsNotifier,
+    );
+  }
 }

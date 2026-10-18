@@ -15,6 +15,11 @@ import 'editor_registry.dart';
 
 export '../reading/link_actions.dart'
     show PendingJump, PendingJumpNotifier, pendingJumpProvider;
+export 'autocomplete/autocomplete_controller.dart'
+    show
+        AutocompleteController,
+        AutocompleteState,
+        autocompleteControllerProvider;
 
 /// Attachment service provider.
 final attachmentServiceProvider = Provider<AttachmentService>((ref) {

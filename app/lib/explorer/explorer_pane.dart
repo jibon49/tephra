@@ -9,6 +9,7 @@ import 'package:tephra_vault/tephra_vault.dart';
 import '../l10n/app_localizations.dart';
 import '../settings/providers.dart';
 import '../settings/vault_settings.dart';
+import '../vault/providers.dart';
 import '../workspace/open_file.dart';
 import 'explorer_menus.dart';
 import 'explorer_row_tile.dart';
@@ -383,6 +384,20 @@ class _ExplorerPaneState extends ConsumerState<ExplorerPane> {
               icon: const Icon(Icons.unfold_less),
               onPressed: () {
                 ref.read(explorerExpandedProvider.notifier).collapseAll();
+              },
+            ),
+          ),
+          SizedBox(
+            width: buttonSize,
+            height: buttonSize,
+            child: IconButton(
+              key: const ValueKey('explorer.openVault'),
+              iconSize: iconSize,
+              padding: EdgeInsets.zero,
+              tooltip: l10n.commandAppOpenVault,
+              icon: const Icon(Icons.folder_shared_outlined),
+              onPressed: () {
+                ref.read(vaultSessionProvider.notifier).close();
               },
             ),
           ),

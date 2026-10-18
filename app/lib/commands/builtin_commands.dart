@@ -3,20 +3,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../bookmarks/bookmark_commands.dart';
+import '../core/perf/perf_command.dart';
+import '../editor/folding/fold_commands.dart';
+import '../editor/live_preview/editing_mode_commands.dart';
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
+import '../search/copy_results.dart';
+import '../search/providers.dart';
+import '../search/search_screen.dart';
 import '../vault/note_document.dart';
+import '../vault/note_tools/note_tools_commands.dart';
 import '../vault/providers.dart';
+import '../vault/vault_undo.dart';
 import '../workspace/open_file.dart';
 import '../workspace/providers.dart';
 import '../workspace/workspace_models.dart';
 import 'command_palette.dart';
 import 'command_registry.dart';
+import 'index_commands.dart';
 import 'providers.dart';
 import 'quick_switcher.dart';
 import 'tephra_command.dart';
 
 void registerBuiltinCommands(CommandRegistry registry) {
+  registerIndexCommands(registry);
+  registerBookmarkCommands(registry);
+  registerEditingModeCommands(registry);
+  registerFoldCommands(registry);
+  registerNoteToolsCommands(registry);
+  registerPerfCommand(registry);
   registry.register(
     TephraCommand(
       id: 'app.open-quick-switcher',
@@ -221,6 +237,26 @@ void registerBuiltinCommands(CommandRegistry registry) {
 
   registry.register(
     TephraCommand(
+      id: 'editor.trigger-autocomplete',
+      label: (l10n) => l10n.commandTriggerAutocomplete,
+      icon: Icons.auto_awesome,
+      defaultShortcuts: const [
+        SingleActivator(LogicalKeyboardKey.space, control: true),
+      ],
+      isAvailable: (ref) => ref.read(activeEditorProvider) != null,
+      run: (ref, context) {
+        final focusedTab = ref.read(workspaceProvider).focusedTab;
+        if (focusedTab != null) {
+          ref
+              .read(autocompleteControllerProvider(focusedTab.id).notifier)
+              .trigger(force: true);
+        }
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
       id: 'note.create-note',
       label: (l10n) => l10n.commandNoteCreateNote,
       icon: Icons.add,
@@ -255,6 +291,72 @@ void registerBuiltinCommands(CommandRegistry registry) {
           final l10n = AppLocalizations.of(context);
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(l10n.saveFailed)));
+        }
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'vault.undo-last-rename',
+      label: (l10n) => l10n.commandVaultUndoLastRename,
+      icon: Icons.undo,
+      defaultShortcuts: const [],
+      isAvailable: (ref) => ref.read(vaultUndoStackProvider).isNotEmpty,
+      run: (ref, context) async {
+        await ref.read(vaultUndoStackProvider.notifier).undoLast();
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'search.open',
+      label: (l10n) => l10n.commandSearchOpen,
+      icon: Icons.search,
+      defaultShortcuts: const [
+        SingleActivator(LogicalKeyboardKey.keyF, control: true, shift: true),
+      ],
+      run: (ref, context) {
+        final activeEditor = ref.read(activeEditorProvider);
+        String? prefill;
+        if (activeEditor != null && !activeEditor.selection.isCollapsed) {
+          final sel = activeEditor.selection;
+          final text = activeEditor.text;
+          if (sel.start >= 0 && sel.end <= text.length) {
+            prefill = text.substring(sel.start, sel.end).trim();
+          }
+        }
+        if (prefill != null && prefill.isNotEmpty) {
+          ref.read(searchControllerProvider.notifier).setQuery(prefill);
+        }
+
+        final width = MediaQuery.sizeOf(context).width;
+        if (width >= 840) {
+          ref.read(activeLeftSidebarPanelProvider.notifier).select('search');
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => SearchScreen(initialQuery: prefill),
+            ),
+          );
+        }
+      },
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
+      id: 'search.copy-results',
+      label: (l10n) => l10n.commandSearchCopyResults,
+      icon: Icons.copy,
+      defaultShortcuts: const [],
+      isAvailable: (ref) =>
+          ref.read(searchControllerProvider).results.isNotEmpty,
+      run: (ref, context) {
+        final results = ref.read(searchControllerProvider).results;
+        if (results.isNotEmpty) {
+          copyResultsToClipboard(context, ref, results);
         }
       },
     ),

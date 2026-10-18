@@ -14,12 +14,16 @@ final class BenchOptions {
     this.seed = 42,
     required this.outDir,
     this.attachments = 200,
+    this.demoPack = false,
+    this.hugeNoteSource,
   });
 
   final int count;
   final int seed;
   final String outDir;
   final int attachments;
+  final bool demoPack;
+  final String? hugeNoteSource;
 }
 
 final class BenchReport {
@@ -30,6 +34,7 @@ final class BenchReport {
     required this.unresolvedLinks,
     required this.attachments,
     required this.bytes,
+    this.demoNotes = 0,
   });
 
   final int notes;
@@ -38,10 +43,11 @@ final class BenchReport {
   final int unresolvedLinks;
   final int attachments;
   final int bytes;
+  final int demoNotes;
 
   @override
   String toString() =>
-      'BenchReport(notes: $notes, folders: $folders, links: $links, unresolvedLinks: $unresolvedLinks, attachments: $attachments, bytes: $bytes)';
+      'BenchReport(notes: $notes, folders: $folders, links: $links, unresolvedLinks: $unresolvedLinks, attachments: $attachments, bytes: $bytes, demoNotes: $demoNotes)';
 }
 
 bool checkCleanAllowed(String dirPath) {
@@ -715,7 +721,92 @@ BenchReport generateBenchVault(BenchOptions o) {
     totalBytes += png.length;
   }
 
-  // 6. Marker
+  // 6. Demo pack
+  var demoNotesCount = 0;
+  if (o.demoPack) {
+    final demoDir = Directory(p.join(o.outDir, 'Demo'));
+    if (!demoDir.existsSync()) {
+      demoDir.createSync(recursive: true);
+    }
+    final templatesDir = Directory(p.join(o.outDir, 'Templates'));
+    if (!templatesDir.existsSync()) {
+      templatesDir.createSync(recursive: true);
+    }
+
+    // Demo/Quokka Hub.md
+    final quokkaHub = utf8.encode(
+      '---\ntags: [project]\n---\n# Quokka Hub\nThe target note of the demo.\n',
+    );
+    File(p.join(o.outDir, 'Demo', 'Quokka Hub.md'))
+        .writeAsBytesSync(quokkaHub, flush: true);
+    totalBytes += quokkaHub.length;
+    demoNotesCount++;
+
+    // Demo/Linker 1.md, Linker 2.md, Linker 3.md
+    final linker = utf8.encode('See [[Quokka Hub]] for details.\n');
+    for (var i = 1; i <= 3; i++) {
+      File(p.join(o.outDir, 'Demo', 'Linker $i.md'))
+          .writeAsBytesSync(linker, flush: true);
+      totalBytes += linker.length;
+      demoNotesCount++;
+    }
+
+    // Demo/Mention 1.md
+    final mention1 = utf8.encode('Ideas about the quokka hub for later.\n');
+    File(p.join(o.outDir, 'Demo', 'Mention 1.md'))
+        .writeAsBytesSync(mention1, flush: true);
+    totalBytes += mention1.length;
+    demoNotesCount++;
+
+    // Demo/Mention 2.md
+    final mention2 = utf8.encode(
+      'Quokka Hub is only a placeholder name in this note.\n',
+    );
+    File(p.join(o.outDir, 'Demo', 'Mention 2.md'))
+        .writeAsBytesSync(mention2, flush: true);
+    totalBytes += mention2.length;
+    demoNotesCount++;
+
+    // Demo/Report Task.md
+    final reportTask = utf8.encode(
+      '---\ntags: [project]\n---\n# Report Task\n- [ ] write the quarterly report\n- [x] file the old report\n',
+    );
+    File(p.join(o.outDir, 'Demo', 'Report Task.md'))
+        .writeAsBytesSync(reportTask, flush: true);
+    totalBytes += reportTask.length;
+    demoNotesCount++;
+
+    // Templates/Daily.md
+    final daily = utf8.encode(
+      '# {{date:dddd, MMMM Do YYYY}}\n\n## Tasks\n- [ ] \n\n## Notes\nCreated at {{time}}\n',
+    );
+    File(p.join(o.outDir, 'Templates', 'Daily.md'))
+        .writeAsBytesSync(daily, flush: true);
+    totalBytes += daily.length;
+
+    // Huge-5000-lines.md at vault root
+    final hugePath = p.join(o.outDir, 'Huge-5000-lines.md');
+    if (o.hugeNoteSource != null && File(o.hugeNoteSource!).existsSync()) {
+      final bytes = File(o.hugeNoteSource!).readAsBytesSync();
+      File(hugePath).writeAsBytesSync(bytes, flush: true);
+      totalBytes += bytes.length;
+    } else {
+      final hugeBuf = StringBuffer();
+      for (var line = 1; line <= 5000; line++) {
+        if (line % 100 == 1) {
+          hugeBuf.write('## Section ${(line ~/ 100) + 1}\n');
+        }
+        hugeBuf.write(
+          'Line $line: the quick brown fox jumps over the lazy dog.\n',
+        );
+      }
+      final bytes = utf8.encode(hugeBuf.toString());
+      File(hugePath).writeAsBytesSync(bytes, flush: true);
+      totalBytes += bytes.length;
+    }
+  }
+
+  // 7. Marker
   final marker = File(p.join(o.outDir, '.tephra-bench'));
   final markerBytes = utf8.encode('seed=${o.seed} count=${o.count}\n');
   marker.writeAsBytesSync(markerBytes, flush: true);
@@ -723,10 +814,14 @@ BenchReport generateBenchVault(BenchOptions o) {
 
   return BenchReport(
     notes: o.count,
-    folders: nonRootFolders.length + 1, // + Attachments
+    folders:
+        nonRootFolders.length +
+        1 +
+        (o.demoPack ? 2 : 0), // + Attachments (+ Demo + Templates)
     links: totalLinks,
     unresolvedLinks: totalUnresolved,
     attachments: o.attachments,
     bytes: totalBytes,
+    demoNotes: demoNotesCount,
   );
 }

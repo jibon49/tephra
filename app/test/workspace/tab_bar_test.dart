@@ -20,6 +20,7 @@ void main() {
     await fs.writeText(VaultPath('MyNote.md'), const TextDocument(text: ''));
     await fs.writeText(VaultPath('OtherNote.md'), const TextDocument(text: ''));
 
+    setSurfaceSize(tester, const Size(1200, 800));
     await tester.pumpWidget(
       testApp(const WorkspaceShell(), fs: fs, size: const Size(1200, 800)),
     );
@@ -81,6 +82,7 @@ void main() {
     await fs.writeText(VaultPath('NoteA.md'), const TextDocument(text: ''));
     await fs.writeText(VaultPath('NoteB.md'), const TextDocument(text: ''));
 
+    setSurfaceSize(tester, const Size(1200, 800));
     await tester.pumpWidget(
       testApp(const WorkspaceShell(), fs: fs, size: const Size(1200, 800)),
     );
@@ -125,6 +127,7 @@ void main() {
     final fs = MemoryVaultFileSystem();
     await fs.writeText(VaultPath('DirtyNote.md'), const TextDocument(text: ''));
 
+    setSurfaceSize(tester, const Size(1200, 800));
     await tester.pumpWidget(
       testApp(
         const WorkspaceShell(),
