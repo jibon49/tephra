@@ -12,7 +12,7 @@ import 'vault_settings.dart';
 import 'vault_settings_store.dart';
 
 final initialAppSettingsProvider = Provider<AppSettings>((ref) {
-  throw UnimplementedError('override in main');
+  return const AppSettings(deviceId: 'default-device');
 });
 
 final appSettingsStoreProvider = Provider<AppSettingsStore?>((ref) => null);

@@ -13,6 +13,7 @@ import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../core/perf/perf_probe.dart';
 import '../l10n/app_localizations.dart';
 import '../links/providers.dart';
 import '../properties/properties_panel.dart';
@@ -306,6 +307,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
+        PerfProbe.mark('editable');
         _handleInitialOffsetAndJumps(controller, doc);
       });
     } finally {

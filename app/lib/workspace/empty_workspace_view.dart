@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/providers.dart';
 import '../l10n/app_localizations.dart';
+import '../vault/providers.dart';
 
 class EmptyWorkspaceView extends ConsumerWidget {
   const EmptyWorkspaceView({super.key});
@@ -45,6 +46,14 @@ class EmptyWorkspaceView extends ConsumerWidget {
                 label: Text(l10n.commandNoteCreateNote),
                 onPressed: () {
                   registry.byId('note.create-note')?.run(ref, context);
+                },
+              ),
+              OutlinedButton.icon(
+                key: const Key('empty.openVault'),
+                icon: const Icon(Icons.folder_open_outlined, size: 18),
+                label: Text(l10n.commandAppOpenVault),
+                onPressed: () {
+                  ref.read(vaultSessionProvider.notifier).close();
                 },
               ),
             ],

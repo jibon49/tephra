@@ -7,7 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_search/tephra_search.dart';
+
+import '../core/providers.dart';
 
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
@@ -330,121 +333,155 @@ class _QuickSwitcherDialogState extends ConsumerState<_QuickSwitcherDialog> {
           ),
           const Divider(height: 1),
           Expanded(
-            child: visibleItems.isEmpty && !canShowPhoneCreate
+            child:
+                (allItemsAsync.error is IndexUnavailableException ||
+                    ref.watch(noteIndexProvider).error
+                        is IndexUnavailableException)
                 ? Center(
-                    child: Text(
-                      l10n.switcherNoResults,
-                      style: Theme.of(context).textTheme.bodyMedium
-                          ?.copyWith(color: Theme.of(context).hintColor),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        l10n.indexUnavailableOnWeb,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(color: Theme.of(context).hintColor),
+                      ),
                     ),
                   )
-                : ListView.builder(
-                    itemCount:
-                        visibleItems.length + (canShowPhoneCreate ? 1 : 0),
-                    itemExtent: 48,
-                    itemBuilder: (context, index) {
-                      if (canShowPhoneCreate && index == visibleItems.length) {
-                        return InkWell(
-                          key: const Key('switcher.create'),
-                          onTap: () => _createAndOpen(q, newTab: false),
-                          child: Container(
-                            height: 48,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.add, size: 20),
-                                const SizedBox(width: 12),
-                                Text(
-                                  l10n.switcherCreate(q),
-                                  style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                ),
-                              ],
-                            ),
+                : (visibleItems.isEmpty && !canShowPhoneCreate
+                      ? Center(
+                          child: Text(
+                            l10n.switcherNoResults,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: Theme.of(context).hintColor),
                           ),
-                        );
-                      }
-
-                      final item = visibleItems[index];
-                      final isSelected = index == _selectedIndex;
-
-                      final matchQuery = q.startsWith('#')
-                          ? q.substring(1).trim()
-                          : (q.contains('#')
-                                ? q.substring(q.indexOf('#') + 1).trim()
-                                : q);
-                      final ranges = matchQuery.isEmpty
-                          ? const <(int, int)>[]
-                          : FuzzyScorer.matchRanges(matchQuery, item.primary);
-
-                      final IconData icon;
-                      if (item.isHeading) {
-                        icon = Icons.numbers_outlined;
-                      } else if (item.isAlias) {
-                        icon = Icons.shortcut_outlined;
-                      } else if (item.isAttachment) {
-                        icon = Icons.attach_file;
-                      } else {
-                        icon = Icons.description_outlined;
-                      }
-
-                      final Key rowKey;
-                      if (item.isHeading) {
-                        rowKey = Key('switcher.row.heading.${item.primary}');
-                      } else if (item.isAlias) {
-                        rowKey = Key('switcher.row.alias.${item.primary}');
-                      } else {
-                        rowKey = Key('switcher.row.${item.path.value}');
-                      }
-
-                      return InkWell(
-                        key: rowKey,
-                        onTap: () => _openItem(item, newTab: false),
-                        child: Container(
-                          height: 48,
-                          color: isSelected
-                              ? Theme.of(context).colorScheme.primaryContainer
-                              : null,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            children: [
-                              Icon(icon, size: 20),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildHighlightedText(
-                                      context,
-                                      item.primary,
-                                      ranges,
-                                    ),
-                                    if (item.secondary.isNotEmpty)
+                        )
+                      : ListView.builder(
+                          itemCount:
+                              visibleItems.length +
+                              (canShowPhoneCreate ? 1 : 0),
+                          itemExtent: 48,
+                          itemBuilder: (context, index) {
+                            if (canShowPhoneCreate &&
+                                index == visibleItems.length) {
+                              return InkWell(
+                                key: const Key('switcher.create'),
+                                onTap: () => _createAndOpen(q, newTab: false),
+                                child: Container(
+                                  height: 48,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.add, size: 20),
+                                      const SizedBox(width: 12),
                                       Text(
-                                        item.secondary,
+                                        l10n.switcherCreate(q),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodySmall
+                                            .bodyMedium
                                             ?.copyWith(
                                               color: Theme.of(context)
-                                                  .hintColor,
+                                                  .colorScheme
+                                                  .primary,
                                             ),
-                                        overflow: TextOverflow.ellipsis,
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
+                            final item = visibleItems[index];
+                            final isSelected = index == _selectedIndex;
+
+                            final matchQuery = q.startsWith('#')
+                                ? q.substring(1).trim()
+                                : (q.contains('#')
+                                      ? q.substring(q.indexOf('#') + 1).trim()
+                                      : q);
+                            final ranges = matchQuery.isEmpty
+                                ? const <(int, int)>[]
+                                : FuzzyScorer.matchRanges(
+                                    matchQuery,
+                                    item.primary,
+                                  );
+
+                            final IconData icon;
+                            if (item.isHeading) {
+                              icon = Icons.numbers_outlined;
+                            } else if (item.isAlias) {
+                              icon = Icons.shortcut_outlined;
+                            } else if (item.isAttachment) {
+                              icon = Icons.attach_file;
+                            } else {
+                              icon = Icons.description_outlined;
+                            }
+
+                            final Key rowKey;
+                            if (item.isHeading) {
+                              rowKey = Key(
+                                'switcher.row.heading.${item.primary}',
+                              );
+                            } else if (item.isAlias) {
+                              rowKey = Key(
+                                'switcher.row.alias.${item.primary}',
+                              );
+                            } else {
+                              rowKey = Key('switcher.row.${item.path.value}');
+                            }
+
+                            return InkWell(
+                              key: rowKey,
+                              onTap: () => _openItem(item, newTab: false),
+                              child: Container(
+                                height: 48,
+                                color: isSelected
+                                    ? Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer
+                                    : null,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(icon, size: 20),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _buildHighlightedText(
+                                            context,
+                                            item.primary,
+                                            ranges,
+                                          ),
+                                          if (item.secondary.isNotEmpty)
+                                            Text(
+                                              item.secondary,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                    color: Theme.of(context)
+                                                        .hintColor,
+                                                  ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                            );
+                          },
+                        )),
           ),
         ],
       ),

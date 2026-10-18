@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tephra_index/tephra_index.dart';
 
 import '../l10n/app_localizations.dart';
 import '../search/providers.dart';
@@ -209,12 +210,28 @@ class _TagsPaneState extends ConsumerState<TagsPane> {
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
             ),
-            error: (err, _) => Center(
-              child: Text(
-                '$err',
-                style: TextStyle(color: theme.colorScheme.error),
-              ),
-            ),
+            error: (err, _) {
+              if (err is IndexUnavailableException) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      l10n.indexUnavailableOnWeb,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return Center(
+                child: Text(
+                  '$err',
+                  style: TextStyle(color: theme.colorScheme.error),
+                ),
+              );
+            },
             data: (nodes) {
               if (nodes.isEmpty) {
                 return Center(

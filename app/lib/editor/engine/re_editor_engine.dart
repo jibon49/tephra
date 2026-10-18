@@ -350,7 +350,20 @@ class ReEditorEngine implements EditorEngine {
   }
 
   void _onDecoratorChanged() {
-    _controller.forceRepaint();
+    if (_isDisposed) return;
+    try {
+      _controller.forceRepaint();
+    } catch (_) {
+      // Re-editor may still be updating its line paragraphs during an active edit.
+      // A post-frame callback ensures repaint occurs after layout.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_isDisposed) {
+          try {
+            _controller.forceRepaint();
+          } catch (_) {}
+        }
+      });
+    }
   }
 
   @override

@@ -1,9 +1,9 @@
 // © 2026 Tephra. All rights reserved.
 
-import 'dart:isolate';
-
 import 'package:flutter/foundation.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
+
+import '../core/isolate_utils.dart';
 
 /// Parses a note; notes longer than [isolateThreshold] UTF-16 units are parsed in a short-lived isolate (conventions §5.6).
 final class ParseService {
@@ -16,6 +16,6 @@ final class ParseService {
     if (kIsWeb || text.length <= isolateThreshold) {
       return Future.value(MarkdownParser.parse(text));
     }
-    return Isolate.run(() => MarkdownParser.parse(text));
+    return runInIsolate(() => MarkdownParser.parse(text));
   }
 }

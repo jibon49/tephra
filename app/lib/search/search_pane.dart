@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_search/tephra_search.dart';
 
 import '../bookmarks/bookmark.dart';
 import '../bookmarks/providers.dart';
+import '../core/providers.dart';
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../workspace/providers.dart';
@@ -115,6 +117,20 @@ class _SearchPaneState extends ConsumerState<SearchPane> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final indexAsync = ref.watch(noteIndexProvider);
+    if (indexAsync.error is IndexUnavailableException) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            l10n.indexUnavailableOnWeb,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+          ),
+        ),
+      );
+    }
+
     final searchState = ref.watch(searchControllerProvider);
     final searchCtrl = ref.read(searchControllerProvider.notifier);
     final historyAsync = ref.watch(searchHistoryProvider);

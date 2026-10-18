@@ -6,6 +6,7 @@ import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
 
+import '../core/providers.dart';
 import '../editor/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../vault/providers.dart';
@@ -54,6 +55,21 @@ class _BacklinksPaneState extends ConsumerState<BacklinksPane> {
     }
 
     final backlinksAsync = ref.watch(backlinksProvider(activePath));
+    final indexAsync = ref.watch(noteIndexProvider);
+    if (backlinksAsync.error is IndexUnavailableException ||
+        indexAsync.error is IndexUnavailableException) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            l10n.indexUnavailableOnWeb,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: Theme.of(context).hintColor),
+          ),
+        ),
+      );
+    }
 
     return Column(
       children: [

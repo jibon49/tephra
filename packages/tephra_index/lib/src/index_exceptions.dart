@@ -11,3 +11,8 @@ class IndexCorruptException extends TephraException {
 class IndexQueryException extends TephraException {
   const IndexQueryException(super.message);
 }
+
+/// Thrown when the index is not available on this platform (e.g. web preview).
+class IndexUnavailableException extends TephraException {
+  const IndexUnavailableException([super.message = 'index unavailable on web']);
+}

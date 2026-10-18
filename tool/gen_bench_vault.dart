@@ -11,6 +11,7 @@ void main(List<String> args) {
   var seed = 42;
   String? outDirArg;
   var clean = false;
+  var demo = false;
 
   for (var i = 0; i < args.length; i++) {
     final arg = args[i];
@@ -22,6 +23,8 @@ void main(List<String> args) {
       outDirArg = args[++i];
     } else if (arg == '--clean') {
       clean = true;
+    } else if (arg == '--demo') {
+      demo = true;
     }
   }
 
@@ -51,9 +54,22 @@ void main(List<String> args) {
     }
   }
 
+  final hugeSource = p.join(
+    repoRoot,
+    'test_vaults',
+    'edge',
+    'huge-5000-lines.md',
+  );
+
   final sw = Stopwatch()..start();
   final report = generateBenchVault(
-    BenchOptions(count: count, seed: seed, outDir: outDir),
+    BenchOptions(
+      count: count,
+      seed: seed,
+      outDir: outDir,
+      demoPack: demo,
+      hugeNoteSource: hugeSource,
+    ),
   );
   sw.stop();
 

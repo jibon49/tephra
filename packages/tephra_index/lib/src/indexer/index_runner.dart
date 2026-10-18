@@ -59,7 +59,18 @@ final class IndexRequestQueue {
 
   Future<void> enqueueReconcile() => _enqueue(ReconcileTask());
 
-  Future<void> enqueueRebuild() => _enqueue(RebuildTask());
+  Future<void> enqueueRebuild() {
+    if (_disposed) {
+      throw const IndexQueryException('index runner is closed');
+    }
+    for (final task in _queue) {
+      for (final c in task.completers) {
+        c.complete();
+      }
+    }
+    _queue.clear();
+    return _enqueue(RebuildTask());
+  }
 
   Future<void> enqueueApply(VaultChange change) {
     if (_disposed) {

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_index/tephra_index.dart';
 
+import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../workspace/providers.dart';
 import 'providers.dart';
@@ -32,6 +33,21 @@ class OutgoingLinksPane extends ConsumerWidget {
     }
 
     final outgoingAsync = ref.watch(outgoingLinksProvider(activePath));
+    final indexAsync = ref.watch(noteIndexProvider);
+    if (outgoingAsync.error is IndexUnavailableException ||
+        indexAsync.error is IndexUnavailableException) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            l10n.indexUnavailableOnWeb,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: Theme.of(context).hintColor),
+          ),
+        ),
+      );
+    }
 
     return outgoingAsync.when(
       data: (links) {

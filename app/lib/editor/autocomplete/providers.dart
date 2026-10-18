@@ -19,11 +19,16 @@ final propertyKeysProvider = FutureProvider<List<PropertyKeyCount>>((
   if (changes.hasValue) {
     await Future<void>.delayed(const Duration(milliseconds: 500));
   }
-  final index = await ref.watch(noteIndexProvider.future);
-  final indexed = await index.propertyKeys();
+  final result = <PropertyKeyCount>[];
+  try {
+    final index = await ref.watch(noteIndexProvider.future);
+    final indexed = await index.propertyKeys();
+    result.addAll(indexed);
+  } catch (_) {
+    // Index unavailable on web or not yet ready.
+  }
 
-  final result = List<PropertyKeyCount>.from(indexed);
-  final existing = {for (final k in indexed) k.key.toLowerCase()};
+  final existing = {for (final k in result) k.key.toLowerCase()};
 
   if (!existing.contains('tags')) {
     result.add(
@@ -58,6 +63,10 @@ final propertyValuesProvider = FutureProvider.family<List<String>, String>((
   if (changes.hasValue) {
     await Future<void>.delayed(const Duration(milliseconds: 500));
   }
-  final index = await ref.watch(noteIndexProvider.future);
-  return index.propertyValues(key, limit: 50);
+  try {
+    final index = await ref.watch(noteIndexProvider.future);
+    return await index.propertyValues(key, limit: 50);
+  } catch (_) {
+    return const [];
+  }
 });

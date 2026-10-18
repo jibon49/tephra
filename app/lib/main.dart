@@ -11,12 +11,18 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tephra/app.dart';
 import 'package:tephra/core/json_file_store.dart';
 import 'package:tephra/core/logging.dart';
+import 'package:tephra/core/perf/perf_probe.dart';
 import 'package:tephra/core/uuid.dart';
 import 'package:tephra/settings/app_settings.dart';
 import 'package:tephra/settings/app_settings_store.dart';
 import 'package:tephra/settings/providers.dart';
 
 Future<void> main() async {
+  PerfProbe.markAppStart();
+  if (PerfProbe.enabled) {
+    PerfProbe.installLogBridge();
+    Logger.root.level = Level.ALL;
+  }
   WidgetsFlutterBinding.ensureInitialized();
   await setupLogging();
   installCrashHandlers();

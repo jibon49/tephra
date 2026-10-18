@@ -31,6 +31,36 @@ Future<void> ftsInsert(
   );
 }
 
+/// Inserts multiple note entries into [fts_words] and [fts_trigram] in chunks.
+Future<void> ftsBatchInsert(
+  DatabaseConnectionUser db,
+  List<(int, String, String)> items,
+) async {
+  if (items.isEmpty) return;
+  const chunkSize = 100;
+  for (var i = 0; i < items.length; i += chunkSize) {
+    final chunk = items.sublist(
+      i,
+      i + chunkSize > items.length ? items.length : i + chunkSize,
+    );
+    final placeholders = List.filled(chunk.length, '(?, ?, ?)').join(', ');
+    final args = <Object>[];
+    for (final (rowid, name, body) in chunk) {
+      args.add(rowid);
+      args.add(name);
+      args.add(body);
+    }
+    await db.customStatement(
+      'INSERT INTO fts_words(rowid, name, body) VALUES $placeholders',
+      args,
+    );
+    await db.customStatement(
+      'INSERT INTO fts_trigram(rowid, name, body) VALUES $placeholders',
+      args,
+    );
+  }
+}
+
 /// Deletes full-text search entries for [noteId] from both tables.
 Future<void> ftsDelete(DatabaseConnectionUser db, int noteId) async {
   await db.customStatement('DELETE FROM fts_words WHERE rowid = ?', [noteId]);

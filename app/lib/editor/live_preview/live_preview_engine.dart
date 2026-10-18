@@ -1,9 +1,10 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:tephra_markdown/tephra_markdown.dart';
+
+import '../../core/isolate_utils.dart';
 
 import 'block_decorator.dart';
 import 'chunk_splitter.dart';
@@ -69,7 +70,7 @@ final class LivePreviewEngine {
       _revision++;
       final currentOptions = options;
       unawaited(
-        Isolate.run(() {
+        runInIsolate(() {
           return _computeAllChunks(text, currentOptions);
         }).then((result) {
           _chunks = result;

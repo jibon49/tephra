@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:isolate';
 
 import 'package:drift/drift.dart' hide Table, Column, Index;
-import 'package:sqlite3/sqlite3.dart' as sqlite;
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
@@ -576,10 +575,10 @@ final class NoteIndex {
           )
           .toList();
     } catch (e) {
-      if (e is sqlite.SqliteException ||
-          e.toString().contains('syntax error') ||
-          e.toString().contains('MATCH') ||
-          e.toString().contains('SqliteException')) {
+      final msg = e.toString();
+      if (msg.contains('SqliteException') ||
+          msg.contains('syntax error') ||
+          msg.contains('MATCH')) {
         throw IndexQueryException('invalid full-text query: $e');
       }
       rethrow;

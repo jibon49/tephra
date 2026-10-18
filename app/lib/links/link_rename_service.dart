@@ -1,7 +1,5 @@
 // © 2026 Tephra. All rights reserved.
 
-import 'dart:isolate';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
@@ -9,6 +7,7 @@ import 'package:tephra_index/tephra_index.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../bookmarks/providers.dart';
+import '../core/isolate_utils.dart';
 import '../core/providers.dart';
 import '../editor/edit_operation.dart';
 import '../editor/folding/providers.dart';
@@ -127,7 +126,7 @@ final class LinkRenameService {
 
     RenamePlan plan;
     if (texts.length > 50) {
-      plan = await Isolate.run(
+      plan = await runInIsolate(
         () => RenamePlanner(
           before: table,
           settings: linkSettings,

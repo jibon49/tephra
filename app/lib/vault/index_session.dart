@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
@@ -19,6 +20,10 @@ class NoteIndexNotifier extends AsyncNotifier<NoteIndex> {
 
   @override
   Future<NoteIndex> build() async {
+    if (kIsWeb) {
+      throw const IndexUnavailableException();
+    }
+
     final session = ref.watch(vaultSessionProvider);
     if (session == null) {
       throw StateError('No vault is open');
@@ -74,11 +79,13 @@ class NoteIndexNotifier extends AsyncNotifier<NoteIndex> {
       unawaited(index.close());
     });
 
-    unawaited(
-      index.reconcile().catchError((Object err, StackTrace st) {
-        _log.warning('Failed to reconcile index', err, st);
-      }),
-    );
+    if (!const bool.fromEnvironment('TEPHRA_AUTO_BENCH')) {
+      unawaited(
+        index.reconcile().catchError((Object err, StackTrace st) {
+          _log.warning('Failed to reconcile index', err, st);
+        }),
+      );
+    }
 
     return index;
   }

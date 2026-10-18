@@ -1345,4 +1345,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSettings => 'Open settings';
+
+  @override
+  String get indexUnavailableOnWeb =>
+      'Search and links are not available in the web preview.';
+
+  @override
+  String get commandRunBenchmarks => 'Run performance benchmarks';
 }

@@ -2547,6 +2547,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open settings'**
   String get openSettings;
+
+  /// No description provided for @indexUnavailableOnWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and links are not available in the web preview.'**
+  String get indexUnavailableOnWeb;
+
+  /// No description provided for @commandRunBenchmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Run performance benchmarks'**
+  String get commandRunBenchmarks;
 }
 
 class _AppLocalizationsDelegate

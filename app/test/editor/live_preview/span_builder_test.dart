@@ -303,7 +303,9 @@ void main() {
   });
 
   test('invariant test across all syntax notes', () {
-    final syntaxDir = Directory('test_vaults/syntax');
+    final syntaxDir = Directory('test_vaults/syntax').existsSync()
+        ? Directory('test_vaults/syntax')
+        : Directory('../test_vaults/syntax');
     final files = syntaxDir
         .listSync(recursive: true)
         .whereType<File>()

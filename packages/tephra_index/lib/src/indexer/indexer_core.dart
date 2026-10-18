@@ -8,6 +8,7 @@ import 'package:tephra_vault/tephra_vault.dart';
 
 import '../db/fts.dart';
 import '../db/index_database.dart';
+import '../extract/extracted_note.dart';
 import '../extract/link_target_key.dart';
 import '../extract/note_extractor.dart';
 import '../links/link_resolver.dart';
@@ -182,25 +183,32 @@ final class IndexerCore {
         }
       }
 
-      final indexedPaths = <VaultPath>{};
-      await db.transaction(() async {
-        for (final e in batch) {
-          final bytes = bytesMap[e.path];
-          final hash = hashMap[e.path];
-          if (bytes == null || hash == null) {
-            await _deleteFile(e.path);
-            continue;
-          }
-          try {
-            final r = await _writeFile(e.path, e, bytes, hash);
-            dirty.addAll(_symmetricDifference(r.oldAliasKeys, r.newAliasKeys));
-            indexedPaths.add(e.path);
-          } catch (err, st) {
-            _log.warning('Failed to parse or write ${e.path}', err, st);
-            await _deleteFile(e.path);
-          }
+      final validItems =
+          <
+            ({VaultPath path, VaultEntry entry, List<int> bytes, String hash})
+          >[];
+      for (final e in batch) {
+        final bytes = bytesMap[e.path];
+        final hash = hashMap[e.path];
+        if (bytes != null && hash != null) {
+          validItems.add((path: e.path, entry: e, bytes: bytes, hash: hash));
+        } else {
+          await _deleteFile(e.path);
         }
-      });
+      }
+
+      final written = await _writeBatch(validItems);
+      for (final e in batch) {
+        bytesMap.remove(e.path);
+        hashMap.remove(e.path);
+      }
+      final indexedPaths = <VaultPath>{};
+      for (final w in written) {
+        dirty.addAll(
+          _symmetricDifference(w.result.oldAliasKeys, w.result.newAliasKeys),
+        );
+        indexedPaths.add(w.path);
+      }
 
       doneSoFar += batch.length;
       onProgress(
@@ -224,9 +232,7 @@ final class IndexerCore {
 
     final Set<String> changed;
     if (wasEmpty) {
-      final unresChanged = await _reresolveAllUnresolved();
-      final dirtyChanged = await _reresolve(dirty);
-      changed = unresChanged.union(dirtyChanged);
+      changed = await _reresolveAllUnresolved();
     } else {
       changed = await _reresolve(dirty);
     }
@@ -428,206 +434,289 @@ final class IndexerCore {
     await reconcile();
   }
 
+  Future<List<({VaultPath path, _WriteResult result})>> _writeBatch(
+    List<({VaultPath path, VaultEntry entry, List<int> bytes, String hash})>
+    items,
+  ) async {
+    if (items.isEmpty) return const [];
+
+    final extractedList =
+        <
+          ({
+            VaultPath path,
+            VaultEntry entry,
+            List<int> bytes,
+            String hash,
+            ExtractedNote? extracted,
+            List<String> oldAliasKeys,
+          })
+        >[];
+
+    for (final item in items) {
+      final oldAliases = _nameTable.aliasesOf(item.path);
+      final oldAliasKeys = oldAliases.map((a) => a.toLowerCase()).toList();
+
+      if (item.path.isMarkdown) {
+        try {
+          final doc = TextDocument.decode(item.bytes);
+          final parsed = MarkdownParser.parse(doc.text);
+          final x = NoteExtractor.extract(item.path, parsed);
+          extractedList.add((
+            path: item.path,
+            entry: item.entry,
+            bytes: item.bytes,
+            hash: item.hash,
+            extracted: x,
+            oldAliasKeys: oldAliasKeys,
+          ));
+        } catch (err, st) {
+          _log.warning('Failed to parse or extract ${item.path}', err, st);
+        }
+      } else {
+        extractedList.add((
+          path: item.path,
+          entry: item.entry,
+          bytes: item.bytes,
+          hash: item.hash,
+          extracted: null,
+          oldAliasKeys: oldAliasKeys,
+        ));
+      }
+    }
+
+    if (extractedList.isEmpty) return const [];
+
+    await db.transaction(() async {
+      final paths = extractedList.map((e) => e.path.value).toList();
+      final existingNoteRows = await (db.select(
+        db.notes,
+      )..where((n) => n.path.isIn(paths))).get();
+      if (existingNoteRows.isNotEmpty) {
+        for (final row in existingNoteRows) {
+          await ftsDelete(db, row.id);
+        }
+        await (db.delete(db.aliases)..where((t) => t.path.isIn(paths))).go();
+        await (db.delete(db.headings)..where((t) => t.path.isIn(paths))).go();
+        await (db.delete(db.blocks)..where((t) => t.path.isIn(paths))).go();
+        await (db.delete(db.tags)..where((t) => t.path.isIn(paths))).go();
+        await (db.delete(db.properties)..where((t) => t.path.isIn(paths))).go();
+        await (db.delete(db.tasks)..where((t) => t.path.isIn(paths))).go();
+        await (db.delete(db.links)..where((t) => t.source.isIn(paths))).go();
+        await (db.delete(db.notes)..where((t) => t.path.isIn(paths))).go();
+      }
+
+      final maxIdRow = await db
+          .customSelect('SELECT COALESCE(MAX(id), 0) AS max_id FROM notes')
+          .getSingle();
+      var nextId = maxIdRow.read<int>('max_id') + 1;
+
+      final filesToInsert = <FilesCompanion>[];
+      final notesToInsert = <NotesCompanion>[];
+      final aliasesToInsert = <AliasesCompanion>[];
+      final headingsToInsert = <HeadingsCompanion>[];
+      final blocksToInsert = <BlocksCompanion>[];
+      final linksToInsert = <LinksCompanion>[];
+      final tagsToInsert = <TagsCompanion>[];
+      final propertiesToInsert = <PropertiesCompanion>[];
+      final tasksToInsert = <TasksCompanion>[];
+      final ftsItems = <(int, String, String)>[];
+      final resolver = LinkResolver(_nameTable);
+
+      for (final item in extractedList) {
+        filesToInsert.add(
+          FilesCompanion.insert(
+            path: item.path.value,
+            caseKey: item.path.caseKey,
+            nameKey: item.path.name.toLowerCase(),
+            stemKey: item.path.stem.toLowerCase(),
+            folder: item.path.parent?.value ?? '',
+            extension: item.path.extension,
+            size: item.entry.size,
+            mtime: item.entry.modified.toUtc().millisecondsSinceEpoch,
+            created: Value(item.entry.created?.toUtc().millisecondsSinceEpoch),
+            hash: item.hash,
+            isNote: item.extracted != null,
+          ),
+        );
+
+        final x = item.extracted;
+        if (x != null) {
+          final noteId = nextId++;
+          notesToInsert.add(
+            NotesCompanion.insert(
+              id: Value(noteId),
+              path: item.path.value,
+              title: x.title,
+              frontmatterJson: x.frontmatterJson,
+              frontmatterValid: x.frontmatterValid,
+              wordCount: x.wordCount,
+            ),
+          );
+
+          ftsItems.add((noteId, x.ftsName, x.ftsBody));
+
+          for (var i = 0; i < x.aliases.length; i++) {
+            aliasesToInsert.add(
+              AliasesCompanion.insert(
+                path: item.path.value,
+                alias: x.aliases[i],
+                aliasKey: x.aliases[i].toLowerCase(),
+                ordinal: i,
+              ),
+            );
+          }
+
+          for (final h in x.headings) {
+            headingsToInsert.add(
+              HeadingsCompanion.insert(
+                path: item.path.value,
+                ordinal: h.ordinal,
+                level: h.level,
+                headingText: h.text,
+                headingKey: h.key,
+                startOffset: h.start,
+                endOffset: h.end,
+                line: h.line,
+              ),
+            );
+          }
+
+          for (final b in x.blocks) {
+            blocksToInsert.add(
+              BlocksCompanion.insert(
+                path: item.path.value,
+                blockId: b.id,
+                blockKey: b.id.toLowerCase(),
+                startOffset: b.start,
+                endOffset: b.end,
+                line: b.line,
+                preview: b.preview,
+              ),
+            );
+          }
+
+          for (final l in x.links) {
+            final r = resolver.resolve(l.targetRaw, from: item.path);
+            linksToInsert.add(
+              LinksCompanion.insert(
+                source: item.path.value,
+                targetRaw: l.targetRaw,
+                targetKey: l.targetKey,
+                targetPath: Value(r?.path.value),
+                kind: l.kind.name,
+                syntax: l.syntax.name,
+                heading: Value(l.heading),
+                blockRef: Value(l.blockRef),
+                alias: Value(l.alias),
+                embedSize: Value(l.embedSize),
+                startOffset: l.start,
+                endOffset: l.end,
+                line: l.line,
+                resolved: r != null,
+                viaAlias: r?.viaAlias ?? false,
+              ),
+            );
+          }
+
+          for (final t in x.tags) {
+            tagsToInsert.add(
+              TagsCompanion.insert(
+                path: item.path.value,
+                tag: t.tag,
+                tagLower: t.tag.toLowerCase(),
+                startOffset: Value(t.start),
+                line: Value(t.line),
+              ),
+            );
+          }
+
+          for (final p in x.properties) {
+            propertiesToInsert.add(
+              PropertiesCompanion.insert(
+                path: item.path.value,
+                key: p.key,
+                keyLower: p.key.toLowerCase(),
+                valueType: p.valueType,
+                ordinal: p.ordinal,
+                valueText: Value(p.valueText),
+                valueLower: Value(p.valueLower),
+                valueNum: Value(p.valueNum),
+                valueBool: Value(p.valueBool),
+                valueDate: Value(p.valueDate),
+              ),
+            );
+          }
+
+          for (final t in x.tasks) {
+            tasksToInsert.add(
+              TasksCompanion.insert(
+                path: item.path.value,
+                line: t.line,
+                statusChar: t.statusChar,
+                taskText: t.text,
+                taskLower: t.text.toLowerCase(),
+                startOffset: t.start,
+                endOffset: t.end,
+                due: Value(t.due),
+              ),
+            );
+          }
+        }
+      }
+
+      await db.batch((b) {
+        for (final f in filesToInsert) {
+          b.insert(db.files, f, mode: InsertMode.insertOrReplace);
+        }
+        b.insertAll(db.notes, notesToInsert);
+        b.insertAll(db.aliases, aliasesToInsert);
+        b.insertAll(db.headings, headingsToInsert);
+        for (final bl in blocksToInsert) {
+          b.insert(db.blocks, bl, mode: InsertMode.insertOrReplace);
+        }
+        b.insertAll(db.links, linksToInsert);
+        b.insertAll(db.tags, tagsToInsert);
+        b.insertAll(db.properties, propertiesToInsert);
+        b.insertAll(db.tasks, tasksToInsert);
+      });
+
+      await ftsBatchInsert(db, ftsItems);
+    });
+
+    final results = <({VaultPath path, _WriteResult result})>[];
+    for (final item in extractedList) {
+      final x = item.extracted;
+      if (x != null) {
+        _nameTable.setAliases(item.path, x.aliases);
+        final newAliasKeys = x.aliases.map((a) => a.toLowerCase()).toList();
+        results.add((
+          path: item.path,
+          result: _WriteResult(item.oldAliasKeys, newAliasKeys),
+        ));
+      } else {
+        _nameTable.setAliases(item.path, const []);
+        results.add((
+          path: item.path,
+          result: _WriteResult(item.oldAliasKeys, const []),
+        ));
+      }
+    }
+    return results;
+  }
+
   Future<_WriteResult> _writeFile(
     VaultPath path,
     VaultEntry entry,
     List<int> bytes,
     String hash,
   ) async {
-    final oldAliases = _nameTable.aliasesOf(path);
-    final oldAliasKeys = oldAliases.map((a) => a.toLowerCase()).toList();
-
-    final noteRow = await (db.select(
-      db.notes,
-    )..where((n) => n.path.equals(path.value))).getSingleOrNull();
-
-    if (noteRow != null) {
-      await ftsDelete(db, noteRow.id);
-      await (db.delete(
-        db.aliases,
-      )..where((t) => t.path.equals(path.value))).go();
-      await (db.delete(
-        db.headings,
-      )..where((t) => t.path.equals(path.value))).go();
-      await (db.delete(
-        db.blocks,
-      )..where((t) => t.path.equals(path.value))).go();
-      await (db.delete(db.tags)..where((t) => t.path.equals(path.value))).go();
-      await (db.delete(
-        db.properties,
-      )..where((t) => t.path.equals(path.value))).go();
-      await (db.delete(db.tasks)..where((t) => t.path.equals(path.value))).go();
-      await (db.delete(
-        db.links,
-      )..where((t) => t.source.equals(path.value))).go();
-      await (db.delete(db.notes)..where((t) => t.path.equals(path.value))).go();
+    final list = await _writeBatch([
+      (path: path, entry: entry, bytes: bytes, hash: hash),
+    ]);
+    if (list.isNotEmpty) {
+      return list.first.result;
     }
-
-    final isNote = path.isMarkdown;
-    final fileCompanion = FilesCompanion.insert(
-      path: path.value,
-      caseKey: path.caseKey,
-      nameKey: path.name.toLowerCase(),
-      stemKey: path.stem.toLowerCase(),
-      folder: path.parent?.value ?? '',
-      extension: path.extension,
-      size: entry.size,
-      mtime: entry.modified.toUtc().millisecondsSinceEpoch,
-      created: Value(entry.created?.toUtc().millisecondsSinceEpoch),
-      hash: hash,
-      isNote: isNote,
-    );
-    await db.into(db.files).insertOnConflictUpdate(fileCompanion);
-
-    if (isNote) {
-      final doc = TextDocument.decode(bytes);
-      final parsed = MarkdownParser.parse(doc.text);
-      final x = NoteExtractor.extract(path, parsed);
-
-      final noteCompanion = NotesCompanion.insert(
-        path: path.value,
-        title: x.title,
-        frontmatterJson: x.frontmatterJson,
-        frontmatterValid: x.frontmatterValid,
-        wordCount: x.wordCount,
-      );
-      final noteId = await db.into(db.notes).insert(noteCompanion);
-
-      await ftsInsert(db, noteId, x.ftsName, x.ftsBody);
-
-      final resolver = LinkResolver(_nameTable);
-      await db.batch((batch) {
-        // Aliases
-        for (var i = 0; i < x.aliases.length; i++) {
-          final a = x.aliases[i];
-          batch.insert(
-            db.aliases,
-            AliasesCompanion.insert(
-              path: path.value,
-              alias: a,
-              aliasKey: a.toLowerCase(),
-              ordinal: i,
-            ),
-          );
-        }
-
-        // Headings
-        for (final h in x.headings) {
-          batch.insert(
-            db.headings,
-            HeadingsCompanion.insert(
-              path: path.value,
-              ordinal: h.ordinal,
-              level: h.level,
-              headingText: h.text,
-              headingKey: h.key,
-              startOffset: h.start,
-              endOffset: h.end,
-              line: h.line,
-            ),
-          );
-        }
-
-        // Blocks
-        for (final b in x.blocks) {
-          batch.insert(
-            db.blocks,
-            BlocksCompanion.insert(
-              path: path.value,
-              blockId: b.id,
-              blockKey: b.id.toLowerCase(),
-              startOffset: b.start,
-              endOffset: b.end,
-              line: b.line,
-              preview: b.preview,
-            ),
-            mode: InsertMode.insertOrReplace,
-          );
-        }
-
-        // Links
-        for (final l in x.links) {
-          final r = resolver.resolve(l.targetRaw, from: path);
-          batch.insert(
-            db.links,
-            LinksCompanion.insert(
-              source: path.value,
-              targetRaw: l.targetRaw,
-              targetKey: l.targetKey,
-              targetPath: Value(r?.path.value),
-              kind: l.kind.name,
-              syntax: l.syntax.name,
-              heading: Value(l.heading),
-              blockRef: Value(l.blockRef),
-              alias: Value(l.alias),
-              embedSize: Value(l.embedSize),
-              startOffset: l.start,
-              endOffset: l.end,
-              line: l.line,
-              resolved: r != null,
-              viaAlias: r?.viaAlias ?? false,
-            ),
-          );
-        }
-
-        // Tags
-        for (final t in x.tags) {
-          batch.insert(
-            db.tags,
-            TagsCompanion.insert(
-              path: path.value,
-              tag: t.tag,
-              tagLower: t.tag.toLowerCase(),
-              startOffset: Value(t.start),
-              line: Value(t.line),
-            ),
-          );
-        }
-
-        // Properties
-        for (final p in x.properties) {
-          batch.insert(
-            db.properties,
-            PropertiesCompanion.insert(
-              path: path.value,
-              key: p.key,
-              keyLower: p.key.toLowerCase(),
-              valueType: p.valueType,
-              ordinal: p.ordinal,
-              valueText: Value(p.valueText),
-              valueLower: Value(p.valueLower),
-              valueNum: Value(p.valueNum),
-              valueBool: Value(p.valueBool),
-              valueDate: Value(p.valueDate),
-            ),
-          );
-        }
-
-        // Tasks
-        for (final t in x.tasks) {
-          batch.insert(
-            db.tasks,
-            TasksCompanion.insert(
-              path: path.value,
-              line: t.line,
-              statusChar: t.statusChar,
-              taskText: t.text,
-              taskLower: t.text.toLowerCase(),
-              startOffset: t.start,
-              endOffset: t.end,
-              due: Value(t.due),
-            ),
-          );
-        }
-      });
-
-      _nameTable.setAliases(path, x.aliases);
-      final newAliasKeys = x.aliases.map((a) => a.toLowerCase()).toList();
-      return _WriteResult(oldAliasKeys, newAliasKeys);
-    } else {
-      _nameTable.setAliases(path, const []);
-      return _WriteResult(oldAliasKeys, const []);
-    }
+    return const _WriteResult([], []);
   }
 
   Future<Set<String>> _deleteFile(VaultPath path) async {

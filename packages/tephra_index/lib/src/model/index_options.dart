@@ -6,7 +6,7 @@ import 'model_helpers.dart';
 
 /// Options configuring indexer behavior.
 final class IndexOptions {
-  const IndexOptions({this.excludedFolders = const [], this.batchSize = 200});
+  const IndexOptions({this.excludedFolders = const [], this.batchSize = 500});
 
   /// Vault-relative folder paths to exclude from indexing.
   final List<String> excludedFolders;

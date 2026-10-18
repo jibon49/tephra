@@ -94,10 +94,14 @@ final class DailyNotesService {
         final p2 = VaultPath.tryParse('$t.md');
         if (p2 != null) candidates.add(p2);
       }
-      final idx = await _getIndex();
-      final resolved = await idx.resolveLink(t, from: path);
-      if (resolved != null) {
-        candidates.add(resolved);
+      try {
+        final idx = await _getIndex();
+        final resolved = await idx.resolveLink(t, from: path);
+        if (resolved != null) {
+          candidates.add(resolved);
+        }
+      } catch (_) {
+        // Index unavailable on web preview; fall back to path parsing.
       }
 
       var found = false;
@@ -148,8 +152,13 @@ final class DailyNotesService {
     final current = from == null ? today : (dateOfPath(from) ?? today);
     final currentDate = DateTime(current.year, current.month, current.day);
 
-    final idx = await _getIndex();
-    final all = await idx.allFiles();
+    final List<FileRecord> all;
+    try {
+      final idx = await _getIndex();
+      all = await idx.allFiles();
+    } catch (_) {
+      return null;
+    }
     final candidates = <({VaultPath path, DateTime date})>[];
     for (final record in all) {
       final file = record.path;

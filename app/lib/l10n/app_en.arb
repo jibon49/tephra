@@ -619,7 +619,9 @@
       }
     }
   },
-  "openSettings": "Open settings"
+  "openSettings": "Open settings",
+  "indexUnavailableOnWeb": "Search and links are not available in the web preview.",
+  "commandRunBenchmarks": "Run performance benchmarks"
 }
 
 

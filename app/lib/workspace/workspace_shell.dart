@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/hotkey_host.dart';
+import '../core/perf/perf_runner.dart';
 import '../editor/save_state_indicator.dart';
 import '../vault/providers.dart';
 import 'builtin_panels.dart';
@@ -65,6 +66,12 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
           },
         ),
       );
+      if (const bool.fromEnvironment('TEPHRA_AUTO_BENCH')) {
+        Future<void>.delayed(const Duration(seconds: 2), () async {
+          if (!mounted) return;
+          await runBenchmarks(context, ref);
+        });
+      }
     });
   }
 

@@ -1,7 +1,6 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +13,7 @@ import 'package:tephra_vault/tephra_vault.dart';
 
 import '../../commands/providers.dart';
 import '../../commands/quick_switcher_items.dart';
+import '../../core/isolate_utils.dart';
 import '../../core/providers.dart';
 import '../../explorer/providers.dart';
 import '../../l10n/app_localizations.dart';
@@ -354,7 +354,7 @@ class AutocompleteController extends Notifier<AutocompleteState> {
 
           final ParsedNote parsed;
           if (targetText.length > 50000) {
-            parsed = await Isolate.run(() => MarkdownParser.parse(targetText));
+            parsed = await runInIsolate(() => MarkdownParser.parse(targetText));
           } else {
             parsed = MarkdownParser.parse(targetText);
           }
