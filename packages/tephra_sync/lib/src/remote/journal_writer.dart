@@ -7,6 +7,7 @@ import 'package:tephra_core/tephra_core.dart';
 import '../crypto/object_cipher.dart';
 import '../crypto/object_purpose.dart';
 import '../errors/sync_exceptions.dart';
+import '../executor/crash_injector.dart';
 import '../model/hlc.dart';
 import '../model/journal_batch.dart';
 import '../model/journal_entry.dart';
@@ -23,6 +24,7 @@ final class JournalWriter {
     required this.store,
     required this.hlcClock,
     this.clock = const SystemClock(),
+    this.crashInjector,
   });
 
   /// Remote storage provider.
@@ -39,6 +41,9 @@ final class JournalWriter {
 
   /// Clock for batch creation timestamps.
   final Clock clock;
+
+  /// Crash injector for simulating failures at named cycle points.
+  final CrashInjector? crashInjector;
 
   final List<JournalEntry> _staged = [];
   int? _currentSeq;
@@ -133,7 +138,9 @@ final class JournalWriter {
     final opId = await store.addPendingOp('journalBatch', payloadJson);
 
     // 2. Put to remote provider
+    crashInjector?.call(CrashPoint.beforeJournalPut, null);
     await provider.put(key, sealedBytes);
+    crashInjector?.call(CrashPoint.afterJournalPut, null);
 
     // 3. Atomically finalize in SQLite
     final entriesToInsert = List<JournalEntry>.from(_staged);

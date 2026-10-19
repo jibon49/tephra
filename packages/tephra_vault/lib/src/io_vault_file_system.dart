@@ -124,6 +124,7 @@ final class IoVaultFileSystem implements VaultFileSystem {
       return [];
     }
 
+    final folderIgnored = !folder.isRoot && ignore.isIgnored(folder);
     final result = <VaultEntry>[];
     try {
       final stream = targetDir.list(recursive: recursive, followLinks: false);
@@ -136,7 +137,7 @@ final class IoVaultFileSystem implements VaultFileSystem {
             _log.warning('skipped invalid path: $rel');
             continue;
           }
-          if (ignore.isIgnored(path)) {
+          if (!folderIgnored && ignore.isIgnored(path)) {
             continue;
           }
           final stat = entity.statSync();

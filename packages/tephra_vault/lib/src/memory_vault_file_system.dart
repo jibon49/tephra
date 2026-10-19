@@ -124,6 +124,7 @@ final class MemoryVaultFileSystem implements VaultFileSystem {
       return [];
     }
 
+    final folderIgnored = !folder.isRoot && ignore.isIgnored(folder);
     final results = <VaultEntry>[];
 
     for (final entry in _nodes.entries) {
@@ -131,7 +132,7 @@ final class MemoryVaultFileSystem implements VaultFileSystem {
       final node = entry.value;
 
       if (path.isRoot) continue;
-      if (ignore.isIgnored(path)) continue;
+      if (!folderIgnored && ignore.isIgnored(path)) continue;
 
       final bool matches;
       if (folder.isRoot) {
