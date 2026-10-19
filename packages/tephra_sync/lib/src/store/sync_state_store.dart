@@ -13,6 +13,7 @@ import '../model/journal_cursor.dart';
 import '../model/journal_entry.dart';
 import '../model/pending_op.dart';
 import '../model/sync_log_entry.dart';
+import '../remote/remote_history.dart';
 import 'open_sync_database.dart';
 import 'sync_database.dart';
 
@@ -23,6 +24,9 @@ final class SyncStateStore {
   SyncStateStore._(this._db);
 
   final TephraSyncDatabase _db;
+
+  /// Cached [RemoteHistory] in memory for fast incremental updates.
+  RemoteHistory? cachedRemoteHistory;
 
   /// Opens or creates a file-backed sync database at [filePath].
   static Future<SyncStateStore> open(String filePath) async {
@@ -118,6 +122,15 @@ final class SyncStateStore {
         _db.syncedFiles,
       )..where((t) => t.path.equals(path))).go();
       await (_db.delete(_db.bases)..where((t) => t.path.equals(path))).go();
+    });
+  }
+
+  /// Clears all synced files and bases (used when renewing device identity after clone detection).
+  Future<void> clearSyncedFilesAndBases() async {
+    cachedRemoteHistory = null;
+    await _db.transaction(() async {
+      await _db.delete(_db.syncedFiles).go();
+      await _db.delete(_db.bases).go();
     });
   }
 
@@ -307,6 +320,33 @@ final class SyncStateStore {
                 isFork: entry.value.$2 ? 1 : 0,
               ),
             );
+      }
+    });
+  }
+
+  /// Incrementally updates or removes specific remote heads.
+  Future<void> updateHeads(
+    Map<String, (String entryId, bool isFork)?> changedHeads,
+  ) async {
+    await _db.transaction(() async {
+      for (final entry in changedHeads.entries) {
+        final val = entry.value;
+        if (val == null) {
+          await (_db.delete(
+            _db.remoteHeads,
+          )..where((t) => t.path.equals(entry.key))).go();
+        } else {
+          await _db
+              .into(_db.remoteHeads)
+              .insert(
+                RemoteHeadsCompanion.insert(
+                  path: entry.key,
+                  entryId: val.$1,
+                  isFork: val.$2 ? 1 : 0,
+                ),
+                mode: InsertMode.insertOrReplace,
+              );
+        }
       }
     });
   }

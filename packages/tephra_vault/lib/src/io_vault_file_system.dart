@@ -368,7 +368,7 @@ final class IoVaultFileSystem implements VaultFileSystem {
       vaultTrashLabel:
       case TrashMode.vaultTrash:
         final trashRel = '.trash/${path.value}';
-        var destPath = VaultPath(trashRel);
+        var destPath = VaultPath.raw(trashRel);
         var destFile = _file(destPath);
 
         if (FileSystemEntity.typeSync(destFile.path, followLinks: false) !=
@@ -384,7 +384,9 @@ final class IoVaultFileSystem implements VaultFileSystem {
               newName = ext.isEmpty ? '$stem $index' : '$stem $index.$ext';
             }
             final parent = destPath.parent!;
-            destPath = parent.join(newName);
+            destPath = parent.isRoot
+                ? VaultPath.raw(newName)
+                : VaultPath.raw('${parent.value}/$newName');
             destFile = _file(destPath);
             if (FileSystemEntity.typeSync(destFile.path, followLinks: false) ==
                 FileSystemEntityType.notFound) {

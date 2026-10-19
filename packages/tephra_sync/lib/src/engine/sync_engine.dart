@@ -61,6 +61,10 @@ final class SyncEngine {
     this.editorGuard = const AllowAllEditorGuard(),
     this.localHistory,
   }) : _random = random ?? Random() {
+    _initSubsystems();
+  }
+
+  void _initSubsystems() {
     _hlcClock = HlcClock(
       deviceId: device.deviceId,
       clock: clock,
@@ -123,7 +127,7 @@ final class SyncEngine {
   final SyncStateStore store;
   final ObjectCipher cipher;
   final String remoteVaultId;
-  final DeviceIdentity device;
+  DeviceIdentity device;
   final SyncLock lock;
   final Clock clock;
   final Random _random;
@@ -131,13 +135,13 @@ final class SyncEngine {
   final EditorGuard editorGuard;
   final LocalHistory? localHistory;
 
-  late final HlcClock _hlcClock;
-  late final BlobStore _blobStore;
-  late final JournalWriter _journalWriter;
-  late final JournalReader _journalReader;
-  late final SnapshotStore _snapshotStore;
-  late final DeviceRegistry _deviceRegistry;
-  late final Executor _executor;
+  late HlcClock _hlcClock;
+  late BlobStore _blobStore;
+  late JournalWriter _journalWriter;
+  late JournalReader _journalReader;
+  late SnapshotStore _snapshotStore;
+  late DeviceRegistry _deviceRegistry;
+  late Executor _executor;
 
   final _progressController = StreamController<SyncProgress>.broadcast();
   final _logController = StreamController<SyncLogEntry>.broadcast();
@@ -177,7 +181,34 @@ final class SyncEngine {
           ? null
           : changes.changedKeys.toSet();
 
-      await _journalReader.refresh(changedKeys: changedKeys);
+      try {
+        await _journalReader.refresh(changedKeys: changedKeys);
+      } on DeviceCloneDetectedException {
+        // Clone detection recovery (Step 03.7 item 7)
+        final newId = _generateUuidV4();
+        device = device.copyWith(deviceId: newId);
+        await store.setMeta('syncDeviceId', newId);
+        await store.setMeta('nextSeq', '1');
+        await store.clearSyncedFilesAndBases();
+
+        _initSubsystems();
+        await _deviceRegistry.register(device);
+
+        final logEntry = SyncLogEntry(
+          time: clock.now().toUtc().millisecondsSinceEpoch,
+          level: 'warning',
+          kind: 'deviceIdRenewed',
+          deviceName: device.deviceName,
+          detail: 'Device clone detected; renewed ID to ${device.deviceId}',
+        );
+        await store.appendLog(logEntry);
+        if (!_logController.isClosed) {
+          _logController.add(logEntry);
+        }
+
+        // Re-run refresh with full key scan
+        await _journalReader.refresh(changedKeys: null);
+      }
       await store.setMeta('changesCursor', changes.cursor);
 
       final myCursor = await store.cursor(device.deviceId);
@@ -187,8 +218,7 @@ final class SyncEngine {
 
       crashInjector?.call(CrashPoint.afterRemoteRefresh, null);
 
-      final allEntries = await store.allEntries();
-      final remoteHistory = RemoteHistory(allEntries);
+      final remoteHistory = _journalReader.history;
 
       if (cancel != null && cancel.isCancelled) {
         return _buildReport(stopwatch.elapsed);
@@ -213,7 +243,7 @@ final class SyncEngine {
       // 5. Planner.plan
       _emitProgress(SyncProgressPhase.planning);
       final allBases = await store.allBases();
-      final baseMap = {for (final b in allBases) VaultPath(b.path): b};
+      final baseMap = {for (final b in allBases) VaultPath.raw(b.path): b};
       final deleteDecisions = await _loadDeleteDecisions();
 
       final planInput = PlannerInput(
@@ -396,8 +426,10 @@ final class SyncEngine {
       // 9. Post-cycle: snapshot if due, heartbeat, trim log, lastSyncAt
       crashInjector?.call(CrashPoint.beforeSnapshot, null);
       try {
-        final latestAllEntries = await store.allEntries();
-        final latestHistory = RemoteHistory(latestAllEntries);
+        final latestHistory =
+            (uploaded == 0 && deletedRemote == 0 && renamed == 0)
+            ? remoteHistory
+            : RemoteHistory(await store.allEntries());
         final lastSeq =
             int.tryParse(await store.getMeta('nextSeq') ?? '1') ?? 1;
         final cursors = await store.allCursors();
@@ -477,38 +509,44 @@ final class SyncEngine {
     await store.transaction(() async {
       for (final entry in batch.entries) {
         if (entry.op == 'put') {
-          final stat = await fs.stat(VaultPath(entry.path));
-          await store.putBase(
-            BaseState(
-              path: entry.path,
-              caseKey: VaultPath(entry.path).caseKey,
-              hash: entry.hash!,
-              size: entry.size ?? stat?.size ?? 0,
-              mtime: entry.mtime ?? stat?.modified.millisecondsSinceEpoch ?? 0,
-              version: entry.id,
-              blobKeys: entry.blobKeys ?? const [],
-              syncedAt: nowMs,
-            ),
-          );
+          final vPath = VaultPath.raw(entry.path);
+          final stat = await fs.stat(vPath);
+          if (stat != null) {
+            await store.putBase(
+              BaseState(
+                path: entry.path,
+                caseKey: vPath.caseKey,
+                hash: entry.hash!,
+                size: entry.size ?? stat.size,
+                mtime: entry.mtime ?? stat.modified.millisecondsSinceEpoch,
+                version: entry.id,
+                blobKeys: entry.blobKeys ?? const [],
+                syncedAt: nowMs,
+              ),
+            );
+          }
         } else if (entry.op == 'delete') {
           await store.removeBase(entry.path);
         } else if (entry.op == 'move') {
           if (entry.fromPath != null) {
             await store.removeBase(entry.fromPath!);
           }
-          final stat = await fs.stat(VaultPath(entry.path));
-          await store.putBase(
-            BaseState(
-              path: entry.path,
-              caseKey: VaultPath(entry.path).caseKey,
-              hash: entry.hash!,
-              size: entry.size ?? stat?.size ?? 0,
-              mtime: entry.mtime ?? stat?.modified.millisecondsSinceEpoch ?? 0,
-              version: entry.id,
-              blobKeys: entry.blobKeys ?? const [],
-              syncedAt: nowMs,
-            ),
-          );
+          final vPath = VaultPath.raw(entry.path);
+          final stat = await fs.stat(vPath);
+          if (stat != null) {
+            await store.putBase(
+              BaseState(
+                path: entry.path,
+                caseKey: vPath.caseKey,
+                hash: entry.hash!,
+                size: entry.size ?? stat.size,
+                mtime: entry.mtime ?? stat.modified.millisecondsSinceEpoch,
+                version: entry.id,
+                blobKeys: entry.blobKeys ?? const [],
+                syncedAt: nowMs,
+              ),
+            );
+          }
         }
       }
     });
@@ -537,7 +575,7 @@ final class SyncEngine {
           (d) => d.name == e.value,
           orElse: () => DeleteDecision.keep,
         );
-        result[VaultPath(e.key)] = dec;
+        result[VaultPath.raw(e.key)] = dec;
       }
       return result;
     } catch (_) {
@@ -577,5 +615,13 @@ final class SyncEngine {
 
   SyncReport _buildReport(Duration elapsed) {
     return SyncReport(duration: elapsed);
+  }
+
+  String _generateUuidV4() {
+    final bytes = List<int>.generate(16, (_) => _random.nextInt(256));
+    bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
+    bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant RFC 4122
+    final hex = bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+    return '${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20)}';
   }
 }

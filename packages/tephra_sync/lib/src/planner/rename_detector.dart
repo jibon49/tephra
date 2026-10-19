@@ -82,6 +82,13 @@ abstract final class RenameDetector {
       final hd = remote.head(d.value);
 
       if (rd == RemoteStatus.rEq) {
+        final blobKeys =
+            (hd != null &&
+                hd.hash == base[d]!.hash &&
+                hd.blobKeys != null &&
+                hd.blobKeys!.isNotEmpty)
+            ? hd.blobKeys!
+            : base[d]!.blobKeys;
         actions.add(
           RenameRemote(
             d,
@@ -89,7 +96,7 @@ abstract final class RenameDetector {
             parent: hd!.entryId,
             targetParent: remote.head(c.value)?.entryId,
             hash: base[d]!.hash,
-            blobKeys: base[d]!.blobKeys,
+            blobKeys: blobKeys,
           ),
         );
         handled.add(d);
@@ -127,20 +134,25 @@ abstract final class RenameDetector {
           handled.add(c);
           unpairedD.remove(d);
         } else if (!local.containsKey(VaultPath.raw(x))) {
-          // Remote location wins; same content
-          final hx = remote.head(x)!;
-          actions.add(
-            RenameLocal(
-              c,
-              to: VaultPath.raw(x),
-              expectedHash: local[c]!.hash,
-              remoteEntryId: hx.entryId,
-            ),
-          );
-          handled.add(d);
-          handled.add(c);
-          handled.add(VaultPath.raw(x));
-          unpairedD.remove(d);
+          final hx = remote.head(x);
+          if (hx != null &&
+              RemoteHistory.isPresentAt(hx, x) &&
+              hx.hash == local[c]!.hash) {
+            // Remote location wins; same content
+            actions.add(
+              RenameLocal(
+                c,
+                to: VaultPath.raw(x),
+                expectedHash: local[c]!.hash,
+                remoteEntryId: hx.entryId,
+              ),
+            );
+            baseUpdates.add(BaseUpdate.remove(d));
+            handled.add(d);
+            handled.add(c);
+            handled.add(VaultPath.raw(x));
+            unpairedD.remove(d);
+          }
         }
       }
     }

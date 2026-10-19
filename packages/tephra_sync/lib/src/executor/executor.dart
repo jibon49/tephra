@@ -148,7 +148,7 @@ final class Executor {
     if (action.path.caseKey == action.to.caseKey) {
       // Case-only rename: <from> -> <from>.tephra-case-<8hex> -> <to>
       final hex = _randomHex(8);
-      final tmp = VaultPath('${action.path.value}.tephra-case-$hex');
+      final tmp = VaultPath.raw('${action.path.value}.tephra-case-$hex');
       await fs.move(action.path, tmp);
       await fs.move(tmp, action.to);
     } else if (toStat != null) {
@@ -160,7 +160,7 @@ final class Executor {
         deviceName,
         (p) => p.value == action.to.value,
       );
-      final copyPath = VaultPath(copyStr);
+      final copyPath = VaultPath.raw(copyStr);
       await fs.move(action.path, copyPath);
       await store.appendLog(
         SyncLogEntry(
@@ -204,6 +204,16 @@ final class Executor {
     final nowMs = clock.now().toUtc().millisecondsSinceEpoch;
 
     await store.transaction(() async {
+      List<String> blobKeys = const [];
+      String version = action.remoteEntryId;
+      if (remoteEntry != null && remoteEntry.hash == action.expectedHash) {
+        version = remoteEntry.id;
+        blobKeys = remoteEntry.blobKeys ?? const [];
+      } else if (oldBase != null && oldBase.hash == action.expectedHash) {
+        version = oldBase.version;
+        blobKeys = oldBase.blobKeys;
+      }
+
       await store.removeBase(action.path.value);
       await store.putBase(
         BaseState(
@@ -212,8 +222,8 @@ final class Executor {
           hash: action.expectedHash,
           size: stat?.size ?? oldBase?.size ?? 0,
           mtime: stat?.modified.millisecondsSinceEpoch ?? oldBase?.mtime ?? 0,
-          version: remoteEntry?.id ?? oldBase?.version ?? action.remoteEntryId,
-          blobKeys: remoteEntry?.blobKeys ?? oldBase?.blobKeys ?? const [],
+          version: version,
+          blobKeys: blobKeys,
           syncedAt: nowMs,
         ),
       );
@@ -593,7 +603,7 @@ final class Executor {
         deviceName,
         (p) => entries.any((e) => e.path.value == p.value),
       );
-      copyPath = VaultPath(name);
+      copyPath = VaultPath.raw(name);
       crashInjector?.call(CrashPoint.beforeLocalWrite, copyPath);
       await fs.writeBytes(copyPath, localBytes);
       crashInjector?.call(CrashPoint.afterLocalWrite, copyPath);

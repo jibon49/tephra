@@ -11,25 +11,64 @@ final class RemoteHistory {
   factory RemoteHistory(Iterable<JournalEntry> entries) {
     final byId = <String, JournalEntry>{};
     final paths = <String>{};
+    final byPath = <String, List<JournalEntry>>{};
 
     for (final e in entries) {
       byId[e.entryId] = e;
       paths.add(e.path);
+      byPath.putIfAbsent(e.path, () => []).add(e);
       if (e.fromPath != null) {
         paths.add(e.fromPath!);
+        byPath.putIfAbsent(e.fromPath!, () => []).add(e);
       }
     }
 
-    return RemoteHistory._(byId: byId, allPaths: paths);
+    return RemoteHistory._(byId: byId, allPaths: paths, byPath: byPath);
   }
 
-  RemoteHistory._({required this.byId, required this.allPaths});
+  RemoteHistory._({
+    required this.byId,
+    required this.allPaths,
+    required this.byPath,
+  });
 
   /// Map of all known journal entries keyed by their unique entryId (`<deviceId>:<seq>`).
   final Map<String, JournalEntry> byId;
 
   /// Set of all paths ever touched by any entry.
   final Set<String> allPaths;
+
+  /// Entries indexed by touched path.
+  final Map<String, List<JournalEntry>> byPath;
+
+  final Map<String, List<JournalEntry>> _leavesCache = {};
+  final Map<String, JournalEntry?> _headCache = {};
+
+  /// Incrementally incorporates [newEntries] into this history,
+  /// updating indexes and invalidating cached leaves/heads for touched paths.
+  /// Returns the set of all touched paths.
+  Set<String> addEntries(Iterable<JournalEntry> newEntries) {
+    final touchedPaths = <String>{};
+    for (final e in newEntries) {
+      if (!byId.containsKey(e.entryId)) {
+        byId[e.entryId] = e;
+        allPaths.add(e.path);
+        byPath.putIfAbsent(e.path, () => []).add(e);
+        touchedPaths.add(e.path);
+        _leavesCache.remove(e.path);
+        _headCache.remove(e.path);
+
+        if (e.fromPath != null) {
+          allPaths.add(e.fromPath!);
+          byPath.putIfAbsent(e.fromPath!, () => []).add(e);
+          touchedPaths.add(e.fromPath!);
+          _leavesCache.remove(e.fromPath!);
+          _headCache.remove(e.fromPath!);
+        }
+      }
+    }
+    return touchedPaths;
+  }
 
   /// Returns the parent entry ID of [entry] specifically along the version chain for [path].
   static String? parentAt(JournalEntry entry, String path) {
@@ -56,13 +95,7 @@ final class RemoteHistory {
 
   /// Returns all entries touching [path] (either target `path` or `fromPath` for moves).
   List<JournalEntry> entriesTouching(String path) {
-    final list = <JournalEntry>[];
-    for (final e in byId.values) {
-      if (e.path == path || (e.op == 'move' && e.fromPath == path)) {
-        list.add(e);
-      }
-    }
-    return list;
+    return byPath[path] ?? const [];
   }
 
   /// Returns all leaf entries at [path], sorted descending by HLC.
@@ -70,6 +103,9 @@ final class RemoteHistory {
   /// Leaves are entries touching [path] that are not referenced as `parentAt`
   /// or `mergedParent` by any other entry touching [path].
   List<JournalEntry> leaves(String path) {
+    final cached = _leavesCache[path];
+    if (cached != null) return cached;
+
     final touching = entriesTouching(path);
     if (touching.isEmpty) return const [];
 
@@ -89,13 +125,16 @@ final class RemoteHistory {
     }
 
     result.sort((a, b) => Hlc.parse(b.hlc).compareTo(Hlc.parse(a.hlc)));
-    return result;
+    return _leavesCache[path] = result;
   }
 
   /// Returns the current head entry for [path] (the leaf with the greatest HLC).
   JournalEntry? head(String path) {
+    if (_headCache.containsKey(path)) return _headCache[path];
     final l = leaves(path);
-    return l.isEmpty ? null : l.first;
+    final h = l.isEmpty ? null : l.first;
+    _headCache[path] = h;
+    return h;
   }
 
   /// Returns true if [path] currently has multiple un-merged leaves (a fork).

@@ -48,6 +48,12 @@ final class JournalReader {
   /// Local device identifier.
   String get myDeviceId => hlcClock.deviceId;
 
+  RemoteHistory? _history;
+
+  /// Cached [RemoteHistory] representing the latest observed remote state.
+  RemoteHistory get history =>
+      _history ?? store.cachedRemoteHistory ?? RemoteHistory(const []);
+
   /// Discovers and processes all new remote journal batches.
   ///
   /// If [changedKeys] is provided, only processes devices with updated keys.
@@ -82,26 +88,55 @@ final class JournalReader {
 
     final sortedDeviceIds = deviceIds.toList()..sort();
 
+    final newlyAccepted = <JournalEntry>[];
     for (final deviceId in sortedDeviceIds) {
-      await _refreshDevice(deviceId);
+      final entries = await _refreshDevice(deviceId);
+      newlyAccepted.addAll(entries);
     }
 
-    // Recompute and materialize remote_heads
-    final allEntries = await store.allEntries();
-    final history = RemoteHistory(allEntries);
-    final headsMap = <String, (String, bool)>{};
+    if (newlyAccepted.isEmpty && store.cachedRemoteHistory != null) {
+      _history = store.cachedRemoteHistory;
+      return;
+    }
 
-    for (final path in history.allPaths) {
-      final head = history.head(path);
-      if (head != null) {
-        headsMap[path] = (head.entryId, history.isForked(path));
+    if (store.cachedRemoteHistory == null) {
+      // First load: recompute full history and materialize remote_heads
+      final allEntries = await store.allEntries();
+      final history = RemoteHistory(allEntries);
+      store.cachedRemoteHistory = history;
+      _history = history;
+      final headsMap = <String, (String, bool)>{};
+
+      for (final path in history.allPaths) {
+        final head = history.head(path);
+        if (head != null) {
+          headsMap[path] = (head.entryId, history.isForked(path));
+        }
       }
-    }
 
-    await store.replaceHeads(headsMap);
+      await store.replaceHeads(headsMap);
+    } else {
+      // Incremental update: update only touched paths
+      final history = store.cachedRemoteHistory!;
+      _history = history;
+      final touchedPaths = history.addEntries(newlyAccepted);
+      final changedHeads = <String, (String, bool)?>{};
+
+      for (final path in touchedPaths) {
+        final head = history.head(path);
+        if (head != null) {
+          changedHeads[path] = (head.entryId, history.isForked(path));
+        } else {
+          changedHeads[path] = null;
+        }
+      }
+
+      await store.updateHeads(changedHeads);
+    }
   }
 
-  Future<void> _refreshDevice(String deviceId) async {
+  Future<List<JournalEntry>> _refreshDevice(String deviceId) async {
+    final allAcceptedEntries = <JournalEntry>[];
     final cursor = await store.cursor(deviceId);
     var revokedAfterSeq = cursor?.revokedAfterSeq;
 
@@ -228,6 +263,7 @@ final class JournalReader {
       }
 
       await store.insertRemoteEntries(acceptedEntries);
+      allAcceptedEntries.addAll(acceptedEntries);
       await store.setCursor(
         deviceId,
         batch.lastSeq,
@@ -236,5 +272,6 @@ final class JournalReader {
 
       nextSeq = batch.lastSeq + 1;
     }
+    return allAcceptedEntries;
   }
 }

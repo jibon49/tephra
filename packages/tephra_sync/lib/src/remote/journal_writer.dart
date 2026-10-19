@@ -148,6 +148,7 @@ final class JournalWriter {
       await store.setMeta('nextSeq', (batch.lastSeq + 1).toString());
       await store.removePendingOp(opId);
       await store.insertRemoteEntries(entriesToInsert);
+      store.cachedRemoteHistory?.addEntries(entriesToInsert);
     });
 
     _staged.clear();

@@ -34,6 +34,19 @@ final class DeviceIdentity {
     'platform': platform,
   };
 
+  /// Returns a copy of this identity with replaced fields.
+  DeviceIdentity copyWith({
+    String? deviceId,
+    String? deviceName,
+    String? platform,
+  }) {
+    return DeviceIdentity(
+      deviceId: deviceId ?? this.deviceId,
+      deviceName: deviceName ?? this.deviceName,
+      platform: platform ?? this.platform,
+    );
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

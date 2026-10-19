@@ -92,7 +92,27 @@ abstract final class Planner {
 
       // Rule zero (before the table): L and H present and equal hashes
       if (l != null && hPresent && l.hash == h.hash) {
-        if (b == null || b.version != h.entryId) {
+        if (input.remote.isForked(p.value)) {
+          final leaves = input.remote.leaves(p.value);
+          final otherLeaf = leaves
+              .where((leaf) => leaf.entryId != h.entryId && leaf.hash == h.hash)
+              .firstOrNull;
+          if (otherLeaf != null) {
+            final reuse = (h.blobKeys != null && h.blobKeys!.isNotEmpty)
+                ? h.blobKeys
+                : null;
+            actions.add(
+              Upload(
+                p,
+                localHash: l.hash,
+                parent: h.entryId,
+                mergedParent: otherLeaf.entryId,
+                reuseBlobKeys: reuse,
+              ),
+            );
+            continue;
+          }
+        } else if (b == null || b.version != h.entryId) {
           baseUpdates.add(
             BaseUpdate.fromEntry(p, h, size: l.size, mtime: l.mtimeMs),
           );
