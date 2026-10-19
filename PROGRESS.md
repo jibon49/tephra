@@ -318,7 +318,8 @@ Instructions: `instructions/phase-03-sync-drive.md`
   - notes: Implemented Argon2id KDF & calibrator, 256-bit MasterKey, WrappedKey (AES-256-GCM + AAD), RecoveryKey (RFC 4648 Base32, checksum, error-tolerant parsing, HKDF KEK), ObjectPurpose, frozen TPH1 envelope codec, EncryptingObjectCipher and PlaintextObjectCipher; all KATs passed (AES-GCM, HKDF, Argon2id RFC 9106); frozen golden vector asserted; all 108 tephra_sync tests passing.
 - [x] 03.5 FastCDC chunking and the blob store (dedup, verify)
   - notes: Implemented FastCDC ("fastcdc-gear32-v1", 32-bit gear hash, maskS/maskL, min 256 KiB, avg 1 MiB, max 4 MiB, singleBlobMax 4 MiB); BlobRef and BlobStore with 4-worker transfer semaphore, 24h deduplication cache, remote presence confirmation, and end-to-end SHA-256 integrity verification; golden cut offsets asserted; all 121 tephra_sync tests passing.
-- [ ] 03.6 Remote vault header (`vault.json`), `RemoteVaultManager` and device files
+- [x] 03.6 Remote vault header (`vault.json`), `RemoteVaultManager` and device files
+  - notes: Implemented VaultHeader with UTF-8 pretty-printed JSON & forward-compatible unknown extra fields; RemoteVaultManager supporting plaintext/encrypted vault creation, background isolate KDF derivation, password unlocking, recovery key unlocking, in-place re-keying (changePassword / regenerateRecoveryKey) with last-writer-wins concurrent safety, and atomic vault.json write ordering after device info; DeviceRegistry with hourly-throttled heartbeats, one-shot revocations, and device listing; 35 unit tests in test/remote passing (145 total in tephra_sync).
 - [ ] 03.7 Hybrid logical clock, journals, remote history and snapshots
 - [ ] 03.8 Local scanner, path rules, case sensitivity, Windows names
 - [ ] 03.9 Three-way merge (Markdown, plain text, `.tephra` JSON) and conflict naming

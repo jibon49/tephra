@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:tephra/core/json_file_store.dart';
-import 'package:tephra/core/uuid.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 

@@ -9,4 +9,5 @@ export 'src/daily_note_path.dart';
 export 'src/exceptions.dart';
 export 'src/moment_format.dart';
 export 'src/template_engine.dart';
+export 'src/uuid.dart';
 export 'src/vault_path.dart';
