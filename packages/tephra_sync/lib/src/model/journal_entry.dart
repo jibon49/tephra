@@ -69,6 +69,9 @@ final class JournalEntry {
   /// Unique entry id format `<deviceId>:<seq>`.
   final String entryId;
 
+  /// Alias for [entryId].
+  String get id => entryId;
+
   /// Lower-case UUID of the authoring device.
   final String deviceId;
 

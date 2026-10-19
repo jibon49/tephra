@@ -47,6 +47,36 @@ final class VaultPath implements Comparable<VaultPath> {
     return VaultPath._(stack.join('/'));
   }
 
+  /// Creates a normalized [VaultPath] from [raw] without segment character validation.
+  ///
+  /// Useful for handling remote paths that may violate local platform naming rules
+  /// before sanitization.
+  factory VaultPath.raw(String raw) {
+    final normalized = raw.replaceAll(r'\', '/');
+    final segments = normalized.split('/');
+    final stack = <String>[];
+
+    for (final seg in segments) {
+      if (seg.isEmpty || seg == '.') {
+        continue;
+      }
+      if (seg == '..') {
+        if (stack.isEmpty) {
+          throw InvalidPathException('Path escapes the vault root: $raw');
+        }
+        stack.removeLast();
+      } else {
+        stack.add(seg);
+      }
+    }
+
+    if (stack.isEmpty) {
+      throw const InvalidPathException('Empty path');
+    }
+
+    return VaultPath._(stack.join('/'));
+  }
+
   /// The root folder of the vault.
   static const VaultPath root = VaultPath._('');
 
