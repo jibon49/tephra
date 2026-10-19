@@ -494,6 +494,30 @@ final class SyncStateStore {
     return row?.blobKey;
   }
 
+  /// Looks up the most recent blob record matching [plainHash], or null if absent.
+  Future<BlobIndexRecord?> blobRecordForPlainHash(String plainHash) async {
+    final query = _db.select(_db.blobIndex)
+      ..where((t) => t.plainHash.equals(plainHash))
+      ..orderBy([(t) => OrderingTerm.desc(t.seenAt)])
+      ..limit(1);
+    final row = await query.getSingleOrNull();
+    if (row == null) return null;
+    return BlobIndexRecord(
+      plainHash: row.plainHash,
+      blobKey: row.blobKey,
+      size: row.size,
+      seenAt: row.seenAt,
+    );
+  }
+
+  /// Removes a blob index record by [plainHash] and [blobKey].
+  Future<void> removeBlobRecord(String plainHash, String blobKey) async {
+    await (_db.delete(_db.blobIndex)..where(
+          (t) => t.plainHash.equals(plainHash) & t.blobKey.equals(blobKey),
+        ))
+        .go();
+  }
+
   /// Records a plaintext-to-blob mapping in the deduplication index.
   Future<void> putBlobIndex(
     String plainHash,

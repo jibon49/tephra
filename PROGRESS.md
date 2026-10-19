@@ -316,7 +316,8 @@ Instructions: `instructions/phase-03-sync-drive.md`
   - notes: Implemented Drift SQLite schema (14 tables, WAL mode, foreign keys, schemaVersion=1 in meta); SyncStateStore API converting rows to immutable models; transaction rollback safety; newest 5,000 log row trimming; SelectiveSyncRules with JSON serialization and mobileMode video extension filtering; all 59 tephra_sync unit tests pass.
 - [x] 03.4 Crypto: KDF, master key, key wrapping, object envelope, recovery key
   - notes: Implemented Argon2id KDF & calibrator, 256-bit MasterKey, WrappedKey (AES-256-GCM + AAD), RecoveryKey (RFC 4648 Base32, checksum, error-tolerant parsing, HKDF KEK), ObjectPurpose, frozen TPH1 envelope codec, EncryptingObjectCipher and PlaintextObjectCipher; all KATs passed (AES-GCM, HKDF, Argon2id RFC 9106); frozen golden vector asserted; all 108 tephra_sync tests passing.
-- [ ] 03.5 FastCDC chunking and the blob store (dedup, verify)
+- [x] 03.5 FastCDC chunking and the blob store (dedup, verify)
+  - notes: Implemented FastCDC ("fastcdc-gear32-v1", 32-bit gear hash, maskS/maskL, min 256 KiB, avg 1 MiB, max 4 MiB, singleBlobMax 4 MiB); BlobRef and BlobStore with 4-worker transfer semaphore, 24h deduplication cache, remote presence confirmation, and end-to-end SHA-256 integrity verification; golden cut offsets asserted; all 121 tephra_sync tests passing.
 - [ ] 03.6 Remote vault header (`vault.json`), `RemoteVaultManager` and device files
 - [ ] 03.7 Hybrid logical clock, journals, remote history and snapshots
 - [ ] 03.8 Local scanner, path rules, case sensitivity, Windows names

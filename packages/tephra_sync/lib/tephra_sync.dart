@@ -3,6 +3,9 @@
 /// Tephra sync: engine, providers, encryption, history, and backup.
 library;
 
+export 'src/blobs/blob_ref.dart';
+export 'src/blobs/blob_store.dart';
+export 'src/blobs/fastcdc.dart';
 export 'src/crypto/base32.dart';
 export 'src/crypto/encrypting_object_cipher.dart';
 export 'src/crypto/envelope.dart';
