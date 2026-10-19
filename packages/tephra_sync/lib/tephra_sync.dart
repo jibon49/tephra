@@ -3,6 +3,17 @@
 /// Tephra sync: engine, providers, encryption, history, and backup.
 library;
 
+export 'src/crypto/base32.dart';
+export 'src/crypto/encrypting_object_cipher.dart';
+export 'src/crypto/envelope.dart';
+export 'src/crypto/kdf_calibrator.dart';
+export 'src/crypto/kdf_params.dart';
+export 'src/crypto/key_wrap.dart';
+export 'src/crypto/master_key.dart';
+export 'src/crypto/object_cipher.dart';
+export 'src/crypto/object_purpose.dart';
+export 'src/crypto/plaintext_object_cipher.dart';
+export 'src/crypto/recovery_key.dart';
 export 'src/errors/crypto_exceptions.dart';
 export 'src/errors/sync_exceptions.dart';
 export 'src/model/backup_record.dart';
