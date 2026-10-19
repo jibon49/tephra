@@ -310,7 +310,8 @@ Instructions: `instructions/phase-03-sync-drive.md`
 
 - [x] 03.1 `tephra_sync` package skeleton, dependencies and exceptions
   - notes: Configured tephra_sync dependencies (drift, sqlite3, cryptography, diff_match_patch, googleapis, http, yaml, yaml_edit, crypto, logging, path); defined SyncException (12 classes) and CryptoException (5 classes) hierarchies; 17 unit tests passing; licenses clean (170 allowed).
-- [ ] 03.2 Core models, the `SyncProvider` contract and `MemorySyncProvider`
+- [x] 03.2 Core models, the `SyncProvider` contract and `MemorySyncProvider`
+  - notes: Implemented RemoteObject, RemoteChanges, Quota value types; RemoteLayout with key builders/parsers and append-only journal rationale; SyncProvider interface with validateRemoteKey; MemorySyncProvider with fault injection & quota enforcement; 10-case sync provider contract test suite; all 41 tephra_sync tests passing.
 - [ ] 03.3 Sync state database (drift) and device identity
 - [ ] 03.4 Crypto: KDF, master key, key wrapping, object envelope, recovery key
 - [ ] 03.5 FastCDC chunking and the blob store (dedup, verify)
