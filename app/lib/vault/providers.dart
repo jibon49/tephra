@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_sync/tephra_sync.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../reading/providers.dart';
@@ -118,6 +119,7 @@ final noteDocumentStoreProvider = Provider<NoteDocumentStore>((ref) {
     fs,
     const SystemClock(),
     parseService: parseService,
+    localHistory: LocalHistory(fs),
   );
   store.start();
   ref.onDispose(() {

@@ -12,10 +12,13 @@ import 'package:tephra/app.dart';
 import 'package:tephra/core/json_file_store.dart';
 import 'package:tephra/core/logging.dart';
 import 'package:tephra/core/perf/perf_probe.dart';
+import 'package:tephra/core/sync/background_sync.dart';
 import 'package:tephra/core/uuid.dart';
 import 'package:tephra/settings/app_settings.dart';
 import 'package:tephra/settings/app_settings_store.dart';
 import 'package:tephra/settings/providers.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:workmanager/workmanager.dart';
 
 Future<void> main() async {
   PerfProbe.markAppStart();
@@ -26,6 +29,22 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupLogging();
   installCrashHandlers();
+
+  if (!kIsWeb && Platform.isAndroid) {
+    try {
+      await Workmanager().initialize(tephraBackgroundDispatcher);
+    } catch (e, st) {
+      Logger('app').warning('Failed to initialize Workmanager', e, st);
+    }
+  }
+
+  if (!kIsWeb && Platform.isWindows) {
+    try {
+      await windowManager.ensureInitialized();
+    } catch (e, st) {
+      Logger('app').warning('Failed to initialize windowManager', e, st);
+    }
+  }
 
   final AppSettings initial;
   final AppSettingsStore? store;

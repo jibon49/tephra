@@ -63,11 +63,15 @@ class FileChip extends StatelessWidget {
           children: [
             Icon(icon, size: 20, color: theme.colorScheme.primary),
             const SizedBox(width: 8),
-            Text(
-              path.name,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: theme.colorScheme.onSurface,
+            Flexible(
+              child: Text(
+                path.name,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ),
             if (sizeBytes != null) ...[

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_sync/tephra_sync.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../reading/parse_service.dart';
@@ -18,11 +19,13 @@ final class NoteDocumentStore {
     this.clock, {
     this.parseService = const ParseService(),
     this.onFlushed,
+    this.localHistory,
   });
 
   final VaultFileSystem fs;
   final Clock clock;
   final ParseService parseService;
+  final LocalHistory? localHistory;
   VoidCallback? onFlushed;
 
   final Map<VaultPath, NoteDocument> _documents = {};
@@ -87,6 +90,7 @@ final class NoteDocumentStore {
       fs: fs,
       clock: clock,
       parseService: parseService,
+      localHistory: localHistory,
       onDiskChanged: _onDocChanged,
       onDocChanged: _onDocChanged,
     );

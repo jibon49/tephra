@@ -1,0 +1,50 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '30 1 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: nightly-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  nightly-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.7"
+          channel: stable
+          cache: true
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Run 100k Fuzz Simulator Test
+        timeout-minutes: 120
+        env:
+          TEPHRA_FUZZ_OPS: "100000"
+          TEPHRA_FUZZ_SEED: "${{ github.run_number }}"
+        run: |
+          echo "Running fuzz test with seed $TEPHRA_FUZZ_SEED and $TEPHRA_FUZZ_OPS operations..."
+          cd packages/tephra_sync
+          dart test test/simulator/fuzz_test.dart || {
+            echo "Fuzz test failed! Failing seed: $TEPHRA_FUZZ_SEED"
+            exit 1
+          }
+
+      - name: Run Live Google Drive Contract Test
+        env:
+          TEPHRA_DRIVE_TEST_REFRESH_TOKEN: ${{ secrets.TEPHRA_DRIVE_TEST_REFRESH_TOKEN }}
+          TEPHRA_GOOGLE_DESKTOP_CLIENT_ID: ${{ secrets.TEPHRA_GOOGLE_DESKTOP_CLIENT_ID }}
+          TEPHRA_GOOGLE_DESKTOP_CLIENT_SECRET: ${{ secrets.TEPHRA_GOOGLE_DESKTOP_CLIENT_SECRET }}
+        run: |
+          if [ -z "$TEPHRA_DRIVE_TEST_REFRESH_TOKEN" ]; then
+            echo "Notice: TEPHRA_DRIVE_TEST_REFRESH_TOKEN secret is not set. Skipping live Google Drive test."
+          else
+            cd packages/tephra_sync
+            dart test --run-skipped -t live test/drive/drive_live_test.dart
+          fi

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../commands/hotkey_host.dart';
 import '../core/perf/perf_runner.dart';
 import '../editor/save_state_indicator.dart';
+import '../sync_ui/status/sync_status_indicator.dart';
 import '../vault/providers.dart';
 import 'builtin_panels.dart';
 import 'desktop_layout.dart';
@@ -54,6 +55,14 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
         ),
       );
       registry.register(
+        const StatusBarItemSpec(
+          id: 'status.sync',
+          alignment: StatusBarAlignment.right,
+          order: 80,
+          builder: _buildSyncStatus,
+        ),
+      );
+      registry.register(
         StatusBarItemSpec(
           id: 'status.save',
           alignment: StatusBarAlignment.right,
@@ -90,3 +99,6 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
 
 Widget _buildIndexStatus(BuildContext context, WidgetRef ref) =>
     const IndexStatusItem();
+
+Widget _buildSyncStatus(BuildContext context, WidgetRef ref) =>
+    const SyncStatusIndicator();

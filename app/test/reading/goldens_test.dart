@@ -31,7 +31,9 @@ class TestVaultSessionNotifier extends VaultSessionNotifier {
 void main() {
   late MemoryVaultFileSystem fs;
   late VaultSession session;
-  final syntaxDir = Directory('../test_vaults/syntax');
+  final syntaxDir = Directory('../test_vaults/syntax').existsSync()
+      ? Directory('../test_vaults/syntax')
+      : Directory('test_vaults/syntax');
 
   setUpAll(() async {
     fs = MemoryVaultFileSystem();

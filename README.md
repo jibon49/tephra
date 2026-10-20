@@ -27,3 +27,14 @@ dart run tool/dev.dart
 
 Starts the web development preview on `PORT` (default 8093) and prints the Local and Network URLs.
 The real apps run with `flutter run -d windows` or `flutter run -d <android-device>` inside `app/`.
+
+### Running with Google Drive sync
+
+To run with Google Drive synchronization enabled, configure `secrets/google_oauth.json` (see `secrets/google_oauth.example.json`) and run from the `app/` directory:
+
+```bash
+flutter run -d windows --dart-define-from-file=../secrets/google_oauth.json
+flutter run -d <android-device-id> --dart-define-from-file=../secrets/google_oauth.json
+```
+
+Dev Launcher's web preview (`dart run tool/dev.dart`) is unchanged and does not sync (the web preview shows "Sync is not available in the web preview").

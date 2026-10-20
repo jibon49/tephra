@@ -14,6 +14,7 @@ import '../editor/mobile_toolbar.dart';
 import '../editor/providers.dart';
 import '../editor/save_state_indicator.dart';
 import '../l10n/app_localizations.dart';
+import '../sync_ui/status/sync_status_indicator.dart';
 import '../vault/providers.dart';
 import 'empty_workspace_view.dart';
 import 'index_status.dart';
@@ -138,6 +139,7 @@ class _PhoneLayoutState extends ConsumerState<PhoneLayout> {
                 ref.read(workspaceProvider.notifier).toggleMode();
               },
             ),
+            const SyncStatusIndicator(compact: true),
             PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert),
               onSelected: (value) {

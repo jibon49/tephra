@@ -20,6 +20,8 @@ dependencies:
     path: packages/tephra_markdown
   tephra_vault:
     path: packages/tephra_vault
+  tephra_sync:
+    path: packages/tephra_sync
 dev_dependencies:
   flutter_lints: ^6.0.0
   test: ^1.25.6

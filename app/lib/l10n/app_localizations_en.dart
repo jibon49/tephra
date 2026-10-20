@@ -1352,4 +1352,984 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandRunBenchmarks => 'Run performance benchmarks';
+
+  @override
+  String get syncErrorNoOAuthConfig =>
+      'This build has no Google sign-in configuration.';
+
+  @override
+  String get trayTooltipUpToDate => 'Tephra — Up to date';
+
+  @override
+  String trayTooltipSyncing(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files…',
+      one: '1 file…',
+    );
+    return 'Tephra — Syncing $_temp0';
+  }
+
+  @override
+  String get trayTooltipOffline => 'Tephra — Offline';
+
+  @override
+  String get trayTooltipNeedsAttention => 'Tephra — Needs attention';
+
+  @override
+  String get trayMenuOpen => 'Open Tephra';
+
+  @override
+  String get trayMenuSyncNow => 'Sync now';
+
+  @override
+  String get trayMenuPauseSync => 'Pause sync';
+
+  @override
+  String get trayMenuResumeSync => 'Resume sync';
+
+  @override
+  String get trayMenuQuit => 'Quit Tephra';
+
+  @override
+  String get syncNotificationReconnectTitle => 'Tephra sync';
+
+  @override
+  String get syncNotificationReconnectBody =>
+      'Tephra sync needs you to reconnect Google Drive';
+
+  @override
+  String get syncSetupTitle => 'Set up sync';
+
+  @override
+  String get syncSetupSignInExplain =>
+      'Tephra stores your vault in a folder named Tephra in your Google Drive. With encryption on, Google cannot read your notes or file names.';
+
+  @override
+  String get syncSetupSignInButton => 'Sign in with Google';
+
+  @override
+  String syncSetupSignedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get syncSetupUseAnotherAccount => 'Use another account';
+
+  @override
+  String get syncSetupChooseTitle => 'Choose remote vault';
+
+  @override
+  String get syncSetupCreateNew => 'Create a new remote vault';
+
+  @override
+  String syncSetupRemoteVaultCreated(String date) {
+    return 'Created $date';
+  }
+
+  @override
+  String get syncSetupEncryptToggle => 'Encrypt (recommended)';
+
+  @override
+  String get syncSetupPassword => 'Vault password';
+
+  @override
+  String get syncSetupPasswordConfirm => 'Confirm password';
+
+  @override
+  String get syncSetupPasswordTooShort =>
+      'Password must be at least 10 characters';
+
+  @override
+  String get syncSetupPasswordMismatch => 'Passwords do not match';
+
+  @override
+  String get syncSetupPasswordWarning =>
+      'If you lose both your password and your recovery key, nobody — including Tephra — can recover your synced data. Your notes on this device are not affected.';
+
+  @override
+  String get syncSetupEncryptionOffConfirm =>
+      'Turning encryption off means note contents and titles will be readable in your Google Drive. Are you sure?';
+
+  @override
+  String get syncSetupDeviceName => 'Device name';
+
+  @override
+  String get syncSetupCreating =>
+      'Securing your vault… this can take a few seconds';
+
+  @override
+  String get syncSetupRecoveryTitle => 'Save your recovery key';
+
+  @override
+  String get syncSetupRecoveryExplain =>
+      'If you forget your password, this recovery key is the only way to access your encrypted sync data. Store it somewhere safe.';
+
+  @override
+  String get syncSetupCopy => 'Copy key';
+
+  @override
+  String get syncSetupSaveToFile => 'Save as text file';
+
+  @override
+  String get syncSetupRecoverySavedCheckbox =>
+      'I have saved my recovery key somewhere safe';
+
+  @override
+  String get syncSetupConfirmRecoveryTitle => 'Confirm your recovery key';
+
+  @override
+  String syncSetupConfirmRecoveryGroup(int number) {
+    return 'Group $number';
+  }
+
+  @override
+  String get syncSetupConfirmRecoveryWrong =>
+      'The entered groups do not match your recovery key.';
+
+  @override
+  String get syncSetupShowKeyAgain => 'Show the key again';
+
+  @override
+  String get syncSetupUnlockTitle => 'Unlock remote vault';
+
+  @override
+  String get syncSetupUseRecoveryKey => 'Use recovery key instead';
+
+  @override
+  String get syncSetupUsePassword => 'Use password instead';
+
+  @override
+  String get syncErrorWrongPassword => 'Incorrect password.';
+
+  @override
+  String get syncErrorWrongRecoveryKey => 'Incorrect recovery key.';
+
+  @override
+  String get syncSetupFirstSyncTitle => 'First sync options';
+
+  @override
+  String syncSetupUploadOption(int count, String size) {
+    return 'Upload this vault ($count files, $size)';
+  }
+
+  @override
+  String get syncSetupDownloadOption => 'Download the vault';
+
+  @override
+  String get syncSetupMergeOption => 'Merge both (recommended)';
+
+  @override
+  String get syncSetupMergeExplain =>
+      'Files that exist on both sides with different content are kept twice; nothing is overwritten or deleted.';
+
+  @override
+  String get syncSetupNewFolderOption => 'Download into a new empty folder';
+
+  @override
+  String get syncSetupBackgroundSync => 'Sync in background';
+
+  @override
+  String get syncSetupWifiOnly => 'Sync over Wi-Fi only';
+
+  @override
+  String get syncSetupMobileMode => 'Mobile mode (skip large videos)';
+
+  @override
+  String syncSetupProgress(
+    int done,
+    int total,
+    String bytesDone,
+    String bytesTotal,
+  ) {
+    return '$done of $total files · $bytesDone of $bytesTotal';
+  }
+
+  @override
+  String get syncSetupRunInBackground => 'Run in background';
+
+  @override
+  String get syncSetupDoneTitle => 'Sync setup complete!';
+
+  @override
+  String get syncSetupEnableDailyBackup => 'Turn on daily backups';
+
+  @override
+  String get syncReconnectBanner =>
+      'Google Drive access expired. Reconnect to keep syncing.';
+
+  @override
+  String get syncReconnectButton => 'Reconnect';
+
+  @override
+  String get syncDisconnect => 'Stop syncing this vault';
+
+  @override
+  String get syncDisconnectConfirm =>
+      'Are you sure you want to stop syncing this vault on this device? Your local notes and remote data will remain untouched.';
+
+  @override
+  String get syncDisconnectAlsoSignOut =>
+      'Also sign out of Google on this device';
+
+  @override
+  String get syncNotAvailableOnWeb =>
+      'Sync is not available in the web preview.';
+
+  @override
+  String get syncSettingsTitle => 'Sync & backup';
+
+  @override
+  String get syncSetupAction => 'Set up sync';
+
+  @override
+  String get syncSetupCreateNewSubtitle =>
+      'Start fresh synchronization in Google Drive';
+
+  @override
+  String get syncSetupExistingVaults => 'Existing remote vaults';
+
+  @override
+  String get syncSetupVaultName => 'Vault name';
+
+  @override
+  String get syncSetupEncryptSubtitle => 'End-to-end zero-knowledge encryption';
+
+  @override
+  String get syncSetupEncryptionOffTitle => 'Turn off encryption?';
+
+  @override
+  String get syncSetupKeepEncryption => 'Keep encryption';
+
+  @override
+  String get syncSetupTurnOffEncryption => 'Turn off';
+
+  @override
+  String get syncSetupCreateAndContinue => 'Create and continue';
+
+  @override
+  String get syncSetupKeyCopied => 'Recovery key copied to clipboard';
+
+  @override
+  String get syncSetupContinue => 'Continue';
+
+  @override
+  String get syncSetupConfirmRecoveryExplain =>
+      'To ensure you can recover your data if needed, please enter groups 2 and 7 from your recovery key.';
+
+  @override
+  String get syncSetupVerifyAndContinue => 'Verify and continue';
+
+  @override
+  String get syncSetupRecoveryKeyLabel => 'Recovery key';
+
+  @override
+  String get syncSetupRecoveryKeyHint =>
+      'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX';
+
+  @override
+  String get syncSetupUnlockButton => 'Unlock';
+
+  @override
+  String get syncSetupUploadSubtitle =>
+      'Upload current local files to initialize remote vault';
+
+  @override
+  String get syncSetupDownloadSubtitle =>
+      'Download all notes from the remote vault into this folder';
+
+  @override
+  String get syncSetupNewFolderSubtitle =>
+      'Keep local files separate by downloading into a new folder';
+
+  @override
+  String get syncSetupChooseFolder => 'Choose folder';
+
+  @override
+  String get syncSetupBackgroundSyncSubtitle =>
+      'Periodically sync in background via WorkManager';
+
+  @override
+  String get syncSetupWifiOnlySubtitle => 'Avoid mobile data consumption';
+
+  @override
+  String get syncSetupMobileModeSubtitle =>
+      'Exclude large video and media files on phone';
+
+  @override
+  String get syncSetupStartSync => 'Start sync';
+
+  @override
+  String get syncSetupProgressTitle => 'Initial synchronization';
+
+  @override
+  String get syncSetupRetry => 'Retry';
+
+  @override
+  String get syncSetupSummaryUploaded => 'Uploaded files:';
+
+  @override
+  String get syncSetupSummaryDownloaded => 'Downloaded files:';
+
+  @override
+  String get syncSetupSummaryMerged => 'Merged files:';
+
+  @override
+  String get syncSetupDailyBackupSubtitle =>
+      'Keep automatic local snapshots in .tephra/history';
+
+  @override
+  String get commandSyncOpenSettings => 'Sync: Open settings';
+
+  @override
+  String get syncSettingsConfiguredStatus => 'Syncing via Google Drive';
+
+  @override
+  String get syncSettingsConfigureButton => 'Configure sync';
+
+  @override
+  String get syncDisconnectSuccess => 'Sync has been disabled for this vault.';
+
+  @override
+  String get syncStatusNotConfigured => 'Not configured';
+
+  @override
+  String get syncStatusUpToDate => 'Up to date';
+
+  @override
+  String syncStatusSyncing(String done, String total) {
+    return 'Syncing ($done/$total)';
+  }
+
+  @override
+  String syncStatusPending(int count) {
+    return '$count pending';
+  }
+
+  @override
+  String get syncStatusOffline => 'Offline';
+
+  @override
+  String get syncStatusPaused => 'Sync paused';
+
+  @override
+  String get syncStatusNeedsAttention => 'Needs attention';
+
+  @override
+  String get syncStatusError => 'Sync error';
+
+  @override
+  String syncPanelLastSynced(String when) {
+    return 'Last synced $when';
+  }
+
+  @override
+  String syncPanelDriveUsage(String used, String total) {
+    return '$used of $total used in Google Drive';
+  }
+
+  @override
+  String get syncPanelSyncNow => 'Sync now';
+
+  @override
+  String get syncPanelPause => 'Pause sync';
+
+  @override
+  String get syncPanelResume => 'Resume sync';
+
+  @override
+  String syncPanelConflicts(int count) {
+    return 'Conflicts ($count)';
+  }
+
+  @override
+  String syncPanelHeldDeletes(int count) {
+    return 'Held deletions ($count)';
+  }
+
+  @override
+  String get syncPanelLog => 'Sync log';
+
+  @override
+  String get syncPanelSettings => 'Sync settings';
+
+  @override
+  String get syncHeldDeletesTitle => 'Review held deletions';
+
+  @override
+  String syncHeldDeletesExplain(int count) {
+    return 'Sync wants to delete $count files because they were deleted on another device or on this device. Check before continuing.';
+  }
+
+  @override
+  String get syncHeldDeletesDelete => 'Delete them';
+
+  @override
+  String get syncHeldDeletesKeep => 'Keep them';
+
+  @override
+  String get syncHeldDeletesApply => 'Apply choices';
+
+  @override
+  String get syncLogTitle => 'Sync log';
+
+  @override
+  String syncLogUploaded(String path) {
+    return 'Uploaded $path';
+  }
+
+  @override
+  String syncLogDownloaded(String path, String device) {
+    return 'Updated $path from $device';
+  }
+
+  @override
+  String syncLogDownloadedNoDevice(String path) {
+    return 'Updated $path';
+  }
+
+  @override
+  String syncLogMerged(String path, String device) {
+    return 'Merged changes from $device into $path';
+  }
+
+  @override
+  String syncLogMergedNoDevice(String path) {
+    return 'Merged changes into $path';
+  }
+
+  @override
+  String syncLogConflictCopy(String path, String conflictPath) {
+    return '$path was changed on two devices; your version was saved as $conflictPath';
+  }
+
+  @override
+  String syncLogDeletedLocal(String path, String device) {
+    return 'Moved $path to the vault trash (deleted on $device)';
+  }
+
+  @override
+  String syncLogDeletedLocalNoDevice(String path) {
+    return 'Moved $path to the vault trash';
+  }
+
+  @override
+  String syncLogDeletedRemote(String path) {
+    return 'Deleted $path from sync (it stays in version history)';
+  }
+
+  @override
+  String syncLogRenamedLocal(String path, String newPath) {
+    return 'Renamed $path to $newPath';
+  }
+
+  @override
+  String syncLogRenamedRemote(String path, String newPath, String device) {
+    return 'Renamed $path to $newPath on $device';
+  }
+
+  @override
+  String syncLogRenamedRemoteNoDevice(String path, String newPath) {
+    return 'Renamed $path to $newPath';
+  }
+
+  @override
+  String syncLogCaseConflictRenamed(String path, String newPath) {
+    return 'Renamed $path to $newPath due to case conflict';
+  }
+
+  @override
+  String syncLogInvalidNameRenamed(String path, String newPath) {
+    return 'Renamed $path to $newPath for Windows compatibility';
+  }
+
+  @override
+  String syncLogKeptEditedFileDeletedElsewhere(String path) {
+    return 'Kept $path because it was edited locally after being deleted on another device';
+  }
+
+  @override
+  String syncLogRestoredDeletedFileChangedElsewhere(String path) {
+    return 'Restored $path because it was modified on another device';
+  }
+
+  @override
+  String syncLogRepublished(String path) {
+    return 'Republished $path to sync';
+  }
+
+  @override
+  String syncLogHeldDeletes(int count) {
+    return 'Held $count deletions for review';
+  }
+
+  @override
+  String get syncLogDeviceIdRenewed => 'Device identity was renewed';
+
+  @override
+  String syncLogError(String message) {
+    return 'Sync error: $message';
+  }
+
+  @override
+  String get syncLogFilterAll => 'All';
+
+  @override
+  String get syncLogFilterChanges => 'Changes';
+
+  @override
+  String get syncLogFilterProblems => 'Problems';
+
+  @override
+  String get syncLogCopy => 'Copy log';
+
+  @override
+  String get syncLogEmpty => 'No sync events recorded yet.';
+
+  @override
+  String get syncLogCopied => 'Log copied to clipboard';
+
+  @override
+  String get syncSettingsAccountHeader => 'Account & remote vault';
+
+  @override
+  String get syncSettingsRemoteVaultLabel => 'Remote vault';
+
+  @override
+  String get syncSettingsDeviceNameLabel => 'Device name';
+
+  @override
+  String get syncSettingsEncryptionLabel => 'Encryption';
+
+  @override
+  String get syncSettingsEncryptionEnabled => 'Enabled (zero-knowledge)';
+
+  @override
+  String get syncSettingsEncryptionDisabled => 'Disabled (plaintext)';
+
+  @override
+  String get syncSettingsExclusionsHeader => 'Selective sync & exclusions';
+
+  @override
+  String get syncSettingsExclusionsExplain =>
+      'Excluded files stay on this device and in Google Drive; they are just not synced on this device.';
+
+  @override
+  String get syncSettingsExcludedFolders => 'Excluded folders';
+
+  @override
+  String get syncSettingsAddExcludedFolder => 'Add folder';
+
+  @override
+  String get syncSettingsExcludedFileTypes => 'Excluded file extensions';
+
+  @override
+  String get syncSettingsExcludedFileTypesHint => 'e.g. mp4, zip, mov';
+
+  @override
+  String get syncSettingsMaxFileSize => 'Maximum file size';
+
+  @override
+  String get syncSettingsMaxFileSizeNoLimit => 'No limit (2 GB)';
+
+  @override
+  String get syncSettingsMobileHeader => 'Mobile network settings';
+
+  @override
+  String get syncSettingsMobileMode => 'Mobile mode (skip large media)';
+
+  @override
+  String get syncSettingsBackgroundSync => 'Background sync';
+
+  @override
+  String get syncSettingsWifiOnly => 'Sync over Wi-Fi only';
+
+  @override
+  String get syncSettingsChargingOnly => 'Sync only while charging';
+
+  @override
+  String get syncSettingsDesktopHeader => 'Desktop settings';
+
+  @override
+  String get syncSettingsKeepSyncingOnClose =>
+      'Keep syncing when window is closed';
+
+  @override
+  String get syncSettingsBandwidthHeader => 'Bandwidth limits';
+
+  @override
+  String get syncSettingsUploadLimit => 'Upload limit (KiB/s, 0 = unlimited)';
+
+  @override
+  String get syncSettingsDownloadLimit =>
+      'Download limit (KiB/s, 0 = unlimited)';
+
+  @override
+  String get syncSettingsSecurityHeader => 'Security & keys';
+
+  @override
+  String get syncSettingsChangePassword => 'Change vault password';
+
+  @override
+  String get syncSettingsShowRecoveryKey => 'Show new recovery key';
+
+  @override
+  String get syncSettingsDevicesLink => 'Manage devices';
+
+  @override
+  String get syncSettingsChangePasswordTitle => 'Change vault password';
+
+  @override
+  String get syncSettingsOldPassword => 'Current password or recovery key';
+
+  @override
+  String get syncSettingsNewPassword => 'New password';
+
+  @override
+  String get syncSettingsConfirmNewPassword => 'Confirm new password';
+
+  @override
+  String get syncSettingsPasswordChangedSuccess =>
+      'Vault password updated successfully.';
+
+  @override
+  String get syncSettingsRecoveryKeyRegeneratedSuccess =>
+      'New recovery key generated successfully.';
+
+  @override
+  String get syncDevicesTitle => 'Synced devices';
+
+  @override
+  String get syncDevicesThisDevice => 'This device';
+
+  @override
+  String syncDevicesLastSeen(String when) {
+    return 'Last seen $when';
+  }
+
+  @override
+  String get syncDevicesRemoved => 'Removed';
+
+  @override
+  String get syncDevicesRemove => 'Remove device';
+
+  @override
+  String syncDevicesRemoveConfirm(String name) {
+    return '$name will stop syncing. Changes it makes after now are ignored. It keeps its local files. Its access to Google Drive is not revoked — to fully block it, change the vault password and remove the Google account\'s access to Tephra on that device.';
+  }
+
+  @override
+  String get syncDevicesRemoveButton => 'Remove';
+
+  @override
+  String get syncDeviceRevokedTitle => 'Device removed from sync';
+
+  @override
+  String get syncDeviceRevokedReconnect =>
+      'This device was removed from sync. Reconnect as a new device to resume syncing.';
+
+  @override
+  String get syncDeviceRevokedButton => 'Reconnect as new device';
+
+  @override
+  String get syncErrorAuthRevoked =>
+      'Google Drive access was revoked or expired. Please reconnect.';
+
+  @override
+  String get syncErrorOffline =>
+      'Device is offline. Sync will resume automatically when connected.';
+
+  @override
+  String get syncErrorDriveFull =>
+      'Google Drive storage is full. Free up space to continue syncing.';
+
+  @override
+  String get syncWarningDriveAlmostFull =>
+      'Google Drive storage is almost full.';
+
+  @override
+  String get syncErrorRemoteFormatNewer =>
+      'The remote vault was created by a newer version of Tephra. Please update Tephra.';
+
+  @override
+  String syncErrorTampered(String device) {
+    return 'Sync data from $device failed integrity verification.';
+  }
+
+  @override
+  String get syncErrorVaultMissing =>
+      'The remote vault folder could not be found in Google Drive.';
+
+  @override
+  String get syncErrorVaultFolderUnavailable =>
+      'The local vault folder is currently inaccessible.';
+
+  @override
+  String get syncErrorKeyMissing =>
+      'Encryption key is missing. Please enter your password or recovery key.';
+
+  @override
+  String get commandSyncNow => 'Sync: Sync now';
+
+  @override
+  String get commandSyncPause => 'Sync: Pause sync';
+
+  @override
+  String get commandSyncResume => 'Sync: Resume sync';
+
+  @override
+  String get commandSyncOpenLog => 'Sync: Open sync log';
+
+  @override
+  String get commandSyncOpenConflicts => 'Sync: Open conflicts';
+
+  @override
+  String get commandSyncOpenDevices => 'Sync: Manage devices';
+
+  @override
+  String get commandSyncOpenHistory => 'Sync: Open file history';
+
+  @override
+  String get commandSyncOpenDeleted => 'Sync: View recently deleted files';
+
+  @override
+  String get commandSyncBackupNow => 'Sync: Create backup now';
+
+  @override
+  String get commandSyncOpenBackups => 'Sync: Manage backups';
+
+  @override
+  String get conflictsTitle => 'Sync conflicts';
+
+  @override
+  String get conflictsEmpty =>
+      'No unresolved conflicts. All files are up to date.';
+
+  @override
+  String conflictsFrom(String device, String time) {
+    return 'From $device · $time';
+  }
+
+  @override
+  String get conflictTheirVersion => 'Their version';
+
+  @override
+  String get conflictYourVersion => 'Your version';
+
+  @override
+  String get conflictKeepTheirs => 'Keep theirs';
+
+  @override
+  String get conflictEditMerge => 'Edit merge';
+
+  @override
+  String get conflictSaveMerge => 'Save merge';
+
+  @override
+  String get conflictResolved => 'Conflict resolved';
+
+  @override
+  String get conflictBinaryExplain =>
+      'Binary files cannot be merged. Choose which version to keep.';
+
+  @override
+  String get conflictKindText => 'Text conflict';
+
+  @override
+  String get conflictKindBinary => 'Binary conflict';
+
+  @override
+  String get conflictKindCase => 'Case conflict';
+
+  @override
+  String get diffSideBySide => 'Side by side';
+
+  @override
+  String get diffInline => 'Inline';
+
+  @override
+  String get conflictOpenTheirFile => 'Open their version';
+
+  @override
+  String get conflictOpenYourFile => 'Open your version';
+
+  @override
+  String historyTitle(String name) {
+    return 'Version history: $name';
+  }
+
+  @override
+  String get historyCurrent => 'Current';
+
+  @override
+  String get historyLocalSnapshot => 'Local snapshot';
+
+  @override
+  String historyFromDevice(String device) {
+    return '$device';
+  }
+
+  @override
+  String get historyUnavailable => 'No longer available';
+
+  @override
+  String get historyRestore => 'Restore this version';
+
+  @override
+  String historyRestoreConfirm(String time) {
+    return 'Restore version from $time? The current version will be saved in history.';
+  }
+
+  @override
+  String get historyRestored => 'Version restored';
+
+  @override
+  String get historyCopy => 'Copy text';
+
+  @override
+  String get historyCopied => 'Version copied to clipboard';
+
+  @override
+  String get historySaveCopyAs => 'Save a copy as…';
+
+  @override
+  String get historyEmpty => 'No version history available for this file.';
+
+  @override
+  String get deletedTitle => 'Recently deleted';
+
+  @override
+  String get deletedEmpty => 'No recently deleted files.';
+
+  @override
+  String deletedBy(String device, String time) {
+    return 'Deleted by $device • $time';
+  }
+
+  @override
+  String get deletedRestore => 'Restore';
+
+  @override
+  String deletedRestoredAs(String path) {
+    return 'Restored as $path';
+  }
+
+  @override
+  String get deletedOpenHistory => 'History';
+
+  @override
+  String get backupsTitle => 'Vault Backups';
+
+  @override
+  String get backupsSchedule => 'Backup Schedule';
+
+  @override
+  String get backupsScheduleOff => 'Off';
+
+  @override
+  String get backupsScheduleHourly => 'Hourly';
+
+  @override
+  String get backupsScheduleDaily => 'Daily (03:00)';
+
+  @override
+  String get backupsScheduleWeekly => 'Weekly';
+
+  @override
+  String get backupsRetentionHourly => 'Keep hourly backups for (hours)';
+
+  @override
+  String get backupsRetentionDaily => 'Keep daily backups for (days)';
+
+  @override
+  String get backupsRetentionMonthly => 'Keep monthly backups for (months)';
+
+  @override
+  String get backupsBackUpNow => 'Back up now';
+
+  @override
+  String backupsRunning(int done, int total) {
+    return 'Backing up... $done/$total files';
+  }
+
+  @override
+  String backupsEntry(String date, String device, int files, String size) {
+    return '$date · $device · $files files · $size';
+  }
+
+  @override
+  String get backupsEmpty => 'No backups created yet';
+
+  @override
+  String backupsLastVerification(String date, int ok, int failed) {
+    return 'Last verified on $date: $ok ok, $failed failed';
+  }
+
+  @override
+  String get backupsRestore => 'Restore...';
+
+  @override
+  String get backupsOnlyModeCard => 'Back up only';
+
+  @override
+  String get backupsOnlyModeExplain =>
+      'Create encrypted snapshots on Google Drive from this device without real-time multi-device sync.';
+
+  @override
+  String get backupsMobileModeNote =>
+      'Mobile-mode file exclusions apply to backups taken from this device.';
+
+  @override
+  String get gcRunning => 'Garbage collection in progress...';
+
+  @override
+  String gcDone(int count, String bytes) {
+    return 'Garbage collection complete: $count blobs removed ($bytes reclaimed)';
+  }
+
+  @override
+  String backupVerificationFailed(int count) {
+    return 'Backup verification failed: $count damaged blobs detected';
+  }
+
+  @override
+  String get backupsVerifyNow => 'Verify now';
+
+  @override
+  String get restoreTitle => 'Restore backup';
+
+  @override
+  String get restoreChooseFiles => 'Choose files to restore';
+
+  @override
+  String get restoreSelectAll => 'Select all';
+
+  @override
+  String get restoreTargetVault => 'Restore into current vault';
+
+  @override
+  String get restoreTargetNewFolder => 'Restore into a new folder';
+
+  @override
+  String get restoreNewFolderMustBeEmpty =>
+      'Target folder must be empty or not exist';
+
+  @override
+  String restoreConfirm(int count) {
+    return 'Restore $count selected files?';
+  }
+
+  @override
+  String restoreRunning(int done, int total) {
+    return 'Restoring files: $done / $total';
+  }
+
+  @override
+  String restoreReport(int restored, int skipped, int renamed, int failed) {
+    return 'Restore complete: $restored restored, $skipped skipped, $renamed renamed for collision, $failed failed';
+  }
+
+  @override
+  String get restoreOpenAsVault => 'Open as vault';
 }

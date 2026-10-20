@@ -10,6 +10,7 @@ import 'package:tephra/reading/parse_service.dart';
 import 'package:tephra/vault/note_document.dart';
 import 'package:tephra/vault/note_document_store.dart';
 import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_sync/tephra_sync.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../helpers/fake_editor_engine.dart';
@@ -302,5 +303,42 @@ void main() {
 
       store.dispose();
     });
+
+    testWidgets(
+      'autosave triggers local history snapshot with reason editing',
+      (tester) async {
+        final lh = LocalHistory(fs, clock);
+        final doc = NoteDocument(
+          path: path,
+          fs: fs,
+          clock: clock,
+          localHistory: lh,
+        );
+        await doc.load();
+
+        // Make edit
+        doc.edit(const EditOperation(0, 0, 'New version text'));
+        expect(doc.isDirty, isTrue);
+
+        // Advance past autosave delay
+        await tester.pump(const Duration(milliseconds: 1000));
+        await tester.pumpAndSettle();
+
+        expect(doc.saveState, SaveState.saved);
+        expect(doc.isDirty, isFalse);
+
+        // Verify local snapshot was created
+        final snapshots = await lh.list(path);
+        expect(snapshots.length, equals(1));
+        final decompressed = await lh.read(snapshots.first);
+        expect(decompressed, isNotNull);
+        expect(
+          TextDocument.decode(decompressed!).text,
+          contains('New version text'),
+        );
+
+        doc.dispose();
+      },
+    );
   });
 }

@@ -621,7 +621,553 @@
   },
   "openSettings": "Open settings",
   "indexUnavailableOnWeb": "Search and links are not available in the web preview.",
-  "commandRunBenchmarks": "Run performance benchmarks"
+  "commandRunBenchmarks": "Run performance benchmarks",
+  "syncErrorNoOAuthConfig": "This build has no Google sign-in configuration.",
+  "@syncErrorNoOAuthConfig": { "description": "Error message when OAuth client credentials are not configured at build time." },
+  "trayTooltipUpToDate": "Tephra — Up to date",
+  "trayTooltipSyncing": "Tephra — Syncing {count, plural, =1{1 file…} other{{count} files…}}",
+  "@trayTooltipSyncing": {
+    "description": "Tray tooltip when files are syncing",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trayTooltipOffline": "Tephra — Offline",
+  "trayTooltipNeedsAttention": "Tephra — Needs attention",
+  "trayMenuOpen": "Open Tephra",
+  "trayMenuSyncNow": "Sync now",
+  "trayMenuPauseSync": "Pause sync",
+  "trayMenuResumeSync": "Resume sync",
+  "trayMenuQuit": "Quit Tephra",
+  "syncNotificationReconnectTitle": "Tephra sync",
+  "syncNotificationReconnectBody": "Tephra sync needs you to reconnect Google Drive",
+  "syncSetupTitle": "Set up sync",
+  "syncSetupSignInExplain": "Tephra stores your vault in a folder named Tephra in your Google Drive. With encryption on, Google cannot read your notes or file names.",
+  "syncSetupSignInButton": "Sign in with Google",
+  "syncSetupSignedInAs": "Signed in as {email}",
+  "@syncSetupSignedInAs": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "syncSetupUseAnotherAccount": "Use another account",
+  "syncSetupChooseTitle": "Choose remote vault",
+  "syncSetupCreateNew": "Create a new remote vault",
+  "syncSetupRemoteVaultCreated": "Created {date}",
+  "@syncSetupRemoteVaultCreated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "syncSetupEncryptToggle": "Encrypt (recommended)",
+  "syncSetupPassword": "Vault password",
+  "syncSetupPasswordConfirm": "Confirm password",
+  "syncSetupPasswordTooShort": "Password must be at least 10 characters",
+  "syncSetupPasswordMismatch": "Passwords do not match",
+  "syncSetupPasswordWarning": "If you lose both your password and your recovery key, nobody — including Tephra — can recover your synced data. Your notes on this device are not affected.",
+  "syncSetupEncryptionOffConfirm": "Turning encryption off means note contents and titles will be readable in your Google Drive. Are you sure?",
+  "syncSetupDeviceName": "Device name",
+  "syncSetupCreating": "Securing your vault… this can take a few seconds",
+  "syncSetupRecoveryTitle": "Save your recovery key",
+  "syncSetupRecoveryExplain": "If you forget your password, this recovery key is the only way to access your encrypted sync data. Store it somewhere safe.",
+  "syncSetupCopy": "Copy key",
+  "syncSetupSaveToFile": "Save as text file",
+  "syncSetupRecoverySavedCheckbox": "I have saved my recovery key somewhere safe",
+  "syncSetupConfirmRecoveryTitle": "Confirm your recovery key",
+  "syncSetupConfirmRecoveryGroup": "Group {number}",
+  "@syncSetupConfirmRecoveryGroup": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "syncSetupConfirmRecoveryWrong": "The entered groups do not match your recovery key.",
+  "syncSetupShowKeyAgain": "Show the key again",
+  "syncSetupUnlockTitle": "Unlock remote vault",
+  "syncSetupUseRecoveryKey": "Use recovery key instead",
+  "syncSetupUsePassword": "Use password instead",
+  "syncErrorWrongPassword": "Incorrect password.",
+  "syncErrorWrongRecoveryKey": "Incorrect recovery key.",
+  "syncSetupFirstSyncTitle": "First sync options",
+  "syncSetupUploadOption": "Upload this vault ({count} files, {size})",
+  "@syncSetupUploadOption": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "syncSetupDownloadOption": "Download the vault",
+  "syncSetupMergeOption": "Merge both (recommended)",
+  "syncSetupMergeExplain": "Files that exist on both sides with different content are kept twice; nothing is overwritten or deleted.",
+  "syncSetupNewFolderOption": "Download into a new empty folder",
+  "syncSetupBackgroundSync": "Sync in background",
+  "syncSetupWifiOnly": "Sync over Wi-Fi only",
+  "syncSetupMobileMode": "Mobile mode (skip large videos)",
+  "syncSetupProgress": "{done} of {total} files · {bytesDone} of {bytesTotal}",
+  "@syncSetupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytesDone": {
+        "type": "String"
+      },
+      "bytesTotal": {
+        "type": "String"
+      }
+    }
+  },
+  "syncSetupRunInBackground": "Run in background",
+  "syncSetupDoneTitle": "Sync setup complete!",
+  "syncSetupEnableDailyBackup": "Turn on daily backups",
+  "syncReconnectBanner": "Google Drive access expired. Reconnect to keep syncing.",
+  "syncReconnectButton": "Reconnect",
+  "syncDisconnect": "Stop syncing this vault",
+  "syncDisconnectConfirm": "Are you sure you want to stop syncing this vault on this device? Your local notes and remote data will remain untouched.",
+  "syncDisconnectAlsoSignOut": "Also sign out of Google on this device",
+  "syncNotAvailableOnWeb": "Sync is not available in the web preview.",
+  "syncSettingsTitle": "Sync & backup",
+  "syncSetupAction": "Set up sync",
+  "syncSetupCreateNewSubtitle": "Start fresh synchronization in Google Drive",
+  "syncSetupExistingVaults": "Existing remote vaults",
+  "syncSetupVaultName": "Vault name",
+  "syncSetupEncryptSubtitle": "End-to-end zero-knowledge encryption",
+  "syncSetupEncryptionOffTitle": "Turn off encryption?",
+  "syncSetupKeepEncryption": "Keep encryption",
+  "syncSetupTurnOffEncryption": "Turn off",
+  "syncSetupCreateAndContinue": "Create and continue",
+  "syncSetupKeyCopied": "Recovery key copied to clipboard",
+  "syncSetupContinue": "Continue",
+  "syncSetupConfirmRecoveryExplain": "To ensure you can recover your data if needed, please enter groups 2 and 7 from your recovery key.",
+  "syncSetupVerifyAndContinue": "Verify and continue",
+  "syncSetupRecoveryKeyLabel": "Recovery key",
+  "syncSetupRecoveryKeyHint": "XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX",
+  "syncSetupUnlockButton": "Unlock",
+  "syncSetupUploadSubtitle": "Upload current local files to initialize remote vault",
+  "syncSetupDownloadSubtitle": "Download all notes from the remote vault into this folder",
+  "syncSetupNewFolderSubtitle": "Keep local files separate by downloading into a new folder",
+  "syncSetupChooseFolder": "Choose folder",
+  "syncSetupBackgroundSyncSubtitle": "Periodically sync in background via WorkManager",
+  "syncSetupWifiOnlySubtitle": "Avoid mobile data consumption",
+  "syncSetupMobileModeSubtitle": "Exclude large video and media files on phone",
+  "syncSetupStartSync": "Start sync",
+  "syncSetupProgressTitle": "Initial synchronization",
+  "syncSetupRetry": "Retry",
+  "syncSetupSummaryUploaded": "Uploaded files:",
+  "syncSetupSummaryDownloaded": "Downloaded files:",
+  "syncSetupSummaryMerged": "Merged files:",
+  "syncSetupDailyBackupSubtitle": "Keep automatic local snapshots in .tephra/history",
+  "commandSyncOpenSettings": "Sync: Open settings",
+  "syncSettingsConfiguredStatus": "Syncing via Google Drive",
+  "syncSettingsConfigureButton": "Configure sync",
+  "syncDisconnectSuccess": "Sync has been disabled for this vault.",
+  "syncStatusNotConfigured": "Not configured",
+  "syncStatusUpToDate": "Up to date",
+  "syncStatusSyncing": "Syncing ({done}/{total})",
+  "@syncStatusSyncing": {
+    "description": "Short sync indicator status when sync is in progress",
+    "placeholders": {
+      "done": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "syncStatusPending": "{count} pending",
+  "@syncStatusPending": {
+    "description": "Short sync indicator status when local changes are pending",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "syncStatusOffline": "Offline",
+  "syncStatusPaused": "Sync paused",
+  "syncStatusNeedsAttention": "Needs attention",
+  "syncStatusError": "Sync error",
+  "syncPanelLastSynced": "Last synced {when}",
+  "@syncPanelLastSynced": {
+    "description": "Timestamp display in sync panel",
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "syncPanelDriveUsage": "{used} of {total} used in Google Drive",
+  "@syncPanelDriveUsage": {
+    "description": "Drive quota usage display in sync panel",
+    "placeholders": {
+      "used": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "syncPanelSyncNow": "Sync now",
+  "syncPanelPause": "Pause sync",
+  "syncPanelResume": "Resume sync",
+  "syncPanelConflicts": "Conflicts ({count})",
+  "@syncPanelConflicts": {
+    "description": "Conflicts button text with count",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "syncPanelHeldDeletes": "Held deletions ({count})",
+  "@syncPanelHeldDeletes": {
+    "description": "Held deletions button text with count",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "syncPanelLog": "Sync log",
+  "syncPanelSettings": "Sync settings",
+  "syncHeldDeletesTitle": "Review held deletions",
+  "syncHeldDeletesExplain": "Sync wants to delete {count} files because they were deleted on another device or on this device. Check before continuing.",
+  "@syncHeldDeletesExplain": {
+    "description": "Explanation shown on the held deletions review sheet",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "syncHeldDeletesDelete": "Delete them",
+  "syncHeldDeletesKeep": "Keep them",
+  "syncHeldDeletesApply": "Apply choices",
+  "syncLogTitle": "Sync log",
+  "syncLogUploaded": "Uploaded {path}",
+  "@syncLogUploaded": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "syncLogDownloaded": "Updated {path} from {device}",
+  "@syncLogDownloaded": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "device": { "type": "String" }
+    }
+  },
+  "syncLogDownloadedNoDevice": "Updated {path}",
+  "@syncLogDownloadedNoDevice": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "syncLogMerged": "Merged changes from {device} into {path}",
+  "@syncLogMerged": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "device": { "type": "String" }
+    }
+  },
+  "syncLogMergedNoDevice": "Merged changes into {path}",
+  "@syncLogMergedNoDevice": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "syncLogConflictCopy": "{path} was changed on two devices; your version was saved as {conflictPath}",
+  "@syncLogConflictCopy": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "conflictPath": { "type": "String" }
+    }
+  },
+  "syncLogDeletedLocal": "Moved {path} to the vault trash (deleted on {device})",
+  "@syncLogDeletedLocal": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "device": { "type": "String" }
+    }
+  },
+  "syncLogDeletedLocalNoDevice": "Moved {path} to the vault trash",
+  "@syncLogDeletedLocalNoDevice": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "syncLogDeletedRemote": "Deleted {path} from sync (it stays in version history)",
+  "@syncLogDeletedRemote": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "syncLogRenamedLocal": "Renamed {path} to {newPath}",
+  "@syncLogRenamedLocal": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "newPath": { "type": "String" }
+    }
+  },
+  "syncLogRenamedRemote": "Renamed {path} to {newPath} on {device}",
+  "@syncLogRenamedRemote": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "newPath": { "type": "String" },
+      "device": { "type": "String" }
+    }
+  },
+  "syncLogRenamedRemoteNoDevice": "Renamed {path} to {newPath}",
+  "@syncLogRenamedRemoteNoDevice": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "newPath": { "type": "String" }
+    }
+  },
+  "syncLogCaseConflictRenamed": "Renamed {path} to {newPath} due to case conflict",
+  "@syncLogCaseConflictRenamed": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "newPath": { "type": "String" }
+    }
+  },
+  "syncLogInvalidNameRenamed": "Renamed {path} to {newPath} for Windows compatibility",
+  "@syncLogInvalidNameRenamed": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "newPath": { "type": "String" }
+    }
+  },
+  "syncLogKeptEditedFileDeletedElsewhere": "Kept {path} because it was edited locally after being deleted on another device",
+  "@syncLogKeptEditedFileDeletedElsewhere": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "syncLogRestoredDeletedFileChangedElsewhere": "Restored {path} because it was modified on another device",
+  "@syncLogRestoredDeletedFileChangedElsewhere": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "syncLogRepublished": "Republished {path} to sync",
+  "@syncLogRepublished": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "syncLogHeldDeletes": "Held {count} deletions for review",
+  "@syncLogHeldDeletes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "syncLogDeviceIdRenewed": "Device identity was renewed",
+  "syncLogError": "Sync error: {message}",
+  "@syncLogError": {
+    "placeholders": { "message": { "type": "String" } }
+  },
+  "syncLogFilterAll": "All",
+  "syncLogFilterChanges": "Changes",
+  "syncLogFilterProblems": "Problems",
+  "syncLogCopy": "Copy log",
+  "syncLogEmpty": "No sync events recorded yet.",
+  "syncLogCopied": "Log copied to clipboard",
+  "syncSettingsAccountHeader": "Account & remote vault",
+  "syncSettingsRemoteVaultLabel": "Remote vault",
+  "syncSettingsDeviceNameLabel": "Device name",
+  "syncSettingsEncryptionLabel": "Encryption",
+  "syncSettingsEncryptionEnabled": "Enabled (zero-knowledge)",
+  "syncSettingsEncryptionDisabled": "Disabled (plaintext)",
+  "syncSettingsExclusionsHeader": "Selective sync & exclusions",
+  "syncSettingsExclusionsExplain": "Excluded files stay on this device and in Google Drive; they are just not synced on this device.",
+  "syncSettingsExcludedFolders": "Excluded folders",
+  "syncSettingsAddExcludedFolder": "Add folder",
+  "syncSettingsExcludedFileTypes": "Excluded file extensions",
+  "syncSettingsExcludedFileTypesHint": "e.g. mp4, zip, mov",
+  "syncSettingsMaxFileSize": "Maximum file size",
+  "syncSettingsMaxFileSizeNoLimit": "No limit (2 GB)",
+  "syncSettingsMobileHeader": "Mobile network settings",
+  "syncSettingsMobileMode": "Mobile mode (skip large media)",
+  "syncSettingsBackgroundSync": "Background sync",
+  "syncSettingsWifiOnly": "Sync over Wi-Fi only",
+  "syncSettingsChargingOnly": "Sync only while charging",
+  "syncSettingsDesktopHeader": "Desktop settings",
+  "syncSettingsKeepSyncingOnClose": "Keep syncing when window is closed",
+  "syncSettingsBandwidthHeader": "Bandwidth limits",
+  "syncSettingsUploadLimit": "Upload limit (KiB/s, 0 = unlimited)",
+  "syncSettingsDownloadLimit": "Download limit (KiB/s, 0 = unlimited)",
+  "syncSettingsSecurityHeader": "Security & keys",
+  "syncSettingsChangePassword": "Change vault password",
+  "syncSettingsShowRecoveryKey": "Show new recovery key",
+  "syncSettingsDevicesLink": "Manage devices",
+  "syncSettingsChangePasswordTitle": "Change vault password",
+  "syncSettingsOldPassword": "Current password or recovery key",
+  "syncSettingsNewPassword": "New password",
+  "syncSettingsConfirmNewPassword": "Confirm new password",
+  "syncSettingsPasswordChangedSuccess": "Vault password updated successfully.",
+  "syncSettingsRecoveryKeyRegeneratedSuccess": "New recovery key generated successfully.",
+  "syncDevicesTitle": "Synced devices",
+  "syncDevicesThisDevice": "This device",
+  "syncDevicesLastSeen": "Last seen {when}",
+  "@syncDevicesLastSeen": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "syncDevicesRemoved": "Removed",
+  "syncDevicesRemove": "Remove device",
+  "syncDevicesRemoveConfirm": "{name} will stop syncing. Changes it makes after now are ignored. It keeps its local files. Its access to Google Drive is not revoked — to fully block it, change the vault password and remove the Google account's access to Tephra on that device.",
+  "@syncDevicesRemoveConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "syncDevicesRemoveButton": "Remove",
+  "syncDeviceRevokedTitle": "Device removed from sync",
+  "syncDeviceRevokedReconnect": "This device was removed from sync. Reconnect as a new device to resume syncing.",
+  "syncDeviceRevokedButton": "Reconnect as new device",
+  "syncErrorAuthRevoked": "Google Drive access was revoked or expired. Please reconnect.",
+  "syncErrorOffline": "Device is offline. Sync will resume automatically when connected.",
+  "syncErrorDriveFull": "Google Drive storage is full. Free up space to continue syncing.",
+  "syncWarningDriveAlmostFull": "Google Drive storage is almost full.",
+  "syncErrorRemoteFormatNewer": "The remote vault was created by a newer version of Tephra. Please update Tephra.",
+  "syncErrorTampered": "Sync data from {device} failed integrity verification.",
+  "@syncErrorTampered": {
+    "placeholders": { "device": { "type": "String" } }
+  },
+  "syncErrorVaultMissing": "The remote vault folder could not be found in Google Drive.",
+  "syncErrorVaultFolderUnavailable": "The local vault folder is currently inaccessible.",
+  "syncErrorKeyMissing": "Encryption key is missing. Please enter your password or recovery key.",
+  "commandSyncNow": "Sync: Sync now",
+  "commandSyncPause": "Sync: Pause sync",
+  "commandSyncResume": "Sync: Resume sync",
+  "commandSyncOpenLog": "Sync: Open sync log",
+  "commandSyncOpenConflicts": "Sync: Open conflicts",
+  "commandSyncOpenDevices": "Sync: Manage devices",
+  "commandSyncOpenHistory": "Sync: Open file history",
+  "commandSyncOpenDeleted": "Sync: View recently deleted files",
+  "commandSyncBackupNow": "Sync: Create backup now",
+  "commandSyncOpenBackups": "Sync: Manage backups",
+  "conflictsTitle": "Sync conflicts",
+  "conflictsEmpty": "No unresolved conflicts. All files are up to date.",
+  "conflictsFrom": "From {device} · {time}",
+  "@conflictsFrom": {
+    "description": "Subtitle showing device and time of conflict",
+    "placeholders": {
+      "device": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "conflictTheirVersion": "Their version",
+  "conflictYourVersion": "Your version",
+  "conflictKeepTheirs": "Keep theirs",
+  "conflictEditMerge": "Edit merge",
+  "conflictSaveMerge": "Save merge",
+  "conflictResolved": "Conflict resolved",
+  "conflictBinaryExplain": "Binary files cannot be merged. Choose which version to keep.",
+  "conflictKindText": "Text conflict",
+  "conflictKindBinary": "Binary conflict",
+  "conflictKindCase": "Case conflict",
+  "diffSideBySide": "Side by side",
+  "diffInline": "Inline",
+  "conflictOpenTheirFile": "Open their version",
+  "conflictOpenYourFile": "Open your version",
+  "historyTitle": "Version history: {name}",
+  "@historyTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "historyCurrent": "Current",
+  "historyLocalSnapshot": "Local snapshot",
+  "historyFromDevice": "{device}",
+  "@historyFromDevice": {
+    "placeholders": { "device": { "type": "String" } }
+  },
+  "historyUnavailable": "No longer available",
+  "historyRestore": "Restore this version",
+  "historyRestoreConfirm": "Restore version from {time}? The current version will be saved in history.",
+  "@historyRestoreConfirm": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+  "historyRestored": "Version restored",
+  "historyCopy": "Copy text",
+  "historyCopied": "Version copied to clipboard",
+  "historySaveCopyAs": "Save a copy as…",
+  "historyEmpty": "No version history available for this file.",
+  "deletedTitle": "Recently deleted",
+  "deletedEmpty": "No recently deleted files.",
+  "deletedBy": "Deleted by {device} • {time}",
+  "@deletedBy": {
+    "placeholders": {
+      "device": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "deletedRestore": "Restore",
+  "deletedRestoredAs": "Restored as {path}",
+  "@deletedRestoredAs": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "deletedOpenHistory": "History",
+  "backupsTitle": "Vault Backups",
+  "backupsSchedule": "Backup Schedule",
+  "backupsScheduleOff": "Off",
+  "backupsScheduleHourly": "Hourly",
+  "backupsScheduleDaily": "Daily (03:00)",
+  "backupsScheduleWeekly": "Weekly",
+  "backupsRetentionHourly": "Keep hourly backups for (hours)",
+  "backupsRetentionDaily": "Keep daily backups for (days)",
+  "backupsRetentionMonthly": "Keep monthly backups for (months)",
+  "backupsBackUpNow": "Back up now",
+  "backupsRunning": "Backing up... {done}/{total} files",
+  "@backupsRunning": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "backupsEntry": "{date} · {device} · {files} files · {size}",
+  "@backupsEntry": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "device": { "type": "String" },
+      "files": { "type": "int" },
+      "size": { "type": "String" }
+    }
+  },
+  "backupsEmpty": "No backups created yet",
+  "backupsLastVerification": "Last verified on {date}: {ok} ok, {failed} failed",
+  "@backupsLastVerification": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "ok": { "type": "int" },
+      "failed": { "type": "int" }
+    }
+  },
+  "backupsRestore": "Restore...",
+  "backupsOnlyModeCard": "Back up only",
+  "backupsOnlyModeExplain": "Create encrypted snapshots on Google Drive from this device without real-time multi-device sync.",
+  "backupsMobileModeNote": "Mobile-mode file exclusions apply to backups taken from this device.",
+  "gcRunning": "Garbage collection in progress...",
+  "gcDone": "Garbage collection complete: {count} blobs removed ({bytes} reclaimed)",
+  "@gcDone": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "bytes": { "type": "String" }
+    }
+  },
+  "backupVerificationFailed": "Backup verification failed: {count} damaged blobs detected",
+  "@backupVerificationFailed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupsVerifyNow": "Verify now",
+  "restoreTitle": "Restore backup",
+  "restoreChooseFiles": "Choose files to restore",
+  "restoreSelectAll": "Select all",
+  "restoreTargetVault": "Restore into current vault",
+  "restoreTargetNewFolder": "Restore into a new folder",
+  "restoreNewFolderMustBeEmpty": "Target folder must be empty or not exist",
+  "restoreConfirm": "Restore {count} selected files?",
+  "@restoreConfirm": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "restoreRunning": "Restoring files: {done} / {total}",
+  "@restoreRunning": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "restoreReport": "Restore complete: {restored} restored, {skipped} skipped, {renamed} renamed for collision, {failed} failed",
+  "@restoreReport": {
+    "placeholders": {
+      "restored": { "type": "int" },
+      "skipped": { "type": "int" },
+      "renamed": { "type": "int" },
+      "failed": { "type": "int" }
+    }
+  },
+  "restoreOpenAsVault": "Open as vault"
 }
 
 

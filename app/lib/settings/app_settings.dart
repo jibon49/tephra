@@ -67,6 +67,7 @@ final class AppSettings {
     this.pagePreviewReadingRequiresCtrl = false,
     this.pagePreviewEditorRequiresCtrl = true,
     this.switcherShowAttachments = false,
+    this.keepSyncingWhenClosed = false,
     this.extra = const {},
   });
 
@@ -84,6 +85,9 @@ final class AppSettings {
         json['pagePreviewEditorRequiresCtrl'] as bool? ?? true;
     final switcherShowAttachments =
         json['switcherShowAttachments'] as bool? ?? false;
+    final keepSyncingWhenClosed =
+        json['keepSyncingWhenClosed'] as bool? ??
+        (json['app.keepRunningInTray'] as bool? ?? false);
 
     final rawRecentVaults = json['recentVaults'];
     final recentVaults = <RecentVault>[];
@@ -115,6 +119,8 @@ final class AppSettings {
       'pagePreviewReadingRequiresCtrl',
       'pagePreviewEditorRequiresCtrl',
       'switcherShowAttachments',
+      'keepSyncingWhenClosed',
+      'app.keepRunningInTray',
     };
     final extra = <String, Object?>{};
     for (final entry in json.entries) {
@@ -133,6 +139,7 @@ final class AppSettings {
       pagePreviewReadingRequiresCtrl: pagePreviewReadingRequiresCtrl,
       pagePreviewEditorRequiresCtrl: pagePreviewEditorRequiresCtrl,
       switcherShowAttachments: switcherShowAttachments,
+      keepSyncingWhenClosed: keepSyncingWhenClosed,
       extra: Map.unmodifiable(extra),
     );
   }
@@ -164,6 +171,9 @@ final class AppSettings {
   /// Whether the quick switcher includes non-markdown attachments.
   final bool switcherShowAttachments;
 
+  /// Whether to keep the app and sync workers running in the system tray when the window is closed.
+  final bool keepSyncingWhenClosed;
+
   /// Unknown keys preserved on read/write.
   final Map<String, Object?> extra;
 
@@ -178,6 +188,7 @@ final class AppSettings {
       'pagePreviewReadingRequiresCtrl': pagePreviewReadingRequiresCtrl,
       'pagePreviewEditorRequiresCtrl': pagePreviewEditorRequiresCtrl,
       'switcherShowAttachments': switcherShowAttachments,
+      'keepSyncingWhenClosed': keepSyncingWhenClosed,
     };
     map.addAll(extra);
     return map;
@@ -193,6 +204,7 @@ final class AppSettings {
     bool? pagePreviewReadingRequiresCtrl,
     bool? pagePreviewEditorRequiresCtrl,
     bool? switcherShowAttachments,
+    bool? keepSyncingWhenClosed,
     Map<String, Object?>? extra,
   }) {
     return AppSettings(
@@ -210,6 +222,8 @@ final class AppSettings {
           pagePreviewEditorRequiresCtrl ?? this.pagePreviewEditorRequiresCtrl,
       switcherShowAttachments:
           switcherShowAttachments ?? this.switcherShowAttachments,
+      keepSyncingWhenClosed:
+          keepSyncingWhenClosed ?? this.keepSyncingWhenClosed,
       extra: extra ?? this.extra,
     );
   }
@@ -267,6 +281,7 @@ final class AppSettings {
           pagePreviewEditorRequiresCtrl ==
               other.pagePreviewEditorRequiresCtrl &&
           switcherShowAttachments == other.switcherShowAttachments &&
+          keepSyncingWhenClosed == other.keepSyncingWhenClosed &&
           mapEquals(extra, other.extra);
 
   @override
@@ -280,6 +295,7 @@ final class AppSettings {
     pagePreviewReadingRequiresCtrl,
     pagePreviewEditorRequiresCtrl,
     switcherShowAttachments,
+    keepSyncingWhenClosed,
     Object.hashAll(extra.entries),
   );
 }

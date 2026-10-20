@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_markdown/tephra_markdown.dart';
+import 'package:tephra_sync/tephra_sync.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
 import '../editor/edit_operation.dart';
@@ -49,6 +50,7 @@ final class NoteDocument extends ChangeNotifier {
     required this.clock,
     this.parseService = const ParseService(),
     this.autosaveDelay = const Duration(milliseconds: 1000),
+    this.localHistory,
     this.onDiskChanged,
     this.onDocChanged,
   }) : _base = const TextDocument(text: '');
@@ -57,6 +59,7 @@ final class NoteDocument extends ChangeNotifier {
   final Clock clock;
   final ParseService parseService;
   final Duration autosaveDelay;
+  final LocalHistory? localHistory;
   final VoidCallback? onDiskChanged;
   final VoidCallback? onDocChanged;
 
@@ -312,6 +315,17 @@ final class NoteDocument extends ChangeNotifier {
         lineEnding: _base.lineEnding,
       ).encode();
       await fs.writeBytes(path, bytes);
+      if (localHistory != null) {
+        unawaited(
+          localHistory!
+              .snapshot(path, bytes, reason: SnapshotReason.editing)
+              .catchError((Object e) {
+                _logger.warning(
+                  'Failed to take local history snapshot for $path: $e',
+                );
+              }),
+        );
+      }
       _diskHash = contentHash(bytes);
       _diskStat = await fs.stat(path);
       _savedText = current;

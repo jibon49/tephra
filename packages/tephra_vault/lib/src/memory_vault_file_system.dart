@@ -124,6 +124,7 @@ final class MemoryVaultFileSystem implements VaultFileSystem {
       return [];
     }
 
+    final folderIgnored = !folder.isRoot && ignore.isIgnored(folder);
     final results = <VaultEntry>[];
 
     for (final entry in _nodes.entries) {
@@ -131,7 +132,7 @@ final class MemoryVaultFileSystem implements VaultFileSystem {
       final node = entry.value;
 
       if (path.isRoot) continue;
-      if (ignore.isIgnored(path)) continue;
+      if (!folderIgnored && ignore.isIgnored(path)) continue;
 
       final bool matches;
       if (folder.isRoot) {
@@ -305,7 +306,7 @@ final class MemoryVaultFileSystem implements VaultFileSystem {
       case TrashMode.system:
       case TrashMode.vaultTrash:
         final trashRel = '.trash/${path.value}';
-        var destPath = VaultPath(trashRel);
+        var destPath = VaultPath.raw(trashRel);
 
         if (_resolveKey(destPath) != null) {
           var index = 1;
@@ -319,7 +320,9 @@ final class MemoryVaultFileSystem implements VaultFileSystem {
               newName = ext.isEmpty ? '$stem $index' : '$stem $index.$ext';
             }
             final parent = destPath.parent!;
-            destPath = parent.join(newName);
+            destPath = parent.isRoot
+                ? VaultPath.raw(newName)
+                : VaultPath.raw('${parent.value}/$newName');
             if (_resolveKey(destPath) == null) break;
             index++;
           }

@@ -19,6 +19,7 @@ enum ExplorerAction {
   moveTo,
   reveal,
   delete,
+  versionHistory,
 }
 
 /// Shows context menu for [entry] at [position] on desktop, or returns the action.
@@ -69,6 +70,12 @@ Future<ExplorerAction?> showExplorerDesktopMenu({
       PopupMenuItem(
         value: ExplorerAction.moveTo,
         child: Text(l10n.explorerMoveTo),
+      ),
+    );
+    items.add(
+      PopupMenuItem(
+        value: ExplorerAction.versionHistory,
+        child: Text(l10n.commandSyncOpenHistory),
       ),
     );
     if (windows) {
@@ -135,6 +142,12 @@ Future<ExplorerAction?> showExplorerDesktopMenu({
       PopupMenuItem(
         value: ExplorerAction.moveTo,
         child: Text(l10n.explorerMoveTo),
+      ),
+    );
+    items.add(
+      PopupMenuItem(
+        value: ExplorerAction.versionHistory,
+        child: Text(l10n.commandSyncOpenHistory),
       ),
     );
     if (windows) {

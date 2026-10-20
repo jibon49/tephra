@@ -2559,6 +2559,1667 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Run performance benchmarks'**
   String get commandRunBenchmarks;
+
+  /// Error message when OAuth client credentials are not configured at build time.
+  ///
+  /// In en, this message translates to:
+  /// **'This build has no Google sign-in configuration.'**
+  String get syncErrorNoOAuthConfig;
+
+  /// No description provided for @trayTooltipUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra — Up to date'**
+  String get trayTooltipUpToDate;
+
+  /// Tray tooltip when files are syncing
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra — Syncing {count, plural, =1{1 file…} other{{count} files…}}'**
+  String trayTooltipSyncing(int count);
+
+  /// No description provided for @trayTooltipOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra — Offline'**
+  String get trayTooltipOffline;
+
+  /// No description provided for @trayTooltipNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra — Needs attention'**
+  String get trayTooltipNeedsAttention;
+
+  /// No description provided for @trayMenuOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Tephra'**
+  String get trayMenuOpen;
+
+  /// No description provided for @trayMenuSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get trayMenuSyncNow;
+
+  /// No description provided for @trayMenuPauseSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause sync'**
+  String get trayMenuPauseSync;
+
+  /// No description provided for @trayMenuResumeSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume sync'**
+  String get trayMenuResumeSync;
+
+  /// No description provided for @trayMenuQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit Tephra'**
+  String get trayMenuQuit;
+
+  /// No description provided for @syncNotificationReconnectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra sync'**
+  String get syncNotificationReconnectTitle;
+
+  /// No description provided for @syncNotificationReconnectBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra sync needs you to reconnect Google Drive'**
+  String get syncNotificationReconnectBody;
+
+  /// No description provided for @syncSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up sync'**
+  String get syncSetupTitle;
+
+  /// No description provided for @syncSetupSignInExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra stores your vault in a folder named Tephra in your Google Drive. With encryption on, Google cannot read your notes or file names.'**
+  String get syncSetupSignInExplain;
+
+  /// No description provided for @syncSetupSignInButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get syncSetupSignInButton;
+
+  /// No description provided for @syncSetupSignedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as {email}'**
+  String syncSetupSignedInAs(String email);
+
+  /// No description provided for @syncSetupUseAnotherAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another account'**
+  String get syncSetupUseAnotherAccount;
+
+  /// No description provided for @syncSetupChooseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose remote vault'**
+  String get syncSetupChooseTitle;
+
+  /// No description provided for @syncSetupCreateNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new remote vault'**
+  String get syncSetupCreateNew;
+
+  /// No description provided for @syncSetupRemoteVaultCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Created {date}'**
+  String syncSetupRemoteVaultCreated(String date);
+
+  /// No description provided for @syncSetupEncryptToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypt (recommended)'**
+  String get syncSetupEncryptToggle;
+
+  /// No description provided for @syncSetupPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault password'**
+  String get syncSetupPassword;
+
+  /// No description provided for @syncSetupPasswordConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get syncSetupPasswordConfirm;
+
+  /// No description provided for @syncSetupPasswordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 10 characters'**
+  String get syncSetupPasswordTooShort;
+
+  /// No description provided for @syncSetupPasswordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get syncSetupPasswordMismatch;
+
+  /// No description provided for @syncSetupPasswordWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'If you lose both your password and your recovery key, nobody — including Tephra — can recover your synced data. Your notes on this device are not affected.'**
+  String get syncSetupPasswordWarning;
+
+  /// No description provided for @syncSetupEncryptionOffConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Turning encryption off means note contents and titles will be readable in your Google Drive. Are you sure?'**
+  String get syncSetupEncryptionOffConfirm;
+
+  /// No description provided for @syncSetupDeviceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Device name'**
+  String get syncSetupDeviceName;
+
+  /// No description provided for @syncSetupCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Securing your vault… this can take a few seconds'**
+  String get syncSetupCreating;
+
+  /// No description provided for @syncSetupRecoveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your recovery key'**
+  String get syncSetupRecoveryTitle;
+
+  /// No description provided for @syncSetupRecoveryExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'If you forget your password, this recovery key is the only way to access your encrypted sync data. Store it somewhere safe.'**
+  String get syncSetupRecoveryExplain;
+
+  /// No description provided for @syncSetupCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy key'**
+  String get syncSetupCopy;
+
+  /// No description provided for @syncSetupSaveToFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as text file'**
+  String get syncSetupSaveToFile;
+
+  /// No description provided for @syncSetupRecoverySavedCheckbox.
+  ///
+  /// In en, this message translates to:
+  /// **'I have saved my recovery key somewhere safe'**
+  String get syncSetupRecoverySavedCheckbox;
+
+  /// No description provided for @syncSetupConfirmRecoveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your recovery key'**
+  String get syncSetupConfirmRecoveryTitle;
+
+  /// No description provided for @syncSetupConfirmRecoveryGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Group {number}'**
+  String syncSetupConfirmRecoveryGroup(int number);
+
+  /// No description provided for @syncSetupConfirmRecoveryWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'The entered groups do not match your recovery key.'**
+  String get syncSetupConfirmRecoveryWrong;
+
+  /// No description provided for @syncSetupShowKeyAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the key again'**
+  String get syncSetupShowKeyAgain;
+
+  /// No description provided for @syncSetupUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock remote vault'**
+  String get syncSetupUnlockTitle;
+
+  /// No description provided for @syncSetupUseRecoveryKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Use recovery key instead'**
+  String get syncSetupUseRecoveryKey;
+
+  /// No description provided for @syncSetupUsePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Use password instead'**
+  String get syncSetupUsePassword;
+
+  /// No description provided for @syncErrorWrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password.'**
+  String get syncErrorWrongPassword;
+
+  /// No description provided for @syncErrorWrongRecoveryKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect recovery key.'**
+  String get syncErrorWrongRecoveryKey;
+
+  /// No description provided for @syncSetupFirstSyncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'First sync options'**
+  String get syncSetupFirstSyncTitle;
+
+  /// No description provided for @syncSetupUploadOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload this vault ({count} files, {size})'**
+  String syncSetupUploadOption(int count, String size);
+
+  /// No description provided for @syncSetupDownloadOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the vault'**
+  String get syncSetupDownloadOption;
+
+  /// No description provided for @syncSetupMergeOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge both (recommended)'**
+  String get syncSetupMergeOption;
+
+  /// No description provided for @syncSetupMergeExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Files that exist on both sides with different content are kept twice; nothing is overwritten or deleted.'**
+  String get syncSetupMergeExplain;
+
+  /// No description provided for @syncSetupNewFolderOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Download into a new empty folder'**
+  String get syncSetupNewFolderOption;
+
+  /// No description provided for @syncSetupBackgroundSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync in background'**
+  String get syncSetupBackgroundSync;
+
+  /// No description provided for @syncSetupWifiOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync over Wi-Fi only'**
+  String get syncSetupWifiOnly;
+
+  /// No description provided for @syncSetupMobileMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile mode (skip large videos)'**
+  String get syncSetupMobileMode;
+
+  /// No description provided for @syncSetupProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} files · {bytesDone} of {bytesTotal}'**
+  String syncSetupProgress(
+    int done,
+    int total,
+    String bytesDone,
+    String bytesTotal,
+  );
+
+  /// No description provided for @syncSetupRunInBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Run in background'**
+  String get syncSetupRunInBackground;
+
+  /// No description provided for @syncSetupDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync setup complete!'**
+  String get syncSetupDoneTitle;
+
+  /// No description provided for @syncSetupEnableDailyBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on daily backups'**
+  String get syncSetupEnableDailyBackup;
+
+  /// No description provided for @syncReconnectBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive access expired. Reconnect to keep syncing.'**
+  String get syncReconnectBanner;
+
+  /// No description provided for @syncReconnectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect'**
+  String get syncReconnectButton;
+
+  /// No description provided for @syncDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop syncing this vault'**
+  String get syncDisconnect;
+
+  /// No description provided for @syncDisconnectConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to stop syncing this vault on this device? Your local notes and remote data will remain untouched.'**
+  String get syncDisconnectConfirm;
+
+  /// No description provided for @syncDisconnectAlsoSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Also sign out of Google on this device'**
+  String get syncDisconnectAlsoSignOut;
+
+  /// No description provided for @syncNotAvailableOnWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync is not available in the web preview.'**
+  String get syncNotAvailableOnWeb;
+
+  /// No description provided for @syncSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync & backup'**
+  String get syncSettingsTitle;
+
+  /// No description provided for @syncSetupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up sync'**
+  String get syncSetupAction;
+
+  /// No description provided for @syncSetupCreateNewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fresh synchronization in Google Drive'**
+  String get syncSetupCreateNewSubtitle;
+
+  /// No description provided for @syncSetupExistingVaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing remote vaults'**
+  String get syncSetupExistingVaults;
+
+  /// No description provided for @syncSetupVaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault name'**
+  String get syncSetupVaultName;
+
+  /// No description provided for @syncSetupEncryptSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'End-to-end zero-knowledge encryption'**
+  String get syncSetupEncryptSubtitle;
+
+  /// No description provided for @syncSetupEncryptionOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off encryption?'**
+  String get syncSetupEncryptionOffTitle;
+
+  /// No description provided for @syncSetupKeepEncryption.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep encryption'**
+  String get syncSetupKeepEncryption;
+
+  /// No description provided for @syncSetupTurnOffEncryption.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get syncSetupTurnOffEncryption;
+
+  /// No description provided for @syncSetupCreateAndContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and continue'**
+  String get syncSetupCreateAndContinue;
+
+  /// No description provided for @syncSetupKeyCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery key copied to clipboard'**
+  String get syncSetupKeyCopied;
+
+  /// No description provided for @syncSetupContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get syncSetupContinue;
+
+  /// No description provided for @syncSetupConfirmRecoveryExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'To ensure you can recover your data if needed, please enter groups 2 and 7 from your recovery key.'**
+  String get syncSetupConfirmRecoveryExplain;
+
+  /// No description provided for @syncSetupVerifyAndContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify and continue'**
+  String get syncSetupVerifyAndContinue;
+
+  /// No description provided for @syncSetupRecoveryKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery key'**
+  String get syncSetupRecoveryKeyLabel;
+
+  /// No description provided for @syncSetupRecoveryKeyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX'**
+  String get syncSetupRecoveryKeyHint;
+
+  /// No description provided for @syncSetupUnlockButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get syncSetupUnlockButton;
+
+  /// No description provided for @syncSetupUploadSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload current local files to initialize remote vault'**
+  String get syncSetupUploadSubtitle;
+
+  /// No description provided for @syncSetupDownloadSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download all notes from the remote vault into this folder'**
+  String get syncSetupDownloadSubtitle;
+
+  /// No description provided for @syncSetupNewFolderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep local files separate by downloading into a new folder'**
+  String get syncSetupNewFolderSubtitle;
+
+  /// No description provided for @syncSetupChooseFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folder'**
+  String get syncSetupChooseFolder;
+
+  /// No description provided for @syncSetupBackgroundSyncSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Periodically sync in background via WorkManager'**
+  String get syncSetupBackgroundSyncSubtitle;
+
+  /// No description provided for @syncSetupWifiOnlySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid mobile data consumption'**
+  String get syncSetupWifiOnlySubtitle;
+
+  /// No description provided for @syncSetupMobileModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude large video and media files on phone'**
+  String get syncSetupMobileModeSubtitle;
+
+  /// No description provided for @syncSetupStartSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Start sync'**
+  String get syncSetupStartSync;
+
+  /// No description provided for @syncSetupProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial synchronization'**
+  String get syncSetupProgressTitle;
+
+  /// No description provided for @syncSetupRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get syncSetupRetry;
+
+  /// No description provided for @syncSetupSummaryUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded files:'**
+  String get syncSetupSummaryUploaded;
+
+  /// No description provided for @syncSetupSummaryDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded files:'**
+  String get syncSetupSummaryDownloaded;
+
+  /// No description provided for @syncSetupSummaryMerged.
+  ///
+  /// In en, this message translates to:
+  /// **'Merged files:'**
+  String get syncSetupSummaryMerged;
+
+  /// No description provided for @syncSetupDailyBackupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep automatic local snapshots in .tephra/history'**
+  String get syncSetupDailyBackupSubtitle;
+
+  /// No description provided for @commandSyncOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Open settings'**
+  String get commandSyncOpenSettings;
+
+  /// No description provided for @syncSettingsConfiguredStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing via Google Drive'**
+  String get syncSettingsConfiguredStatus;
+
+  /// No description provided for @syncSettingsConfigureButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure sync'**
+  String get syncSettingsConfigureButton;
+
+  /// No description provided for @syncDisconnectSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync has been disabled for this vault.'**
+  String get syncDisconnectSuccess;
+
+  /// No description provided for @syncStatusNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Not configured'**
+  String get syncStatusNotConfigured;
+
+  /// No description provided for @syncStatusUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get syncStatusUpToDate;
+
+  /// Short sync indicator status when sync is in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing ({done}/{total})'**
+  String syncStatusSyncing(String done, String total);
+
+  /// Short sync indicator status when local changes are pending
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pending'**
+  String syncStatusPending(int count);
+
+  /// No description provided for @syncStatusOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get syncStatusOffline;
+
+  /// No description provided for @syncStatusPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync paused'**
+  String get syncStatusPaused;
+
+  /// No description provided for @syncStatusNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get syncStatusNeedsAttention;
+
+  /// No description provided for @syncStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync error'**
+  String get syncStatusError;
+
+  /// Timestamp display in sync panel
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {when}'**
+  String syncPanelLastSynced(String when);
+
+  /// Drive quota usage display in sync panel
+  ///
+  /// In en, this message translates to:
+  /// **'{used} of {total} used in Google Drive'**
+  String syncPanelDriveUsage(String used, String total);
+
+  /// No description provided for @syncPanelSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get syncPanelSyncNow;
+
+  /// No description provided for @syncPanelPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause sync'**
+  String get syncPanelPause;
+
+  /// No description provided for @syncPanelResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume sync'**
+  String get syncPanelResume;
+
+  /// Conflicts button text with count
+  ///
+  /// In en, this message translates to:
+  /// **'Conflicts ({count})'**
+  String syncPanelConflicts(int count);
+
+  /// Held deletions button text with count
+  ///
+  /// In en, this message translates to:
+  /// **'Held deletions ({count})'**
+  String syncPanelHeldDeletes(int count);
+
+  /// No description provided for @syncPanelLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync log'**
+  String get syncPanelLog;
+
+  /// No description provided for @syncPanelSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync settings'**
+  String get syncPanelSettings;
+
+  /// No description provided for @syncHeldDeletesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review held deletions'**
+  String get syncHeldDeletesTitle;
+
+  /// Explanation shown on the held deletions review sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Sync wants to delete {count} files because they were deleted on another device or on this device. Check before continuing.'**
+  String syncHeldDeletesExplain(int count);
+
+  /// No description provided for @syncHeldDeletesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete them'**
+  String get syncHeldDeletesDelete;
+
+  /// No description provided for @syncHeldDeletesKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep them'**
+  String get syncHeldDeletesKeep;
+
+  /// No description provided for @syncHeldDeletesApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply choices'**
+  String get syncHeldDeletesApply;
+
+  /// No description provided for @syncLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync log'**
+  String get syncLogTitle;
+
+  /// No description provided for @syncLogUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded {path}'**
+  String syncLogUploaded(String path);
+
+  /// No description provided for @syncLogDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {path} from {device}'**
+  String syncLogDownloaded(String path, String device);
+
+  /// No description provided for @syncLogDownloadedNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {path}'**
+  String syncLogDownloadedNoDevice(String path);
+
+  /// No description provided for @syncLogMerged.
+  ///
+  /// In en, this message translates to:
+  /// **'Merged changes from {device} into {path}'**
+  String syncLogMerged(String path, String device);
+
+  /// No description provided for @syncLogMergedNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Merged changes into {path}'**
+  String syncLogMergedNoDevice(String path);
+
+  /// No description provided for @syncLogConflictCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'{path} was changed on two devices; your version was saved as {conflictPath}'**
+  String syncLogConflictCopy(String path, String conflictPath);
+
+  /// No description provided for @syncLogDeletedLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved {path} to the vault trash (deleted on {device})'**
+  String syncLogDeletedLocal(String path, String device);
+
+  /// No description provided for @syncLogDeletedLocalNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved {path} to the vault trash'**
+  String syncLogDeletedLocalNoDevice(String path);
+
+  /// No description provided for @syncLogDeletedRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted {path} from sync (it stays in version history)'**
+  String syncLogDeletedRemote(String path);
+
+  /// No description provided for @syncLogRenamedLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath}'**
+  String syncLogRenamedLocal(String path, String newPath);
+
+  /// No description provided for @syncLogRenamedRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath} on {device}'**
+  String syncLogRenamedRemote(String path, String newPath, String device);
+
+  /// No description provided for @syncLogRenamedRemoteNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath}'**
+  String syncLogRenamedRemoteNoDevice(String path, String newPath);
+
+  /// No description provided for @syncLogCaseConflictRenamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath} due to case conflict'**
+  String syncLogCaseConflictRenamed(String path, String newPath);
+
+  /// No description provided for @syncLogInvalidNameRenamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath} for Windows compatibility'**
+  String syncLogInvalidNameRenamed(String path, String newPath);
+
+  /// No description provided for @syncLogKeptEditedFileDeletedElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept {path} because it was edited locally after being deleted on another device'**
+  String syncLogKeptEditedFileDeletedElsewhere(String path);
+
+  /// No description provided for @syncLogRestoredDeletedFileChangedElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {path} because it was modified on another device'**
+  String syncLogRestoredDeletedFileChangedElsewhere(String path);
+
+  /// No description provided for @syncLogRepublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Republished {path} to sync'**
+  String syncLogRepublished(String path);
+
+  /// No description provided for @syncLogHeldDeletes.
+  ///
+  /// In en, this message translates to:
+  /// **'Held {count} deletions for review'**
+  String syncLogHeldDeletes(int count);
+
+  /// No description provided for @syncLogDeviceIdRenewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Device identity was renewed'**
+  String get syncLogDeviceIdRenewed;
+
+  /// No description provided for @syncLogError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync error: {message}'**
+  String syncLogError(String message);
+
+  /// No description provided for @syncLogFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get syncLogFilterAll;
+
+  /// No description provided for @syncLogFilterChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes'**
+  String get syncLogFilterChanges;
+
+  /// No description provided for @syncLogFilterProblems.
+  ///
+  /// In en, this message translates to:
+  /// **'Problems'**
+  String get syncLogFilterProblems;
+
+  /// No description provided for @syncLogCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy log'**
+  String get syncLogCopy;
+
+  /// No description provided for @syncLogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No sync events recorded yet.'**
+  String get syncLogEmpty;
+
+  /// No description provided for @syncLogCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Log copied to clipboard'**
+  String get syncLogCopied;
+
+  /// No description provided for @syncSettingsAccountHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & remote vault'**
+  String get syncSettingsAccountHeader;
+
+  /// No description provided for @syncSettingsRemoteVaultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote vault'**
+  String get syncSettingsRemoteVaultLabel;
+
+  /// No description provided for @syncSettingsDeviceNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Device name'**
+  String get syncSettingsDeviceNameLabel;
+
+  /// No description provided for @syncSettingsEncryptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption'**
+  String get syncSettingsEncryptionLabel;
+
+  /// No description provided for @syncSettingsEncryptionEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled (zero-knowledge)'**
+  String get syncSettingsEncryptionEnabled;
+
+  /// No description provided for @syncSettingsEncryptionDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled (plaintext)'**
+  String get syncSettingsEncryptionDisabled;
+
+  /// No description provided for @syncSettingsExclusionsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Selective sync & exclusions'**
+  String get syncSettingsExclusionsHeader;
+
+  /// No description provided for @syncSettingsExclusionsExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded files stay on this device and in Google Drive; they are just not synced on this device.'**
+  String get syncSettingsExclusionsExplain;
+
+  /// No description provided for @syncSettingsExcludedFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded folders'**
+  String get syncSettingsExcludedFolders;
+
+  /// No description provided for @syncSettingsAddExcludedFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add folder'**
+  String get syncSettingsAddExcludedFolder;
+
+  /// No description provided for @syncSettingsExcludedFileTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded file extensions'**
+  String get syncSettingsExcludedFileTypes;
+
+  /// No description provided for @syncSettingsExcludedFileTypesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. mp4, zip, mov'**
+  String get syncSettingsExcludedFileTypesHint;
+
+  /// No description provided for @syncSettingsMaxFileSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum file size'**
+  String get syncSettingsMaxFileSize;
+
+  /// No description provided for @syncSettingsMaxFileSizeNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit (2 GB)'**
+  String get syncSettingsMaxFileSizeNoLimit;
+
+  /// No description provided for @syncSettingsMobileHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile network settings'**
+  String get syncSettingsMobileHeader;
+
+  /// No description provided for @syncSettingsMobileMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile mode (skip large media)'**
+  String get syncSettingsMobileMode;
+
+  /// No description provided for @syncSettingsBackgroundSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Background sync'**
+  String get syncSettingsBackgroundSync;
+
+  /// No description provided for @syncSettingsWifiOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync over Wi-Fi only'**
+  String get syncSettingsWifiOnly;
+
+  /// No description provided for @syncSettingsChargingOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync only while charging'**
+  String get syncSettingsChargingOnly;
+
+  /// No description provided for @syncSettingsDesktopHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop settings'**
+  String get syncSettingsDesktopHeader;
+
+  /// No description provided for @syncSettingsKeepSyncingOnClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep syncing when window is closed'**
+  String get syncSettingsKeepSyncingOnClose;
+
+  /// No description provided for @syncSettingsBandwidthHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth limits'**
+  String get syncSettingsBandwidthHeader;
+
+  /// No description provided for @syncSettingsUploadLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload limit (KiB/s, 0 = unlimited)'**
+  String get syncSettingsUploadLimit;
+
+  /// No description provided for @syncSettingsDownloadLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Download limit (KiB/s, 0 = unlimited)'**
+  String get syncSettingsDownloadLimit;
+
+  /// No description provided for @syncSettingsSecurityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Security & keys'**
+  String get syncSettingsSecurityHeader;
+
+  /// No description provided for @syncSettingsChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change vault password'**
+  String get syncSettingsChangePassword;
+
+  /// No description provided for @syncSettingsShowRecoveryKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Show new recovery key'**
+  String get syncSettingsShowRecoveryKey;
+
+  /// No description provided for @syncSettingsDevicesLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage devices'**
+  String get syncSettingsDevicesLink;
+
+  /// No description provided for @syncSettingsChangePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change vault password'**
+  String get syncSettingsChangePasswordTitle;
+
+  /// No description provided for @syncSettingsOldPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password or recovery key'**
+  String get syncSettingsOldPassword;
+
+  /// No description provided for @syncSettingsNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get syncSettingsNewPassword;
+
+  /// No description provided for @syncSettingsConfirmNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get syncSettingsConfirmNewPassword;
+
+  /// No description provided for @syncSettingsPasswordChangedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault password updated successfully.'**
+  String get syncSettingsPasswordChangedSuccess;
+
+  /// No description provided for @syncSettingsRecoveryKeyRegeneratedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'New recovery key generated successfully.'**
+  String get syncSettingsRecoveryKeyRegeneratedSuccess;
+
+  /// No description provided for @syncDevicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced devices'**
+  String get syncDevicesTitle;
+
+  /// No description provided for @syncDevicesThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get syncDevicesThisDevice;
+
+  /// No description provided for @syncDevicesLastSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen {when}'**
+  String syncDevicesLastSeen(String when);
+
+  /// No description provided for @syncDevicesRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get syncDevicesRemoved;
+
+  /// No description provided for @syncDevicesRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove device'**
+  String get syncDevicesRemove;
+
+  /// No description provided for @syncDevicesRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will stop syncing. Changes it makes after now are ignored. It keeps its local files. Its access to Google Drive is not revoked — to fully block it, change the vault password and remove the Google account\'s access to Tephra on that device.'**
+  String syncDevicesRemoveConfirm(String name);
+
+  /// No description provided for @syncDevicesRemoveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get syncDevicesRemoveButton;
+
+  /// No description provided for @syncDeviceRevokedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device removed from sync'**
+  String get syncDeviceRevokedTitle;
+
+  /// No description provided for @syncDeviceRevokedReconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'This device was removed from sync. Reconnect as a new device to resume syncing.'**
+  String get syncDeviceRevokedReconnect;
+
+  /// No description provided for @syncDeviceRevokedButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect as new device'**
+  String get syncDeviceRevokedButton;
+
+  /// No description provided for @syncErrorAuthRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive access was revoked or expired. Please reconnect.'**
+  String get syncErrorAuthRevoked;
+
+  /// No description provided for @syncErrorOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Device is offline. Sync will resume automatically when connected.'**
+  String get syncErrorOffline;
+
+  /// No description provided for @syncErrorDriveFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive storage is full. Free up space to continue syncing.'**
+  String get syncErrorDriveFull;
+
+  /// No description provided for @syncWarningDriveAlmostFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive storage is almost full.'**
+  String get syncWarningDriveAlmostFull;
+
+  /// No description provided for @syncErrorRemoteFormatNewer.
+  ///
+  /// In en, this message translates to:
+  /// **'The remote vault was created by a newer version of Tephra. Please update Tephra.'**
+  String get syncErrorRemoteFormatNewer;
+
+  /// No description provided for @syncErrorTampered.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync data from {device} failed integrity verification.'**
+  String syncErrorTampered(String device);
+
+  /// No description provided for @syncErrorVaultMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The remote vault folder could not be found in Google Drive.'**
+  String get syncErrorVaultMissing;
+
+  /// No description provided for @syncErrorVaultFolderUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The local vault folder is currently inaccessible.'**
+  String get syncErrorVaultFolderUnavailable;
+
+  /// No description provided for @syncErrorKeyMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption key is missing. Please enter your password or recovery key.'**
+  String get syncErrorKeyMissing;
+
+  /// No description provided for @commandSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Sync now'**
+  String get commandSyncNow;
+
+  /// No description provided for @commandSyncPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Pause sync'**
+  String get commandSyncPause;
+
+  /// No description provided for @commandSyncResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Resume sync'**
+  String get commandSyncResume;
+
+  /// No description provided for @commandSyncOpenLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Open sync log'**
+  String get commandSyncOpenLog;
+
+  /// No description provided for @commandSyncOpenConflicts.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Open conflicts'**
+  String get commandSyncOpenConflicts;
+
+  /// No description provided for @commandSyncOpenDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Manage devices'**
+  String get commandSyncOpenDevices;
+
+  /// No description provided for @commandSyncOpenHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Open file history'**
+  String get commandSyncOpenHistory;
+
+  /// No description provided for @commandSyncOpenDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: View recently deleted files'**
+  String get commandSyncOpenDeleted;
+
+  /// No description provided for @commandSyncBackupNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Create backup now'**
+  String get commandSyncBackupNow;
+
+  /// No description provided for @commandSyncOpenBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Manage backups'**
+  String get commandSyncOpenBackups;
+
+  /// No description provided for @conflictsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync conflicts'**
+  String get conflictsTitle;
+
+  /// No description provided for @conflictsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No unresolved conflicts. All files are up to date.'**
+  String get conflictsEmpty;
+
+  /// Subtitle showing device and time of conflict
+  ///
+  /// In en, this message translates to:
+  /// **'From {device} · {time}'**
+  String conflictsFrom(String device, String time);
+
+  /// No description provided for @conflictTheirVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Their version'**
+  String get conflictTheirVersion;
+
+  /// No description provided for @conflictYourVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Your version'**
+  String get conflictYourVersion;
+
+  /// No description provided for @conflictKeepTheirs.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep theirs'**
+  String get conflictKeepTheirs;
+
+  /// No description provided for @conflictEditMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit merge'**
+  String get conflictEditMerge;
+
+  /// No description provided for @conflictSaveMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Save merge'**
+  String get conflictSaveMerge;
+
+  /// No description provided for @conflictResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Conflict resolved'**
+  String get conflictResolved;
+
+  /// No description provided for @conflictBinaryExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Binary files cannot be merged. Choose which version to keep.'**
+  String get conflictBinaryExplain;
+
+  /// No description provided for @conflictKindText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text conflict'**
+  String get conflictKindText;
+
+  /// No description provided for @conflictKindBinary.
+  ///
+  /// In en, this message translates to:
+  /// **'Binary conflict'**
+  String get conflictKindBinary;
+
+  /// No description provided for @conflictKindCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Case conflict'**
+  String get conflictKindCase;
+
+  /// No description provided for @diffSideBySide.
+  ///
+  /// In en, this message translates to:
+  /// **'Side by side'**
+  String get diffSideBySide;
+
+  /// No description provided for @diffInline.
+  ///
+  /// In en, this message translates to:
+  /// **'Inline'**
+  String get diffInline;
+
+  /// No description provided for @conflictOpenTheirFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open their version'**
+  String get conflictOpenTheirFile;
+
+  /// No description provided for @conflictOpenYourFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open your version'**
+  String get conflictOpenYourFile;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version history: {name}'**
+  String historyTitle(String name);
+
+  /// No description provided for @historyCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get historyCurrent;
+
+  /// No description provided for @historyLocalSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Local snapshot'**
+  String get historyLocalSnapshot;
+
+  /// No description provided for @historyFromDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}'**
+  String historyFromDevice(String device);
+
+  /// No description provided for @historyUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No longer available'**
+  String get historyUnavailable;
+
+  /// No description provided for @historyRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this version'**
+  String get historyRestore;
+
+  /// No description provided for @historyRestoreConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore version from {time}? The current version will be saved in history.'**
+  String historyRestoreConfirm(String time);
+
+  /// No description provided for @historyRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Version restored'**
+  String get historyRestored;
+
+  /// No description provided for @historyCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text'**
+  String get historyCopy;
+
+  /// No description provided for @historyCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Version copied to clipboard'**
+  String get historyCopied;
+
+  /// No description provided for @historySaveCopyAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a copy as…'**
+  String get historySaveCopyAs;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No version history available for this file.'**
+  String get historyEmpty;
+
+  /// No description provided for @deletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently deleted'**
+  String get deletedTitle;
+
+  /// No description provided for @deletedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recently deleted files.'**
+  String get deletedEmpty;
+
+  /// No description provided for @deletedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted by {device} • {time}'**
+  String deletedBy(String device, String time);
+
+  /// No description provided for @deletedRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get deletedRestore;
+
+  /// No description provided for @deletedRestoredAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored as {path}'**
+  String deletedRestoredAs(String path);
+
+  /// No description provided for @deletedOpenHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get deletedOpenHistory;
+
+  /// No description provided for @backupsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault Backups'**
+  String get backupsTitle;
+
+  /// No description provided for @backupsSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Schedule'**
+  String get backupsSchedule;
+
+  /// No description provided for @backupsScheduleOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get backupsScheduleOff;
+
+  /// No description provided for @backupsScheduleHourly.
+  ///
+  /// In en, this message translates to:
+  /// **'Hourly'**
+  String get backupsScheduleHourly;
+
+  /// No description provided for @backupsScheduleDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily (03:00)'**
+  String get backupsScheduleDaily;
+
+  /// No description provided for @backupsScheduleWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get backupsScheduleWeekly;
+
+  /// No description provided for @backupsRetentionHourly.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep hourly backups for (hours)'**
+  String get backupsRetentionHourly;
+
+  /// No description provided for @backupsRetentionDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep daily backups for (days)'**
+  String get backupsRetentionDaily;
+
+  /// No description provided for @backupsRetentionMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep monthly backups for (months)'**
+  String get backupsRetentionMonthly;
+
+  /// No description provided for @backupsBackUpNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get backupsBackUpNow;
+
+  /// No description provided for @backupsRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Backing up... {done}/{total} files'**
+  String backupsRunning(int done, int total);
+
+  /// No description provided for @backupsEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · {device} · {files} files · {size}'**
+  String backupsEntry(String date, String device, int files, String size);
+
+  /// No description provided for @backupsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No backups created yet'**
+  String get backupsEmpty;
+
+  /// No description provided for @backupsLastVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Last verified on {date}: {ok} ok, {failed} failed'**
+  String backupsLastVerification(String date, int ok, int failed);
+
+  /// No description provided for @backupsRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore...'**
+  String get backupsRestore;
+
+  /// No description provided for @backupsOnlyModeCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up only'**
+  String get backupsOnlyModeCard;
+
+  /// No description provided for @backupsOnlyModeExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Create encrypted snapshots on Google Drive from this device without real-time multi-device sync.'**
+  String get backupsOnlyModeExplain;
+
+  /// No description provided for @backupsMobileModeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile-mode file exclusions apply to backups taken from this device.'**
+  String get backupsMobileModeNote;
+
+  /// No description provided for @gcRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Garbage collection in progress...'**
+  String get gcRunning;
+
+  /// No description provided for @gcDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Garbage collection complete: {count} blobs removed ({bytes} reclaimed)'**
+  String gcDone(int count, String bytes);
+
+  /// No description provided for @backupVerificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup verification failed: {count} damaged blobs detected'**
+  String backupVerificationFailed(int count);
+
+  /// No description provided for @backupsVerifyNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify now'**
+  String get backupsVerifyNow;
+
+  /// No description provided for @restoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore backup'**
+  String get restoreTitle;
+
+  /// No description provided for @restoreChooseFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose files to restore'**
+  String get restoreChooseFiles;
+
+  /// No description provided for @restoreSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get restoreSelectAll;
+
+  /// No description provided for @restoreTargetVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore into current vault'**
+  String get restoreTargetVault;
+
+  /// No description provided for @restoreTargetNewFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore into a new folder'**
+  String get restoreTargetNewFolder;
+
+  /// No description provided for @restoreNewFolderMustBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Target folder must be empty or not exist'**
+  String get restoreNewFolderMustBeEmpty;
+
+  /// No description provided for @restoreConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore {count} selected files?'**
+  String restoreConfirm(int count);
+
+  /// No description provided for @restoreRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring files: {done} / {total}'**
+  String restoreRunning(int done, int total);
+
+  /// No description provided for @restoreReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore complete: {restored} restored, {skipped} skipped, {renamed} renamed for collision, {failed} failed'**
+  String restoreReport(int restored, int skipped, int renamed, int failed);
+
+  /// No description provided for @restoreOpenAsVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Open as vault'**
+  String get restoreOpenAsVault;
 }
 
 class _AppLocalizationsDelegate
