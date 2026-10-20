@@ -38,6 +38,16 @@ class ChooseVaultPage extends ConsumerWidget {
               onTap: state.isLoading ? null : controller.selectCreateNew,
             ),
           ),
+          const SizedBox(height: 12),
+          Card(
+            elevation: 2,
+            child: ListTile(
+              leading: const Icon(Icons.backup_outlined, color: Colors.teal),
+              title: Text(l10n.backupsOnlyModeCard),
+              subtitle: Text(l10n.backupsOnlyModeExplain),
+              onTap: state.isLoading ? null : controller.selectBackupOnly,
+            ),
+          ),
           const SizedBox(height: 16),
           if (state.isLoading)
             const Center(child: CircularProgressIndicator())

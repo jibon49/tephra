@@ -216,6 +216,20 @@ class SyncWorkerClient {
     return _sendRequest<String>((id) => RestoreDeleted(id, deleted));
   }
 
+  /// Lists all accessible backup manifests sorted newest first.
+  Future<List<BackupManifest>> listBackups() async {
+    final res = await _sendRequest<List<dynamic>>((id) => ListBackups(id));
+    return res.map((m) {
+      if (m is BackupManifest) return m;
+      return BackupManifest.fromJson(m as Map<String, dynamic>);
+    }).toList();
+  }
+
+  /// Triggers an immediate point-in-time vault backup.
+  Future<bool> backupNow({BackupKind kind = BackupKind.manual}) {
+    return _sendRequest<bool>((id) => BackupNow(id, kind: kind));
+  }
+
   /// Shuts down the sync worker and releases isolate ports.
   Future<void> shutdown() async {
     try {

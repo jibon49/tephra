@@ -73,6 +73,7 @@ abstract interface class SyncSetupService {
     required DeviceIdentity device,
     required FirstSyncChoice choice,
     String? newFolderPath,
+    bool backupOnly = false,
   });
   Future<void> disconnect({required bool signOutGoogle});
   Future<bool> isConfigured();
@@ -243,6 +244,7 @@ class DriveSyncSetupService implements SyncSetupService {
     required DeviceIdentity device,
     required FirstSyncChoice choice,
     String? newFolderPath,
+    bool backupOnly = false,
   }) async {
     final supportDir = await getApplicationSupportDirectory();
     final dbPath = SyncPaths.syncDatabasePathForSupportDir(
@@ -254,7 +256,7 @@ class DriveSyncSetupService implements SyncSetupService {
     try {
       final actualVaultRoot = newFolderPath ?? localVaultRootPath;
 
-      await store.setMeta('mode', 'sync');
+      await store.setMeta('mode', backupOnly ? 'backupOnly' : 'sync');
       await store.setMeta('backgroundSync', backgroundSync ? 'true' : 'false');
       await store.setMeta('wifiOnly', wifiOnly ? 'true' : 'false');
       await store.setMeta('mobileMode', mobileMode ? 'true' : 'false');

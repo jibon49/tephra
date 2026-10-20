@@ -74,6 +74,7 @@ class SyncWorker {
   SyncStatusSnapshot _snapshot = const SyncStatusSnapshot(
     state: SyncUiState.idle,
   );
+  Timer? _backupScheduleTimer;
 
   void _send(WorkerMessage message) {
     _mainPort.send(message);
@@ -151,6 +152,13 @@ class SyncWorker {
 
       _engine!.progress.listen((SyncProgress p) => _send(ProgressUpdate(p)));
       _engine!.log.listen((SyncLogEntry l) => _send(LogAppended(l)));
+
+      _backupScheduleTimer?.cancel();
+      _backupScheduleTimer = Timer.periodic(
+        const Duration(minutes: 5),
+        (_) => _checkAndRunScheduledBackup(),
+      );
+      unawaited(_checkAndRunScheduledBackup());
 
       _updateStatus(_snapshot.copyWith(state: SyncUiState.idle));
     } catch (e, st) {
@@ -270,10 +278,24 @@ class SyncWorker {
       return;
     }
 
+    final mode = await _store?.getMeta('mode');
+    if (mode == 'backupOnly') {
+      await _checkAndRunScheduledBackup();
+      _updateStatus(_snapshot.copyWith(state: SyncUiState.idle));
+      _send(
+        WorkerReply(
+          requestId: req.requestId,
+          payload: const SyncReport(duration: Duration.zero),
+        ),
+      );
+      return;
+    }
+
     _updateStatus(_snapshot.copyWith(state: SyncUiState.syncing));
 
     try {
       final report = await engine.syncOnce(trigger: req.trigger);
+      await _checkAndRunScheduledBackup();
 
       final conflicts = await _store?.conflicts(unresolvedOnly: true) ?? [];
       final heldJson = await _store?.getMeta('heldDeletes');
@@ -604,12 +626,90 @@ class SyncWorker {
     }
   }
 
+  BackupService? _createBackupService() {
+    final engine = _engine;
+    if (engine == null || _store == null || _provider == null || _fs == null) {
+      return null;
+    }
+    return BackupService(
+      vaultId: engine.remoteVaultId,
+      deviceId: engine.device.deviceId,
+      deviceName: engine.device.deviceName,
+      fs: _fs!,
+      blobStore: engine.blobStore,
+      provider: _provider!,
+      cipher: engine.cipher,
+      store: _store!,
+      syncLock: engine.lock,
+      clock: engine.clock,
+    );
+  }
+
+  Future<void> _checkAndRunScheduledBackup() async {
+    try {
+      final scheduleStr = await _store?.getMeta('backupSchedule');
+      final schedule = BackupScheduleFrequency.fromString(scheduleStr);
+      if (schedule == BackupScheduleFrequency.off) return;
+
+      final lastBackupStr = await _store?.getMeta('lastBackupAt');
+      final lastBackupAt = lastBackupStr != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+              int.parse(lastBackupStr),
+              isUtc: true,
+            )
+          : null;
+
+      final now = DateTime.now().toUtc();
+      if (BackupSchedule.isDue(now, lastBackupAt, schedule)) {
+        final backupService = _createBackupService();
+        if (backupService != null) {
+          await backupService.runBackup(kind: BackupKind.scheduled);
+        }
+      }
+    } catch (e) {
+      _log.warning('Scheduled backup check failed: $e');
+    }
+  }
+
   Future<void> _handleListBackups(ListBackups req) async {
-    _send(WorkerReply(requestId: req.requestId, payload: const []));
+    try {
+      final service = _createBackupService();
+      if (service == null) {
+        _send(WorkerReply(requestId: req.requestId, payload: const []));
+        return;
+      }
+      final manifests = await service.listBackups();
+      _send(
+        WorkerReply(
+          requestId: req.requestId,
+          payload: manifests.map((m) => m.toJson()).toList(),
+        ),
+      );
+    } catch (e) {
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
   }
 
   Future<void> _handleBackupNow(BackupNow req) async {
-    _send(WorkerReply(requestId: req.requestId, payload: true));
+    try {
+      final service = _createBackupService();
+      if (service == null) {
+        _send(
+          WorkerReply(
+            requestId: req.requestId,
+            errorType: 'Sync engine not ready',
+          ),
+        );
+        return;
+      }
+      _updateStatus(_snapshot.copyWith(state: SyncUiState.syncing));
+      await service.runBackup(kind: req.kind);
+      _updateStatus(_snapshot.copyWith(state: SyncUiState.idle));
+      _send(WorkerReply(requestId: req.requestId, payload: true));
+    } catch (e) {
+      _updateStatus(_snapshot.copyWith(state: SyncUiState.idle));
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
   }
 
   Future<void> _handleRestoreBackup(RestoreBackup req) async {
@@ -621,6 +721,8 @@ class SyncWorker {
   }
 
   Future<void> _handleShutdown(Shutdown req) async {
+    _backupScheduleTimer?.cancel();
+    _backupScheduleTimer = null;
     _send(WorkerReply(requestId: req.requestId, payload: true));
     await _store?.close();
     await _provider?.quota(); // no-op safe

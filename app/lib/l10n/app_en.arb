@@ -1084,7 +1084,46 @@
   "@deletedRestoredAs": {
     "placeholders": { "path": { "type": "String" } }
   },
-  "deletedOpenHistory": "History"
+  "deletedOpenHistory": "History",
+  "backupsTitle": "Vault Backups",
+  "backupsSchedule": "Backup Schedule",
+  "backupsScheduleOff": "Off",
+  "backupsScheduleHourly": "Hourly",
+  "backupsScheduleDaily": "Daily (03:00)",
+  "backupsScheduleWeekly": "Weekly",
+  "backupsRetentionHourly": "Keep hourly backups for (hours)",
+  "backupsRetentionDaily": "Keep daily backups for (days)",
+  "backupsRetentionMonthly": "Keep monthly backups for (months)",
+  "backupsBackUpNow": "Back up now",
+  "backupsRunning": "Backing up... {done}/{total} files",
+  "@backupsRunning": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "backupsEntry": "{date} · {device} · {files} files · {size}",
+  "@backupsEntry": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "device": { "type": "String" },
+      "files": { "type": "int" },
+      "size": { "type": "String" }
+    }
+  },
+  "backupsEmpty": "No backups created yet",
+  "backupsLastVerification": "Last verified on {date}: {ok} ok, {failed} failed",
+  "@backupsLastVerification": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "ok": { "type": "int" },
+      "failed": { "type": "int" }
+    }
+  },
+  "backupsRestore": "Restore...",
+  "backupsOnlyModeCard": "Back up only",
+  "backupsOnlyModeExplain": "Create encrypted snapshots on Google Drive from this device without real-time multi-device sync.",
+  "backupsMobileModeNote": "Mobile-mode file exclusions apply to backups taken from this device."
 }
 
 

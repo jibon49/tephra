@@ -55,6 +55,7 @@ class SyncSetupState {
     this.createdResult,
     this.report,
     this.dailyBackup = true,
+    this.isBackupOnly = false,
   });
 
   final SyncSetupStep step;
@@ -87,6 +88,7 @@ class SyncSetupState {
   final CreatedVaultResult? createdResult;
   final SyncReport? report;
   final bool dailyBackup;
+  final bool isBackupOnly;
 
   SyncSetupState copyWith({
     SyncSetupStep? step,
@@ -119,6 +121,7 @@ class SyncSetupState {
     CreatedVaultResult? Function()? createdResult,
     SyncReport? Function()? report,
     bool? dailyBackup,
+    bool? isBackupOnly,
   }) {
     return SyncSetupState(
       step: step ?? this.step,
@@ -159,6 +162,7 @@ class SyncSetupState {
           : this.createdResult,
       report: report != null ? report() : this.report,
       dailyBackup: dailyBackup ?? this.dailyBackup,
+      isBackupOnly: isBackupOnly ?? this.isBackupOnly,
     );
   }
 }
@@ -256,6 +260,18 @@ class SyncSetupController extends Notifier<SyncSetupState> {
   void selectCreateNew() {
     state = state.copyWith(
       isCreatingNew: true,
+      isBackupOnly: false,
+      selectedRemoteVault: () => null,
+      step: SyncSetupStep.createPassword,
+      errorMessage: () => null,
+    );
+  }
+
+  /// Chooses to back up this device only without live sync.
+  void selectBackupOnly() {
+    state = state.copyWith(
+      isCreatingNew: true,
+      isBackupOnly: true,
       selectedRemoteVault: () => null,
       step: SyncSetupStep.createPassword,
       errorMessage: () => null,
@@ -468,6 +484,7 @@ class SyncSetupController extends Notifier<SyncSetupState> {
         device: device,
         choice: state.firstSyncChoice,
         newFolderPath: newFolderPath,
+        backupOnly: state.isBackupOnly,
       );
 
       state = state.copyWith(

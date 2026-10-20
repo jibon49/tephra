@@ -2217,4 +2217,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deletedOpenHistory => 'History';
+
+  @override
+  String get backupsTitle => 'Vault Backups';
+
+  @override
+  String get backupsSchedule => 'Backup Schedule';
+
+  @override
+  String get backupsScheduleOff => 'Off';
+
+  @override
+  String get backupsScheduleHourly => 'Hourly';
+
+  @override
+  String get backupsScheduleDaily => 'Daily (03:00)';
+
+  @override
+  String get backupsScheduleWeekly => 'Weekly';
+
+  @override
+  String get backupsRetentionHourly => 'Keep hourly backups for (hours)';
+
+  @override
+  String get backupsRetentionDaily => 'Keep daily backups for (days)';
+
+  @override
+  String get backupsRetentionMonthly => 'Keep monthly backups for (months)';
+
+  @override
+  String get backupsBackUpNow => 'Back up now';
+
+  @override
+  String backupsRunning(int done, int total) {
+    return 'Backing up... $done/$total files';
+  }
+
+  @override
+  String backupsEntry(String date, String device, int files, String size) {
+    return '$date · $device · $files files · $size';
+  }
+
+  @override
+  String get backupsEmpty => 'No backups created yet';
+
+  @override
+  String backupsLastVerification(String date, int ok, int failed) {
+    return 'Last verified on $date: $ok ok, $failed failed';
+  }
+
+  @override
+  String get backupsRestore => 'Restore...';
+
+  @override
+  String get backupsOnlyModeCard => 'Back up only';
+
+  @override
+  String get backupsOnlyModeExplain =>
+      'Create encrypted snapshots on Google Drive from this device without real-time multi-device sync.';
+
+  @override
+  String get backupsMobileModeNote =>
+      'Mobile-mode file exclusions apply to backups taken from this device.';
 }

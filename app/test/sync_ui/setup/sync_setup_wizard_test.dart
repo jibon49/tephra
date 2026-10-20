@@ -104,6 +104,7 @@ class FakeSyncSetupService implements SyncSetupService {
     required DeviceIdentity device,
     required FirstSyncChoice choice,
     String? newFolderPath,
+    bool backupOnly = false,
   }) async {
     isFinalized = true;
     lastChoice = choice;

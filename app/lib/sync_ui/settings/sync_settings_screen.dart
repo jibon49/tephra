@@ -10,6 +10,7 @@ import 'package:tephra_sync/tephra_sync.dart';
 import '../../core/sync/sync_messages.dart';
 import '../../core/sync/sync_worker_client.dart';
 import '../../l10n/app_localizations.dart';
+import '../backups/backups_screen.dart';
 import '../devices/devices_screen.dart';
 import '../providers.dart';
 
@@ -628,6 +629,23 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
             title: Text(l10n.syncSettingsShowRecoveryKey),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showRegenerateRecoveryKeyDialog(l10n),
+          ),
+
+          const Divider(),
+
+          // Backups link
+          ListTile(
+            leading: const Icon(Icons.backup_outlined),
+            title: Text(l10n.backupsTitle),
+            subtitle: Text(l10n.commandSyncOpenBackups),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => BackupsScreen(vaultId: widget.vaultId),
+                ),
+              );
+            },
           ),
 
           const Divider(),

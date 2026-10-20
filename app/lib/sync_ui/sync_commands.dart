@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:tephra_sync/tephra_sync.dart';
+
 import '../commands/command_registry.dart';
 import '../commands/tephra_command.dart';
 import '../core/sync/sync_messages.dart';
@@ -10,6 +12,7 @@ import '../core/sync/sync_worker_client.dart';
 import '../vault/providers.dart';
 import '../workspace/providers.dart';
 import '../workspace/tab_content.dart';
+import 'backups/backups_screen.dart';
 import 'conflicts/conflicts_screen.dart';
 import 'devices/devices_screen.dart';
 import 'history/deleted_files_screen.dart';
@@ -186,8 +189,27 @@ void registerSyncCommands(CommandRegistry registry) {
       label: (l10n) => l10n.commandSyncBackupNow,
       icon: Icons.backup_outlined,
       isAvailable: _isConfigured,
-      run: (ref, context) {
-        // Step 03.22 backup-now
+      run: (ref, context) async {
+        final session = ref.read(vaultSessionProvider);
+        if (session == null) return;
+        final client = ref.read(syncWorkerClientProvider(session.vaultId));
+        if (client != null) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Starting backup…')));
+          try {
+            await client.backupNow(kind: BackupKind.manual);
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Backup completed successfully')),
+              );
+            }
+          } catch (e) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('Backup failed: $e')));
+            }
+          }
+        }
       },
     ),
   );
@@ -199,7 +221,13 @@ void registerSyncCommands(CommandRegistry registry) {
       icon: Icons.folder_zip_outlined,
       isAvailable: _isConfigured,
       run: (ref, context) {
-        // Step 03.22 open backups
+        final session = ref.read(vaultSessionProvider);
+        if (session == null) return;
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => BackupsScreen(vaultId: session.vaultId),
+          ),
+        );
       },
     ),
   );

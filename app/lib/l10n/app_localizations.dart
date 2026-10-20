@@ -4028,6 +4028,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'History'**
   String get deletedOpenHistory;
+
+  /// No description provided for @backupsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault Backups'**
+  String get backupsTitle;
+
+  /// No description provided for @backupsSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Schedule'**
+  String get backupsSchedule;
+
+  /// No description provided for @backupsScheduleOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get backupsScheduleOff;
+
+  /// No description provided for @backupsScheduleHourly.
+  ///
+  /// In en, this message translates to:
+  /// **'Hourly'**
+  String get backupsScheduleHourly;
+
+  /// No description provided for @backupsScheduleDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily (03:00)'**
+  String get backupsScheduleDaily;
+
+  /// No description provided for @backupsScheduleWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get backupsScheduleWeekly;
+
+  /// No description provided for @backupsRetentionHourly.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep hourly backups for (hours)'**
+  String get backupsRetentionHourly;
+
+  /// No description provided for @backupsRetentionDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep daily backups for (days)'**
+  String get backupsRetentionDaily;
+
+  /// No description provided for @backupsRetentionMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep monthly backups for (months)'**
+  String get backupsRetentionMonthly;
+
+  /// No description provided for @backupsBackUpNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get backupsBackUpNow;
+
+  /// No description provided for @backupsRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Backing up... {done}/{total} files'**
+  String backupsRunning(int done, int total);
+
+  /// No description provided for @backupsEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · {device} · {files} files · {size}'**
+  String backupsEntry(String date, String device, int files, String size);
+
+  /// No description provided for @backupsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No backups created yet'**
+  String get backupsEmpty;
+
+  /// No description provided for @backupsLastVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Last verified on {date}: {ok} ok, {failed} failed'**
+  String backupsLastVerification(String date, int ok, int failed);
+
+  /// No description provided for @backupsRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore...'**
+  String get backupsRestore;
+
+  /// No description provided for @backupsOnlyModeCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up only'**
+  String get backupsOnlyModeCard;
+
+  /// No description provided for @backupsOnlyModeExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Create encrypted snapshots on Google Drive from this device without real-time multi-device sync.'**
+  String get backupsOnlyModeExplain;
+
+  /// No description provided for @backupsMobileModeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile-mode file exclusions apply to backups taken from this device.'**
+  String get backupsMobileModeNote;
 }
 
 class _AppLocalizationsDelegate

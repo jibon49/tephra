@@ -170,7 +170,8 @@ final class ListBackups extends SyncRequest {
 }
 
 final class BackupNow extends SyncRequest {
-  const BackupNow(super.requestId);
+  const BackupNow(super.requestId, {this.kind = BackupKind.manual});
+  final BackupKind kind;
 }
 
 final class RestoreBackup extends SyncRequest {

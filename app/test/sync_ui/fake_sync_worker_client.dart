@@ -49,10 +49,12 @@ class FakeSyncWorkerClient extends SyncWorkerClient {
   List<VersionInfo> historyList = [];
   Map<dynamic, List<int>> versionPayloads = {};
   List<RecentlyDeletedFile> deletedList = [];
+  List<BackupManifest> backupsList = [];
 
   dynamic lastRestoredVersionRef;
   VaultPath? lastRestoredPath;
   RecentlyDeletedFile? lastRestoredDeletedFile;
+  bool backupNowTriggered = false;
 
   @override
   SyncStatusSnapshot get currentStatus => _status;
@@ -183,6 +185,17 @@ class FakeSyncWorkerClient extends SyncWorkerClient {
   Future<String> restoreDeleted(RecentlyDeletedFile deleted) async {
     lastRestoredDeletedFile = deleted;
     return deleted.path.value;
+  }
+
+  @override
+  Future<List<BackupManifest>> listBackups() async {
+    return backupsList;
+  }
+
+  @override
+  Future<bool> backupNow({BackupKind kind = BackupKind.manual}) async {
+    backupNowTriggered = true;
+    return true;
   }
 
   @override
