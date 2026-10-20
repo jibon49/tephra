@@ -5,7 +5,6 @@ import 'dart:typed_data';
 
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
 
 import '../auth/access_token_source.dart';
@@ -16,12 +15,9 @@ import '../provider/remote_changes.dart';
 import '../provider/remote_object.dart';
 import '../provider/sync_provider.dart';
 import '../store/sync_state_store.dart';
-import 'drive_errors.dart';
 import 'drive_folders.dart';
 import 'drive_retry.dart';
 import 'drive_vault_finder.dart';
-
-final _log = Logger('sync.drive');
 
 /// Implementation of [SyncProvider] targeting Google Drive v3 via the `drive.file` scope.
 class DriveSyncProvider implements SyncProvider {
@@ -31,7 +27,7 @@ class DriveSyncProvider implements SyncProvider {
     required AccessTokenSource tokenSource,
     http.Client? httpClient,
     this.rootUrl,
-    SyncStateStore? store,
+    this._store,
     DriveRetry? retry,
     this.createIfMissing = false,
   }) : _tokenSource = tokenSource,
@@ -40,7 +36,6 @@ class DriveSyncProvider implements SyncProvider {
          tokenSource: tokenSource,
          closeInner: httpClient == null,
        ),
-       _store = store,
        _retry = retry ?? const DriveRetry();
 
   final String vaultId;
@@ -420,7 +415,7 @@ class DriveSyncProvider implements SyncProvider {
 
     try {
       while (pageToken != null && pageToken.isNotEmpty) {
-        final list = await _retry.run(
+        final drive.ChangeList list = await _retry.run<drive.ChangeList>(
           () => _drive.changes.list(
             pageToken!,
             pageSize: 1000,
@@ -430,10 +425,11 @@ class DriveSyncProvider implements SyncProvider {
           ),
         );
 
-        for (final change in list.changes ?? []) {
-          final file = change.file;
-          final isRemoved = change.removed == true || file?.trashed == true;
-          final tephraKey = file?.appProperties?['tephraKey'];
+        for (final drive.Change change in list.changes ?? <drive.Change>[]) {
+          final drive.File? file = change.file;
+          final bool isRemoved =
+              change.removed == true || file?.trashed == true;
+          final String? tephraKey = file?.appProperties?['tephraKey'];
 
           if (tephraKey != null && tephraKey.isNotEmpty) {
             if (isRemoved) {
@@ -511,7 +507,7 @@ class DriveSyncProvider implements SyncProvider {
     }
   }
 
-  @override
+  /// Closes the HTTP client.
   Future<void> close() async {
     _client.close();
   }

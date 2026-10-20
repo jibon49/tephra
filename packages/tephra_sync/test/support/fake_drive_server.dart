@@ -246,7 +246,7 @@ class FakeDriveServer {
 
     _sendJson(request, {
       'files': paged.map((f) => f.toJson()).toList(),
-      if (nextPageToken != null) 'nextPageToken': nextPageToken,
+      'nextPageToken': ?nextPageToken,
     });
   }
 

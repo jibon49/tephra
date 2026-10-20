@@ -14,8 +14,8 @@ class DriveRetry {
   const DriveRetry({
     this.maxRetries = 6,
     this.requestTimeout = const Duration(seconds: 60),
-    Random? random,
-  }) : _random = random;
+    this._random,
+  });
 
   final int maxRetries;
   final Duration requestTimeout;

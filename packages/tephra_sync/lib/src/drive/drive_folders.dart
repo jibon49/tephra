@@ -3,24 +3,18 @@
 import 'dart:async';
 
 import 'package:googleapis/drive/v3.dart' as drive;
-import 'package:logging/logging.dart';
 
 import '../store/sync_state_store.dart';
-import 'drive_errors.dart';
 import 'drive_retry.dart';
-
-final _log = Logger('sync.drive');
 
 /// Resolves, creates, and caches Google Drive folder IDs and file IDs.
 class DriveFolders {
   DriveFolders({
     required drive.DriveApi driveApi,
-    required String vaultFolderId,
-    SyncStateStore? store,
+    required this._vaultFolderId,
+    this._store,
     DriveRetry? retry,
   }) : _drive = driveApi,
-       _vaultFolderId = vaultFolderId,
-       _store = store,
        _retry = retry ?? const DriveRetry();
 
   final drive.DriveApi _drive;

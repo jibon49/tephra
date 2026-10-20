@@ -38,14 +38,14 @@ void main() {
 
       final store = MemorySecretStore();
       final flow = DesktopOAuthFlow(
-        clientId: clientId!,
-        clientSecret: clientSecret!,
+        clientId: clientId,
+        clientSecret: clientSecret,
         openBrowser: (_) async {},
       );
 
       final tokenSource = DesktopTokenSource(flow: flow, store: store);
 
-      await store.write(SyncSecretKeys.desktopRefreshToken, refreshToken!);
+      await store.write(SyncSecretKeys.desktopRefreshToken, refreshToken);
 
       final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
         RegExp(r'[:.]'),
@@ -79,7 +79,7 @@ void main() {
 
         // 3. Quota
         final quota = await provider.quota();
-        expect(quota.usedBytes, isNonNegative);
+        expect(quota?.usedBytes, isNonNegative);
 
         // 4. Delete
         await provider.delete(key);
