@@ -621,7 +621,9 @@
   },
   "openSettings": "Open settings",
   "indexUnavailableOnWeb": "Search and links are not available in the web preview.",
-  "commandRunBenchmarks": "Run performance benchmarks"
+  "commandRunBenchmarks": "Run performance benchmarks",
+  "syncErrorNoOAuthConfig": "This build has no Google sign-in configuration.",
+  "@syncErrorNoOAuthConfig": { "description": "Error message when OAuth client credentials are not configured at build time." }
 }
 
 

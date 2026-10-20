@@ -2559,6 +2559,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Run performance benchmarks'**
   String get commandRunBenchmarks;
+
+  /// Error message when OAuth client credentials are not configured at build time.
+  ///
+  /// In en, this message translates to:
+  /// **'This build has no Google sign-in configuration.'**
+  String get syncErrorNoOAuthConfig;
 }
 
 class _AppLocalizationsDelegate

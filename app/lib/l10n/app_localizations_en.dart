@@ -1352,4 +1352,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandRunBenchmarks => 'Run performance benchmarks';
+
+  @override
+  String get syncErrorNoOAuthConfig =>
+      'This build has no Google sign-in configuration.';
 }
