@@ -230,6 +230,20 @@ class SyncWorkerClient {
     return _sendRequest<bool>((id) => BackupNow(id, kind: kind));
   }
 
+  /// Executes a backup restore operation with [request].
+  Future<Map<String, dynamic>> restoreBackup(
+    Map<String, dynamic> request,
+  ) async {
+    final res = await _sendRequest<dynamic>((id) => RestoreBackup(id, request));
+    return (res as Map).cast<String, dynamic>();
+  }
+
+  /// Runs backup verification on the newest backup manifest.
+  Future<Map<String, dynamic>> runVerification() async {
+    final res = await _sendRequest<dynamic>((id) => RunVerification(id));
+    return (res as Map).cast<String, dynamic>();
+  }
+
   /// Shuts down the sync worker and releases isolate ports.
   Future<void> shutdown() async {
     try {

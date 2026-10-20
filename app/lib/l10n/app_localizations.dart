@@ -4136,6 +4136,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mobile-mode file exclusions apply to backups taken from this device.'**
   String get backupsMobileModeNote;
+
+  /// No description provided for @gcRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Garbage collection in progress...'**
+  String get gcRunning;
+
+  /// No description provided for @gcDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Garbage collection complete: {count} blobs removed ({bytes} reclaimed)'**
+  String gcDone(int count, String bytes);
+
+  /// No description provided for @backupVerificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup verification failed: {count} damaged blobs detected'**
+  String backupVerificationFailed(int count);
+
+  /// No description provided for @backupsVerifyNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify now'**
+  String get backupsVerifyNow;
+
+  /// No description provided for @restoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore backup'**
+  String get restoreTitle;
+
+  /// No description provided for @restoreChooseFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose files to restore'**
+  String get restoreChooseFiles;
+
+  /// No description provided for @restoreSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get restoreSelectAll;
+
+  /// No description provided for @restoreTargetVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore into current vault'**
+  String get restoreTargetVault;
+
+  /// No description provided for @restoreTargetNewFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore into a new folder'**
+  String get restoreTargetNewFolder;
+
+  /// No description provided for @restoreNewFolderMustBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Target folder must be empty or not exist'**
+  String get restoreNewFolderMustBeEmpty;
+
+  /// No description provided for @restoreConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore {count} selected files?'**
+  String restoreConfirm(int count);
+
+  /// No description provided for @restoreRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring files: {done} / {total}'**
+  String restoreRunning(int done, int total);
+
+  /// No description provided for @restoreReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore complete: {restored} restored, {skipped} skipped, {renamed} renamed for collision, {failed} failed'**
+  String restoreReport(int restored, int skipped, int renamed, int failed);
+
+  /// No description provided for @restoreOpenAsVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Open as vault'**
+  String get restoreOpenAsVault;
 }
 
 class _AppLocalizationsDelegate

@@ -2279,4 +2279,57 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get backupsMobileModeNote =>
       'Mobile-mode file exclusions apply to backups taken from this device.';
+
+  @override
+  String get gcRunning => 'Garbage collection in progress...';
+
+  @override
+  String gcDone(int count, String bytes) {
+    return 'Garbage collection complete: $count blobs removed ($bytes reclaimed)';
+  }
+
+  @override
+  String backupVerificationFailed(int count) {
+    return 'Backup verification failed: $count damaged blobs detected';
+  }
+
+  @override
+  String get backupsVerifyNow => 'Verify now';
+
+  @override
+  String get restoreTitle => 'Restore backup';
+
+  @override
+  String get restoreChooseFiles => 'Choose files to restore';
+
+  @override
+  String get restoreSelectAll => 'Select all';
+
+  @override
+  String get restoreTargetVault => 'Restore into current vault';
+
+  @override
+  String get restoreTargetNewFolder => 'Restore into a new folder';
+
+  @override
+  String get restoreNewFolderMustBeEmpty =>
+      'Target folder must be empty or not exist';
+
+  @override
+  String restoreConfirm(int count) {
+    return 'Restore $count selected files?';
+  }
+
+  @override
+  String restoreRunning(int done, int total) {
+    return 'Restoring files: $done / $total';
+  }
+
+  @override
+  String restoreReport(int restored, int skipped, int renamed, int failed) {
+    return 'Restore complete: $restored restored, $skipped skipped, $renamed renamed for collision, $failed failed';
+  }
+
+  @override
+  String get restoreOpenAsVault => 'Open as vault';
 }

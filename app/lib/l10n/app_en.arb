@@ -1123,7 +1123,51 @@
   "backupsRestore": "Restore...",
   "backupsOnlyModeCard": "Back up only",
   "backupsOnlyModeExplain": "Create encrypted snapshots on Google Drive from this device without real-time multi-device sync.",
-  "backupsMobileModeNote": "Mobile-mode file exclusions apply to backups taken from this device."
+  "backupsMobileModeNote": "Mobile-mode file exclusions apply to backups taken from this device.",
+  "gcRunning": "Garbage collection in progress...",
+  "gcDone": "Garbage collection complete: {count} blobs removed ({bytes} reclaimed)",
+  "@gcDone": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "bytes": { "type": "String" }
+    }
+  },
+  "backupVerificationFailed": "Backup verification failed: {count} damaged blobs detected",
+  "@backupVerificationFailed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupsVerifyNow": "Verify now",
+  "restoreTitle": "Restore backup",
+  "restoreChooseFiles": "Choose files to restore",
+  "restoreSelectAll": "Select all",
+  "restoreTargetVault": "Restore into current vault",
+  "restoreTargetNewFolder": "Restore into a new folder",
+  "restoreNewFolderMustBeEmpty": "Target folder must be empty or not exist",
+  "restoreConfirm": "Restore {count} selected files?",
+  "@restoreConfirm": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "restoreRunning": "Restoring files: {done} / {total}",
+  "@restoreRunning": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "restoreReport": "Restore complete: {restored} restored, {skipped} skipped, {renamed} renamed for collision, {failed} failed",
+  "@restoreReport": {
+    "placeholders": {
+      "restored": { "type": "int" },
+      "skipped": { "type": "int" },
+      "renamed": { "type": "int" },
+      "failed": { "type": "int" }
+    }
+  },
+  "restoreOpenAsVault": "Open as vault"
 }
 
 

@@ -149,7 +149,7 @@ void main() {
       expect(find.text('Backup completed successfully'), findsOneWidget);
     });
 
-    testWidgets('tap Restore button opens dialog', (tester) async {
+    testWidgets('tap Restore button opens RestoreScreen', (tester) async {
       final now = DateTime.utc(2026, 10, 20, 14, 30, 0);
       final manifest = BackupManifest(
         vaultId: vaultId,
@@ -172,9 +172,23 @@ void main() {
       await tester.tap(find.text('Restore...'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Restore backup'), findsOneWidget);
+    });
+
+    testWidgets('tap Verify now triggers verification and updates UI', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithScope(const BackupsScreen(vaultId: vaultId)),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Verify now'));
+      await tester.pumpAndSettle();
+
+      expect(fakeClient.runVerificationTriggered, isTrue);
       expect(
-        find.textContaining('Restore for ${manifest.stamp}'),
+        find.textContaining('Verification passed: 20 blobs verified'),
         findsOneWidget,
       );
     });

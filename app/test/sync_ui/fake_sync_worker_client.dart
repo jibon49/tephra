@@ -198,6 +198,34 @@ class FakeSyncWorkerClient extends SyncWorkerClient {
     return true;
   }
 
+  Map<String, dynamic>? lastRestoreRequest;
+  bool runVerificationTriggered = false;
+
+  @override
+  Future<Map<String, dynamic>> restoreBackup(
+    Map<String, dynamic> request,
+  ) async {
+    lastRestoreRequest = request;
+    return {
+      'restored': (request['selection'] as List?)?.length ?? 1,
+      'skipped': 0,
+      'renamed': 0,
+      'failed': 0,
+    };
+  }
+
+  @override
+  Future<Map<String, dynamic>> runVerification() async {
+    runVerificationTriggered = true;
+    return {
+      'stamp': '20261020T120000Z',
+      'sampled': 20,
+      'ok': 20,
+      'failed': 0,
+      'failedKeys': <String>[],
+    };
+  }
+
   @override
   Future<void> shutdown() async {
     await _statusCtrl.close();

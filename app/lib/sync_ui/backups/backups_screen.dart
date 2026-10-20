@@ -7,6 +7,7 @@ import 'package:tephra_sync/tephra_sync.dart';
 import '../../core/sync/sync_worker_client.dart';
 import '../../l10n/app_localizations.dart';
 import '../../vault/providers.dart';
+import 'restore_screen.dart';
 
 /// Screen for managing automated vault backups, schedule, retention, and points-in-time.
 class BackupsScreen extends ConsumerStatefulWidget {
@@ -31,8 +32,9 @@ class _BackupsScreenState extends ConsumerState<BackupsScreen> {
   int _retentionMonthly = 12;
 
   String? _lastVerificationDate;
-  final int _verificationOk = 0;
-  final int _verificationFailed = 0;
+  int _verificationOk = 0;
+  int _verificationFailed = 0;
+  bool _isVerifying = false;
 
   @override
   void initState() {
@@ -107,19 +109,54 @@ class _BackupsScreenState extends ConsumerState<BackupsScreen> {
     }
   }
 
-  void _restoreBackup(BackupManifest backup) {
+  Future<void> _triggerVerification() async {
+    setState(() => _isVerifying = true);
     final l10n = AppLocalizations.of(context);
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.backupsRestore),
-        content: Text('Restore for ${backup.stamp} will open in step 03.23.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(MaterialLocalizations.of(ctx).okButtonLabel),
-          ),
-        ],
+    try {
+      final client = _client;
+      if (client != null) {
+        final res = await client.runVerification();
+        final ok = res['ok'] as int? ?? 0;
+        final failed = res['failed'] as int? ?? 0;
+        if (mounted) {
+          setState(() {
+            _verificationOk = ok;
+            _verificationFailed = failed;
+            _lastVerificationDate = DateTime.now()
+                .toLocal()
+                .toString()
+                .split('.')
+                .first;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                failed == 0
+                    ? 'Verification passed: $ok blobs verified'
+                    : l10n.backupVerificationFailed(failed),
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Verification failed: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _isVerifying = false);
+    }
+  }
+
+  void _restoreBackup(BackupManifest backup) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => RestoreScreen(
+          vaultId: widget.vaultId,
+          manifest: backup,
+          workerClient: _client,
+        ),
       ),
     );
   }
@@ -322,6 +359,18 @@ class _BackupsScreenState extends ConsumerState<BackupsScreen> {
                         color: Theme.of(context).colorScheme.outline,
                       ),
                     ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: _isVerifying ? null : _triggerVerification,
+                    icon: _isVerifying
+                        ? const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.verified_outlined, size: 16),
+                    label: Text(l10n.backupsVerifyNow),
+                  ),
                 ],
               ),
             ),

@@ -712,12 +712,115 @@ class SyncWorker {
     }
   }
 
+  RestoreService? _createRestoreService() {
+    final engine = _engine;
+    if (engine == null || _provider == null || _fs == null) {
+      return null;
+    }
+    return RestoreService(
+      provider: _provider!,
+      cipher: engine.cipher,
+      blobStore: engine.blobStore,
+      fs: _fs!,
+      backupService: _createBackupService(),
+      clock: engine.clock,
+    );
+  }
+
+  BackupVerifier? _createBackupVerifier() {
+    final engine = _engine;
+    if (engine == null || _provider == null || _store == null) {
+      return null;
+    }
+    return BackupVerifier(
+      provider: _provider!,
+      cipher: engine.cipher,
+      store: _store!,
+      clock: engine.clock,
+    );
+  }
+
   Future<void> _handleRestoreBackup(RestoreBackup req) async {
-    _send(WorkerReply(requestId: req.requestId, payload: true));
+    try {
+      final service = _createRestoreService();
+      if (service == null) {
+        _send(
+          WorkerReply(
+            requestId: req.requestId,
+            errorType: 'Sync engine not ready',
+          ),
+        );
+        return;
+      }
+      final map = req.request;
+      final stamp = map['stamp'] as String;
+      final selection = ((map['selection'] as List?) ?? const [])
+          .map((p) => VaultPath(p as String))
+          .toList();
+      final targetMode = map['targetMode'] as String? ?? 'intoVault';
+      final RestoreTarget target;
+      if (targetMode == 'newFolder') {
+        target = RestoreTarget.newFolder(map['targetPath'] as String);
+      } else {
+        target = RestoreTarget.intoVault;
+      }
+
+      final request = RestoreRequest(
+        stamp: stamp,
+        selection: selection,
+        target: target,
+      );
+
+      _updateStatus(_snapshot.copyWith(state: SyncUiState.syncing));
+      final report = await service.restore(request);
+      _updateStatus(_snapshot.copyWith(state: SyncUiState.idle));
+
+      _send(
+        WorkerReply(
+          requestId: req.requestId,
+          payload: {
+            'restored': report.restoredCount,
+            'skipped': report.skippedCount,
+            'renamed': report.renamedCount,
+            'failed': report.failedCount,
+            'failedPaths': report.failedPaths,
+          },
+        ),
+      );
+    } catch (e) {
+      _updateStatus(_snapshot.copyWith(state: SyncUiState.idle));
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
   }
 
   Future<void> _handleRunVerification(RunVerification req) async {
-    _send(WorkerReply(requestId: req.requestId, payload: true));
+    try {
+      final verifier = _createBackupVerifier();
+      if (verifier == null) {
+        _send(
+          WorkerReply(
+            requestId: req.requestId,
+            errorType: 'Sync engine not ready',
+          ),
+        );
+        return;
+      }
+      final record = await verifier.verify();
+      _send(
+        WorkerReply(
+          requestId: req.requestId,
+          payload: {
+            'stamp': record.stamp,
+            'sampled': record.sampled,
+            'ok': record.ok,
+            'failed': record.failed,
+            'failedKeys': record.failedKeys,
+          },
+        ),
+      );
+    } catch (e) {
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
   }
 
   Future<void> _handleShutdown(Shutdown req) async {
