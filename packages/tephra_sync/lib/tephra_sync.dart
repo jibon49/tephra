@@ -3,7 +3,13 @@
 /// Tephra sync: engine, providers, encryption, history, and backup.
 library;
 
+export 'src/auth/access_token_source.dart';
+export 'src/auth/authed_client.dart';
+export 'src/auth/desktop_oauth_flow.dart';
+export 'src/auth/desktop_token_source.dart';
 export 'src/auth/google_oauth_config.dart';
+export 'src/auth/oauth_tokens.dart';
+export 'src/auth/secret_store.dart';
 export 'src/blobs/blob_ref.dart';
 export 'src/blobs/blob_store.dart';
 export 'src/blobs/fastcdc.dart';

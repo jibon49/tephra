@@ -592,6 +592,42 @@ class SettingsScreen extends ConsumerWidget {
           ],
           const Divider(),
 
+          // --- Sync (Debug) ---
+          if (kDebugMode) ...[
+            const _SectionHeader(title: 'Sync (Debug)'),
+            Consumer(
+              builder: (context, ref, _) {
+                return ListTile(
+                  title: const Text('Test Google sign-in'),
+                  subtitle: const Text('Connects to Google Drive using OAuth'),
+                  trailing: ElevatedButton(
+                    onPressed: () async {
+                      try {
+                        final auth = ref.read(googleAuthServiceProvider);
+                        final account = await auth.signInInteractive();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Signed in as: ${account.email}'),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Sign-in failed: $e')),
+                          );
+                        }
+                      }
+                    },
+                    child: const Text('Sign in'),
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+          ],
+
           // --- About ---
           _SectionHeader(title: l10n.settingsAbout),
           const ListTile(
