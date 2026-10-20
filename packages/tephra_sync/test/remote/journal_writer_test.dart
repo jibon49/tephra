@@ -3,7 +3,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:cryptography/cryptography.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_sync/tephra_sync.dart';
 import 'package:test/test.dart';

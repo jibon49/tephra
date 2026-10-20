@@ -342,7 +342,8 @@ Instructions: `instructions/phase-03-sync-drive.md`
   - notes: Implemented BackoffSchedule (30s, 1m, 2m, 5m, then every 5m) and ThrottledSyncProvider (token bucket, 1s burst, min 16 KiB/s clamp) in tephra_sync; implemented SyncWorker isolate runtime, SyncWorkerClient bidirectional message bridge with Riverpod providers, EditorGuardHost (dirty buffer reject + 5s background hash check), and SyncTriggers (5s debounced save, start/resume, 30s polling, active cycle coalescing); all 15 unit tests passing.
 - [x] 03.17 Android background sync (WorkManager) and Windows tray / keep-running
   - notes: Integrated workmanager 0.10.x with tephraBackgroundDispatcher & BackgroundSyncScheduler (15m periodic, network/charging constraints); built HeadlessSyncRunner (silent Google auth, 24h throttled reconnection notifications, budget cancellation); added INTERNET permission to AndroidManifest.xml; integrated tray_manager 0.8.x and window_manager 0.5.x for WindowsTrayService, WindowService, and TraySyncCoordinator (keep-running minimize to tray, localized status tooltips, and graceful shutdown); 11 tests passing.
-- [ ] 03.18 Sync UI 1: the setup wizard
+- [x] 03.18 Sync UI 1: the setup wizard
+  - notes: Implemented 8-page responsive setup wizard (Sign-in, Choose remote vault, Password creation, Recovery key display/confirmation, Vault unlock, First sync choice, First sync progress, Done); DriveSyncSetupService, SyncSetupController state machine, Riverpod providers; SettingsScreen sync card & disconnect flow; 7 unit/widget tests passing; zero analyze/lint issues.
 - [ ] 03.19 Sync UI 2: status indicator, sync panel, sync log, settings, devices
 - [ ] 03.20 Conflicts screen with diff view and resolution actions
 - [ ] 03.21 Version history: local snapshots, remote versions, history screen, recently deleted

@@ -3,8 +3,11 @@
 import 'dart:convert';
 
 import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
+import '../auth/access_token_source.dart';
+import '../auth/authed_client.dart';
 import '../remote/vault_header.dart';
 import 'drive_folders.dart';
 import 'drive_retry.dart';
@@ -39,6 +42,20 @@ class DriveVaultFinder {
   DriveVaultFinder({required drive.DriveApi driveApi, DriveRetry? retry})
     : _drive = driveApi,
       _retry = retry ?? const DriveRetry();
+
+  /// Constructs a [DriveVaultFinder] using an authenticated [tokenSource].
+  factory DriveVaultFinder.fromTokenSource(
+    AccessTokenSource tokenSource, {
+    http.Client? httpClient,
+    DriveRetry? retry,
+  }) {
+    final client = AuthedClient(
+      inner: httpClient ?? http.Client(),
+      tokenSource: tokenSource,
+      closeInner: httpClient == null,
+    );
+    return DriveVaultFinder(driveApi: drive.DriveApi(client), retry: retry);
+  }
 
   final drive.DriveApi _drive;
   final DriveRetry _retry;

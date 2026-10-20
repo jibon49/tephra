@@ -9,7 +9,10 @@ import 'package:tephra_core/tephra_core.dart';
 
 import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
+import '../sync_ui/providers.dart';
+import '../sync_ui/setup/sync_setup_wizard.dart';
 import '../vault/note_tools/template_picker.dart';
+import '../vault/providers.dart';
 import 'hotkeys_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -592,41 +595,8 @@ class SettingsScreen extends ConsumerWidget {
           ],
           const Divider(),
 
-          // --- Sync (Debug) ---
-          if (kDebugMode) ...[
-            const _SectionHeader(title: 'Sync (Debug)'),
-            Consumer(
-              builder: (context, ref, _) {
-                return ListTile(
-                  title: const Text('Test Google sign-in'),
-                  subtitle: const Text('Connects to Google Drive using OAuth'),
-                  trailing: ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        final auth = ref.read(googleAuthServiceProvider);
-                        final account = await auth.signInInteractive();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Signed in as: ${account.email}'),
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Sign-in failed: $e')),
-                          );
-                        }
-                      }
-                    },
-                    child: const Text('Sign in'),
-                  ),
-                );
-              },
-            ),
-            const Divider(),
-          ],
+          // --- Sync & backup ---
+          const _SyncSettingsSection(),
 
           // --- About ---
           _SectionHeader(title: l10n.settingsAbout),
@@ -981,4 +951,170 @@ Future<String?> _pickTemplateDialog(BuildContext context, WidgetRef ref) async {
   if (!context.mounted) return null;
   final chosen = await showTemplatePicker(context, templates: mdFiles);
   return chosen?.value;
+}
+
+class _SyncSettingsSection extends ConsumerWidget {
+  const _SyncSettingsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    if (kIsWeb) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionHeader(title: l10n.syncSettingsTitle),
+          ListTile(
+            leading: const Icon(Icons.cloud_off_outlined),
+            title: Text(l10n.syncNotAvailableOnWeb),
+          ),
+          const Divider(),
+        ],
+      );
+    }
+
+    final session = ref.watch(vaultSessionProvider);
+    if (session == null) {
+      return const SizedBox.shrink();
+    }
+
+    final syncConfigAsync = ref.watch(
+      isSyncConfiguredProvider((
+        vaultId: session.vaultId,
+        localVaultRootPath: session.rootDir,
+      )),
+    );
+
+    final isConfigured = syncConfigAsync.value ?? false;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionHeader(title: l10n.syncSettingsTitle),
+        if (!isConfigured) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.cloud_sync_outlined,
+                          color: Colors.blue,
+                          size: 32,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            l10n.syncSettingsTitle,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.syncSetupSignInExplain,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.sync),
+                      label: Text(l10n.syncSetupAction),
+                      onPressed: () async {
+                        await showSyncSetupWizard(
+                          context,
+                          vaultId: session.vaultId,
+                          localVaultRootPath: session.rootDir,
+                        );
+                        ref.invalidate(
+                          isSyncConfiguredProvider((
+                            vaultId: session.vaultId,
+                            localVaultRootPath: session.rootDir,
+                          )),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ] else ...[
+          ListTile(
+            leading: const Icon(Icons.cloud_done_outlined, color: Colors.green),
+            title: Text(l10n.syncSettingsConfiguredStatus),
+            subtitle: Text(session.name),
+            trailing: OutlinedButton(
+              onPressed: () async {
+                final alsoSignOut = ValueNotifier<bool>(false);
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text(l10n.syncDisconnect),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(l10n.syncDisconnectConfirm),
+                        const SizedBox(height: 16),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: alsoSignOut,
+                          builder: (context, val, _) {
+                            return CheckboxListTile(
+                              value: val,
+                              title: Text(l10n.syncDisconnectAlsoSignOut),
+                              controlAffinity: ListTileControlAffinity.leading,
+                              onChanged: (newVal) =>
+                                  alsoSignOut.value = newVal ?? false,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        child: Text(l10n.commonCancel),
+                      ),
+                      FilledButton(
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                        child: Text(l10n.syncDisconnect),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirmed == true && context.mounted) {
+                  final service = ref.read(
+                    syncSetupServiceProvider((
+                      vaultId: session.vaultId,
+                      localVaultRootPath: session.rootDir,
+                    )),
+                  );
+                  await service.disconnect(signOutGoogle: alsoSignOut.value);
+                  ref.invalidate(
+                    isSyncConfiguredProvider((
+                      vaultId: session.vaultId,
+                      localVaultRootPath: session.rootDir,
+                    )),
+                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.syncDisconnectSuccess)),
+                    );
+                  }
+                }
+              },
+              child: Text(l10n.syncDisconnect),
+            ),
+          ),
+        ],
+        const Divider(),
+      ],
+    );
+  }
 }

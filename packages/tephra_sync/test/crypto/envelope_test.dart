@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:cryptography/cryptography.dart';
 import 'package:tephra_sync/tephra_sync.dart';
 import 'package:test/test.dart';
 

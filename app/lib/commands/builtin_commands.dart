@@ -71,6 +71,16 @@ void registerBuiltinCommands(CommandRegistry registry) {
 
   registry.register(
     TephraCommand(
+      id: 'sync.open-settings',
+      label: (l10n) => l10n.commandSyncOpenSettings,
+      icon: Icons.sync,
+      defaultShortcuts: const [],
+      run: (ref, context) => Navigator.of(context).pushNamed('/settings'),
+    ),
+  );
+
+  registry.register(
+    TephraCommand(
       id: 'app.open-vault',
       label: (l10n) => l10n.commandAppOpenVault,
       icon: Icons.folder_open_outlined,

@@ -3,6 +3,8 @@
 /// Tephra sync: engine, providers, encryption, history, and backup.
 library;
 
+export 'package:cryptography/cryptography.dart' show SecretKey;
+
 export 'src/auth/access_token_source.dart';
 export 'src/auth/authed_client.dart';
 export 'src/auth/desktop_oauth_flow.dart';

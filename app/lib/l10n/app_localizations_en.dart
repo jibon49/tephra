@@ -1398,4 +1398,296 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syncNotificationReconnectBody =>
       'Tephra sync needs you to reconnect Google Drive';
+
+  @override
+  String get syncSetupTitle => 'Set up sync';
+
+  @override
+  String get syncSetupSignInExplain =>
+      'Tephra stores your vault in a folder named Tephra in your Google Drive. With encryption on, Google cannot read your notes or file names.';
+
+  @override
+  String get syncSetupSignInButton => 'Sign in with Google';
+
+  @override
+  String syncSetupSignedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get syncSetupUseAnotherAccount => 'Use another account';
+
+  @override
+  String get syncSetupChooseTitle => 'Choose remote vault';
+
+  @override
+  String get syncSetupCreateNew => 'Create a new remote vault';
+
+  @override
+  String syncSetupRemoteVaultCreated(String date) {
+    return 'Created $date';
+  }
+
+  @override
+  String get syncSetupEncryptToggle => 'Encrypt (recommended)';
+
+  @override
+  String get syncSetupPassword => 'Vault password';
+
+  @override
+  String get syncSetupPasswordConfirm => 'Confirm password';
+
+  @override
+  String get syncSetupPasswordTooShort =>
+      'Password must be at least 10 characters';
+
+  @override
+  String get syncSetupPasswordMismatch => 'Passwords do not match';
+
+  @override
+  String get syncSetupPasswordWarning =>
+      'If you lose both your password and your recovery key, nobody — including Tephra — can recover your synced data. Your notes on this device are not affected.';
+
+  @override
+  String get syncSetupEncryptionOffConfirm =>
+      'Turning encryption off means note contents and titles will be readable in your Google Drive. Are you sure?';
+
+  @override
+  String get syncSetupDeviceName => 'Device name';
+
+  @override
+  String get syncSetupCreating =>
+      'Securing your vault… this can take a few seconds';
+
+  @override
+  String get syncSetupRecoveryTitle => 'Save your recovery key';
+
+  @override
+  String get syncSetupRecoveryExplain =>
+      'If you forget your password, this recovery key is the only way to access your encrypted sync data. Store it somewhere safe.';
+
+  @override
+  String get syncSetupCopy => 'Copy key';
+
+  @override
+  String get syncSetupSaveToFile => 'Save as text file';
+
+  @override
+  String get syncSetupRecoverySavedCheckbox =>
+      'I have saved my recovery key somewhere safe';
+
+  @override
+  String get syncSetupConfirmRecoveryTitle => 'Confirm your recovery key';
+
+  @override
+  String syncSetupConfirmRecoveryGroup(int number) {
+    return 'Group $number';
+  }
+
+  @override
+  String get syncSetupConfirmRecoveryWrong =>
+      'The entered groups do not match your recovery key.';
+
+  @override
+  String get syncSetupShowKeyAgain => 'Show the key again';
+
+  @override
+  String get syncSetupUnlockTitle => 'Unlock remote vault';
+
+  @override
+  String get syncSetupUseRecoveryKey => 'Use recovery key instead';
+
+  @override
+  String get syncSetupUsePassword => 'Use password instead';
+
+  @override
+  String get syncErrorWrongPassword => 'Incorrect password.';
+
+  @override
+  String get syncErrorWrongRecoveryKey => 'Incorrect recovery key.';
+
+  @override
+  String get syncSetupFirstSyncTitle => 'First sync options';
+
+  @override
+  String syncSetupUploadOption(int count, String size) {
+    return 'Upload this vault ($count files, $size)';
+  }
+
+  @override
+  String get syncSetupDownloadOption => 'Download the vault';
+
+  @override
+  String get syncSetupMergeOption => 'Merge both (recommended)';
+
+  @override
+  String get syncSetupMergeExplain =>
+      'Files that exist on both sides with different content are kept twice; nothing is overwritten or deleted.';
+
+  @override
+  String get syncSetupNewFolderOption => 'Download into a new empty folder';
+
+  @override
+  String get syncSetupBackgroundSync => 'Sync in background';
+
+  @override
+  String get syncSetupWifiOnly => 'Sync over Wi-Fi only';
+
+  @override
+  String get syncSetupMobileMode => 'Mobile mode (skip large videos)';
+
+  @override
+  String syncSetupProgress(
+    int done,
+    int total,
+    String bytesDone,
+    String bytesTotal,
+  ) {
+    return '$done of $total files · $bytesDone of $bytesTotal';
+  }
+
+  @override
+  String get syncSetupRunInBackground => 'Run in background';
+
+  @override
+  String get syncSetupDoneTitle => 'Sync setup complete!';
+
+  @override
+  String get syncSetupEnableDailyBackup => 'Turn on daily backups';
+
+  @override
+  String get syncReconnectBanner =>
+      'Google Drive access expired. Reconnect to keep syncing.';
+
+  @override
+  String get syncReconnectButton => 'Reconnect';
+
+  @override
+  String get syncDisconnect => 'Stop syncing this vault';
+
+  @override
+  String get syncDisconnectConfirm =>
+      'Are you sure you want to stop syncing this vault on this device? Your local notes and remote data will remain untouched.';
+
+  @override
+  String get syncDisconnectAlsoSignOut =>
+      'Also sign out of Google on this device';
+
+  @override
+  String get syncNotAvailableOnWeb =>
+      'Sync is not available in the web preview.';
+
+  @override
+  String get syncSettingsTitle => 'Sync & backup';
+
+  @override
+  String get syncSetupAction => 'Set up sync';
+
+  @override
+  String get syncSetupCreateNewSubtitle =>
+      'Start fresh synchronization in Google Drive';
+
+  @override
+  String get syncSetupExistingVaults => 'Existing remote vaults';
+
+  @override
+  String get syncSetupVaultName => 'Vault name';
+
+  @override
+  String get syncSetupEncryptSubtitle => 'End-to-end zero-knowledge encryption';
+
+  @override
+  String get syncSetupEncryptionOffTitle => 'Turn off encryption?';
+
+  @override
+  String get syncSetupKeepEncryption => 'Keep encryption';
+
+  @override
+  String get syncSetupTurnOffEncryption => 'Turn off';
+
+  @override
+  String get syncSetupCreateAndContinue => 'Create and continue';
+
+  @override
+  String get syncSetupKeyCopied => 'Recovery key copied to clipboard';
+
+  @override
+  String get syncSetupContinue => 'Continue';
+
+  @override
+  String get syncSetupConfirmRecoveryExplain =>
+      'To ensure you can recover your data if needed, please enter groups 2 and 7 from your recovery key.';
+
+  @override
+  String get syncSetupVerifyAndContinue => 'Verify and continue';
+
+  @override
+  String get syncSetupRecoveryKeyLabel => 'Recovery key';
+
+  @override
+  String get syncSetupRecoveryKeyHint =>
+      'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX';
+
+  @override
+  String get syncSetupUnlockButton => 'Unlock';
+
+  @override
+  String get syncSetupUploadSubtitle =>
+      'Upload current local files to initialize remote vault';
+
+  @override
+  String get syncSetupDownloadSubtitle =>
+      'Download all notes from the remote vault into this folder';
+
+  @override
+  String get syncSetupNewFolderSubtitle =>
+      'Keep local files separate by downloading into a new folder';
+
+  @override
+  String get syncSetupChooseFolder => 'Choose folder';
+
+  @override
+  String get syncSetupBackgroundSyncSubtitle =>
+      'Periodically sync in background via WorkManager';
+
+  @override
+  String get syncSetupWifiOnlySubtitle => 'Avoid mobile data consumption';
+
+  @override
+  String get syncSetupMobileModeSubtitle =>
+      'Exclude large video and media files on phone';
+
+  @override
+  String get syncSetupStartSync => 'Start sync';
+
+  @override
+  String get syncSetupProgressTitle => 'Initial synchronization';
+
+  @override
+  String get syncSetupRetry => 'Retry';
+
+  @override
+  String get syncSetupSummaryUploaded => 'Uploaded files:';
+
+  @override
+  String get syncSetupSummaryDownloaded => 'Downloaded files:';
+
+  @override
+  String get syncSetupSummaryMerged => 'Merged files:';
+
+  @override
+  String get syncSetupDailyBackupSubtitle =>
+      'Keep automatic local snapshots in .tephra/history';
+
+  @override
+  String get commandSyncOpenSettings => 'Sync: Open settings';
+
+  @override
+  String get syncSettingsConfiguredStatus => 'Syncing via Google Drive';
+
+  @override
+  String get syncSettingsConfigureButton => 'Configure sync';
+
+  @override
+  String get syncDisconnectSuccess => 'Sync has been disabled for this vault.';
 }

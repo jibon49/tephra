@@ -642,7 +642,139 @@
   "trayMenuResumeSync": "Resume sync",
   "trayMenuQuit": "Quit Tephra",
   "syncNotificationReconnectTitle": "Tephra sync",
-  "syncNotificationReconnectBody": "Tephra sync needs you to reconnect Google Drive"
+  "syncNotificationReconnectBody": "Tephra sync needs you to reconnect Google Drive",
+  "syncSetupTitle": "Set up sync",
+  "syncSetupSignInExplain": "Tephra stores your vault in a folder named Tephra in your Google Drive. With encryption on, Google cannot read your notes or file names.",
+  "syncSetupSignInButton": "Sign in with Google",
+  "syncSetupSignedInAs": "Signed in as {email}",
+  "@syncSetupSignedInAs": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "syncSetupUseAnotherAccount": "Use another account",
+  "syncSetupChooseTitle": "Choose remote vault",
+  "syncSetupCreateNew": "Create a new remote vault",
+  "syncSetupRemoteVaultCreated": "Created {date}",
+  "@syncSetupRemoteVaultCreated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "syncSetupEncryptToggle": "Encrypt (recommended)",
+  "syncSetupPassword": "Vault password",
+  "syncSetupPasswordConfirm": "Confirm password",
+  "syncSetupPasswordTooShort": "Password must be at least 10 characters",
+  "syncSetupPasswordMismatch": "Passwords do not match",
+  "syncSetupPasswordWarning": "If you lose both your password and your recovery key, nobody — including Tephra — can recover your synced data. Your notes on this device are not affected.",
+  "syncSetupEncryptionOffConfirm": "Turning encryption off means note contents and titles will be readable in your Google Drive. Are you sure?",
+  "syncSetupDeviceName": "Device name",
+  "syncSetupCreating": "Securing your vault… this can take a few seconds",
+  "syncSetupRecoveryTitle": "Save your recovery key",
+  "syncSetupRecoveryExplain": "If you forget your password, this recovery key is the only way to access your encrypted sync data. Store it somewhere safe.",
+  "syncSetupCopy": "Copy key",
+  "syncSetupSaveToFile": "Save as text file",
+  "syncSetupRecoverySavedCheckbox": "I have saved my recovery key somewhere safe",
+  "syncSetupConfirmRecoveryTitle": "Confirm your recovery key",
+  "syncSetupConfirmRecoveryGroup": "Group {number}",
+  "@syncSetupConfirmRecoveryGroup": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "syncSetupConfirmRecoveryWrong": "The entered groups do not match your recovery key.",
+  "syncSetupShowKeyAgain": "Show the key again",
+  "syncSetupUnlockTitle": "Unlock remote vault",
+  "syncSetupUseRecoveryKey": "Use recovery key instead",
+  "syncSetupUsePassword": "Use password instead",
+  "syncErrorWrongPassword": "Incorrect password.",
+  "syncErrorWrongRecoveryKey": "Incorrect recovery key.",
+  "syncSetupFirstSyncTitle": "First sync options",
+  "syncSetupUploadOption": "Upload this vault ({count} files, {size})",
+  "@syncSetupUploadOption": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "syncSetupDownloadOption": "Download the vault",
+  "syncSetupMergeOption": "Merge both (recommended)",
+  "syncSetupMergeExplain": "Files that exist on both sides with different content are kept twice; nothing is overwritten or deleted.",
+  "syncSetupNewFolderOption": "Download into a new empty folder",
+  "syncSetupBackgroundSync": "Sync in background",
+  "syncSetupWifiOnly": "Sync over Wi-Fi only",
+  "syncSetupMobileMode": "Mobile mode (skip large videos)",
+  "syncSetupProgress": "{done} of {total} files · {bytesDone} of {bytesTotal}",
+  "@syncSetupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytesDone": {
+        "type": "String"
+      },
+      "bytesTotal": {
+        "type": "String"
+      }
+    }
+  },
+  "syncSetupRunInBackground": "Run in background",
+  "syncSetupDoneTitle": "Sync setup complete!",
+  "syncSetupEnableDailyBackup": "Turn on daily backups",
+  "syncReconnectBanner": "Google Drive access expired. Reconnect to keep syncing.",
+  "syncReconnectButton": "Reconnect",
+  "syncDisconnect": "Stop syncing this vault",
+  "syncDisconnectConfirm": "Are you sure you want to stop syncing this vault on this device? Your local notes and remote data will remain untouched.",
+  "syncDisconnectAlsoSignOut": "Also sign out of Google on this device",
+  "syncNotAvailableOnWeb": "Sync is not available in the web preview.",
+  "syncSettingsTitle": "Sync & backup",
+  "syncSetupAction": "Set up sync",
+  "syncSetupCreateNewSubtitle": "Start fresh synchronization in Google Drive",
+  "syncSetupExistingVaults": "Existing remote vaults",
+  "syncSetupVaultName": "Vault name",
+  "syncSetupEncryptSubtitle": "End-to-end zero-knowledge encryption",
+  "syncSetupEncryptionOffTitle": "Turn off encryption?",
+  "syncSetupKeepEncryption": "Keep encryption",
+  "syncSetupTurnOffEncryption": "Turn off",
+  "syncSetupCreateAndContinue": "Create and continue",
+  "syncSetupKeyCopied": "Recovery key copied to clipboard",
+  "syncSetupContinue": "Continue",
+  "syncSetupConfirmRecoveryExplain": "To ensure you can recover your data if needed, please enter groups 2 and 7 from your recovery key.",
+  "syncSetupVerifyAndContinue": "Verify and continue",
+  "syncSetupRecoveryKeyLabel": "Recovery key",
+  "syncSetupRecoveryKeyHint": "XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX",
+  "syncSetupUnlockButton": "Unlock",
+  "syncSetupUploadSubtitle": "Upload current local files to initialize remote vault",
+  "syncSetupDownloadSubtitle": "Download all notes from the remote vault into this folder",
+  "syncSetupNewFolderSubtitle": "Keep local files separate by downloading into a new folder",
+  "syncSetupChooseFolder": "Choose folder",
+  "syncSetupBackgroundSyncSubtitle": "Periodically sync in background via WorkManager",
+  "syncSetupWifiOnlySubtitle": "Avoid mobile data consumption",
+  "syncSetupMobileModeSubtitle": "Exclude large video and media files on phone",
+  "syncSetupStartSync": "Start sync",
+  "syncSetupProgressTitle": "Initial synchronization",
+  "syncSetupRetry": "Retry",
+  "syncSetupSummaryUploaded": "Uploaded files:",
+  "syncSetupSummaryDownloaded": "Downloaded files:",
+  "syncSetupSummaryMerged": "Merged files:",
+  "syncSetupDailyBackupSubtitle": "Keep automatic local snapshots in .tephra/history",
+  "commandSyncOpenSettings": "Sync: Open settings",
+  "syncSettingsConfiguredStatus": "Syncing via Google Drive",
+  "syncSettingsConfigureButton": "Configure sync",
+  "syncDisconnectSuccess": "Sync has been disabled for this vault."
 }
 
 

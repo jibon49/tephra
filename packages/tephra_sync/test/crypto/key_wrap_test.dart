@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:cryptography/cryptography.dart';
 import 'package:tephra_sync/tephra_sync.dart';
 import 'package:test/test.dart';
 
