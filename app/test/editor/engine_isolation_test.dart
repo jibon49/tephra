@@ -7,7 +7,9 @@ import 'package:path/path.dart' as p;
 
 void main() {
   test('engine isolation: only app/lib/editor/engine/ may import re_editor', () {
-    final libDir = Directory(p.join(Directory.current.path, 'lib'));
+    final libDir = Directory(p.join(Directory.current.path, 'lib')).existsSync()
+        ? Directory(p.join(Directory.current.path, 'lib'))
+        : Directory(p.join(Directory.current.path, 'app', 'lib'));
     expect(libDir.existsSync(), isTrue, reason: 'app/lib directory must exist');
 
     final violatingFiles = <String>[];

@@ -50,10 +50,23 @@ class StatusBar extends ConsumerWidget {
                 ),
               ),
             ),
-            for (final item in rightItems) ...[
-              const SizedBox(width: 8),
-              item.builder(context, ref),
-            ],
+            Flexible(
+              fit: FlexFit.loose,
+              child: ClipRect(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final item in rightItems) ...[
+                      const SizedBox(width: 8),
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: item.builder(context, ref),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

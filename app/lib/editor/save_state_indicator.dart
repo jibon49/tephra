@@ -67,9 +67,13 @@ class SaveStateIndicator extends StatelessWidget {
           children: [
             icon,
             const SizedBox(width: 6),
-            Text(
-              text,
-              style: theme.textTheme.bodySmall?.copyWith(color: textColor),
+            Flexible(
+              child: Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: theme.textTheme.bodySmall?.copyWith(color: textColor),
+              ),
             ),
           ],
         );

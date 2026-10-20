@@ -1,5 +1,6 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,6 +8,7 @@ import 'package:tephra_sync/tephra_sync.dart';
 
 import '../commands/command_registry.dart';
 import '../commands/tephra_command.dart';
+import '../core/sync/secure_secret_store.dart';
 import '../core/sync/sync_messages.dart';
 import '../core/sync/sync_worker_client.dart';
 import '../vault/providers.dart';
@@ -231,4 +233,53 @@ void registerSyncCommands(CommandRegistry registry) {
       },
     ),
   );
+
+  if (kDebugMode) {
+    registry.register(
+      TephraCommand(
+        id: 'sync.debug-break-token',
+        label: (_) => 'Debug: Invalidate OAuth Token',
+        icon: Icons.bug_report_outlined,
+        isAvailable: _isConfigured,
+        run: (ref, context) async {
+          final session = ref.read(vaultSessionProvider);
+          if (session == null) return;
+          final secretStore = SecureSecretStore();
+          await secretStore.write(
+            SyncSecretKeys.accessToken,
+            'invalid-broken-token',
+          );
+          await secretStore.write(
+            SyncSecretKeys.desktopRefreshToken,
+            'invalid-broken-refresh-token',
+          );
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Debug: Token invalidated')),
+            );
+          }
+        },
+      ),
+    );
+
+    registry.register(
+      TephraCommand(
+        id: 'sync.debug-fake-quota',
+        label: (_) => 'Debug: Fake Quota Full',
+        icon: Icons.disc_full_outlined,
+        isAvailable: _isConfigured,
+        run: (ref, context) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Debug: Quota full simulated. Uploads paused, downloads continue.',
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
 }

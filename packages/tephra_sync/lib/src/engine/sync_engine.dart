@@ -195,7 +195,10 @@ final class SyncEngine {
 
       // 2. Recover uncommitted pending journal batches
       _emitProgress(SyncProgressPhase.refreshing);
-      await _journalWriter.recover();
+      final recoveredBatches = await _journalWriter.recover();
+      for (final batch in recoveredBatches) {
+        await _afterCommitStateUpdate(batch);
+      }
 
       // 3. Provider changesSince + JournalReader.refresh + revocation check
       final changesCursor = await store.getMeta('changesCursor');

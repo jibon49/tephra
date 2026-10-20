@@ -78,7 +78,7 @@ final class SimDevice {
     required this.remoteVaultId,
     required this.clock,
   }) : lock = MemorySyncLock(),
-       localHistory = LocalHistory(fs, clock);
+       localHistory = LocalHistory(fs, clock, Duration.zero);
 
   final String name;
   DeviceIdentity identity;

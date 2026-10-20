@@ -203,7 +203,14 @@ class _SyncStatusIndicatorState extends ConsumerState<SyncStatusIndicator>
                 iconWidget,
                 if (!widget.compact) ...[
                   const SizedBox(width: 6),
-                  Text(text, style: Theme.of(context).textTheme.labelSmall),
+                  Flexible(
+                    child: Text(
+                      text,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  ),
                 ],
               ],
             ),

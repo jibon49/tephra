@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 import 'package:tephra/l10n/app_localizations.dart';
 import 'package:tephra/reading/callout_view.dart';
 import 'package:tephra/reading/embeds/file_chip.dart';
@@ -36,7 +37,9 @@ class TestVaultSessionNotifier extends VaultSessionNotifier {
 void main() {
   late MemoryVaultFileSystem fs;
   late VaultSession session;
-  final syntaxDir = Directory('../test_vaults/syntax');
+  final syntaxDir = Directory('../test_vaults/syntax').existsSync()
+      ? Directory('../test_vaults/syntax')
+      : Directory('test_vaults/syntax');
 
   setUpAll(() async {
     fs = MemoryVaultFileSystem();
@@ -94,7 +97,7 @@ void main() {
   testWidgets('01-headings: 9+ Semantics(header) equal to parse count', (
     tester,
   ) async {
-    final file = File('../test_vaults/syntax/01-headings.md');
+    final file = File(p.join(syntaxDir.path, '01-headings.md'));
     final text = file.readAsStringSync();
     final parsed = MarkdownParser.parse(text);
 
@@ -113,7 +116,7 @@ void main() {
   testWidgets('04-lists: • and ordered list markers exist', (tester) async {
     await tester.binding.setSurfaceSize(const Size(800, 2500));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    final file = File('../test_vaults/syntax/04-lists.md');
+    final file = File(p.join(syntaxDir.path, '04-lists.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(
@@ -131,7 +134,7 @@ void main() {
   ) async {
     await tester.binding.setSurfaceSize(const Size(800, 2500));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    final file = File('../test_vaults/syntax/05-tasks.md');
+    final file = File(p.join(syntaxDir.path, '05-tasks.md'));
     final text = file.readAsStringSync();
     final parsed = MarkdownParser.parse(text);
 
@@ -150,7 +153,7 @@ void main() {
   testWidgets('07-callouts: CalloutViews match MdCallout parse count', (
     tester,
   ) async {
-    final file = File('../test_vaults/syntax/07-callouts.md');
+    final file = File(p.join(syntaxDir.path, '07-callouts.md'));
     final text = file.readAsStringSync();
     final parsed = MarkdownParser.parse(text);
 
@@ -198,7 +201,7 @@ void main() {
   testWidgets('08-code: CodeBlockView count equals parse count', (
     tester,
   ) async {
-    final file = File('../test_vaults/syntax/08-code.md');
+    final file = File(p.join(syntaxDir.path, '08-code.md'));
     final text = file.readAsStringSync();
     final parsed = MarkdownParser.parse(text);
     final codeBlockCount = parsed.root.children.whereType<MdCodeBlock>().length;
@@ -226,7 +229,7 @@ void main() {
   });
 
   testWidgets('09-tables: a Table exists', (tester) async {
-    final file = File('../test_vaults/syntax/09-tables.md');
+    final file = File(p.join(syntaxDir.path, '09-tables.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(
@@ -240,7 +243,7 @@ void main() {
   testWidgets(
     '10-links and 11-wikilinks: wikilink tap triggers callback with target',
     (tester) async {
-      final file = File('../test_vaults/syntax/11-wikilinks.md');
+      final file = File(p.join(syntaxDir.path, '11-wikilinks.md'));
       final text = file.readAsStringSync();
       WikiLinkTap? tappedLink;
 
@@ -279,7 +282,7 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(800, 3000));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
-    final file = File('../test_vaults/syntax/12-embeds.md');
+    final file = File(p.join(syntaxDir.path, '12-embeds.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(
@@ -291,7 +294,7 @@ void main() {
   });
 
   testWidgets('13-tags: tag text found', (tester) async {
-    final file = File('../test_vaults/syntax/13-tags.md');
+    final file = File(p.join(syntaxDir.path, '13-tags.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(
@@ -305,7 +308,7 @@ void main() {
   testWidgets('14-comments: comment text not found in widget tree', (
     tester,
   ) async {
-    final file = File('../test_vaults/syntax/14-comments.md');
+    final file = File(p.join(syntaxDir.path, '14-comments.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(
@@ -318,7 +321,7 @@ void main() {
   });
 
   testWidgets('16-math: math text found', (tester) async {
-    final file = File('../test_vaults/syntax/16-math.md');
+    final file = File(p.join(syntaxDir.path, '16-math.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(
@@ -330,7 +333,7 @@ void main() {
   });
 
   testWidgets('17-footnotes: footnote section present', (tester) async {
-    final file = File('../test_vaults/syntax/17-footnotes.md');
+    final file = File(p.join(syntaxDir.path, '17-footnotes.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(
@@ -342,7 +345,7 @@ void main() {
   });
 
   testWidgets('18-frontmatter: frontmatter key text not found', (tester) async {
-    final file = File('../test_vaults/syntax/18-frontmatter.md');
+    final file = File(p.join(syntaxDir.path, '18-frontmatter.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(
@@ -356,7 +359,7 @@ void main() {
   });
 
   testWidgets('19-html: raw div text shown', (tester) async {
-    final file = File('../test_vaults/syntax/19-html.md');
+    final file = File(p.join(syntaxDir.path, '19-html.md'));
     final text = file.readAsStringSync();
 
     await tester.pumpWidget(

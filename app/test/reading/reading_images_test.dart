@@ -29,7 +29,11 @@ void main() {
   late List<int> samplePngBytes;
 
   setUpAll(() {
-    final sampleFile = File('../test_vaults/syntax/attachments/sample.png');
+    final sampleFile = File(
+      Directory('test_vaults').existsSync()
+          ? 'test_vaults/syntax/attachments/sample.png'
+          : '../test_vaults/syntax/attachments/sample.png',
+    );
     if (sampleFile.existsSync()) {
       samplePngBytes = sampleFile.readAsBytesSync();
     } else {

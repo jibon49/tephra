@@ -19,13 +19,13 @@ final class NoteDocumentStore {
     this.clock, {
     this.parseService = const ParseService(),
     this.onFlushed,
-    LocalHistory? localHistory,
-  }) : localHistory = localHistory ?? LocalHistory(fs, clock);
+    this.localHistory,
+  });
 
   final VaultFileSystem fs;
   final Clock clock;
   final ParseService parseService;
-  final LocalHistory localHistory;
+  final LocalHistory? localHistory;
   VoidCallback? onFlushed;
 
   final Map<VaultPath, NoteDocument> _documents = {};

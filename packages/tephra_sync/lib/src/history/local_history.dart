@@ -26,10 +26,15 @@ enum SnapshotReason {
 
 /// Manages local point-in-time snapshots in the `.tephra/history/` directory.
 final class LocalHistory {
-  LocalHistory(this.fs, [this._clock = const SystemClock()]);
+  LocalHistory(
+    this.fs, [
+    this._clock = const SystemClock(),
+    this.minEditingInterval = const Duration(minutes: 10),
+  ]);
 
   final VaultFileSystem fs;
   final Clock _clock;
+  final Duration minEditingInterval;
 
   static final RegExp _stampRegex = RegExp(
     r'(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\d{3})Z',
@@ -94,11 +99,12 @@ final class LocalHistory {
     if (existingSnapshots.isNotEmpty) {
       final newest = existingSnapshots.first;
 
-      if (reason == SnapshotReason.editing) {
+      if (reason == SnapshotReason.editing &&
+          minEditingInterval > Duration.zero) {
         final newestTime = parseTimestamp(newest);
         if (newestTime != null &&
-            now.difference(newestTime) < const Duration(minutes: 10)) {
-          return; // Skip: newest snapshot is younger than 10 minutes
+            now.difference(newestTime) < minEditingInterval) {
+          return; // Skip: newest snapshot is younger than minEditingInterval
         }
       }
 
@@ -119,8 +125,19 @@ final class LocalHistory {
     final stamp = '$y$m${d}T$h$min$sec${ms}Z';
 
     final ext = path.extension.isEmpty ? 'txt' : path.extension;
-    final fileName = '$stamp.$ext.gz';
-    final snapshotPath = historyFolder.join(fileName);
+    var fileName = '$stamp.$ext.gz';
+    var snapshotPath = historyFolder.join(fileName);
+
+    var counter = 1;
+    while (await fs.stat(snapshotPath) != null) {
+      final existingBytes = await read(snapshotPath.value);
+      if (existingBytes != null && _bytesEqual(existingBytes, bytes)) {
+        return; // Already saved
+      }
+      fileName = '${stamp}_${counter.toString().padLeft(2, '0')}.$ext.gz';
+      snapshotPath = historyFolder.join(fileName);
+      counter++;
+    }
 
     final List<int> gzipped;
     if (bytes.length > 256 * 1024) {

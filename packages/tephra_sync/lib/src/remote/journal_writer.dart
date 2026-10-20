@@ -161,7 +161,8 @@ final class JournalWriter {
   /// - If present and identical: finishes the transaction without re-upload.
   /// - If present with different bytes: throws [DeviceCloneDetectedException].
   /// - If absent: uploads the stored bytes and finishes the transaction.
-  Future<void> recover() async {
+  Future<List<JournalBatch>> recover() async {
+    final recoveredBatches = <JournalBatch>[];
     final ops = await store.pendingOps();
     for (final op in ops) {
       if (op.kind != 'journalBatch') continue;
@@ -214,8 +215,21 @@ final class JournalWriter {
         });
       }
 
+      final firstSeq =
+          (payload['firstSeq'] as num?)?.toInt() ??
+          (entries.isNotEmpty ? entries.first.seq : 1);
+      final batch = JournalBatch(
+        deviceId: deviceId,
+        firstSeq: firstSeq,
+        lastSeq: lastSeq,
+        createdAt: clock.now().toUtc(),
+        entries: entries,
+      );
+      recoveredBatches.add(batch);
+
       _currentSeq = lastSeq + 1;
     }
+    return recoveredBatches;
   }
 
   static bool _bytesEqual(List<int> a, List<int> b) {
