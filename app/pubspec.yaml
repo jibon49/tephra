@@ -47,6 +47,9 @@ dependencies:
   google_sign_in: ^7.2.0
   flutter_secure_storage: ^11.2.0
   cryptography_flutter: ^2.3.4
+  workmanager: ^0.10.10
+  tray_manager: ^0.8.0
+  window_manager: ^0.5.2
 
 dev_dependencies:
   flutter_test:
@@ -59,3 +62,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/tray/tray.ico

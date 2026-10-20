@@ -2565,6 +2565,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This build has no Google sign-in configuration.'**
   String get syncErrorNoOAuthConfig;
+
+  /// No description provided for @trayTooltipUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra — Up to date'**
+  String get trayTooltipUpToDate;
+
+  /// Tray tooltip when files are syncing
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra — Syncing {count, plural, =1{1 file…} other{{count} files…}}'**
+  String trayTooltipSyncing(int count);
+
+  /// No description provided for @trayTooltipOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra — Offline'**
+  String get trayTooltipOffline;
+
+  /// No description provided for @trayTooltipNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra — Needs attention'**
+  String get trayTooltipNeedsAttention;
+
+  /// No description provided for @trayMenuOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Tephra'**
+  String get trayMenuOpen;
+
+  /// No description provided for @trayMenuSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get trayMenuSyncNow;
+
+  /// No description provided for @trayMenuPauseSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause sync'**
+  String get trayMenuPauseSync;
+
+  /// No description provided for @trayMenuResumeSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume sync'**
+  String get trayMenuResumeSync;
+
+  /// No description provided for @trayMenuQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit Tephra'**
+  String get trayMenuQuit;
+
+  /// No description provided for @syncNotificationReconnectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra sync'**
+  String get syncNotificationReconnectTitle;
+
+  /// No description provided for @syncNotificationReconnectBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tephra sync needs you to reconnect Google Drive'**
+  String get syncNotificationReconnectBody;
 }
 
 class _AppLocalizationsDelegate

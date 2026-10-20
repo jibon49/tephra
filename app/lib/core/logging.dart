@@ -82,6 +82,32 @@ Future<void> setupLogging() async {
   }
 }
 
+/// Sets up logging for headless background runs (appends to rotating log file without stdout prints).
+Future<void> setupHeadlessLogging({Directory? appSupportDir}) async {
+  if (_logSink != null) return;
+  Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
+  _logSubscription ??= Logger.root.onRecord.listen((record) {
+    final line = formatLogRecord(record);
+    _logSink?.writeln(line);
+  });
+
+  if (!kIsWeb) {
+    try {
+      final dir = appSupportDir ?? await getApplicationSupportDirectory();
+      final logsDir = Directory(p.join(dir.path, 'logs'));
+      if (!logsDir.existsSync()) {
+        logsDir.createSync(recursive: true);
+      }
+      await rotateLogs(logsDir);
+      final logFile = File(p.join(logsDir.path, 'tephra.log'));
+      _logSink = logFile.openWrite(mode: FileMode.append);
+    } catch (e, st) {
+      Logger('logging')
+          .warning('Failed to initialize headless file logging', e, st);
+    }
+  }
+}
+
 /// Routes FlutterError.onError and PlatformDispatcher.instance.onError to Logger('crash').
 void installCrashHandlers() {
   final log = Logger('crash');

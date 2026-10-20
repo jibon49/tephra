@@ -1356,4 +1356,46 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syncErrorNoOAuthConfig =>
       'This build has no Google sign-in configuration.';
+
+  @override
+  String get trayTooltipUpToDate => 'Tephra — Up to date';
+
+  @override
+  String trayTooltipSyncing(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files…',
+      one: '1 file…',
+    );
+    return 'Tephra — Syncing $_temp0';
+  }
+
+  @override
+  String get trayTooltipOffline => 'Tephra — Offline';
+
+  @override
+  String get trayTooltipNeedsAttention => 'Tephra — Needs attention';
+
+  @override
+  String get trayMenuOpen => 'Open Tephra';
+
+  @override
+  String get trayMenuSyncNow => 'Sync now';
+
+  @override
+  String get trayMenuPauseSync => 'Pause sync';
+
+  @override
+  String get trayMenuResumeSync => 'Resume sync';
+
+  @override
+  String get trayMenuQuit => 'Quit Tephra';
+
+  @override
+  String get syncNotificationReconnectTitle => 'Tephra sync';
+
+  @override
+  String get syncNotificationReconnectBody =>
+      'Tephra sync needs you to reconnect Google Drive';
 }

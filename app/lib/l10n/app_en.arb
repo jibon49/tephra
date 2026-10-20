@@ -623,7 +623,26 @@
   "indexUnavailableOnWeb": "Search and links are not available in the web preview.",
   "commandRunBenchmarks": "Run performance benchmarks",
   "syncErrorNoOAuthConfig": "This build has no Google sign-in configuration.",
-  "@syncErrorNoOAuthConfig": { "description": "Error message when OAuth client credentials are not configured at build time." }
+  "@syncErrorNoOAuthConfig": { "description": "Error message when OAuth client credentials are not configured at build time." },
+  "trayTooltipUpToDate": "Tephra — Up to date",
+  "trayTooltipSyncing": "Tephra — Syncing {count, plural, =1{1 file…} other{{count} files…}}",
+  "@trayTooltipSyncing": {
+    "description": "Tray tooltip when files are syncing",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trayTooltipOffline": "Tephra — Offline",
+  "trayTooltipNeedsAttention": "Tephra — Needs attention",
+  "trayMenuOpen": "Open Tephra",
+  "trayMenuSyncNow": "Sync now",
+  "trayMenuPauseSync": "Pause sync",
+  "trayMenuResumeSync": "Resume sync",
+  "trayMenuQuit": "Quit Tephra",
+  "syncNotificationReconnectTitle": "Tephra sync",
+  "syncNotificationReconnectBody": "Tephra sync needs you to reconnect Google Drive"
 }
 
 
