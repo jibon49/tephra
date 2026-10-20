@@ -170,6 +170,21 @@ class SyncWorkerClient {
     return res.cast<RemoteDevice>();
   }
 
+  /// Submits user decisions for held deletions.
+  Future<void> decideHeldDeletes(Map<String, DeleteDecision> decisions) {
+    return _sendRequest<bool>((id) => DecideHeldDeletes(id, decisions));
+  }
+
+  /// Updates runtime sync settings.
+  Future<void> updateSettings(SyncWorkerSettings settings) {
+    return _sendRequest<bool>((id) => UpdateSettings(id, settings));
+  }
+
+  /// Revokes a remote device.
+  Future<void> revokeDevice(String deviceId) {
+    return _sendRequest<bool>((id) => RevokeDevice(id, deviceId));
+  }
+
   /// Shuts down the sync worker and releases isolate ports.
   Future<void> shutdown() async {
     try {

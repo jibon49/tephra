@@ -28,6 +28,7 @@ class FakeSyncSetupService implements SyncSetupService {
   });
 
   GoogleAccount? account;
+  int signInCount = 0;
   List<RemoteVaultInfo> remoteVaults;
   LocalVaultStats localStats;
   bool shouldFailUnlock;
@@ -42,6 +43,7 @@ class FakeSyncSetupService implements SyncSetupService {
 
   @override
   Future<GoogleAccount> signInInteractive() async {
+    signInCount++;
     account = const GoogleAccount(
       email: 'test@example.com',
       displayName: 'Test User',

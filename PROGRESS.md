@@ -344,7 +344,8 @@ Instructions: `instructions/phase-03-sync-drive.md`
   - notes: Integrated workmanager 0.10.x with tephraBackgroundDispatcher & BackgroundSyncScheduler (15m periodic, network/charging constraints); built HeadlessSyncRunner (silent Google auth, 24h throttled reconnection notifications, budget cancellation); added INTERNET permission to AndroidManifest.xml; integrated tray_manager 0.8.x and window_manager 0.5.x for WindowsTrayService, WindowService, and TraySyncCoordinator (keep-running minimize to tray, localized status tooltips, and graceful shutdown); 11 tests passing.
 - [x] 03.18 Sync UI 1: the setup wizard
   - notes: Implemented 8-page responsive setup wizard (Sign-in, Choose remote vault, Password creation, Recovery key display/confirmation, Vault unlock, First sync choice, First sync progress, Done); DriveSyncSetupService, SyncSetupController state machine, Riverpod providers; SettingsScreen sync card & disconnect flow; 7 unit/widget tests passing; zero analyze/lint issues.
-- [ ] 03.19 Sync UI 2: status indicator, sync panel, sync log, settings, devices
+- [x] 03.19 Sync UI 2: status indicator, sync panel, sync log, settings, devices
+  - notes: Implemented SyncStatusIndicator (8 states, rotation animation, responsive full text on desktop / compact on mobile), SyncPanel (popover/sheet with quota, triggers, links, reconnect banner), SyncLogScreen & SyncLogText (16 kinds, filtering, copy log), DevicesScreen (device list, badges, revoke flow), HeldDeletesSheet (approve/keep/per-file), SyncSettingsScreen (exclusions, limits, credentials), and 11 registered sync commands; 7 new test suites passing; zero analyze/lint issues.
 - [ ] 03.20 Conflicts screen with diff view and resolution actions
 - [ ] 03.21 Version history: local snapshots, remote versions, history screen, recently deleted
 - [ ] 03.22 Backup mode: manifests, schedule, retention, backup-only mode

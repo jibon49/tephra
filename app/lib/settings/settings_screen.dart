@@ -10,6 +10,7 @@ import 'package:tephra_core/tephra_core.dart';
 import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../sync_ui/providers.dart';
+import '../sync_ui/settings/sync_settings_screen.dart';
 import '../sync_ui/setup/sync_setup_wizard.dart';
 import '../vault/note_tools/template_picker.dart';
 import '../vault/providers.dart';
@@ -1045,6 +1046,18 @@ class _SyncSettingsSection extends ConsumerWidget {
             ),
           ),
         ] else ...[
+          ListTile(
+            leading: const Icon(Icons.settings_outlined),
+            title: Text(l10n.syncSettingsConfigureButton),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => SyncSettingsScreen(vaultId: session.vaultId),
+                ),
+              );
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.cloud_done_outlined, color: Colors.green),
             title: Text(l10n.syncSettingsConfiguredStatus),

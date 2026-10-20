@@ -3146,6 +3146,678 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync has been disabled for this vault.'**
   String get syncDisconnectSuccess;
+
+  /// No description provided for @syncStatusNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Not configured'**
+  String get syncStatusNotConfigured;
+
+  /// No description provided for @syncStatusUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get syncStatusUpToDate;
+
+  /// Short sync indicator status when sync is in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing ({done}/{total})'**
+  String syncStatusSyncing(String done, String total);
+
+  /// Short sync indicator status when local changes are pending
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pending'**
+  String syncStatusPending(int count);
+
+  /// No description provided for @syncStatusOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get syncStatusOffline;
+
+  /// No description provided for @syncStatusPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync paused'**
+  String get syncStatusPaused;
+
+  /// No description provided for @syncStatusNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get syncStatusNeedsAttention;
+
+  /// No description provided for @syncStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync error'**
+  String get syncStatusError;
+
+  /// Timestamp display in sync panel
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {when}'**
+  String syncPanelLastSynced(String when);
+
+  /// Drive quota usage display in sync panel
+  ///
+  /// In en, this message translates to:
+  /// **'{used} of {total} used in Google Drive'**
+  String syncPanelDriveUsage(String used, String total);
+
+  /// No description provided for @syncPanelSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get syncPanelSyncNow;
+
+  /// No description provided for @syncPanelPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause sync'**
+  String get syncPanelPause;
+
+  /// No description provided for @syncPanelResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume sync'**
+  String get syncPanelResume;
+
+  /// Conflicts button text with count
+  ///
+  /// In en, this message translates to:
+  /// **'Conflicts ({count})'**
+  String syncPanelConflicts(int count);
+
+  /// Held deletions button text with count
+  ///
+  /// In en, this message translates to:
+  /// **'Held deletions ({count})'**
+  String syncPanelHeldDeletes(int count);
+
+  /// No description provided for @syncPanelLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync log'**
+  String get syncPanelLog;
+
+  /// No description provided for @syncPanelSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync settings'**
+  String get syncPanelSettings;
+
+  /// No description provided for @syncHeldDeletesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review held deletions'**
+  String get syncHeldDeletesTitle;
+
+  /// Explanation shown on the held deletions review sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Sync wants to delete {count} files because they were deleted on another device or on this device. Check before continuing.'**
+  String syncHeldDeletesExplain(int count);
+
+  /// No description provided for @syncHeldDeletesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete them'**
+  String get syncHeldDeletesDelete;
+
+  /// No description provided for @syncHeldDeletesKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep them'**
+  String get syncHeldDeletesKeep;
+
+  /// No description provided for @syncHeldDeletesApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply choices'**
+  String get syncHeldDeletesApply;
+
+  /// No description provided for @syncLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync log'**
+  String get syncLogTitle;
+
+  /// No description provided for @syncLogUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded {path}'**
+  String syncLogUploaded(String path);
+
+  /// No description provided for @syncLogDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {path} from {device}'**
+  String syncLogDownloaded(String path, String device);
+
+  /// No description provided for @syncLogDownloadedNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {path}'**
+  String syncLogDownloadedNoDevice(String path);
+
+  /// No description provided for @syncLogMerged.
+  ///
+  /// In en, this message translates to:
+  /// **'Merged changes from {device} into {path}'**
+  String syncLogMerged(String path, String device);
+
+  /// No description provided for @syncLogMergedNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Merged changes into {path}'**
+  String syncLogMergedNoDevice(String path);
+
+  /// No description provided for @syncLogConflictCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'{path} was changed on two devices; your version was saved as {conflictPath}'**
+  String syncLogConflictCopy(String path, String conflictPath);
+
+  /// No description provided for @syncLogDeletedLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved {path} to the vault trash (deleted on {device})'**
+  String syncLogDeletedLocal(String path, String device);
+
+  /// No description provided for @syncLogDeletedLocalNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved {path} to the vault trash'**
+  String syncLogDeletedLocalNoDevice(String path);
+
+  /// No description provided for @syncLogDeletedRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted {path} from sync (it stays in version history)'**
+  String syncLogDeletedRemote(String path);
+
+  /// No description provided for @syncLogRenamedLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath}'**
+  String syncLogRenamedLocal(String path, String newPath);
+
+  /// No description provided for @syncLogRenamedRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath} on {device}'**
+  String syncLogRenamedRemote(String path, String newPath, String device);
+
+  /// No description provided for @syncLogRenamedRemoteNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath}'**
+  String syncLogRenamedRemoteNoDevice(String path, String newPath);
+
+  /// No description provided for @syncLogCaseConflictRenamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath} due to case conflict'**
+  String syncLogCaseConflictRenamed(String path, String newPath);
+
+  /// No description provided for @syncLogInvalidNameRenamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Renamed {path} to {newPath} for Windows compatibility'**
+  String syncLogInvalidNameRenamed(String path, String newPath);
+
+  /// No description provided for @syncLogKeptEditedFileDeletedElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept {path} because it was edited locally after being deleted on another device'**
+  String syncLogKeptEditedFileDeletedElsewhere(String path);
+
+  /// No description provided for @syncLogRestoredDeletedFileChangedElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {path} because it was modified on another device'**
+  String syncLogRestoredDeletedFileChangedElsewhere(String path);
+
+  /// No description provided for @syncLogRepublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Republished {path} to sync'**
+  String syncLogRepublished(String path);
+
+  /// No description provided for @syncLogHeldDeletes.
+  ///
+  /// In en, this message translates to:
+  /// **'Held {count} deletions for review'**
+  String syncLogHeldDeletes(int count);
+
+  /// No description provided for @syncLogDeviceIdRenewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Device identity was renewed'**
+  String get syncLogDeviceIdRenewed;
+
+  /// No description provided for @syncLogError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync error: {message}'**
+  String syncLogError(String message);
+
+  /// No description provided for @syncLogFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get syncLogFilterAll;
+
+  /// No description provided for @syncLogFilterChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes'**
+  String get syncLogFilterChanges;
+
+  /// No description provided for @syncLogFilterProblems.
+  ///
+  /// In en, this message translates to:
+  /// **'Problems'**
+  String get syncLogFilterProblems;
+
+  /// No description provided for @syncLogCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy log'**
+  String get syncLogCopy;
+
+  /// No description provided for @syncLogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No sync events recorded yet.'**
+  String get syncLogEmpty;
+
+  /// No description provided for @syncLogCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Log copied to clipboard'**
+  String get syncLogCopied;
+
+  /// No description provided for @syncSettingsAccountHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & remote vault'**
+  String get syncSettingsAccountHeader;
+
+  /// No description provided for @syncSettingsRemoteVaultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote vault'**
+  String get syncSettingsRemoteVaultLabel;
+
+  /// No description provided for @syncSettingsDeviceNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Device name'**
+  String get syncSettingsDeviceNameLabel;
+
+  /// No description provided for @syncSettingsEncryptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption'**
+  String get syncSettingsEncryptionLabel;
+
+  /// No description provided for @syncSettingsEncryptionEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled (zero-knowledge)'**
+  String get syncSettingsEncryptionEnabled;
+
+  /// No description provided for @syncSettingsEncryptionDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled (plaintext)'**
+  String get syncSettingsEncryptionDisabled;
+
+  /// No description provided for @syncSettingsExclusionsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Selective sync & exclusions'**
+  String get syncSettingsExclusionsHeader;
+
+  /// No description provided for @syncSettingsExclusionsExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded files stay on this device and in Google Drive; they are just not synced on this device.'**
+  String get syncSettingsExclusionsExplain;
+
+  /// No description provided for @syncSettingsExcludedFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded folders'**
+  String get syncSettingsExcludedFolders;
+
+  /// No description provided for @syncSettingsAddExcludedFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add folder'**
+  String get syncSettingsAddExcludedFolder;
+
+  /// No description provided for @syncSettingsExcludedFileTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded file extensions'**
+  String get syncSettingsExcludedFileTypes;
+
+  /// No description provided for @syncSettingsExcludedFileTypesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. mp4, zip, mov'**
+  String get syncSettingsExcludedFileTypesHint;
+
+  /// No description provided for @syncSettingsMaxFileSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum file size'**
+  String get syncSettingsMaxFileSize;
+
+  /// No description provided for @syncSettingsMaxFileSizeNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit (2 GB)'**
+  String get syncSettingsMaxFileSizeNoLimit;
+
+  /// No description provided for @syncSettingsMobileHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile network settings'**
+  String get syncSettingsMobileHeader;
+
+  /// No description provided for @syncSettingsMobileMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile mode (skip large media)'**
+  String get syncSettingsMobileMode;
+
+  /// No description provided for @syncSettingsBackgroundSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Background sync'**
+  String get syncSettingsBackgroundSync;
+
+  /// No description provided for @syncSettingsWifiOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync over Wi-Fi only'**
+  String get syncSettingsWifiOnly;
+
+  /// No description provided for @syncSettingsChargingOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync only while charging'**
+  String get syncSettingsChargingOnly;
+
+  /// No description provided for @syncSettingsDesktopHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop settings'**
+  String get syncSettingsDesktopHeader;
+
+  /// No description provided for @syncSettingsKeepSyncingOnClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep syncing when window is closed'**
+  String get syncSettingsKeepSyncingOnClose;
+
+  /// No description provided for @syncSettingsBandwidthHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth limits'**
+  String get syncSettingsBandwidthHeader;
+
+  /// No description provided for @syncSettingsUploadLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload limit (KiB/s, 0 = unlimited)'**
+  String get syncSettingsUploadLimit;
+
+  /// No description provided for @syncSettingsDownloadLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Download limit (KiB/s, 0 = unlimited)'**
+  String get syncSettingsDownloadLimit;
+
+  /// No description provided for @syncSettingsSecurityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Security & keys'**
+  String get syncSettingsSecurityHeader;
+
+  /// No description provided for @syncSettingsChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change vault password'**
+  String get syncSettingsChangePassword;
+
+  /// No description provided for @syncSettingsShowRecoveryKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Show new recovery key'**
+  String get syncSettingsShowRecoveryKey;
+
+  /// No description provided for @syncSettingsDevicesLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage devices'**
+  String get syncSettingsDevicesLink;
+
+  /// No description provided for @syncSettingsChangePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change vault password'**
+  String get syncSettingsChangePasswordTitle;
+
+  /// No description provided for @syncSettingsOldPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password or recovery key'**
+  String get syncSettingsOldPassword;
+
+  /// No description provided for @syncSettingsNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get syncSettingsNewPassword;
+
+  /// No description provided for @syncSettingsConfirmNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get syncSettingsConfirmNewPassword;
+
+  /// No description provided for @syncSettingsPasswordChangedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault password updated successfully.'**
+  String get syncSettingsPasswordChangedSuccess;
+
+  /// No description provided for @syncSettingsRecoveryKeyRegeneratedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'New recovery key generated successfully.'**
+  String get syncSettingsRecoveryKeyRegeneratedSuccess;
+
+  /// No description provided for @syncDevicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced devices'**
+  String get syncDevicesTitle;
+
+  /// No description provided for @syncDevicesThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get syncDevicesThisDevice;
+
+  /// No description provided for @syncDevicesLastSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen {when}'**
+  String syncDevicesLastSeen(String when);
+
+  /// No description provided for @syncDevicesRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get syncDevicesRemoved;
+
+  /// No description provided for @syncDevicesRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove device'**
+  String get syncDevicesRemove;
+
+  /// No description provided for @syncDevicesRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will stop syncing. Changes it makes after now are ignored. It keeps its local files. Its access to Google Drive is not revoked — to fully block it, change the vault password and remove the Google account\'s access to Tephra on that device.'**
+  String syncDevicesRemoveConfirm(String name);
+
+  /// No description provided for @syncDevicesRemoveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get syncDevicesRemoveButton;
+
+  /// No description provided for @syncDeviceRevokedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device removed from sync'**
+  String get syncDeviceRevokedTitle;
+
+  /// No description provided for @syncDeviceRevokedReconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'This device was removed from sync. Reconnect as a new device to resume syncing.'**
+  String get syncDeviceRevokedReconnect;
+
+  /// No description provided for @syncDeviceRevokedButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect as new device'**
+  String get syncDeviceRevokedButton;
+
+  /// No description provided for @syncErrorAuthRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive access was revoked or expired. Please reconnect.'**
+  String get syncErrorAuthRevoked;
+
+  /// No description provided for @syncErrorOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Device is offline. Sync will resume automatically when connected.'**
+  String get syncErrorOffline;
+
+  /// No description provided for @syncErrorDriveFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive storage is full. Free up space to continue syncing.'**
+  String get syncErrorDriveFull;
+
+  /// No description provided for @syncWarningDriveAlmostFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive storage is almost full.'**
+  String get syncWarningDriveAlmostFull;
+
+  /// No description provided for @syncErrorRemoteFormatNewer.
+  ///
+  /// In en, this message translates to:
+  /// **'The remote vault was created by a newer version of Tephra. Please update Tephra.'**
+  String get syncErrorRemoteFormatNewer;
+
+  /// No description provided for @syncErrorTampered.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync data from {device} failed integrity verification.'**
+  String syncErrorTampered(String device);
+
+  /// No description provided for @syncErrorVaultMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The remote vault folder could not be found in Google Drive.'**
+  String get syncErrorVaultMissing;
+
+  /// No description provided for @syncErrorVaultFolderUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The local vault folder is currently inaccessible.'**
+  String get syncErrorVaultFolderUnavailable;
+
+  /// No description provided for @syncErrorKeyMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption key is missing. Please enter your password or recovery key.'**
+  String get syncErrorKeyMissing;
+
+  /// No description provided for @commandSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Sync now'**
+  String get commandSyncNow;
+
+  /// No description provided for @commandSyncPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Pause sync'**
+  String get commandSyncPause;
+
+  /// No description provided for @commandSyncResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Resume sync'**
+  String get commandSyncResume;
+
+  /// No description provided for @commandSyncOpenLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Open sync log'**
+  String get commandSyncOpenLog;
+
+  /// No description provided for @commandSyncOpenConflicts.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Open conflicts'**
+  String get commandSyncOpenConflicts;
+
+  /// No description provided for @commandSyncOpenDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Manage devices'**
+  String get commandSyncOpenDevices;
+
+  /// No description provided for @commandSyncOpenHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Open file history'**
+  String get commandSyncOpenHistory;
+
+  /// No description provided for @commandSyncOpenDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: View recently deleted files'**
+  String get commandSyncOpenDeleted;
+
+  /// No description provided for @commandSyncBackupNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Create backup now'**
+  String get commandSyncBackupNow;
+
+  /// No description provided for @commandSyncOpenBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync: Manage backups'**
+  String get commandSyncOpenBackups;
 }
 
 class _AppLocalizationsDelegate

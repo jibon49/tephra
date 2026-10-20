@@ -12,6 +12,7 @@ import '../l10n/app_localizations.dart';
 import '../search/copy_results.dart';
 import '../search/providers.dart';
 import '../search/search_screen.dart';
+import '../sync_ui/sync_commands.dart';
 import '../vault/note_document.dart';
 import '../vault/note_tools/note_tools_commands.dart';
 import '../vault/providers.dart';
@@ -33,6 +34,7 @@ void registerBuiltinCommands(CommandRegistry registry) {
   registerFoldCommands(registry);
   registerNoteToolsCommands(registry);
   registerPerfCommand(registry);
+  registerSyncCommands(registry);
   registry.register(
     TephraCommand(
       id: 'app.open-quick-switcher',
@@ -65,16 +67,6 @@ void registerBuiltinCommands(CommandRegistry registry) {
       defaultShortcuts: const [
         SingleActivator(LogicalKeyboardKey.comma, control: true),
       ],
-      run: (ref, context) => Navigator.of(context).pushNamed('/settings'),
-    ),
-  );
-
-  registry.register(
-    TephraCommand(
-      id: 'sync.open-settings',
-      label: (l10n) => l10n.commandSyncOpenSettings,
-      icon: Icons.sync,
-      defaultShortcuts: const [],
       run: (ref, context) => Navigator.of(context).pushNamed('/settings'),
     ),
   );

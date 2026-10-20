@@ -3,6 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/providers.dart';
+import '../vault/providers.dart';
 import 'setup/sync_setup_controller.dart';
 import 'setup/sync_setup_service.dart';
 
@@ -28,6 +29,23 @@ final syncSetupControllerProvider =
     NotifierProvider.family<SyncSetupController, SyncSetupState, String>(
       SyncSetupController.new,
     );
+
+/// Convenient provider to get the [SyncSetupService] for a vault by ID, looking up
+/// the active vault root path from [vaultSessionProvider] when available.
+final syncSetupServiceForIdProvider = Provider.family<SyncSetupService, String>(
+  (ref, vaultId) {
+    final session = ref.watch(vaultSessionProvider);
+    final rootPath = (session != null && session.vaultId == vaultId)
+        ? session.rootDir
+        : '';
+    return ref.watch(
+      syncSetupServiceProvider((
+        vaultId: vaultId,
+        localVaultRootPath: rootPath,
+      )),
+    );
+  },
+);
 
 /// Asynchronous provider checking whether sync is configured for a given vault.
 final isSyncConfiguredProvider =
