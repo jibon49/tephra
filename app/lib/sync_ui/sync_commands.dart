@@ -8,8 +8,12 @@ import '../commands/tephra_command.dart';
 import '../core/sync/sync_messages.dart';
 import '../core/sync/sync_worker_client.dart';
 import '../vault/providers.dart';
+import '../workspace/providers.dart';
+import '../workspace/tab_content.dart';
 import 'conflicts/conflicts_screen.dart';
 import 'devices/devices_screen.dart';
+import 'history/deleted_files_screen.dart';
+import 'history/history_screen.dart';
 import 'log/sync_log_screen.dart';
 import 'settings/sync_settings_screen.dart';
 
@@ -141,7 +145,20 @@ void registerSyncCommands(CommandRegistry registry) {
       icon: Icons.history,
       isAvailable: _isConfigured,
       run: (ref, context) {
-        // Step 03.21 version history
+        final vaultId = _vaultId(ref);
+        final focusedTab = ref.read(workspaceProvider).focusedTab;
+        if (focusedTab != null && focusedTab.content is FileTabContent) {
+          final path = (focusedTab.content as FileTabContent).path;
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => HistoryScreen(vaultId: vaultId, path: path),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('No active note open.')));
+        }
       },
     ),
   );
@@ -153,7 +170,12 @@ void registerSyncCommands(CommandRegistry registry) {
       icon: Icons.delete_sweep_outlined,
       isAvailable: _isConfigured,
       run: (ref, context) {
-        // Step 03.21 recently deleted
+        final vaultId = _vaultId(ref);
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => DeletedFilesScreen(vaultId: vaultId),
+          ),
+        );
       },
     ),
   );

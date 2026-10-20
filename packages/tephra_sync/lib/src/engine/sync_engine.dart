@@ -122,10 +122,11 @@ final class SyncEngine {
       random: _random,
     );
 
+    _localHistory = localHistory ?? LocalHistory(fs, clock);
     _conflictResolver = ConflictResolver(
       fs: fs,
       store: store,
-      localHistory: localHistory ?? LocalHistory(fs, clock),
+      localHistory: _localHistory,
       clock: clock,
     );
   }
@@ -150,10 +151,21 @@ final class SyncEngine {
   late SnapshotStore _snapshotStore;
   late DeviceRegistry _deviceRegistry;
   late Executor _executor;
+  late LocalHistory _localHistory;
   late ConflictResolver _conflictResolver;
 
   /// Resolver for synchronization conflict copies.
   ConflictResolver get conflictResolver => _conflictResolver;
+
+  /// Local history manager.
+  LocalHistory get historyManager => _localHistory;
+
+  /// Content-addressed remote blob store.
+  BlobStore get blobStore => _blobStore;
+
+  /// Retrieves the current causal remote history graph.
+  Future<RemoteHistory> getRemoteHistory() async =>
+      RemoteHistory(await store.allEntries());
 
   final _progressController = StreamController<SyncProgress>.broadcast();
   final _logController = StreamController<SyncLogEntry>.broadcast();

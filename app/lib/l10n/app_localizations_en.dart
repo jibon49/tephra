@@ -2153,4 +2153,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get conflictOpenYourFile => 'Open your version';
+
+  @override
+  String historyTitle(String name) {
+    return 'Version history: $name';
+  }
+
+  @override
+  String get historyCurrent => 'Current';
+
+  @override
+  String get historyLocalSnapshot => 'Local snapshot';
+
+  @override
+  String historyFromDevice(String device) {
+    return '$device';
+  }
+
+  @override
+  String get historyUnavailable => 'No longer available';
+
+  @override
+  String get historyRestore => 'Restore this version';
+
+  @override
+  String historyRestoreConfirm(String time) {
+    return 'Restore version from $time? The current version will be saved in history.';
+  }
+
+  @override
+  String get historyRestored => 'Version restored';
+
+  @override
+  String get historyCopy => 'Copy text';
+
+  @override
+  String get historyCopied => 'Version copied to clipboard';
+
+  @override
+  String get historySaveCopyAs => 'Save a copy as…';
+
+  @override
+  String get historyEmpty => 'No version history available for this file.';
+
+  @override
+  String get deletedTitle => 'Recently deleted';
+
+  @override
+  String get deletedEmpty => 'No recently deleted files.';
+
+  @override
+  String deletedBy(String device, String time) {
+    return 'Deleted by $device • $time';
+  }
+
+  @override
+  String get deletedRestore => 'Restore';
+
+  @override
+  String deletedRestoredAs(String path) {
+    return 'Restored as $path';
+  }
+
+  @override
+  String get deletedOpenHistory => 'History';
 }

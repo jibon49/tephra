@@ -9,6 +9,7 @@ import '../../l10n/app_localizations.dart';
 import '../../vault/providers.dart';
 import '../conflicts/conflicts_screen.dart';
 import '../held_deletes/held_deletes_sheet.dart';
+import '../history/deleted_files_screen.dart';
 import '../log/sync_log_screen.dart';
 import '../providers.dart';
 import '../settings/sync_settings_screen.dart';
@@ -377,6 +378,22 @@ class SyncPanel extends ConsumerWidget {
                   );
                 },
               ),
+
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.delete_sweep_outlined, size: 20),
+              title: Text(l10n.deletedTitle),
+              trailing: const Icon(Icons.chevron_right, size: 18),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => DeletedFilesScreen(vaultId: vaultId),
+                  ),
+                );
+              },
+            ),
 
             ListTile(
               dense: true,

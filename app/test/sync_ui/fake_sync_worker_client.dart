@@ -5,6 +5,7 @@ import 'dart:isolate';
 
 import 'package:tephra/core/sync/sync_messages.dart';
 import 'package:tephra/core/sync/sync_worker_client.dart';
+import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_sync/tephra_sync.dart';
 
 class FakeSyncWorkerClient extends SyncWorkerClient {
@@ -44,6 +45,14 @@ class FakeSyncWorkerClient extends SyncWorkerClient {
   int? lastResolvedConflictId;
   ConflictResolution? lastResolution;
   String? lastMergedText;
+
+  List<VersionInfo> historyList = [];
+  Map<dynamic, List<int>> versionPayloads = {};
+  List<RecentlyDeletedFile> deletedList = [];
+
+  dynamic lastRestoredVersionRef;
+  VaultPath? lastRestoredPath;
+  RecentlyDeletedFile? lastRestoredDeletedFile;
 
   @override
   SyncStatusSnapshot get currentStatus => _status;
@@ -145,6 +154,35 @@ class FakeSyncWorkerClient extends SyncWorkerClient {
       }
       return d;
     }).toList();
+  }
+
+  @override
+  Future<List<VersionInfo>> queryHistory(VaultPath path) async {
+    return historyList;
+  }
+
+  @override
+  Future<List<int>?> loadVersion(dynamic versionRef) async {
+    return versionPayloads[versionRef] ??
+        versionPayloads[versionRef.toString()];
+  }
+
+  @override
+  Future<bool> restoreVersion(dynamic versionRef, VaultPath path) async {
+    lastRestoredVersionRef = versionRef;
+    lastRestoredPath = path;
+    return true;
+  }
+
+  @override
+  Future<List<RecentlyDeletedFile>> queryDeleted() async {
+    return deletedList;
+  }
+
+  @override
+  Future<String> restoreDeleted(RecentlyDeletedFile deleted) async {
+    lastRestoredDeletedFile = deleted;
+    return deleted.path.value;
   }
 
   @override

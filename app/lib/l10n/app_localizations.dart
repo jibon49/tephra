@@ -3920,6 +3920,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open your version'**
   String get conflictOpenYourFile;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version history: {name}'**
+  String historyTitle(String name);
+
+  /// No description provided for @historyCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get historyCurrent;
+
+  /// No description provided for @historyLocalSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Local snapshot'**
+  String get historyLocalSnapshot;
+
+  /// No description provided for @historyFromDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}'**
+  String historyFromDevice(String device);
+
+  /// No description provided for @historyUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No longer available'**
+  String get historyUnavailable;
+
+  /// No description provided for @historyRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this version'**
+  String get historyRestore;
+
+  /// No description provided for @historyRestoreConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore version from {time}? The current version will be saved in history.'**
+  String historyRestoreConfirm(String time);
+
+  /// No description provided for @historyRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Version restored'**
+  String get historyRestored;
+
+  /// No description provided for @historyCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text'**
+  String get historyCopy;
+
+  /// No description provided for @historyCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Version copied to clipboard'**
+  String get historyCopied;
+
+  /// No description provided for @historySaveCopyAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a copy as…'**
+  String get historySaveCopyAs;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No version history available for this file.'**
+  String get historyEmpty;
+
+  /// No description provided for @deletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently deleted'**
+  String get deletedTitle;
+
+  /// No description provided for @deletedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recently deleted files.'**
+  String get deletedEmpty;
+
+  /// No description provided for @deletedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted by {device} • {time}'**
+  String deletedBy(String device, String time);
+
+  /// No description provided for @deletedRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get deletedRestore;
+
+  /// No description provided for @deletedRestoredAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored as {path}'**
+  String deletedRestoredAs(String path);
+
+  /// No description provided for @deletedOpenHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get deletedOpenHistory;
 }
 
 class _AppLocalizationsDelegate

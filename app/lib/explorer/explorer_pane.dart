@@ -9,6 +9,8 @@ import 'package:tephra_vault/tephra_vault.dart';
 import '../l10n/app_localizations.dart';
 import '../settings/providers.dart';
 import '../settings/vault_settings.dart';
+import '../sync_ui/history/deleted_files_screen.dart';
+import '../sync_ui/history/history_screen.dart';
 import '../vault/providers.dart';
 import '../workspace/open_file.dart';
 import 'explorer_menus.dart';
@@ -85,6 +87,13 @@ class _ExplorerPaneState extends ConsumerState<ExplorerPane> {
         }
       case ExplorerAction.reveal:
         await service.reveal(entry.path);
+      case ExplorerAction.versionHistory:
+        final vaultId = ref.read(vaultSessionProvider)?.vaultId ?? '';
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => HistoryScreen(vaultId: vaultId, path: entry.path),
+          ),
+        );
       case ExplorerAction.delete:
         final confirmed = await showDeleteDialog(
           context: context,
@@ -384,6 +393,25 @@ class _ExplorerPaneState extends ConsumerState<ExplorerPane> {
               icon: const Icon(Icons.unfold_less),
               onPressed: () {
                 ref.read(explorerExpandedProvider.notifier).collapseAll();
+              },
+            ),
+          ),
+          SizedBox(
+            width: buttonSize,
+            height: buttonSize,
+            child: IconButton(
+              key: const ValueKey('explorer.recentlyDeleted'),
+              iconSize: iconSize,
+              padding: EdgeInsets.zero,
+              tooltip: l10n.deletedTitle,
+              icon: const Icon(Icons.delete_sweep_outlined),
+              onPressed: () {
+                final vaultId = ref.read(vaultSessionProvider)?.vaultId ?? '';
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => DeletedFilesScreen(vaultId: vaultId),
+                  ),
+                );
               },
             ),
           ),

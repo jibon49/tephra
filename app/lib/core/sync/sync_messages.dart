@@ -147,17 +147,22 @@ final class QueryHistory extends SyncRequest {
 
 final class LoadVersion extends SyncRequest {
   const LoadVersion(super.requestId, this.versionRef);
-  final String versionRef;
+  final dynamic versionRef;
 }
 
 final class RestoreVersion extends SyncRequest {
   const RestoreVersion(super.requestId, this.versionRef, this.path);
-  final String versionRef;
+  final dynamic versionRef;
   final String path;
 }
 
 final class QueryDeleted extends SyncRequest {
   const QueryDeleted(super.requestId);
+}
+
+final class RestoreDeleted extends SyncRequest {
+  const RestoreDeleted(super.requestId, this.deleted);
+  final RecentlyDeletedFile deleted;
 }
 
 final class ListBackups extends SyncRequest {

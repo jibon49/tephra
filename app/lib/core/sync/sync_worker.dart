@@ -226,6 +226,9 @@ class SyncWorker {
       case final QueryDeleted req:
         _handleQueryDeleted(req);
 
+      case final RestoreDeleted req:
+        _handleRestoreDeleted(req);
+
       case final ListBackups req:
         _handleListBackups(req);
 
@@ -455,20 +458,150 @@ class SyncWorker {
     _send(WorkerReply(requestId: req.requestId, payload: true));
   }
 
+  Future<VersionHistory> _createVersionHistory() async {
+    final remoteHistory =
+        await _engine?.getRemoteHistory() ?? RemoteHistory(const []);
+    final deviceNames = <String, String>{};
+    if (_store != null) {
+      final cursors = await _store!.allCursors();
+      for (final c in cursors) {
+        if (c.deviceName != null && c.deviceName!.isNotEmpty) {
+          deviceNames[c.deviceId] = c.deviceName!;
+        }
+      }
+    }
+    return VersionHistory(
+      localHistory: _engine?.historyManager ?? LocalHistory(_fs!),
+      remoteHistory: remoteHistory,
+      blobStore: _engine?.blobStore,
+      deviceNames: deviceNames,
+    );
+  }
+
   Future<void> _handleQueryHistory(QueryHistory req) async {
-    _send(WorkerReply(requestId: req.requestId, payload: const []));
+    try {
+      final vh = await _createVersionHistory();
+      final versions = await vh.versions(VaultPath(req.path));
+      _send(WorkerReply(requestId: req.requestId, payload: versions));
+    } catch (e) {
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
   }
 
   Future<void> _handleLoadVersion(LoadVersion req) async {
-    _send(WorkerReply(requestId: req.requestId, payload: null));
+    try {
+      final vh = await _createVersionHistory();
+      List<int>? bytes;
+      final ref = req.versionRef;
+      if (ref is VersionInfo) {
+        bytes = await vh.readVersion(ref);
+      } else if (ref is VersionRef) {
+        if (ref is LocalVersionRef) {
+          bytes = await vh.localHistory.read(ref.path);
+        } else if (ref is RemoteVersionRef && vh.blobStore != null) {
+          bytes = await vh.blobStore!.getFile(
+            ref.blobKeys,
+            expectedPlainHash: ref.hash ?? '',
+          );
+        }
+      } else if (ref is String) {
+        if (ref.endsWith('.gz') || ref.startsWith('.tephra/history/')) {
+          bytes = await vh.localHistory.read(ref);
+        } else {
+          final entry = vh.remoteHistory.byId[ref];
+          if (entry != null && vh.blobStore != null && entry.blobKeys != null) {
+            bytes = await vh.blobStore!.getFile(
+              entry.blobKeys!,
+              expectedPlainHash: entry.hash ?? '',
+            );
+          }
+        }
+      }
+      _send(WorkerReply(requestId: req.requestId, payload: bytes));
+    } catch (e) {
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
   }
 
   Future<void> _handleRestoreVersion(RestoreVersion req) async {
-    _send(WorkerReply(requestId: req.requestId, payload: true));
+    try {
+      final vh = await _createVersionHistory();
+      List<int>? bytes;
+      final ref = req.versionRef;
+      if (ref is VersionInfo) {
+        bytes = await vh.readVersion(ref);
+      } else if (ref is VersionRef) {
+        if (ref is LocalVersionRef) {
+          bytes = await vh.localHistory.read(ref.path);
+        } else if (ref is RemoteVersionRef && vh.blobStore != null) {
+          bytes = await vh.blobStore!.getFile(
+            ref.blobKeys,
+            expectedPlainHash: ref.hash ?? '',
+          );
+        }
+      } else if (ref is String) {
+        if (ref.endsWith('.gz') || ref.startsWith('.tephra/history/')) {
+          bytes = await vh.localHistory.read(ref);
+        } else {
+          final entry = vh.remoteHistory.byId[ref];
+          if (entry != null && vh.blobStore != null && entry.blobKeys != null) {
+            bytes = await vh.blobStore!.getFile(
+              entry.blobKeys!,
+              expectedPlainHash: entry.hash ?? '',
+            );
+          }
+        }
+      }
+
+      if (bytes == null) {
+        _send(
+          WorkerReply(
+            requestId: req.requestId,
+            errorType: 'Version content unavailable',
+          ),
+        );
+        return;
+      }
+
+      final targetPath = VaultPath(req.path);
+      final currentStat = await _fs!.stat(targetPath);
+      if (currentStat != null) {
+        final currentBytes = await _fs!.readBytes(targetPath);
+        await vh.localHistory.snapshot(
+          targetPath,
+          currentBytes,
+          reason: SnapshotReason.beforeRestore,
+        );
+      }
+
+      await _fs!.writeBytes(targetPath, bytes);
+      _send(WorkerReply(requestId: req.requestId, payload: true));
+    } catch (e) {
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
   }
 
   Future<void> _handleQueryDeleted(QueryDeleted req) async {
-    _send(WorkerReply(requestId: req.requestId, payload: const []));
+    try {
+      final vh = await _createVersionHistory();
+      final deleted = await vh.recentlyDeleted(fs: _fs!);
+      _send(WorkerReply(requestId: req.requestId, payload: deleted));
+    } catch (e) {
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
+  }
+
+  Future<void> _handleRestoreDeleted(RestoreDeleted req) async {
+    try {
+      final vh = await _createVersionHistory();
+      final targetPath = await vh.restoreDeletedFile(
+        deleted: req.deleted,
+        fs: _fs!,
+      );
+      _send(WorkerReply(requestId: req.requestId, payload: targetPath.value));
+    } catch (e) {
+      _send(WorkerReply(requestId: req.requestId, errorType: e.toString()));
+    }
   }
 
   Future<void> _handleListBackups(ListBackups req) async {

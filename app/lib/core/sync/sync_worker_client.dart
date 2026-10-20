@@ -185,6 +185,37 @@ class SyncWorkerClient {
     return _sendRequest<bool>((id) => RevokeDevice(id, deviceId));
   }
 
+  /// Queries all historical versions for [path].
+  Future<List<VersionInfo>> queryHistory(VaultPath path) async {
+    final res = await _sendRequest<List<dynamic>>(
+      (id) => QueryHistory(id, path.value),
+    );
+    return res.cast<VersionInfo>();
+  }
+
+  /// Loads the uncompressed bytes for [versionRef].
+  Future<List<int>?> loadVersion(dynamic versionRef) {
+    return _sendRequest<List<int>?>((id) => LoadVersion(id, versionRef));
+  }
+
+  /// Restores [versionRef] to [path], snapshotting current content first.
+  Future<bool> restoreVersion(dynamic versionRef, VaultPath path) {
+    return _sendRequest<bool>(
+      (id) => RestoreVersion(id, versionRef, path.value),
+    );
+  }
+
+  /// Queries recently deleted files available for restore.
+  Future<List<RecentlyDeletedFile>> queryDeleted() async {
+    final res = await _sendRequest<List<dynamic>>((id) => QueryDeleted(id));
+    return res.cast<RecentlyDeletedFile>();
+  }
+
+  /// Restores a recently deleted file to its path (or collision name).
+  Future<String> restoreDeleted(RecentlyDeletedFile deleted) {
+    return _sendRequest<String>((id) => RestoreDeleted(id, deleted));
+  }
+
   /// Shuts down the sync worker and releases isolate ports.
   Future<void> shutdown() async {
     try {

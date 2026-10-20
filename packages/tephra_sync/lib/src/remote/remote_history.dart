@@ -244,7 +244,7 @@ final class RemoteHistory {
 
   /// Returns all historical versions touching [path], sorted in descending HLC order.
   List<JournalEntry> versions(String path) {
-    final list = entriesTouching(path);
+    final list = List<JournalEntry>.from(entriesTouching(path));
     list.sort((a, b) => Hlc.parse(b.hlc).compareTo(Hlc.parse(a.hlc)));
     return list;
   }

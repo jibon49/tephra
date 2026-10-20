@@ -1048,7 +1048,43 @@
   "diffSideBySide": "Side by side",
   "diffInline": "Inline",
   "conflictOpenTheirFile": "Open their version",
-  "conflictOpenYourFile": "Open your version"
+  "conflictOpenYourFile": "Open your version",
+  "historyTitle": "Version history: {name}",
+  "@historyTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "historyCurrent": "Current",
+  "historyLocalSnapshot": "Local snapshot",
+  "historyFromDevice": "{device}",
+  "@historyFromDevice": {
+    "placeholders": { "device": { "type": "String" } }
+  },
+  "historyUnavailable": "No longer available",
+  "historyRestore": "Restore this version",
+  "historyRestoreConfirm": "Restore version from {time}? The current version will be saved in history.",
+  "@historyRestoreConfirm": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+  "historyRestored": "Version restored",
+  "historyCopy": "Copy text",
+  "historyCopied": "Version copied to clipboard",
+  "historySaveCopyAs": "Save a copy as…",
+  "historyEmpty": "No version history available for this file.",
+  "deletedTitle": "Recently deleted",
+  "deletedEmpty": "No recently deleted files.",
+  "deletedBy": "Deleted by {device} • {time}",
+  "@deletedBy": {
+    "placeholders": {
+      "device": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "deletedRestore": "Restore",
+  "deletedRestoredAs": "Restored as {path}",
+  "@deletedRestoredAs": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "deletedOpenHistory": "History"
 }
 
 
