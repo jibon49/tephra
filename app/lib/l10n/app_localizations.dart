@@ -3818,6 +3818,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync: Manage backups'**
   String get commandSyncOpenBackups;
+
+  /// No description provided for @conflictsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync conflicts'**
+  String get conflictsTitle;
+
+  /// No description provided for @conflictsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No unresolved conflicts. All files are up to date.'**
+  String get conflictsEmpty;
+
+  /// Subtitle showing device and time of conflict
+  ///
+  /// In en, this message translates to:
+  /// **'From {device} · {time}'**
+  String conflictsFrom(String device, String time);
+
+  /// No description provided for @conflictTheirVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Their version'**
+  String get conflictTheirVersion;
+
+  /// No description provided for @conflictYourVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Your version'**
+  String get conflictYourVersion;
+
+  /// No description provided for @conflictKeepTheirs.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep theirs'**
+  String get conflictKeepTheirs;
+
+  /// No description provided for @conflictEditMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit merge'**
+  String get conflictEditMerge;
+
+  /// No description provided for @conflictSaveMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Save merge'**
+  String get conflictSaveMerge;
+
+  /// No description provided for @conflictResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Conflict resolved'**
+  String get conflictResolved;
+
+  /// No description provided for @conflictBinaryExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Binary files cannot be merged. Choose which version to keep.'**
+  String get conflictBinaryExplain;
+
+  /// No description provided for @conflictKindText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text conflict'**
+  String get conflictKindText;
+
+  /// No description provided for @conflictKindBinary.
+  ///
+  /// In en, this message translates to:
+  /// **'Binary conflict'**
+  String get conflictKindBinary;
+
+  /// No description provided for @conflictKindCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Case conflict'**
+  String get conflictKindCase;
+
+  /// No description provided for @diffSideBySide.
+  ///
+  /// In en, this message translates to:
+  /// **'Side by side'**
+  String get diffSideBySide;
+
+  /// No description provided for @diffInline.
+  ///
+  /// In en, this message translates to:
+  /// **'Inline'**
+  String get diffInline;
+
+  /// No description provided for @conflictOpenTheirFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open their version'**
+  String get conflictOpenTheirFile;
+
+  /// No description provided for @conflictOpenYourFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open your version'**
+  String get conflictOpenYourFile;
 }
 
 class _AppLocalizationsDelegate

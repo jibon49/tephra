@@ -65,6 +65,7 @@ class SyncWorker {
   late final SendPort _mainPort = args.mainSendPort;
   final Map<int, Completer<dynamic>> _pendingMainRequests = {};
 
+  VaultFileSystem? _fs;
   SyncStateStore? _store;
   SyncEngine? _engine;
   SyncProvider? _provider;
@@ -89,6 +90,7 @@ class SyncWorker {
     try {
       // 1. Vault file system
       final fs = IoVaultFileSystem(args.vaultRootPath);
+      _fs = fs;
 
       // 2. Sync database store
       _store = await SyncStateStore.open(args.syncDatabasePath);
@@ -384,7 +386,33 @@ class SyncWorker {
 
   Future<void> _handleResolveConflict(ResolveConflict req) async {
     try {
-      await _store?.resolveConflict(req.conflictId);
+      if (_engine != null) {
+        await _engine!.conflictResolver.resolve(
+          conflictId: req.conflictId,
+          resolution: req.resolution,
+          mergedText: req.mergedText,
+        );
+      } else if (_store != null && _fs != null) {
+        final resolver = ConflictResolver(
+          fs: _fs!,
+          store: _store!,
+          localHistory: LocalHistory(_fs!),
+        );
+        await resolver.resolve(
+          conflictId: req.conflictId,
+          resolution: req.resolution,
+          mergedText: req.mergedText,
+        );
+      }
+      final remaining = await _store?.conflicts(unresolvedOnly: true) ?? [];
+      _updateStatus(
+        _snapshot.copyWith(
+          unresolvedConflicts: remaining.length,
+          state: (remaining.isEmpty && _snapshot.heldDeletes.isEmpty)
+              ? SyncUiState.idle
+              : _snapshot.state,
+        ),
+      );
       _send(WorkerReply(requestId: req.requestId, payload: true));
     } catch (e) {
       _send(

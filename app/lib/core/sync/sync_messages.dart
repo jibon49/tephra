@@ -60,9 +60,6 @@ class SyncStatusSnapshot {
   }
 }
 
-/// Resolution choice when resolving a conflicting copy.
-enum ConflictResolution { keepLocal, keepRemote, keepBoth, custom }
-
 /// Settings passed to the sync worker.
 class SyncWorkerSettings {
   const SyncWorkerSettings({

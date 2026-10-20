@@ -8,6 +8,7 @@ import '../commands/tephra_command.dart';
 import '../core/sync/sync_messages.dart';
 import '../core/sync/sync_worker_client.dart';
 import '../vault/providers.dart';
+import 'conflicts/conflicts_screen.dart';
 import 'devices/devices_screen.dart';
 import 'log/sync_log_screen.dart';
 import 'settings/sync_settings_screen.dart';
@@ -88,7 +89,13 @@ void registerSyncCommands(CommandRegistry registry) {
       icon: Icons.content_copy,
       isAvailable: _isConfigured,
       run: (ref, context) {
-        // Will be routed to ConflictsScreen in Step 03.20
+        final session = ref.read(vaultSessionProvider);
+        if (session == null) return;
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => ConflictsScreen(vaultId: session.vaultId),
+          ),
+        );
       },
     ),
   );

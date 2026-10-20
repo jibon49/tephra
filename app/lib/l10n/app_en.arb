@@ -1024,7 +1024,31 @@
   "commandSyncOpenHistory": "Sync: Open file history",
   "commandSyncOpenDeleted": "Sync: View recently deleted files",
   "commandSyncBackupNow": "Sync: Create backup now",
-  "commandSyncOpenBackups": "Sync: Manage backups"
+  "commandSyncOpenBackups": "Sync: Manage backups",
+  "conflictsTitle": "Sync conflicts",
+  "conflictsEmpty": "No unresolved conflicts. All files are up to date.",
+  "conflictsFrom": "From {device} · {time}",
+  "@conflictsFrom": {
+    "description": "Subtitle showing device and time of conflict",
+    "placeholders": {
+      "device": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "conflictTheirVersion": "Their version",
+  "conflictYourVersion": "Your version",
+  "conflictKeepTheirs": "Keep theirs",
+  "conflictEditMerge": "Edit merge",
+  "conflictSaveMerge": "Save merge",
+  "conflictResolved": "Conflict resolved",
+  "conflictBinaryExplain": "Binary files cannot be merged. Choose which version to keep.",
+  "conflictKindText": "Text conflict",
+  "conflictKindBinary": "Binary conflict",
+  "conflictKindCase": "Case conflict",
+  "diffSideBySide": "Side by side",
+  "diffInline": "Inline",
+  "conflictOpenTheirFile": "Open their version",
+  "conflictOpenYourFile": "Open your version"
 }
 
 

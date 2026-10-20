@@ -36,6 +36,7 @@ import '../remote/journal_writer.dart';
 import '../remote/remote_history.dart';
 import '../remote/snapshot_store.dart';
 import '../store/sync_state_store.dart';
+import 'conflict_resolver.dart';
 import 'sync_cancel_token.dart';
 import 'sync_lock.dart';
 import 'sync_progress.dart';
@@ -120,6 +121,13 @@ final class SyncEngine {
       clock: clock,
       random: _random,
     );
+
+    _conflictResolver = ConflictResolver(
+      fs: fs,
+      store: store,
+      localHistory: localHistory ?? LocalHistory(fs, clock),
+      clock: clock,
+    );
   }
 
   final VaultFileSystem fs;
@@ -142,6 +150,10 @@ final class SyncEngine {
   late SnapshotStore _snapshotStore;
   late DeviceRegistry _deviceRegistry;
   late Executor _executor;
+  late ConflictResolver _conflictResolver;
+
+  /// Resolver for synchronization conflict copies.
+  ConflictResolver get conflictResolver => _conflictResolver;
 
   final _progressController = StreamController<SyncProgress>.broadcast();
   final _logController = StreamController<SyncLogEntry>.broadcast();
@@ -235,6 +247,9 @@ final class SyncEngine {
 
       final localMap = await LocalScanner(fs: fs, store: store).scan(rules);
       crashInjector?.call(CrashPoint.afterScan, null);
+
+      // Auto-resolve any conflicts whose conflict copies were removed outside sync
+      await _conflictResolver.autoResolveDisappeared();
 
       if (cancel != null && cancel.isCancelled) {
         return _buildReport(stopwatch.elapsed);

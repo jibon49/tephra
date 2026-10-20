@@ -7,6 +7,7 @@ import '../../core/sync/sync_messages.dart';
 import '../../core/sync/sync_worker_client.dart';
 import '../../l10n/app_localizations.dart';
 import '../../vault/providers.dart';
+import '../conflicts/conflicts_screen.dart';
 import '../held_deletes/held_deletes_sheet.dart';
 import '../log/sync_log_screen.dart';
 import '../providers.dart';
@@ -342,7 +343,11 @@ class SyncPanel extends ConsumerWidget {
                 ),
                 trailing: const Icon(Icons.chevron_right, size: 18),
                 onTap: () {
-                  // Step 03.20 opens conflicts screen
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ConflictsScreen(vaultId: vaultId),
+                    ),
+                  );
                 },
               ),
 

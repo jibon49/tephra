@@ -2098,4 +2098,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commandSyncOpenBackups => 'Sync: Manage backups';
+
+  @override
+  String get conflictsTitle => 'Sync conflicts';
+
+  @override
+  String get conflictsEmpty =>
+      'No unresolved conflicts. All files are up to date.';
+
+  @override
+  String conflictsFrom(String device, String time) {
+    return 'From $device · $time';
+  }
+
+  @override
+  String get conflictTheirVersion => 'Their version';
+
+  @override
+  String get conflictYourVersion => 'Your version';
+
+  @override
+  String get conflictKeepTheirs => 'Keep theirs';
+
+  @override
+  String get conflictEditMerge => 'Edit merge';
+
+  @override
+  String get conflictSaveMerge => 'Save merge';
+
+  @override
+  String get conflictResolved => 'Conflict resolved';
+
+  @override
+  String get conflictBinaryExplain =>
+      'Binary files cannot be merged. Choose which version to keep.';
+
+  @override
+  String get conflictKindText => 'Text conflict';
+
+  @override
+  String get conflictKindBinary => 'Binary conflict';
+
+  @override
+  String get conflictKindCase => 'Case conflict';
+
+  @override
+  String get diffSideBySide => 'Side by side';
+
+  @override
+  String get diffInline => 'Inline';
+
+  @override
+  String get conflictOpenTheirFile => 'Open their version';
+
+  @override
+  String get conflictOpenYourFile => 'Open your version';
 }

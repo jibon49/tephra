@@ -14,9 +14,11 @@ class FakeSyncWorkerClient extends SyncWorkerClient {
     ),
     List<SyncLogEntry>? initialLogs,
     List<RemoteDevice>? initialDevices,
+    List<ConflictRecord>? initialConflicts,
   }) : _status = initialStatus,
        logs = initialLogs ?? [],
        devices = initialDevices ?? [],
+       conflictsList = initialConflicts ?? [],
        super(
          workerSendPort: ReceivePort().sendPort,
          receivePort: ReceivePort(),
@@ -32,12 +34,16 @@ class FakeSyncWorkerClient extends SyncWorkerClient {
 
   List<SyncLogEntry> logs;
   List<RemoteDevice> devices;
+  List<ConflictRecord> conflictsList;
 
   int syncNowCallCount = 0;
   bool? lastPaused;
   Map<String, DeleteDecision>? lastHeldDeletes;
   SyncWorkerSettings? lastSettings;
   String? lastRevokedDeviceId;
+  int? lastResolvedConflictId;
+  ConflictResolution? lastResolution;
+  String? lastMergedText;
 
   @override
   SyncStatusSnapshot get currentStatus => _status;
@@ -99,6 +105,35 @@ class FakeSyncWorkerClient extends SyncWorkerClient {
   @override
   Future<void> updateSettings(SyncWorkerSettings settings) async {
     lastSettings = settings;
+  }
+
+  @override
+  Future<List<ConflictRecord>> queryConflicts() async {
+    return conflictsList.where((c) => !c.resolved).toList();
+  }
+
+  @override
+  Future<void> resolveConflict(
+    int conflictId,
+    ConflictResolution resolution, {
+    String? mergedText,
+  }) async {
+    lastResolvedConflictId = conflictId;
+    lastResolution = resolution;
+    lastMergedText = mergedText;
+    final idx = conflictsList.indexWhere((c) => c.id == conflictId);
+    if (idx != -1) {
+      final c = conflictsList[idx];
+      conflictsList[idx] = ConflictRecord(
+        id: c.id,
+        time: c.time,
+        path: c.path,
+        copyPath: c.copyPath,
+        kind: c.kind,
+        otherDevice: c.otherDevice,
+        resolved: true,
+      );
+    }
   }
 
   @override
