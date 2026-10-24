@@ -15,7 +15,7 @@ import 'search_sort.dart';
 
 /// Full-text and structured search engine executing queries against the vault index
 /// and verifying candidate matches against note text.
-final class SearchEngine {
+class SearchEngine {
   SearchEngine(this.index, this.fs);
 
   final NoteIndex index;
