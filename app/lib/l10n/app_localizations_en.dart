@@ -2451,4 +2451,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String stickyBannerExpiry(String date) {
     return 'Expires: $date';
   }
+
+  @override
+  String get stickyBoardTitle => 'Sticky board';
+
+  @override
+  String get stickyBoardUnreadableBanner => 'The board file could not be read';
+
+  @override
+  String get stickyBoardCreateNew => 'Create a new board';
+
+  @override
+  String get stickyBoardZoomToFit => 'Zoom to fit';
+
+  @override
+  String get stickyBoardNewSticky => 'New sticky';
+
+  @override
+  String get stickyBoardOpenCanvas => 'Open board in canvas';
+
+  @override
+  String get stickyBoardLayoutFree => 'Free';
+
+  @override
+  String get stickyBoardLayoutByColor => 'By colour';
+
+  @override
+  String get stickyBoardLayoutByTag => 'By tag';
+
+  @override
+  String get stickyBoardLayoutApplied => 'Layout applied';
+
+  @override
+  String get stickyBoardUndo => 'Undo';
+
+  @override
+  String get stickyQuickEditorTitle => 'Quick edit';
 }

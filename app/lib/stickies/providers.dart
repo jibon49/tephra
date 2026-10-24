@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/providers.dart';
 import '../search/providers.dart';
 import '../vault/providers.dart';
+import 'board/board_controller.dart';
 import 'data/open_note_bridge.dart';
 import 'data/sticky_repository.dart';
 import 'model/sticky.dart';
@@ -75,4 +76,9 @@ final stickyRepositoryProvider = Provider<StickyRepository>((ref) {
 /// Provider exposing [StickiesState] with all/archived stickies and filter helpers.
 final stickiesProvider = NotifierProvider<StickiesNotifier, StickiesState>(
   StickiesNotifier.new,
+);
+
+/// Provider supplying the [BoardController] and [BoardState] for the open vault.
+final boardControllerProvider = NotifierProvider<BoardController, BoardState>(
+  BoardController.new,
 );

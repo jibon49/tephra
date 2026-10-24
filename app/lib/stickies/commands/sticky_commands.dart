@@ -12,6 +12,7 @@ import '../../commands/tephra_command.dart';
 import '../../vault/providers.dart';
 import '../../workspace/open_file.dart';
 import '../../workspace/providers.dart';
+import '../board/sticky_board_screen.dart';
 import '../model/sticky.dart';
 import '../model/sticky_frontmatter.dart';
 import '../model/sticky_meta.dart';
@@ -253,8 +254,12 @@ void registerStickyCommands(CommandRegistry registry) {
       id: 'sticky.board',
       label: (l10n) => l10n.stickyCommandBoard,
       icon: Icons.dashboard_customize_outlined,
-      isAvailable: (_) => false,
-      run: (ref, context) {},
+      isAvailable: (ref) => ref.watch(vaultSessionProvider) != null,
+      run: (ref, context) {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const StickyBoardScreen()),
+        );
+      },
     ),
   );
 

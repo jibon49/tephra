@@ -1215,7 +1215,19 @@
     "placeholders": {
       "date": { "type": "String" }
     }
-  }
+  },
+  "stickyBoardTitle": "Sticky board",
+  "stickyBoardUnreadableBanner": "The board file could not be read",
+  "stickyBoardCreateNew": "Create a new board",
+  "stickyBoardZoomToFit": "Zoom to fit",
+  "stickyBoardNewSticky": "New sticky",
+  "stickyBoardOpenCanvas": "Open board in canvas",
+  "stickyBoardLayoutFree": "Free",
+  "stickyBoardLayoutByColor": "By colour",
+  "stickyBoardLayoutByTag": "By tag",
+  "stickyBoardLayoutApplied": "Layout applied",
+  "stickyBoardUndo": "Undo",
+  "stickyQuickEditorTitle": "Quick edit"
 }
 
 

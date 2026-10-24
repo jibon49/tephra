@@ -4448,6 +4448,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expires: {date}'**
   String stickyBannerExpiry(String date);
+
+  /// No description provided for @stickyBoardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky board'**
+  String get stickyBoardTitle;
+
+  /// No description provided for @stickyBoardUnreadableBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'The board file could not be read'**
+  String get stickyBoardUnreadableBanner;
+
+  /// No description provided for @stickyBoardCreateNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new board'**
+  String get stickyBoardCreateNew;
+
+  /// No description provided for @stickyBoardZoomToFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom to fit'**
+  String get stickyBoardZoomToFit;
+
+  /// No description provided for @stickyBoardNewSticky.
+  ///
+  /// In en, this message translates to:
+  /// **'New sticky'**
+  String get stickyBoardNewSticky;
+
+  /// No description provided for @stickyBoardOpenCanvas.
+  ///
+  /// In en, this message translates to:
+  /// **'Open board in canvas'**
+  String get stickyBoardOpenCanvas;
+
+  /// No description provided for @stickyBoardLayoutFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get stickyBoardLayoutFree;
+
+  /// No description provided for @stickyBoardLayoutByColor.
+  ///
+  /// In en, this message translates to:
+  /// **'By colour'**
+  String get stickyBoardLayoutByColor;
+
+  /// No description provided for @stickyBoardLayoutByTag.
+  ///
+  /// In en, this message translates to:
+  /// **'By tag'**
+  String get stickyBoardLayoutByTag;
+
+  /// No description provided for @stickyBoardLayoutApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Layout applied'**
+  String get stickyBoardLayoutApplied;
+
+  /// No description provided for @stickyBoardUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get stickyBoardUndo;
+
+  /// No description provided for @stickyQuickEditorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick edit'**
+  String get stickyQuickEditorTitle;
 }
 
 class _AppLocalizationsDelegate
