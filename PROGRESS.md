@@ -415,7 +415,8 @@ eighbour)
 
 - [x] 04.1 Dependencies, settings keys and platform-service skeletons
   - notes: Added Phase 4 dependencies (desktop_multi_window, screen_retriever, hotkey_manager, win32_registry, home_widget, flutter_overlay_window, flutter_local_notifications, timezone, flutter_timezone, receive_sharing_intent, quick_actions, app_links); configured Java 17 core library desugaring for Android; extended VaultSettings and AppSettings with sticky/capture keys preserving unknowns; defined platform service interfaces, no-ops and stubs in app/lib/core/platform/ with providers in platform_providers.dart; added l10n strings; license check clean (225 allowed); all platform tests passing; Windows debug exe and Android debug APK built cleanly.
-- [ ] 04.2 Sticky model and frontmatter patching (round-trip safe)
+- [x] 04.2 Sticky model and frontmatter patching (round-trip safe)
+  - notes: Implemented StickyColor (named + hex, relative WCAG luminance text contrast), StickyMeta with LocalDate/LocalDateTime parsing (accepts YYYY-MM-DDTHH:mm, YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD HH:mm and DateTimes), StickyPatch and applyStickyPatch (round-trip safe, exact byte preservation, quotes hex, CRLF/BOM safe, ParseException on non-map), and toggleTaskAtLine (ordered/unordered list task toggle preserving all other characters); all 25 model unit tests passing.
 - [ ] 04.3 Sticky repository: listing, creating, updating, archiving folder rules
 - [ ] 04.4 Sticky commands and editor integration
 - [ ] 04.5 Sticky mini renderer and sticky card
