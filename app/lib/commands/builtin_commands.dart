@@ -12,6 +12,7 @@ import '../l10n/app_localizations.dart';
 import '../search/copy_results.dart';
 import '../search/providers.dart';
 import '../search/search_screen.dart';
+import '../stickies/commands/sticky_commands.dart';
 import '../sync_ui/sync_commands.dart';
 import '../vault/note_document.dart';
 import '../vault/note_tools/note_tools_commands.dart';
@@ -35,6 +36,7 @@ void registerBuiltinCommands(CommandRegistry registry) {
   registerNoteToolsCommands(registry);
   registerPerfCommand(registry);
   registerSyncCommands(registry);
+  registerStickyCommands(registry);
   registry.register(
     TephraCommand(
       id: 'app.open-quick-switcher',

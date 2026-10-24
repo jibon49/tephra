@@ -2404,4 +2404,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trayQuit => 'Quit';
+
+  @override
+  String get stickyColorPickerTitle => 'Choose sticky color';
+
+  @override
+  String get stickyColorHexHint => '#RRGGBB';
+
+  @override
+  String get stickyColorHexError =>
+      'Please enter a valid hex color like #AABBCC';
+
+  @override
+  String get stickyReminderTitle => 'Set reminder';
+
+  @override
+  String get stickyReminderIn10Minutes => 'In 10 minutes';
+
+  @override
+  String get stickyReminderIn1Hour => 'In 1 hour';
+
+  @override
+  String get stickyReminderTomorrowMorning => 'Tomorrow 09:00';
+
+  @override
+  String get stickyReminderRemove => 'Remove reminder';
+
+  @override
+  String get stickyExpiryTitle => 'Set expiry date';
+
+  @override
+  String get stickyExpiryRemove => 'Remove expiry';
+
+  @override
+  String get stickyBannerLocked => 'Locked';
+
+  @override
+  String get stickyBannerUnlocked => 'Unlocked';
+
+  @override
+  String stickyBannerReminder(String time) {
+    return 'Reminder: $time';
+  }
+
+  @override
+  String stickyBannerExpiry(String date) {
+    return 'Expires: $date';
+  }
 }

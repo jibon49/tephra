@@ -1191,7 +1191,31 @@
   "trayShowAllStickies": "Show all stickies",
   "trayHideAllStickies": "Hide all stickies",
   "trayOpenTephra": "Open Tephra",
-  "trayQuit": "Quit"
+  "trayQuit": "Quit",
+  "stickyColorPickerTitle": "Choose sticky color",
+  "stickyColorHexHint": "#RRGGBB",
+  "stickyColorHexError": "Please enter a valid hex color like #AABBCC",
+  "stickyReminderTitle": "Set reminder",
+  "stickyReminderIn10Minutes": "In 10 minutes",
+  "stickyReminderIn1Hour": "In 1 hour",
+  "stickyReminderTomorrowMorning": "Tomorrow 09:00",
+  "stickyReminderRemove": "Remove reminder",
+  "stickyExpiryTitle": "Set expiry date",
+  "stickyExpiryRemove": "Remove expiry",
+  "stickyBannerLocked": "Locked",
+  "stickyBannerUnlocked": "Unlocked",
+  "stickyBannerReminder": "Reminder: {time}",
+  "@stickyBannerReminder": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "stickyBannerExpiry": "Expires: {date}",
+  "@stickyBannerExpiry": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  }
 }
 
 

@@ -21,6 +21,8 @@ import '../reading/providers.dart';
 import '../reading/reading_view.dart';
 import '../search/search_highlights.dart';
 import '../settings/providers.dart';
+import '../stickies/providers.dart';
+import '../stickies/ui/sticky_note_banner.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import '../workspace/providers.dart';
@@ -142,12 +144,19 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
     }
   }
 
+  bool _isStickyLocked() {
+    final stickies = ref.read(stickiesProvider);
+    return stickies.all.any((s) => s.path == widget.path && s.meta.locked);
+  }
+
   void _createController(NoteDocument doc) {
     if (_isCreatingController || _controller != null) return;
     _isCreatingController = true;
     try {
       final baseOptions = ref.read(editorOptionsProvider);
-      final options = baseOptions.copyWith(readOnly: doc.isReadOnly);
+      final options = baseOptions.copyWith(
+        readOnly: doc.isReadOnly || _isStickyLocked(),
+      );
       final parseService = ref.read(parseServiceProvider);
       final registry = ref.read(editorRegistryProvider);
 
@@ -379,7 +388,9 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
       _controller?.updateOptions(
         ref
             .read(editorOptionsProvider)
-            .copyWith(readOnly: _doc?.isReadOnly ?? false),
+            .copyWith(
+              readOnly: (_doc?.isReadOnly ?? false) || _isStickyLocked(),
+            ),
       );
     }
   }
@@ -476,7 +487,20 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
 
     ref.listen(editorOptionsProvider, (_, next) {
       _controller?.updateOptions(
-        next.copyWith(readOnly: _doc?.isReadOnly ?? false),
+        next.copyWith(
+          readOnly: (_doc?.isReadOnly ?? false) || _isStickyLocked(),
+        ),
+      );
+    });
+
+    ref.listen(stickiesProvider, (_, next) {
+      final isLocked = next.all.any(
+        (s) => s.path == widget.path && s.meta.locked,
+      );
+      _controller?.updateOptions(
+        ref
+            .read(editorOptionsProvider)
+            .copyWith(readOnly: (_doc?.isReadOnly ?? false) || isLocked),
       );
     });
 
@@ -578,6 +602,7 @@ class _SourceEditorViewState extends ConsumerState<SourceEditorView> {
           children: [
             if (findState.isOpen)
               FindBar(controller: _controller!.findController),
+            StickyNoteBanner(path: widget.path),
             if (showProperties) PropertiesPanel(controller: _controller!),
             if (_doc != null && _doc!.isReadOnly)
               Container(

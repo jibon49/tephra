@@ -4364,6 +4364,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quit'**
   String get trayQuit;
+
+  /// No description provided for @stickyColorPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose sticky color'**
+  String get stickyColorPickerTitle;
+
+  /// No description provided for @stickyColorHexHint.
+  ///
+  /// In en, this message translates to:
+  /// **'#RRGGBB'**
+  String get stickyColorHexHint;
+
+  /// No description provided for @stickyColorHexError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid hex color like #AABBCC'**
+  String get stickyColorHexError;
+
+  /// No description provided for @stickyReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set reminder'**
+  String get stickyReminderTitle;
+
+  /// No description provided for @stickyReminderIn10Minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'In 10 minutes'**
+  String get stickyReminderIn10Minutes;
+
+  /// No description provided for @stickyReminderIn1Hour.
+  ///
+  /// In en, this message translates to:
+  /// **'In 1 hour'**
+  String get stickyReminderIn1Hour;
+
+  /// No description provided for @stickyReminderTomorrowMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow 09:00'**
+  String get stickyReminderTomorrowMorning;
+
+  /// No description provided for @stickyReminderRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove reminder'**
+  String get stickyReminderRemove;
+
+  /// No description provided for @stickyExpiryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set expiry date'**
+  String get stickyExpiryTitle;
+
+  /// No description provided for @stickyExpiryRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove expiry'**
+  String get stickyExpiryRemove;
+
+  /// No description provided for @stickyBannerLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get stickyBannerLocked;
+
+  /// No description provided for @stickyBannerUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked'**
+  String get stickyBannerUnlocked;
+
+  /// No description provided for @stickyBannerReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder: {time}'**
+  String stickyBannerReminder(String time);
+
+  /// No description provided for @stickyBannerExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires: {date}'**
+  String stickyBannerExpiry(String date);
 }
 
 class _AppLocalizationsDelegate

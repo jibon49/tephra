@@ -15,6 +15,8 @@ import '../reading/link_actions.dart' show pendingJumpProvider;
 import '../reading/reading_controller.dart';
 import '../reading/reading_view.dart';
 import '../reading/task_toggler.dart';
+import '../stickies/providers.dart';
+import '../stickies/ui/sticky_note_banner.dart';
 import '../vault/note_document.dart';
 import '../vault/providers.dart';
 import 'note_banners.dart';
@@ -238,10 +240,15 @@ class _NoteReadingViewState extends ConsumerState<NoteReadingView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final isStickyLocked = ref
+        .watch(stickiesProvider)
+        .all
+        .any((s) => s.path == widget.path && s.meta.locked);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        StickyNoteBanner(path: widget.path),
         if (widget.doc.isReadOnly)
           Container(
             key: const ValueKey('note.malformedBanner'),
@@ -260,12 +267,14 @@ class _NoteReadingViewState extends ConsumerState<NoteReadingView> {
           child: ReadingView(
             path: widget.path,
             text: widget.doc.text,
-            readOnly: widget.doc.isReadOnly,
+            readOnly: widget.doc.isReadOnly || isStickyLocked,
             controller: _controller,
             initialOffset: widget.initialOffset,
             onTopOffsetChanged: widget.onOffsetChanged,
-            onToggleTask: (task, newStatus) =>
-                _taskToggler.toggleTask(widget.doc, task, newStatus),
+            onToggleTask: isStickyLocked
+                ? null
+                : (task, newStatus) =>
+                      _taskToggler.toggleTask(widget.doc, task, newStatus),
             onOpenWikiLink: (tap) {
               if (tap.target.isEmpty) {
                 if (tap.heading != null) {
