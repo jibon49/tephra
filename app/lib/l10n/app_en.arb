@@ -1167,7 +1167,31 @@
       "failed": { "type": "int" }
     }
   },
-  "restoreOpenAsVault": "Open as vault"
+  "restoreOpenAsVault": "Open as vault",
+  "stickyCommandNew": "Sticky notes: New sticky",
+  "stickyCommandPinNote": "Sticky notes: Pin as sticky",
+  "stickyCommandUnpin": "Sticky notes: Unpin sticky",
+  "stickyCommandSetColor": "Sticky notes: Set color",
+  "stickyCommandLock": "Sticky notes: Toggle lock",
+  "stickyCommandSetReminder": "Sticky notes: Set reminder",
+  "stickyCommandSetExpiry": "Sticky notes: Set expiry",
+  "stickyCommandOpenWindow": "Sticky notes: Open in separate window",
+  "stickyCommandShowAll": "Sticky notes: Show all",
+  "stickyCommandHideAll": "Sticky notes: Hide all",
+  "stickyCommandBoard": "Sticky notes: Open sticky board",
+  "captureCommandQuickNote": "Quick capture: New note",
+  "stickyColorYellow": "Yellow",
+  "stickyColorPink": "Pink",
+  "stickyColorBlue": "Blue",
+  "stickyColorGreen": "Green",
+  "stickyColorPurple": "Purple",
+  "stickyColorGray": "Gray",
+  "stickyColorCustom": "Custom",
+  "trayNewSticky": "New sticky",
+  "trayShowAllStickies": "Show all stickies",
+  "trayHideAllStickies": "Hide all stickies",
+  "trayOpenTephra": "Open Tephra",
+  "trayQuit": "Quit"
 }
 
 

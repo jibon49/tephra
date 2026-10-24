@@ -93,3 +93,126 @@ class NoopNotificationService implements NotificationService {
   @override
   Future<String?> launchPayload() async => null;
 }
+
+/// Windows stub implementation of [NotificationService].
+class WindowsNotificationService implements NotificationService {
+  @override
+  Future<void> init() async {}
+
+  @override
+  Future<NotificationPermissionState> permissionState() async =>
+      const NotificationPermissionState(notifications: true, exactAlarms: true);
+
+  @override
+  Future<bool> requestNotificationPermission() async => true;
+
+  @override
+  Future<bool> requestExactAlarmPermission() async => true;
+
+  @override
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+  }) async {}
+
+  @override
+  Future<void> schedule(ScheduledReminder reminder) {
+    throw UnimplementedError(
+      'WindowsNotificationService.schedule will be implemented in step 04.12',
+    );
+  }
+
+  @override
+  Future<void> cancel(int id) {
+    throw UnimplementedError(
+      'WindowsNotificationService.cancel will be implemented in step 04.12',
+    );
+  }
+
+  @override
+  Future<void> showQuickNoteNotification() async {}
+
+  @override
+  Future<void> hideQuickNoteNotification() async {}
+
+  @override
+  Stream<String> get taps => throw UnimplementedError(
+    'WindowsNotificationService.taps will be implemented in step 04.12',
+  );
+
+  @override
+  Future<String?> launchPayload() async => null;
+}
+
+/// Android stub implementation of [NotificationService].
+class AndroidNotificationService implements NotificationService {
+  @override
+  Future<void> init() async {}
+
+  @override
+  Future<NotificationPermissionState> permissionState() {
+    throw UnimplementedError(
+      'AndroidNotificationService.permissionState will be implemented in step 04.12',
+    );
+  }
+
+  @override
+  Future<bool> requestNotificationPermission() {
+    throw UnimplementedError(
+      'AndroidNotificationService.requestNotificationPermission will be implemented in step 04.12',
+    );
+  }
+
+  @override
+  Future<bool> requestExactAlarmPermission() {
+    throw UnimplementedError(
+      'AndroidNotificationService.requestExactAlarmPermission will be implemented in step 04.12',
+    );
+  }
+
+  @override
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+  }) async {}
+
+  @override
+  Future<void> schedule(ScheduledReminder reminder) {
+    throw UnimplementedError(
+      'AndroidNotificationService.schedule will be implemented in step 04.12',
+    );
+  }
+
+  @override
+  Future<void> cancel(int id) {
+    throw UnimplementedError(
+      'AndroidNotificationService.cancel will be implemented in step 04.12',
+    );
+  }
+
+  @override
+  Future<void> showQuickNoteNotification() {
+    throw UnimplementedError(
+      'AndroidNotificationService.showQuickNoteNotification will be implemented in step 04.16',
+    );
+  }
+
+  @override
+  Future<void> hideQuickNoteNotification() {
+    throw UnimplementedError(
+      'AndroidNotificationService.hideQuickNoteNotification will be implemented in step 04.16',
+    );
+  }
+
+  @override
+  Stream<String> get taps => throw UnimplementedError(
+    'AndroidNotificationService.taps will be implemented in step 04.12',
+  );
+
+  @override
+  Future<String?> launchPayload() async => null;
+}

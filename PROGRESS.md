@@ -390,9 +390,31 @@ Instructions: `instructions/phase-03-sync-drive.md`
 
 Instructions: `instructions/phase-04-stickies-capture.md`
 
+### Phase 4 — discovered APIs
+
+- Vault file system provider: aultFsProvider in pp/lib/vault/providers.dart
+- NoteIndex provider: 
+oteIndexProvider in pp/lib/core/providers.dart (implemented by NoteIndexNotifier in pp/lib/vault/index_session.dart)
+- SearchEngine provider: searchEngineProvider in pp/lib/search/providers.dart
+- Vault settings model + provider: VaultSettings in pp/lib/settings/vault_settings.dart, provider aultSettingsProvider in pp/lib/settings/providers.dart (updated via 
+ef.read(vaultSettingsProvider.notifier).update((s) => s.copyWith(...)))
+- App settings model (device id, device name): AppSettings in pp/lib/settings/app_settings.dart, provider ppSettingsProvider in pp/lib/settings/providers.dart (updated via 
+ef.read(appSettingsProvider.notifier).update((s) => s.copyWith(...)))
+- Open-document registry / autosave layer: NoteDocumentStore and NoteDocument in pp/lib/vault/, doc.text reads current text, doc.setText(newText) / doc.edit(op) updates text from outside
+- Rename/move service that updates links: LinkRenameService.renameOrMove(from, to, {onConfirmUpdate}) in pp/lib/links/link_rename_service.dart
+- Daily notes service: DailyNotesService in pp/lib/vault/note_tools/daily_notes_service.dart, provider dailyNotesServiceProvider in pp/lib/vault/note_tools/providers.dart (pathFor, openOrCreate, 
+eighbour)
+- Attachment saving service (§6.7 naming): AttachmentService.savePastedImage({note, bytes}) in pp/lib/editor/attachment_service.dart using pastedImageName(t, ext) in pp/lib/editor/attachment_paths.dart
+- Phase 3 three-way merge function: MergeOutcome merge3(base, local, remote) and MergeOutcome mergeDocuments(...) in packages/tephra_sync/lib/src/merge/three_way_merge.dart
+- Conflict-copy name function: conflictCopyName(path, localTime, deviceName, exists) in packages/tephra_sync/lib/src/merge/conflict_naming.dart
+- Sync cycle finished event: syncStatusProvider(vaultId) in pp/lib/core/sync/sync_worker_client.dart emitting SyncStatusSnapshot with state == SyncUiState.idle
+- Existing platform services: NotificationService in pp/lib/core/platform/notification_service.dart, TrayService and WindowsTrayService in pp/lib/core/platform/tray_service.dart and windows_tray_service.dart, WindowService in window_service.dart, StoragePermissionService in storage_permission_service.dart, providers in platform_providers.dart
+- How properties [key:value] match for booleans: [tephra-sticky:true] matches YAML boolean 	rue because inferPropertyRows in 	ephra_index records alueText: 'true' / alue_lower: 'true', and sql_compiler.dart queries WHERE p.key_lower = 'tephra-sticky' AND instr(p.value_lower, 'true') > 0
+
 ### Steps
 
-- [ ] 04.1 Dependencies, settings keys and platform-service skeletons
+- [x] 04.1 Dependencies, settings keys and platform-service skeletons
+  - notes: Added Phase 4 dependencies (desktop_multi_window, screen_retriever, hotkey_manager, win32_registry, home_widget, flutter_overlay_window, flutter_local_notifications, timezone, flutter_timezone, receive_sharing_intent, quick_actions, app_links); configured Java 17 core library desugaring for Android; extended VaultSettings and AppSettings with sticky/capture keys preserving unknowns; defined platform service interfaces, no-ops and stubs in app/lib/core/platform/ with providers in platform_providers.dart; added l10n strings; license check clean (225 allowed); all platform tests passing; Windows debug exe and Android debug APK built cleanly.
 - [ ] 04.2 Sticky model and frontmatter patching (round-trip safe)
 - [ ] 04.3 Sticky repository: listing, creating, updating, archiving folder rules
 - [ ] 04.4 Sticky commands and editor integration

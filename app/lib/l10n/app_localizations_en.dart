@@ -2332,4 +2332,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restoreOpenAsVault => 'Open as vault';
+
+  @override
+  String get stickyCommandNew => 'Sticky notes: New sticky';
+
+  @override
+  String get stickyCommandPinNote => 'Sticky notes: Pin as sticky';
+
+  @override
+  String get stickyCommandUnpin => 'Sticky notes: Unpin sticky';
+
+  @override
+  String get stickyCommandSetColor => 'Sticky notes: Set color';
+
+  @override
+  String get stickyCommandLock => 'Sticky notes: Toggle lock';
+
+  @override
+  String get stickyCommandSetReminder => 'Sticky notes: Set reminder';
+
+  @override
+  String get stickyCommandSetExpiry => 'Sticky notes: Set expiry';
+
+  @override
+  String get stickyCommandOpenWindow => 'Sticky notes: Open in separate window';
+
+  @override
+  String get stickyCommandShowAll => 'Sticky notes: Show all';
+
+  @override
+  String get stickyCommandHideAll => 'Sticky notes: Hide all';
+
+  @override
+  String get stickyCommandBoard => 'Sticky notes: Open sticky board';
+
+  @override
+  String get captureCommandQuickNote => 'Quick capture: New note';
+
+  @override
+  String get stickyColorYellow => 'Yellow';
+
+  @override
+  String get stickyColorPink => 'Pink';
+
+  @override
+  String get stickyColorBlue => 'Blue';
+
+  @override
+  String get stickyColorGreen => 'Green';
+
+  @override
+  String get stickyColorPurple => 'Purple';
+
+  @override
+  String get stickyColorGray => 'Gray';
+
+  @override
+  String get stickyColorCustom => 'Custom';
+
+  @override
+  String get trayNewSticky => 'New sticky';
+
+  @override
+  String get trayShowAllStickies => 'Show all stickies';
+
+  @override
+  String get trayHideAllStickies => 'Hide all stickies';
+
+  @override
+  String get trayOpenTephra => 'Open Tephra';
+
+  @override
+  String get trayQuit => 'Quit';
 }

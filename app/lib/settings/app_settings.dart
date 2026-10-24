@@ -67,9 +67,17 @@ final class AppSettings {
     this.pagePreviewReadingRequiresCtrl = false,
     this.pagePreviewEditorRequiresCtrl = true,
     this.switcherShowAttachments = false,
-    this.keepSyncingWhenClosed = false,
+    bool? keepSyncingWhenClosed,
+    bool? keepRunningInTray,
+    this.stickiesRestoreOnStart = true,
+    this.stickiesHiddenAll = false,
+    this.stickiesMaxWindows = 20,
+    this.stickyHotkey = 'Ctrl+Alt+N',
+    this.startWithWindows = false,
+    this.quickNoteNotification = false,
+    this.remindersEnabled = true,
     this.extra = const {},
-  });
+  }) : keepRunningInTray = keepRunningInTray ?? keepSyncingWhenClosed ?? true;
 
   factory AppSettings.fromJson(
     Map<String, Object?> json, {
@@ -85,9 +93,18 @@ final class AppSettings {
         json['pagePreviewEditorRequiresCtrl'] as bool? ?? true;
     final switcherShowAttachments =
         json['switcherShowAttachments'] as bool? ?? false;
-    final keepSyncingWhenClosed =
-        json['keepSyncingWhenClosed'] as bool? ??
-        (json['app.keepRunningInTray'] as bool? ?? false);
+    final keepRunningInTray =
+        json['app.keepRunningInTray'] as bool? ??
+        (json['keepSyncingWhenClosed'] as bool? ?? true);
+    final stickiesRestoreOnStart =
+        json['stickies.restoreOnStart'] as bool? ?? true;
+    final stickiesHiddenAll = json['stickies.hiddenAll'] as bool? ?? false;
+    final stickiesMaxWindows = json['stickies.maxWindows'] as int? ?? 20;
+    final stickyHotkey = json['stickies.hotkey'] as String? ?? 'Ctrl+Alt+N';
+    final startWithWindows = json['app.startWithWindows'] as bool? ?? false;
+    final quickNoteNotification =
+        json['capture.persistentNotification'] as bool? ?? false;
+    final remindersEnabled = json['reminders.enabled'] as bool? ?? true;
 
     final rawRecentVaults = json['recentVaults'];
     final recentVaults = <RecentVault>[];
@@ -121,6 +138,13 @@ final class AppSettings {
       'switcherShowAttachments',
       'keepSyncingWhenClosed',
       'app.keepRunningInTray',
+      'stickies.restoreOnStart',
+      'stickies.hiddenAll',
+      'stickies.maxWindows',
+      'stickies.hotkey',
+      'app.startWithWindows',
+      'capture.persistentNotification',
+      'reminders.enabled',
     };
     final extra = <String, Object?>{};
     for (final entry in json.entries) {
@@ -139,7 +163,14 @@ final class AppSettings {
       pagePreviewReadingRequiresCtrl: pagePreviewReadingRequiresCtrl,
       pagePreviewEditorRequiresCtrl: pagePreviewEditorRequiresCtrl,
       switcherShowAttachments: switcherShowAttachments,
-      keepSyncingWhenClosed: keepSyncingWhenClosed,
+      keepRunningInTray: keepRunningInTray,
+      stickiesRestoreOnStart: stickiesRestoreOnStart,
+      stickiesHiddenAll: stickiesHiddenAll,
+      stickiesMaxWindows: stickiesMaxWindows,
+      stickyHotkey: stickyHotkey,
+      startWithWindows: startWithWindows,
+      quickNoteNotification: quickNoteNotification,
+      remindersEnabled: remindersEnabled,
       extra: Map.unmodifiable(extra),
     );
   }
@@ -172,7 +203,29 @@ final class AppSettings {
   final bool switcherShowAttachments;
 
   /// Whether to keep the app and sync workers running in the system tray when the window is closed.
-  final bool keepSyncingWhenClosed;
+  final bool keepRunningInTray;
+  bool get keepSyncingWhenClosed => keepRunningInTray;
+
+  /// Whether to restore floating sticky windows at startup.
+  final bool stickiesRestoreOnStart;
+
+  /// Whether stickies are currently hidden globally.
+  final bool stickiesHiddenAll;
+
+  /// Maximum allowed floating sticky windows open at once.
+  final int stickiesMaxWindows;
+
+  /// Global hotkey accelerator string for quick note capture.
+  final String stickyHotkey;
+
+  /// Whether to launch Tephra on Windows user login.
+  final bool startWithWindows;
+
+  /// Whether persistent quick-note notification is enabled on Android.
+  final bool quickNoteNotification;
+
+  /// Whether reminder notifications are enabled.
+  final bool remindersEnabled;
 
   /// Unknown keys preserved on read/write.
   final Map<String, Object?> extra;
@@ -188,7 +241,15 @@ final class AppSettings {
       'pagePreviewReadingRequiresCtrl': pagePreviewReadingRequiresCtrl,
       'pagePreviewEditorRequiresCtrl': pagePreviewEditorRequiresCtrl,
       'switcherShowAttachments': switcherShowAttachments,
-      'keepSyncingWhenClosed': keepSyncingWhenClosed,
+      'keepSyncingWhenClosed': keepRunningInTray,
+      'app.keepRunningInTray': keepRunningInTray,
+      'stickies.restoreOnStart': stickiesRestoreOnStart,
+      'stickies.hiddenAll': stickiesHiddenAll,
+      'stickies.maxWindows': stickiesMaxWindows,
+      'stickies.hotkey': stickyHotkey,
+      'app.startWithWindows': startWithWindows,
+      'capture.persistentNotification': quickNoteNotification,
+      'reminders.enabled': remindersEnabled,
     };
     map.addAll(extra);
     return map;
@@ -205,6 +266,14 @@ final class AppSettings {
     bool? pagePreviewEditorRequiresCtrl,
     bool? switcherShowAttachments,
     bool? keepSyncingWhenClosed,
+    bool? keepRunningInTray,
+    bool? stickiesRestoreOnStart,
+    bool? stickiesHiddenAll,
+    int? stickiesMaxWindows,
+    String? stickyHotkey,
+    bool? startWithWindows,
+    bool? quickNoteNotification,
+    bool? remindersEnabled,
     Map<String, Object?>? extra,
   }) {
     return AppSettings(
@@ -222,8 +291,17 @@ final class AppSettings {
           pagePreviewEditorRequiresCtrl ?? this.pagePreviewEditorRequiresCtrl,
       switcherShowAttachments:
           switcherShowAttachments ?? this.switcherShowAttachments,
-      keepSyncingWhenClosed:
-          keepSyncingWhenClosed ?? this.keepSyncingWhenClosed,
+      keepRunningInTray:
+          keepRunningInTray ?? keepSyncingWhenClosed ?? this.keepRunningInTray,
+      stickiesRestoreOnStart:
+          stickiesRestoreOnStart ?? this.stickiesRestoreOnStart,
+      stickiesHiddenAll: stickiesHiddenAll ?? this.stickiesHiddenAll,
+      stickiesMaxWindows: stickiesMaxWindows ?? this.stickiesMaxWindows,
+      stickyHotkey: stickyHotkey ?? this.stickyHotkey,
+      startWithWindows: startWithWindows ?? this.startWithWindows,
+      quickNoteNotification:
+          quickNoteNotification ?? this.quickNoteNotification,
+      remindersEnabled: remindersEnabled ?? this.remindersEnabled,
       extra: extra ?? this.extra,
     );
   }
@@ -281,11 +359,18 @@ final class AppSettings {
           pagePreviewEditorRequiresCtrl ==
               other.pagePreviewEditorRequiresCtrl &&
           switcherShowAttachments == other.switcherShowAttachments &&
-          keepSyncingWhenClosed == other.keepSyncingWhenClosed &&
+          keepRunningInTray == other.keepRunningInTray &&
+          stickiesRestoreOnStart == other.stickiesRestoreOnStart &&
+          stickiesHiddenAll == other.stickiesHiddenAll &&
+          stickiesMaxWindows == other.stickiesMaxWindows &&
+          stickyHotkey == other.stickyHotkey &&
+          startWithWindows == other.startWithWindows &&
+          quickNoteNotification == other.quickNoteNotification &&
+          remindersEnabled == other.remindersEnabled &&
           mapEquals(extra, other.extra);
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     themeMode,
     Object.hashAll(recentVaults),
     deviceId,
@@ -295,7 +380,14 @@ final class AppSettings {
     pagePreviewReadingRequiresCtrl,
     pagePreviewEditorRequiresCtrl,
     switcherShowAttachments,
-    keepSyncingWhenClosed,
+    keepRunningInTray,
+    stickiesRestoreOnStart,
+    stickiesHiddenAll,
+    stickiesMaxWindows,
+    stickyHotkey,
+    startWithWindows,
+    quickNoteNotification,
+    remindersEnabled,
     Object.hashAll(extra.entries),
-  );
+  ]);
 }

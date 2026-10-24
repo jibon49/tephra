@@ -17,6 +17,7 @@ export '../links/providers.dart'
 export '../settings/providers.dart'
     show appSettingsProvider, vaultSettingsProvider;
 export '../vault/index_session.dart' show NoteIndexNotifier;
+export 'platform/platform_providers.dart';
 export 'sync/google_auth_service.dart'
     show GoogleAccount, GoogleAuthService, createGoogleAuthService;
 

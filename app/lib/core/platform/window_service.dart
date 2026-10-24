@@ -12,6 +12,12 @@ abstract interface class WindowService {
   /// Hides the main application window (e.g. to system tray).
   Future<void> hideMainWindow();
 
+  /// Checks whether autostart with Windows is enabled.
+  Future<bool> isLaunchAtStartupEnabled();
+
+  /// Enables or disables autostart with Windows.
+  Future<void> setLaunchAtStartup(bool enabled);
+
   /// Sets whether window close is intercepted rather than immediately terminating the process.
   Future<void> setPreventClose(bool prevent);
 
@@ -34,6 +40,12 @@ class NoopWindowService implements WindowService {
 
   @override
   Future<void> hideMainWindow() async {}
+
+  @override
+  Future<bool> isLaunchAtStartupEnabled() async => false;
+
+  @override
+  Future<void> setLaunchAtStartup(bool enabled) async {}
 
   @override
   Future<void> setPreventClose(bool prevent) async {}
@@ -69,6 +81,12 @@ class WindowsWindowService with WindowListener implements WindowService {
   Future<void> hideMainWindow() async {
     await _manager.hide();
   }
+
+  @override
+  Future<bool> isLaunchAtStartupEnabled() async => false;
+
+  @override
+  Future<void> setLaunchAtStartup(bool enabled) async {}
 
   @override
   Future<void> setPreventClose(bool prevent) async {

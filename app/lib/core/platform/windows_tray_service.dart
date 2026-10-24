@@ -142,7 +142,31 @@ class WindowsTrayService implements TrayService {
   Stream<String> get menuClicks => _menuClicks.stream;
 
   @override
+  Stream<TrayAction> get actions => _menuClicks.stream
+      .map((id) {
+        switch (id) {
+          case 'new_sticky':
+            return TrayAction.newSticky;
+          case 'show_all_stickies':
+            return TrayAction.showAllStickies;
+          case 'hide_all_stickies':
+            return TrayAction.hideAllStickies;
+          case 'open_tephra':
+            return TrayAction.openTephra;
+          case 'quit':
+            return TrayAction.quit;
+          default:
+            return null;
+        }
+      })
+      .where((a) => a != null)
+      .cast<TrayAction>();
+
+  @override
   Stream<void> get iconClicks => _iconClicks.stream;
+
+  @override
+  Future<void> init({required String tooltip}) => show(tooltip: tooltip);
 
   @override
   Future<void> show({required String tooltip}) async {
@@ -162,6 +186,11 @@ class WindowsTrayService implements TrayService {
         _menuClicks.add(id);
       }
     });
+  }
+
+  @override
+  Future<void> setActions(List<TrayAction> actions) async {
+    // High-level action conversion will be implemented in step 04.11
   }
 
   @override

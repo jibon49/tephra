@@ -271,6 +271,11 @@ final class VaultSettings {
     this.useMarkdownLinks = false,
     this.alwaysUpdateLinks = true,
     this.excludedFolders = const [],
+    this.stickyFolder = 'Stickies',
+    this.stickyDefaultColor = 'yellow',
+    this.shareTarget = 'dailyNote',
+    this.quickCaptureTarget = 'dailyNote',
+    this.inboxNotePath = 'Inbox.md',
     this.extra = const {},
   });
 
@@ -372,6 +377,20 @@ final class VaultSettings {
               .toList()
         : const <String>[];
 
+    final stickyFolder = json['stickies.folder'] as String? ?? 'Stickies';
+    final stickyDefaultColor =
+        json['stickies.defaultColor'] as String? ?? 'yellow';
+    var shareTarget = json['capture.shareTarget'] as String? ?? 'dailyNote';
+    if (shareTarget != 'newNote' && shareTarget != 'dailyNote') {
+      shareTarget = 'dailyNote';
+    }
+    var quickCaptureTarget =
+        json['capture.quickTarget'] as String? ?? 'dailyNote';
+    if (quickCaptureTarget != 'dailyNote' && quickCaptureTarget != 'inbox') {
+      quickCaptureTarget = 'dailyNote';
+    }
+    final inboxNotePath = json['capture.inboxPath'] as String? ?? 'Inbox.md';
+
     const knownKeys = {
       'attachmentFolder',
       'newFileLocation',
@@ -394,6 +413,11 @@ final class VaultSettings {
       'useMarkdownLinks',
       'alwaysUpdateLinks',
       'excludedFolders',
+      'stickies.folder',
+      'stickies.defaultColor',
+      'capture.shareTarget',
+      'capture.quickTarget',
+      'capture.inboxPath',
     };
 
     final extra = <String, Object?>{};
@@ -425,6 +449,11 @@ final class VaultSettings {
       useMarkdownLinks: useMarkdownLinks,
       alwaysUpdateLinks: alwaysUpdateLinks,
       excludedFolders: List.unmodifiable(excludedFolders),
+      stickyFolder: stickyFolder,
+      stickyDefaultColor: stickyDefaultColor,
+      shareTarget: shareTarget,
+      quickCaptureTarget: quickCaptureTarget,
+      inboxNotePath: inboxNotePath,
       extra: Map.unmodifiable(extra),
     );
   }
@@ -476,6 +505,11 @@ final class VaultSettings {
   final bool useMarkdownLinks;
   final bool alwaysUpdateLinks;
   final List<String> excludedFolders;
+  final String stickyFolder;
+  final String stickyDefaultColor;
+  final String shareTarget;
+  final String quickCaptureTarget;
+  final String inboxNotePath;
   final Map<String, Object?> extra;
 
   NewFileLocation get newFileLocationEnum =>
@@ -544,6 +578,11 @@ final class VaultSettings {
       'useMarkdownLinks': useMarkdownLinks,
       'alwaysUpdateLinks': alwaysUpdateLinks,
       'excludedFolders': excludedFolders,
+      'stickies.folder': stickyFolder,
+      'stickies.defaultColor': stickyDefaultColor,
+      'capture.shareTarget': shareTarget,
+      'capture.quickTarget': quickCaptureTarget,
+      'capture.inboxPath': inboxNotePath,
     };
     map.addAll(extra);
     return map;
@@ -571,6 +610,11 @@ final class VaultSettings {
     bool? useMarkdownLinks,
     bool? alwaysUpdateLinks,
     List<String>? excludedFolders,
+    String? stickyFolder,
+    String? stickyDefaultColor,
+    String? shareTarget,
+    String? quickCaptureTarget,
+    String? inboxNotePath,
     Map<String, Object?>? extra,
   }) {
     return VaultSettings(
@@ -595,6 +639,11 @@ final class VaultSettings {
       useMarkdownLinks: useMarkdownLinks ?? this.useMarkdownLinks,
       alwaysUpdateLinks: alwaysUpdateLinks ?? this.alwaysUpdateLinks,
       excludedFolders: excludedFolders ?? this.excludedFolders,
+      stickyFolder: stickyFolder ?? this.stickyFolder,
+      stickyDefaultColor: stickyDefaultColor ?? this.stickyDefaultColor,
+      shareTarget: shareTarget ?? this.shareTarget,
+      quickCaptureTarget: quickCaptureTarget ?? this.quickCaptureTarget,
+      inboxNotePath: inboxNotePath ?? this.inboxNotePath,
       extra: extra ?? this.extra,
     );
   }
@@ -624,6 +673,11 @@ final class VaultSettings {
           useMarkdownLinks == other.useMarkdownLinks &&
           alwaysUpdateLinks == other.alwaysUpdateLinks &&
           listEquals(excludedFolders, other.excludedFolders) &&
+          stickyFolder == other.stickyFolder &&
+          stickyDefaultColor == other.stickyDefaultColor &&
+          shareTarget == other.shareTarget &&
+          quickCaptureTarget == other.quickCaptureTarget &&
+          inboxNotePath == other.inboxNotePath &&
           mapEquals(extra, other.extra);
 
   @override
@@ -649,6 +703,11 @@ final class VaultSettings {
     useMarkdownLinks,
     alwaysUpdateLinks,
     Object.hashAll(excludedFolders),
+    stickyFolder,
+    stickyDefaultColor,
+    shareTarget,
+    quickCaptureTarget,
+    inboxNotePath,
     Object.hashAll(extra.entries),
   ]);
 }

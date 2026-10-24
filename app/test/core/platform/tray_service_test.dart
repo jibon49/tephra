@@ -49,6 +49,7 @@ class FakeWindowService implements WindowService {
   bool isShown = true;
   bool preventClose = false;
   bool isDestroyed = false;
+  bool launchAtStartup = false;
   final StreamController<void> _closeEvents =
       StreamController<void>.broadcast();
 
@@ -57,6 +58,13 @@ class FakeWindowService implements WindowService {
 
   @override
   Future<void> hideMainWindow() async => isShown = false;
+
+  @override
+  Future<bool> isLaunchAtStartupEnabled() async => launchAtStartup;
+
+  @override
+  Future<void> setLaunchAtStartup(bool enabled) async =>
+      launchAtStartup = enabled;
 
   @override
   Future<bool> isPreventClose() async => preventClose;

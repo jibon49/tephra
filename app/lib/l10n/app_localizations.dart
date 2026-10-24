@@ -4220,6 +4220,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open as vault'**
   String get restoreOpenAsVault;
+
+  /// No description provided for @stickyCommandNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: New sticky'**
+  String get stickyCommandNew;
+
+  /// No description provided for @stickyCommandPinNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Pin as sticky'**
+  String get stickyCommandPinNote;
+
+  /// No description provided for @stickyCommandUnpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Unpin sticky'**
+  String get stickyCommandUnpin;
+
+  /// No description provided for @stickyCommandSetColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Set color'**
+  String get stickyCommandSetColor;
+
+  /// No description provided for @stickyCommandLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Toggle lock'**
+  String get stickyCommandLock;
+
+  /// No description provided for @stickyCommandSetReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Set reminder'**
+  String get stickyCommandSetReminder;
+
+  /// No description provided for @stickyCommandSetExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Set expiry'**
+  String get stickyCommandSetExpiry;
+
+  /// No description provided for @stickyCommandOpenWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Open in separate window'**
+  String get stickyCommandOpenWindow;
+
+  /// No description provided for @stickyCommandShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Show all'**
+  String get stickyCommandShowAll;
+
+  /// No description provided for @stickyCommandHideAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Hide all'**
+  String get stickyCommandHideAll;
+
+  /// No description provided for @stickyCommandBoard.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes: Open sticky board'**
+  String get stickyCommandBoard;
+
+  /// No description provided for @captureCommandQuickNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick capture: New note'**
+  String get captureCommandQuickNote;
+
+  /// No description provided for @stickyColorYellow.
+  ///
+  /// In en, this message translates to:
+  /// **'Yellow'**
+  String get stickyColorYellow;
+
+  /// No description provided for @stickyColorPink.
+  ///
+  /// In en, this message translates to:
+  /// **'Pink'**
+  String get stickyColorPink;
+
+  /// No description provided for @stickyColorBlue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get stickyColorBlue;
+
+  /// No description provided for @stickyColorGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get stickyColorGreen;
+
+  /// No description provided for @stickyColorPurple.
+  ///
+  /// In en, this message translates to:
+  /// **'Purple'**
+  String get stickyColorPurple;
+
+  /// No description provided for @stickyColorGray.
+  ///
+  /// In en, this message translates to:
+  /// **'Gray'**
+  String get stickyColorGray;
+
+  /// No description provided for @stickyColorCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get stickyColorCustom;
+
+  /// No description provided for @trayNewSticky.
+  ///
+  /// In en, this message translates to:
+  /// **'New sticky'**
+  String get trayNewSticky;
+
+  /// No description provided for @trayShowAllStickies.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all stickies'**
+  String get trayShowAllStickies;
+
+  /// No description provided for @trayHideAllStickies.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide all stickies'**
+  String get trayHideAllStickies;
+
+  /// No description provided for @trayOpenTephra.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Tephra'**
+  String get trayOpenTephra;
+
+  /// No description provided for @trayQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get trayQuit;
 }
 
 class _AppLocalizationsDelegate
