@@ -11,9 +11,13 @@ Format rules:
 
 ## Current status
 
-- Current phase: **02**
-- Current step: **02.26**
-- Last gate passed: **01**
+- Current phase: **04**
+- Current step: **04.1**
+- Last gate passed: **03** (all steps done; merged and tagged `v0.03.0`). Gate items marked "not verified on device"
+  in Phases 02 and 03 are still open and need the human's real-device testing — do not tick them yourself.
+- Keep this block updated after every step (GEMINI.md §3) — it was stale after Phase 2 and 3.
+- 2026-10-20: Phase 06 gained extra steps (Notion-style database views and templates, appended after 06.24).
+  The Phase 06 step list below was updated; nothing in Phases 00–05 changed.
 
 ## Phase 00 — Foundation
 
@@ -499,10 +503,22 @@ Instructions: `instructions/phase-06-visual-views.md`
 - [ ] 06.22 PDF viewer, deep links and page embeds
 - [ ] 06.23 Image viewer, audio/video players and media embeds
 - [ ] 06.24 Slides
+- [ ] 06.25 Template variables v2: prompts, choices, cursor, date offsets, folder, vault, file name
+- [ ] 06.26 Applying templates: frontmatter merge, insert/append, new-note picker, folder defaults
+- [ ] 06.27 Bases model v2: Obsidian view types, Tephra-only views, typed options, lossless option edits
+- [ ] 06.28 View framework: switcher tabs, renderer registry, safe note writes, undo, base embeds
+- [ ] 06.29 Board view (`type: kanban`)
+- [ ] 06.30 Calendar view (`type: tephra-calendar`)
+- [ ] 06.31 List view, Gallery view and the thumbnail cache
+- [ ] 06.32 Timeline view (`type: tephra-timeline`)
+- [ ] 06.33 The "New" button, prefilled notes and "Create database here"
+- [ ] 06.34 Template gallery: bundled templates, template packs, installer and gallery UI
+- [ ] 06.35 Template buttons: ` ```tephra-button ` blocks
+- [ ] 06.36 Views performance, Obsidian compatibility check and consolidation
 
 ### Exit gate
 
-- [ ] Every step 06.1–06.24 is ticked, with tests passing: `flutter analyze --fatal-infos` clean, `dart format` clean, all package
+- [ ] Every step 06.1–06.36 is ticked, with tests passing: `flutter analyze --fatal-infos` clean, `dart format` clean, all package
 - [ ] **Graph budget (Windows):** 10k-note bench vault, `graph_perf_test` in profile mode: average frame ≤ 16.7 ms and p90 ≤ 20 ms; mean
 - [ ] **Graph budget (Android phone):** same test on the real phone: average frame ≤ 33.3 ms and p90 ≤ 40 ms; mean tick ≤ 60 ms. Device
 - [ ] **Canvas round-trip:** every `test_vaults/syntax/canvas/*.canvas` fixture and at least 3 canvases created in Obsidian open and close
@@ -515,7 +531,20 @@ Instructions: `instructions/phase-06-visual-views.md`
 - [ ] Slides work on both platforms (keyboard on Windows, swipe on the phone).
 - [ ] `dart run tool/check_licenses.dart` passes; `THIRD_PARTY_NOTICES.md` lists every new package and Mermaid.
 - [ ] The Phase 1 round-trip test (all fixture vaults, 0 changed bytes) and the Phase 2 performance budgets still pass.
-- [ ] Demo script 1–11 passes on Windows and Android.
+- [ ] **Template engine v2:** all `template_engine_v2_test`, `template_prompt_test`, `template_date_offset_test` and `template_merge_test` cases pass, and every 02.22 / 02.27 template test still passes unchanged (except the documented 02.27 list-merge rule change, recorded in `PROGRESS.md` → Conflicts).
+- [ ] **Template cancel safety:** cancelling any prompt (new note, insert, append, button, "+ New" in a view) leaves **0** files written and no empty note (tests `template_applier_test`, `new_note_flow_test`, `button_runner_test` pass).
+- [ ] **Template gallery:** all 12 bundled templates and 4 packs pass `gallery_assets_test` (no unresolved `{{`, valid frontmatter, every pack `.base` parses with 0 issues and round-trips with 0 changed bytes); installing a pack never overwrites an existing file (`pack_installer_test`); a failed install leaves no new files.
+- [ ] **Base round-trip with Tephra views:** every fixture in `test_vaults/syntax/bases/` (including `kanban.base`, `list.base`, `tephra-views.base`, `map-unsupported.base`, `tephra-options-invalid.base`) opens and closes in Tephra with **0 changed bytes**; a drag, a lane hide, a calendar mode change and a timeline resize each change only the intended keys (diff checked in `base_editor_v2_test` and `board_view_test`); every `tephra*` key, the `map` view and unknown keys survive every edit.
+- [ ] **Property writes are minimal:** dragging a board card or rescheduling a calendar/timeline item changes only the affected frontmatter lines of that note (byte diff in `base_property_writer_test`, `calendar_view_test`, `timeline_view_test`), each action is **one** Bases undo step, and undo restores the exact original bytes.
+- [ ] **Obsidian-open check recorded:** `tephra-views.base` and one pack `.base` were opened in Obsidian (version recorded); the file opened; Obsidian's table/cards/list/kanban views displayed correctly; what Obsidian shows for `tephra-calendar`, `tephra-gallery`, `tephra-timeline` and `map`, and whether its own save preserved the Tephra-only views and `tephra*` keys, are written in `PROGRESS.md` → "Obsidian compatibility of Tephra views"; the Kanban image-key and List-option key names written by Obsidian are recorded. (If Obsidian is unavailable on this machine, stop and ask the human to perform this check.)
+- [ ] **Board/Calendar open budget (Windows):** 2,000 matching notes, profile mode, median of 3: Board open **< 500 ms** and Calendar (month) open **< 500 ms**. Numbers recorded.
+- [ ] **Board/Calendar open budget (Android phone):** same scenario on the real phone: Board **< 1 s**, Calendar **< 1 s**. Device model and numbers recorded.
+- [ ] **10k-row responsiveness:** with 10,000 matching notes, Table, List, Gallery, Board, Calendar and Timeline pass the scripted interaction: Windows average frame ≤ 16.7 ms and p90 ≤ 20 ms; phone average ≤ 33.3 ms and p90 ≤ 40 ms; no frame over 100 ms after the first frame of a view. Numbers recorded per view.
+- [ ] **Thumbnail cache:** `.tephra/cache/thumbs/` never exceeds 200 MB (eviction test), thumbnails are ≤ 256 px, and no cache file is visible in the explorer, the index or sync (test + manual).
+- [ ] **Templates in Obsidian:** a template made from the gallery and a note created from it open in Obsidian with intact properties; Tephra-only variables appear literally only in the **template** file when inserted by Obsidian (documented behaviour); `tephra-button` blocks show as plain code blocks in Obsidian.
+- [ ] **Button safety:** `run-command` always asks for confirmation, only runs registered command ids, and `button_runner_test` proves no other action runs anything (no shell, no URL).
+- [ ] `bases_templates_commands_test` and `phase06b_keys_test` pass (all new commands registered, all new l10n keys present, no hard-coded UI strings).
+- [ ] Demo script 1–19 passes on Windows and Android.
 
 ### Phase notes
 

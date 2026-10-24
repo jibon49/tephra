@@ -176,6 +176,26 @@ Call the printer guy
 - **Web clipper** (browser extension, later phase) saving pages as Markdown.
 - **Real-time collaboration** on a shared vault (CRDT-based, later phase, via Tephra Cloud).
 
+### 4.5 Notion-style templates and database views (added 2026-10-20)
+
+Built in Phase 6, still stored as plain Markdown + frontmatter + `.base` files, so Obsidian opens everything.
+
+**Templates**
+- Template gallery with ready-made templates (meeting notes, journal, weekly review, project brief, task, book, recipe,
+  contact, lecture notes, trip plan, bug report, decision record) and **template packs** that set up a whole workspace
+  (Projects & tasks, Reading list, Habit tracker, Simple CRM): folder + database view + templates.
+- Template picker on "New note", and default templates per folder (e.g. new note in `Projects/` uses the Project template).
+- Smarter template variables: questions (`{{prompt:Client name}}`), choices (`{{select:Status|todo,doing,done}}`),
+  cursor position, date offsets (`{{date+7d}}`), folder/file names. Template properties merge into the note's properties.
+- Template buttons inside notes (a `tephra-button` block): "New meeting note", "Add today's log", run a command.
+
+**Database views** (extending Bases)
+- Board (Kanban by any property — drag a card to change the note's status), Calendar (by date, drag to reschedule),
+  Gallery (cover images), Timeline (start/end dates, drag to move or resize), List, plus the existing Table and Cards.
+- "New" button in every view: creates a note from the database's template with properties pre-filled
+  (e.g. clicking + in the "Doing" lane creates a note with `status: doing`).
+- Inline databases: insert a database view inside any note.
+
 ## 5. Architecture
 
 ```

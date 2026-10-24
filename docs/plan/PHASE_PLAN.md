@@ -31,7 +31,7 @@ its buffer, we cut scope (moved to a later phase) rather than lower the quality 
 | 3 | Sync & backup via Google Drive | 5 | **Beta**: one vault on phone and PC, encrypted, versioned |
 | 4 | Sticky notes & quick capture | 3 | Floating stickies (PC), widgets & bubbles (Android) |
 | 5 | Import & export | 3 | Move in from other apps; PDF/HTML/DOCX/zip out |
-| 6 | Visual views | 6 | Graph, Canvas, Bases, slides, media, math, Mermaid |
+| 6 | Visual views | 6 | Graph, Canvas, Bases (+ board/calendar/gallery/timeline), Notion-style templates, slides, media, math, Mermaid |
 | 7 | Remaining parity & polish | 4 | Everything else Obsidian's core has |
 | 8 | Advanced extras | 8 | AI, semantic search, tasks, Kanban, OCR, voice, sketching, encryption |
 | 9 | Release hardening | 3 | **v1.0** as direct-download APK + Windows `.exe` |

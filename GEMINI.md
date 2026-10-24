@@ -30,7 +30,7 @@ This file is your standing instruction set. Read it fully at the start of every 
 | Flutter | `D:\dev\flutter` — Flutter **3.47.7** stable, Dart **3.13.5** (on the user PATH) |
 | Android SDK | `D:\dev\android-sdk` (`ANDROID_HOME` set) — platform `android-36`, build-tools `36.0.0`, platform-tools; licences accepted |
 | Java | JDK 17 (`C:\Program Files\Java\jdk-17`) |
-| Windows C++ toolchain | Visual Studio Build Tools 2022 (17.14) with the C++ workload + Windows SDK |
+| Windows C++ toolchain | Visual Studio Build Tools 2022 (17.14) with the C++ workload + Windows SDK + ATL (`VC.ATL`, needed by flutter_secure_storage; added 2026-10-20) |
 | Windows Developer Mode | **On** (needed: Flutter plugins use symlinks) |
 | Git | 2.55 |
 | Dev Launcher | running at `http://127.0.0.1:7799` (see Phase 0) |

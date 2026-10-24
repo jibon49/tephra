@@ -178,7 +178,7 @@ embeds `![[...]]` with optional `|300`, `|300x200`, `#page=3`; `#tag`, `#nested/
 `==highlight==`; `%%comment%%` inline and multi-line; block IDs `^id` at end of a block (`[A-Za-z0-9-]+`);
 callouts `> [!type] Title`, `> [!type]+`, `> [!type]-` (fold), nested callouts; task status any single char `[ ]`, `[x]`, `[/]`, `[-]`, `[>]`…;
 math `$inline$` (no space after opening/before closing `$`), `$$block$$`; footnotes `[^1]` + `[^1]: text`, inline `^[text]`;
-fenced code with language; ` ```mermaid `, ` ```query `, ` ```base ` blocks (rendered specially in later phases); HTML blocks/inline (rendered as text or minimal subset, never executed).
+fenced code with language; ` ```mermaid `, ` ```query `, ` ```base `, ` ```tephra-button ` blocks (rendered specially in later phases; `tephra-button` is Tephra-only and shows as a plain code block in Obsidian); HTML blocks/inline (rendered as text or minimal subset, never executed).
 
 ### 6.4 Frontmatter / properties
 - YAML between a first line `---` and the next `---` line, only at the very start of the file.
@@ -200,7 +200,7 @@ fenced code with language; ` ```mermaid `, ` ```query `, ` ```base ` blocks (ren
 | File | Content |
 |---|---|
 | `.tephra/vault.json` | `{ "id": "<uuid v4>", "createdAt": ISO, "formatVersion": 1 }` |
-| `.tephra/settings.json` | vault-level settings (attachment folder, new-note location, link format, daily notes, templates, excluded folders, …) |
+| `.tephra/settings.json` | vault-level settings (attachment folder, new-note location, link format, daily notes, templates incl. `templates.askOnNewNote` and `templates.folderDefaults`, excluded folders, …) |
 | `.tephra/hotkeys.json` | user hotkey overrides `{ "<commandId>": ["Ctrl+Shift+K", ...] }` |
 | `.tephra/bookmarks.json` | same structure as Obsidian `bookmarks.json` (`items: [{type, title?, path?, subpath?, query?, items?}]`) |
 | `.tephra/types.json` | property types `{ "types": { "<key>": "text|multitext|number|checkbox|date|datetime|aliases|tags" } }` |

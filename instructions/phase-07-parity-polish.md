@@ -194,6 +194,7 @@ colour picker yourself — a hue/saturation square is not needed; presets + hex 
    | `dailyNotes.format` / `.folder` / `.template` / `.openOnStartup` | existing Ph. 2 keys | Ph. 2 | vault | dailyNotes |
    | `templates.folder` / `.dateFormat` / `.timeFormat` | existing Ph. 2 keys | Ph. 2 | vault | templates |
    | `uniqueNote.prefixFormat` / `.folder` / `.template` | existing Ph. 2 keys | Ph. 2 | vault | uniqueNoteCreator |
+   | `templates.*` and `bases.*` keys added in Phase 6 (06.25–06.36: e.g. `templates.askOnNewNote`, `templates.folderDefaults`) | existing Ph. 6 keys — copy the exact list from the Phase 6 Hand-off | Ph. 6 | vault | templates / bases |
    | `pagePreviewReadingRequiresCtrl` / `pagePreviewEditorRequiresCtrl` | existing Ph. 2 keys (02.14) | Ph. 2 | app | pagePreview |
    | `noteComposer.textAfterExtraction` | enum `link`/`embed`/`none` | `link` | vault | noteComposer |
    | `noteComposer.templateFile` | string (vault path) | `''` | vault | noteComposer |
