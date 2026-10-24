@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **04**
-- Current step: **04.5**
+- Current step: **04.6**
 - Last gate passed: **03** (all steps done; merged and tagged `v0.03.0`). Gate items marked "not verified on device"
   in Phases 02 and 03 are still open and need the human's real-device testing — do not tick them yourself.
 - Keep this block updated after every step (GEMINI.md §3) — it was stale after Phase 2 and 3.
@@ -421,7 +421,8 @@ eighbour)
   - notes: Implemented Sticky model with frontmatter split body/tags, sticky naming with collision handling, OpenNoteBridge and AppOpenNoteBridge, atomic StickyFileWriter (with contentHash verification and CRLF/BOM preservation), StickyRepository with batched search discovery, archive partition, atomic setText/patch and change events, and Riverpod stickiesProvider/stickyRepositoryProvider; all 41 sticky model, file writer, naming, and repository unit tests passing.
 - [x] 04.4 Sticky commands and editor integration
   - notes: Registered 12 sticky commands (palette + hotkeys), built StickyColorPicker (named + hex validation), StickyReminderDialog (chips + date/time pickers), StickyExpiryDialog, and StickyNoteBanner (32dp strip with colour, lock, remind, expire); integrated banner into SourceEditorView and NoteReadingView with sticky lock = read-only; 48 tests passing in app/test/stickies; format and analyze clean.
-- [ ] 04.5 Sticky mini renderer and sticky card
+- [x] 04.5 Sticky mini renderer and sticky card
+  - notes: Implemented lightweight StickyMiniRenderer (AST parsing off build path via StatefulWidget memoisation, frontmatter & comments skipped, headings/paragraphs/lists/callouts/quotes/code/tables/inlines rendered, task toggle line computation) and StickyCard (rounded 8dp, elevation 2/4, WCAG contrast textColor, pinned/locked/remind status icons, bottom fade with ShaderMask); 55 sticky tests passing including golden tests (sticky_card_yellow.png and sticky_card_hex_dark.png); format and analyze clean.
 - [ ] 04.6 Sticky board data: JSON Canvas file, colour mapping and reconciliation
 - [ ] 04.7 Sticky board screen (both platforms)
 - [ ] 04.8 Windows multi-window foundation and the sticky message protocol
