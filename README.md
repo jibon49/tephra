@@ -12,6 +12,7 @@ Agent rules: GEMINI.md. Technical contract: instructions/00-conventions.md.
 - **Source Editor**: Syntax highlighting, auto-pairing, smart indentation, list continuation, keyboard shortcuts, find & replace, and a mobile formatting toolbar.
 - **Data Safety & Autosave**: 1-second debounced autosave, atomic file writes (`write temp -> flush -> rename`), external change detection, three-way merge, and conflict resolution.
 - **Attachments**: Drag-and-drop, clipboard image paste, attachment subfolder routing, and file pickers.
+- **Sticky Notes & Quick Capture**: Floating desktop windows and Android bubble sticky notes with lightweight mini renderer, interactive task toggles, JSON Canvas 1.0 board view, system tray and global hotkeys, home-screen widgets, Quick Settings tile, Android share target, and auto-archiving of expired stickies.
 
 ## Install
 

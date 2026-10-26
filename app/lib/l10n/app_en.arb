@@ -1290,7 +1290,17 @@
   "shortcutTodaysNote": "Today's note",
   "shortcutNewSticky": "New sticky",
   "capturePersistentNotification": "Persistent quick note notification",
-  "capturePersistentNotificationSubtitle": "Keep a quick note shortcut and inline reply in the notification shade"
+  "capturePersistentNotificationSubtitle": "Keep a quick note shortcut and inline reply in the notification shade",
+  "stickyArchivedCount": "Archived {count, plural, =1{1 expired sticky} other{{count} expired stickies}}",
+  "@stickyArchivedCount": {
+    "description": "Notification snackbar when expired stickies are auto-archived",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stickyArchivedShow": "Show"
 }
 
 

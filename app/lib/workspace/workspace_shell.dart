@@ -58,6 +58,7 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
       ref.read(headlessConfigSyncProvider);
       ref.read(stickyWidgetSyncProvider);
       ref.read(overlayBridgeProvider);
+      ref.read(stickyArchiverProvider);
       registerBuiltinPanels(ref);
       final registry = ref.read(statusBarRegistryProvider.notifier);
       registry.register(

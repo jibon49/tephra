@@ -2658,4 +2658,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get capturePersistentNotificationSubtitle =>
       'Keep a quick note shortcut and inline reply in the notification shade';
+
+  @override
+  String stickyArchivedCount(int count) {
+    String plural(int n) => switch (n) {
+      1 => '1 expired sticky',
+      _ => '$n expired stickies',
+    };
+    return 'Archived ${plural(count)}';
+  }
+
+  @override
+  String get stickyArchivedShow => 'Show';
 }

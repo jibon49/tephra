@@ -16,12 +16,15 @@ import '../core/providers.dart';
 import '../core/sync/sync_messages.dart';
 import '../core/sync/sync_worker_client.dart';
 import '../explorer/providers.dart';
+import '../l10n/app_localizations.dart';
+import '../links/link_rename_service.dart';
 import '../search/providers.dart';
 import '../vault/providers.dart';
 import 'android/overlay_bridge.dart';
 import 'android/sticky_widget_sync.dart';
 import 'board/board_controller.dart';
 import 'data/open_note_bridge.dart';
+import 'data/sticky_archiver.dart';
 import 'data/sticky_edit_applier.dart';
 import 'data/sticky_positions_store.dart';
 import 'data/sticky_repository.dart';
@@ -337,4 +340,54 @@ final overlayBridgeProvider = Provider<OverlayBridge?>((ref) {
   bridge.start();
   ref.onDispose(bridge.dispose);
   return bridge;
+});
+
+/// Provider supplying the [StickyArchiver] instance for auto-archiving expired stickies.
+final stickyArchiverProvider = Provider<StickyArchiver?>((ref) {
+  final session = ref.watch(vaultSessionProvider);
+  if (session == null) return null;
+
+  final repo = ref.watch(stickyRepositoryProvider);
+  final renameService = ref.watch(linkRenameServiceProvider);
+  final clock = ref.watch(clockProvider);
+  final vaultSettings = ref.watch(vaultSettingsProvider);
+
+  final archiver = StickyArchiver(
+    repo: repo,
+    rename: (from, to) async {
+      await renameService.renameOrMove(from, to);
+    },
+    clock: clock,
+    stickyFolder: vaultSettings.stickyFolder,
+    showSnackbar: (count, archiveFolder) {
+      final smKey = ref.read(scaffoldMessengerKeyProvider);
+      final context = smKey.currentContext;
+      if (context != null) {
+        final l10n = AppLocalizations.of(context);
+        smKey.currentState?.showSnackBar(
+          SnackBar(
+            content: Text(l10n.stickyArchivedCount(count)),
+            action: SnackBarAction(
+              label: l10n.stickyArchivedShow,
+              onPressed: () {
+                ref
+                    .read(explorerExpandedProvider.notifier)
+                    .expandAncestors(archiveFolder);
+                ref
+                    .read(explorerExpandedProvider.notifier)
+                    .expand(archiveFolder);
+                ref
+                    .read(explorerSelectedProvider.notifier)
+                    .select(archiveFolder);
+              },
+            ),
+          ),
+        );
+      }
+    },
+  );
+
+  archiver.start();
+  ref.onDispose(archiver.dispose);
+  return archiver;
 });

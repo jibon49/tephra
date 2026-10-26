@@ -4756,6 +4756,10 @@ abstract class AppLocalizations {
   String get capturePersistentNotification;
 
   String get capturePersistentNotificationSubtitle;
+
+  String stickyArchivedCount(int count);
+
+  String get stickyArchivedShow;
 }
 
 class _AppLocalizationsDelegate
