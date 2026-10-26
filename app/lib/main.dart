@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,8 @@ import 'package:tephra/core/uuid.dart';
 import 'package:tephra/settings/app_settings.dart';
 import 'package:tephra/settings/app_settings_store.dart';
 import 'package:tephra/settings/providers.dart';
+import 'package:tephra/stickies/windows/sticky_protocol.dart';
+import 'package:tephra/stickies/windows/sticky_window_main.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -29,6 +32,19 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupLogging();
   installCrashHandlers();
+
+  if (!kIsWeb && Platform.isWindows) {
+    try {
+      final controller = await WindowController.fromCurrentEngine();
+      final args = StickyWindowArgs.tryDecode(controller.arguments);
+      if (args != null) {
+        await runStickyWindow(controller, args);
+        return;
+      }
+    } catch (e, st) {
+      Logger('app').warning('Failed to query multi-window engine', e, st);
+    }
+  }
 
   if (!kIsWeb && Platform.isAndroid) {
     try {
