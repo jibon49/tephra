@@ -18,9 +18,11 @@ import '../core/sync/sync_worker_client.dart';
 import '../explorer/providers.dart';
 import '../search/providers.dart';
 import '../vault/providers.dart';
+import 'android/overlay_bridge.dart';
 import 'android/sticky_widget_sync.dart';
 import 'board/board_controller.dart';
 import 'data/open_note_bridge.dart';
+import 'data/sticky_edit_applier.dart';
 import 'data/sticky_positions_store.dart';
 import 'data/sticky_repository.dart';
 import 'model/sticky.dart';
@@ -289,4 +291,50 @@ final stickyWidgetSyncProvider = Provider<StickyWidgetSync?>((ref) {
 
   ref.onDispose(sync.dispose);
   return sync;
+});
+
+/// Provider supplying the [StickyEditApplier] instance for coordinating multi-source edits.
+final stickyEditApplierProvider = Provider<StickyEditApplier>((ref) {
+  final repo = ref.watch(stickyRepositoryProvider);
+  final openNotes = ref.watch(openNoteBridgeProvider);
+  final clock = ref.watch(clockProvider);
+  final appSettings = ref.watch(appSettingsProvider);
+
+  return StickyEditApplier(
+    repo: repo,
+    openNotes: openNotes,
+    merger: const SyncTextMerger(),
+    conflictNamer: (path) => VaultPath(
+      conflictCopyName(
+        path,
+        clock.now(),
+        appSettings.deviceName,
+        (p) => repo.byPath(p) != null,
+      ),
+    ),
+  );
+});
+
+/// Provider managing the Android floating sticky bubble bridge.
+final overlayBridgeProvider = Provider<OverlayBridge?>((ref) {
+  if (kIsWeb || !Platform.isAndroid) return null;
+
+  final session = ref.watch(vaultSessionProvider);
+  if (session == null) return null;
+
+  final overlayService = ref.watch(overlayServiceProvider);
+  final repo = ref.watch(stickyRepositoryProvider);
+  final openNotes = ref.watch(openNoteBridgeProvider);
+  final applier = ref.watch(stickyEditApplierProvider);
+
+  final bridge = OverlayBridge(
+    overlayService: overlayService,
+    repo: repo,
+    openNotes: openNotes,
+    applier: applier,
+  );
+
+  bridge.start();
+  ref.onDispose(bridge.dispose);
+  return bridge;
 });

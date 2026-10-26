@@ -1,6 +1,9 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 /// Android overlay window service for floating sticky bubbles.
 abstract interface class OverlayService {
@@ -41,52 +44,80 @@ class NoopOverlayService implements OverlayService {
   Stream<Map<String, Object?>> get messages => const Stream.empty();
 }
 
-/// Android stub implementation of [OverlayService].
+/// Android implementation of [OverlayService] using [FlutterOverlayWindow].
 class AndroidOverlayService implements OverlayService {
+  AndroidOverlayService({this.showExplanationDialog});
+
+  final Future<bool> Function()? showExplanationDialog;
+
   @override
-  Future<bool> hasPermission() {
-    throw UnimplementedError(
-      'AndroidOverlayService.hasPermission will be implemented in step 04.14',
+  Future<bool> hasPermission() async {
+    return FlutterOverlayWindow.isPermissionGranted();
+  }
+
+  @override
+  Future<bool> requestPermission() async {
+    final show = showExplanationDialog;
+    if (show != null) {
+      final proceed = await show();
+      if (!proceed) return false;
+    }
+    final res = await FlutterOverlayWindow.requestPermission();
+    return res ?? false;
+  }
+
+  @override
+  Future<void> showBubble(String stickyPath) async {
+    final active = await FlutterOverlayWindow.isActive();
+    if (active) {
+      await FlutterOverlayWindow.closeOverlay();
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+
+    await FlutterOverlayWindow.showOverlay(
+      height: 168, // 56 dp in px at standard 3.0 density
+      width: 168,
+      alignment: OverlayAlignment.center,
+      flag: OverlayFlag.defaultFlag,
+      positionGravity: PositionGravity.auto,
+      enableDrag: false,
+      overlayTitle: 'Tephra Sticky',
+      overlayContent: 'Floating sticky note',
     );
   }
 
   @override
-  Future<bool> requestPermission() {
-    throw UnimplementedError(
-      'AndroidOverlayService.requestPermission will be implemented in step 04.14',
-    );
+  Future<void> closeBubble() async {
+    await FlutterOverlayWindow.closeOverlay();
   }
 
   @override
-  Future<void> showBubble(String stickyPath) {
-    throw UnimplementedError(
-      'AndroidOverlayService.showBubble will be implemented in step 04.14',
-    );
+  Future<bool> isActive() async {
+    return FlutterOverlayWindow.isActive();
   }
 
   @override
-  Future<void> closeBubble() {
-    throw UnimplementedError(
-      'AndroidOverlayService.closeBubble will be implemented in step 04.14',
-    );
+  Future<void> send(Map<String, Object?> message) async {
+    await FlutterOverlayWindow.shareData(message);
   }
 
   @override
-  Future<bool> isActive() {
-    throw UnimplementedError(
-      'AndroidOverlayService.isActive will be implemented in step 04.14',
+  Stream<Map<String, Object?>> get messages {
+    return FlutterOverlayWindow.overlayListener.transform(
+      StreamTransformer<dynamic, Map<String, Object?>>.fromHandlers(
+        handleData: (data, sink) {
+          if (data is Map) {
+            sink.add(data.cast<String, Object?>());
+          } else if (data is String) {
+            try {
+              final decoded = jsonDecode(data);
+              if (decoded is Map) {
+                sink.add(decoded.cast<String, Object?>());
+              }
+            } catch (_) {}
+          }
+        },
+      ),
     );
   }
-
-  @override
-  Future<void> send(Map<String, Object?> message) {
-    throw UnimplementedError(
-      'AndroidOverlayService.send will be implemented in step 04.14',
-    );
-  }
-
-  @override
-  Stream<Map<String, Object?>> get messages => throw UnimplementedError(
-    'AndroidOverlayService.messages will be implemented in step 04.14',
-  );
 }

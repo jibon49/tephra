@@ -2598,4 +2598,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetPickerEmpty => 'No active stickies found';
+
+  @override
+  String get overlayPermissionTitle => 'Display over other apps';
+
+  @override
+  String get overlayPermissionMessage =>
+      'Tephra needs \'Display over other apps\' to float a sticky. You can turn it off any time.';
+
+  @override
+  String get overlayOpenInTephra => 'Open in Tephra';
+
+  @override
+  String get overlayOpenTephraToSave => 'Open Tephra to save';
+
+  @override
+  String get overlayCollapse => 'Collapse';
+
+  @override
+  String get overlayClose => 'Close';
 }

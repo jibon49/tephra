@@ -4718,6 +4718,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No active stickies found'**
   String get widgetPickerEmpty;
+
+  String get overlayPermissionTitle;
+
+  String get overlayPermissionMessage;
+
+  String get overlayOpenInTephra;
+
+  String get overlayOpenTephraToSave;
+
+  String get overlayCollapse;
+
+  String get overlayClose;
 }
 
 class _AppLocalizationsDelegate

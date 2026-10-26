@@ -231,8 +231,25 @@ void registerStickyCommands(CommandRegistry registry) {
       id: 'sticky.open-window',
       label: (l10n) => l10n.stickyCommandOpenWindow,
       icon: Icons.open_in_new,
-      isAvailable: (_) => false,
-      run: (ref, context) {},
+      isAvailable: (ref) {
+        if (!Platform.isAndroid && !Platform.isWindows) return false;
+        final activePath = ref.watch(activeNotePathProvider);
+        if (activePath == null) return false;
+        return _activeSticky(ref, activePath) != null;
+      },
+      run: (ref, context) async {
+        final activePath = ref.read(activeNotePathProvider);
+        if (activePath == null) return;
+        if (Platform.isAndroid) {
+          final bridge = ref.read(overlayBridgeProvider);
+          if (bridge != null) {
+            await bridge.openBubble(activePath);
+          }
+        } else if (Platform.isWindows) {
+          final hub = ref.read(stickyHubProvider);
+          await hub.open(activePath);
+        }
+      },
     ),
   );
 
@@ -242,8 +259,13 @@ void registerStickyCommands(CommandRegistry registry) {
       id: 'sticky.show-all',
       label: (l10n) => l10n.stickyCommandShowAll,
       icon: Icons.visibility,
-      isAvailable: (_) => false,
-      run: (ref, context) {},
+      isAvailable: (ref) =>
+          Platform.isWindows && ref.watch(vaultSessionProvider) != null,
+      run: (ref, context) async {
+        if (Platform.isWindows) {
+          await ref.read(stickyHubProvider).showAll();
+        }
+      },
     ),
   );
 
@@ -253,8 +275,13 @@ void registerStickyCommands(CommandRegistry registry) {
       id: 'sticky.hide-all',
       label: (l10n) => l10n.stickyCommandHideAll,
       icon: Icons.visibility_off,
-      isAvailable: (_) => false,
-      run: (ref, context) {},
+      isAvailable: (ref) =>
+          Platform.isWindows && ref.watch(vaultSessionProvider) != null,
+      run: (ref, context) async {
+        if (Platform.isWindows) {
+          await ref.read(stickyHubProvider).hideAll();
+        }
+      },
     ),
   );
 

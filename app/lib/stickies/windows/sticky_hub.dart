@@ -7,10 +7,10 @@ import 'dart:ui';
 
 import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
-import 'package:tephra_vault/tephra_vault.dart';
 
 import '../../settings/app_settings.dart';
 import '../data/open_note_bridge.dart';
+import '../data/sticky_edit_applier.dart';
 import '../data/sticky_positions_store.dart';
 import '../data/sticky_repository.dart';
 import '../model/sticky_color.dart';
@@ -20,10 +20,9 @@ import 'sticky_window_geometry.dart';
 import 'text_merger.dart';
 import 'window_bus.dart';
 
-final _log = Logger('sticky_hub');
+export '../data/sticky_edit_applier.dart' show ConflictCopyNamer;
 
-/// Generates a conflict copy path for [path].
-typedef ConflictCopyNamer = VaultPath Function(VaultPath path);
+final _log = Logger('sticky_hub');
 
 class _OpenWindowState {
   _OpenWindowState({required this.windowId, required this.path});
@@ -52,11 +51,19 @@ class StickyHub {
     required this.positions,
     required this.conflictNamer,
     required this.clock,
+    StickyEditApplier? applier,
     this.screenRetriever,
     this.getAppSettings,
     this.updateAppSettings,
     this.onNotify,
-  });
+  }) : applier =
+           applier ??
+           StickyEditApplier(
+             repo: repo,
+             openNotes: openNotes,
+             merger: merger,
+             conflictNamer: conflictNamer,
+           );
 
   final WindowBus bus;
   final StickyRepository repo;
@@ -65,6 +72,7 @@ class StickyHub {
   final StickyPositionsStore positions;
   final ConflictCopyNamer conflictNamer;
   final Clock clock;
+  final StickyEditApplier applier;
   final Future<List<ScreenInfo>> Function()? screenRetriever;
   final AppSettings Function()? getAppSettings;
   final Future<void> Function(AppSettings)? updateAppSettings;
@@ -382,43 +390,14 @@ class StickyHub {
   ) {
     return _enqueue(path, () async {
       final win = _windows[path];
-      final current =
-          openNotes.openText(path) ??
-          (repo.byPath(path)?.text ??
-              (await repo.fs.stat(path) != null
-                  ? (await repo.fs.readText(path)).text
-                  : ''));
-      final currentHash = hashProtocolText(current);
+      final result = await applier.applyEdit(
+        path: path,
+        text: text,
+        baseHash: baseHash,
+        baseTextLookup: (h) => win?.sentHistory[h],
+      );
 
-      if (currentHash == baseHash) {
-        await repo.setText(path, text);
-      } else if (win != null && win.sentHistory.containsKey(baseHash)) {
-        final baseText = win.sentHistory[baseHash]!;
-        final outcome = merger.merge(
-          base: baseText,
-          local: text,
-          remote: current,
-        );
-
-        if (outcome is MergeClean) {
-          await repo.setText(path, outcome.text);
-        } else {
-          // Conflict: write conflict copy with current, sticky text wins
-          final conflictPath = conflictNamer(path);
-          await repo.fs.writeText(conflictPath, TextDocument(text: current));
-          await repo.setText(path, text);
-        }
-      } else {
-        // Unknown base hash -> treat as conflict
-        final conflictPath = conflictNamer(path);
-        await repo.fs.writeText(conflictPath, TextDocument(text: current));
-        await repo.setText(path, text);
-      }
-
-      final finalText =
-          openNotes.openText(path) ?? (repo.byPath(path)?.text ?? text);
-      final finalHash = hashProtocolText(finalText);
-      win?.recordSent(finalHash, finalText);
+      win?.recordSent(result.hash, result.text);
 
       final sticky = repo.byPath(path);
       try {
@@ -426,8 +405,8 @@ class StickyHub {
           fromId,
           UpdateMessage(
             path: path.value,
-            text: finalText,
-            hash: finalHash,
+            text: result.text,
+            hash: result.hash,
             color: sticky?.meta.color.yamlValue ?? 'yellow',
             pinned: sticky?.meta.pinned ?? false,
             locked: sticky?.meta.locked ?? false,

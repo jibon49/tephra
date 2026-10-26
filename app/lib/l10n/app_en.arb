@@ -1271,7 +1271,13 @@
   "settingsNotificationsFix": "Enable in settings",
   "widgetPickerTitle": "Choose a sticky note",
   "widgetPickerNewSticky": "New sticky",
-  "widgetPickerEmpty": "No active stickies found"
+  "widgetPickerEmpty": "No active stickies found",
+  "overlayPermissionTitle": "Display over other apps",
+  "overlayPermissionMessage": "Tephra needs 'Display over other apps' to float a sticky. You can turn it off any time.",
+  "overlayOpenInTephra": "Open in Tephra",
+  "overlayOpenTephraToSave": "Open Tephra to save",
+  "overlayCollapse": "Collapse",
+  "overlayClose": "Close"
 }
 
 

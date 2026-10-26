@@ -21,6 +21,7 @@ import 'package:tephra/core/uuid.dart';
 import 'package:tephra/settings/app_settings.dart';
 import 'package:tephra/settings/app_settings_store.dart';
 import 'package:tephra/settings/providers.dart';
+import 'package:tephra/stickies/android/overlay_app.dart';
 import 'package:tephra/stickies/android/widget_callback.dart';
 import 'package:tephra/stickies/providers.dart';
 import 'package:tephra/stickies/windows/sticky_protocol.dart';
@@ -30,6 +31,10 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:window_manager/window_manager.dart';
 import 'package:workmanager/workmanager.dart';
+
+/// Secondary engine entry point for the floating sticky bubble on Android.
+@pragma('vm:entry-point')
+void overlayMain() => runOverlayApp();
 
 Future<void> main(List<String> args) async {
   PerfProbe.markAppStart();
