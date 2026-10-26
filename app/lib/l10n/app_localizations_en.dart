@@ -2641,4 +2641,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get captureTextPlaceholder => 'Write a note or capture thoughts...';
+
+  @override
+  String get shortcutNewNote => 'New note';
+
+  @override
+  String get shortcutTodaysNote => "Today's note";
+
+  @override
+  String get shortcutNewSticky => 'New sticky';
+
+  @override
+  String get capturePersistentNotification =>
+      'Persistent quick note notification';
+
+  @override
+  String get capturePersistentNotificationSubtitle =>
+      'Keep a quick note shortcut and inline reply in the notification shade';
 }

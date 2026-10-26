@@ -4746,6 +4746,16 @@ abstract class AppLocalizations {
   String get captureNoVault;
 
   String get captureTextPlaceholder;
+
+  String get shortcutNewNote;
+
+  String get shortcutTodaysNote;
+
+  String get shortcutNewSticky;
+
+  String get capturePersistentNotification;
+
+  String get capturePersistentNotificationSubtitle;
 }
 
 class _AppLocalizationsDelegate

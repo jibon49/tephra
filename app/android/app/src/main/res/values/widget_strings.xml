@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="widget_sticky_label">Single Sticky</string>
-    <string name="widget_stack_label">Sticky Notes Stack</string>
+    <string name="tile_quick_note">Quick note</string>
+    <string name="widget_quick_capture_label">Tephra quick note</string>
+    <string name="widget_quick_capture_description">Capture thoughts quickly with an optional shortcut to today\'s daily note.</string>
+    <string name="widget_quick_capture_placeholder">Quick note…</string>
+    <string name="widget_today_button">Today</string>
+    <string name="widget_sticky_label">Tephra sticky</string>
+    <string name="widget_stack_label">Tephra stickies</string>
     <string name="widget_sticky_description">Display a sticky note on your home screen with tappable tasks.</string>
     <string name="widget_stack_description">Display your recent sticky notes stack.</string>
     <string name="widget_choose_sticky">Tap to choose a sticky</string>

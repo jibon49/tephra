@@ -11,8 +11,10 @@ import '../capture/providers.dart';
 import '../commands/hotkey_host.dart';
 import '../core/deep_links/deep_link_router.dart';
 import '../core/perf/perf_runner.dart';
+import '../core/platform/platform_providers.dart';
 import '../editor/save_state_indicator.dart';
 import '../l10n/app_localizations.dart';
+import '../settings/providers.dart';
 import '../stickies/providers.dart';
 import '../sync_ui/status/sync_status_indicator.dart';
 import '../vault/providers.dart';
@@ -42,6 +44,13 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
           unawaited(integration.init(l10n: l10n));
         }
         unawaited(ref.read(stickyHubProvider).restoreOnStart());
+      }
+      if (!kIsWeb && Platform.isAndroid) {
+        if (ref.read(appSettingsProvider).quickNoteNotification) {
+          unawaited(
+            ref.read(notificationServiceProvider).showQuickNoteNotification(),
+          );
+        }
       }
       ref.read(deepLinkRouterProvider).init();
       ref.read(shareIntakeCoordinatorProvider).init();

@@ -1466,6 +1466,24 @@ class _ReminderSettingsSectionState
                 : null,
           ),
         ],
+        if (!kIsWeb && Platform.isAndroid) ...[
+          SwitchListTile(
+            title: Text(l10n.capturePersistentNotification),
+            subtitle: Text(l10n.capturePersistentNotificationSubtitle),
+            value: appSettings.quickNoteNotification,
+            onChanged: (val) {
+              ref
+                  .read(appSettingsProvider.notifier)
+                  .update((s) => s.copyWith(quickNoteNotification: val));
+              final notif = ref.read(notificationServiceProvider);
+              if (val) {
+                unawaited(notif.showQuickNoteNotification());
+              } else {
+                unawaited(notif.hideQuickNoteNotification());
+              }
+            },
+          ),
+        ],
       ],
     );
   }

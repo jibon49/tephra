@@ -5,10 +5,12 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../capture/quick_note_reply.dart';
+
 /// Top-level background notification response handler (used by quick replies in step 04.16).
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
-  // Handled in step 04.16 for quick replies.
+  quickNoteReplyHandler(notificationResponse);
 }
 
 /// Permission state for system notifications and exact alarms.
@@ -329,17 +331,41 @@ class AndroidNotificationService implements NotificationService {
   }
 
   @override
-  Future<void> showQuickNoteNotification() {
-    throw UnimplementedError(
-      'AndroidNotificationService.showQuickNoteNotification will be implemented in step 04.16',
+  Future<void> showQuickNoteNotification() async {
+    if (!_initialized) await init();
+    const details = NotificationDetails(
+      android: AndroidNotificationDetails(
+        'quick_note',
+        'Quick note',
+        channelDescription: 'Persistent quick note capture',
+        importance: Importance.low,
+        priority: Priority.low,
+        icon: '@drawable/ic_stat_tephra',
+        ongoing: true,
+        autoCancel: false,
+        actions: [
+          AndroidNotificationAction(
+            'quick_note_reply',
+            'Note',
+            inputs: [AndroidNotificationActionInput(label: 'Type a note...')],
+            showsUserInterface: false,
+          ),
+        ],
+      ),
+    );
+    await _plugin.show(
+      id: 900001,
+      title: 'Quick note',
+      body: 'Tap to capture, or reply below',
+      notificationDetails: details,
+      payload: 'tephra://capture',
     );
   }
 
   @override
-  Future<void> hideQuickNoteNotification() {
-    throw UnimplementedError(
-      'AndroidNotificationService.hideQuickNoteNotification will be implemented in step 04.16',
-    );
+  Future<void> hideQuickNoteNotification() async {
+    if (!_initialized) await init();
+    await cancel(900001);
   }
 
   @override

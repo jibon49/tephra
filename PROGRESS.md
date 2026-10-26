@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **04**
-- Current step: **04.16**
+- Current step: **04.17**
 - Last gate passed: **03** (all steps done; merged and tagged `v0.03.0`). Gate items marked "not verified on device"
   in Phases 02 and 03 are still open and need the human's real-device testing — do not tick them yourself.
 - Keep this block updated after every step (GEMINI.md §3) — it was stale after Phase 2 and 3.
@@ -443,7 +443,8 @@ eighbour)
   - notes: Implemented overlayMain entry point; AndroidOverlayService with FlutterOverlayWindow; OverlayProtocol (open, update, contentChanged, ack, close, ping, pong); StickyEditApplier shared between StickyHub and OverlayBridge; OverlayWriterFallback with 1.5s ack timeout and headless conflict fallback; standalone OverlayApp with 56dp draggable bubble, bottom-dismiss, expansion to 300x420, mini renderer, and task toggles; wired sticky.open-window command; all 25 android stickies tests passing; analyze and format clean.
 - [x] 04.15 Capture screen and share-to-Tephra (Android)
   - notes: Implemented AndroidShareIntentService wrapping ReceiveSharingIntent; draftFromShare with URL autolink, text joining, title sanitization/truncation, and fallback; CaptureService for atomic saveAsNewNote, appendToDailyNote, and appendToInbox with attachment copying; responsive CaptureScreen dialog/full-screen; ShareIntakeCoordinator with pending shares queue for first-run; wired capture.quick-note command and CaptureLink deep link; AndroidManifest singleTask and SEND/SEND_MULTIPLE intent filters; 10 unit tests in test/capture passing; format and analyze clean.
-- [ ] 04.16 Quick Settings tile, persistent quick-note notification, quick-capture widget, app shortcuts (Android)
+- [x] 04.16 Quick Settings tile, persistent quick-note notification, quick-capture widget, app shortcuts (Android)
+  - notes: Implemented QuickNoteTileService with API 34+ PendingIntent and pre-34 collapse fallback; QuickCaptureWidgetProvider with widget_quick_capture.xml layout and today shortcut; persistent notification on quick_note channel (id 900001) with inline quickNoteReplyHandler and appendQuickNote headless write; AndroidAppShortcutService over quick_actions with 3 vector drawables (new-note, daily, new-sticky); settings UI toggle; 5 quick reply unit tests passing; analyze and format clean.
 - [ ] 04.17 Auto-archive expired stickies, phase integration, demo
 
 ### Exit gate
