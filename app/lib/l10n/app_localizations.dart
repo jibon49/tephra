@@ -4730,6 +4730,22 @@ abstract class AppLocalizations {
   String get overlayCollapse;
 
   String get overlayClose;
+
+  String get captureTitle;
+
+  String get captureTargetDaily;
+
+  String get captureTargetNew;
+
+  String get captureTargetInbox;
+
+  String get captureSave;
+
+  String get captureOpen;
+
+  String get captureNoVault;
+
+  String get captureTextPlaceholder;
 }
 
 class _AppLocalizationsDelegate

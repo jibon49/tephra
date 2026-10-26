@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tephra/capture/providers.dart';
 import 'package:tephra/core/platform/platform_providers.dart';
 import 'package:tephra/core/platform/storage_permission_service.dart';
 import 'package:tephra/settings/providers.dart';
@@ -33,6 +34,7 @@ class _VaultGateState extends ConsumerState<VaultGate> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(shareIntakeCoordinatorProvider).init();
       _tryReopenLastVault();
     });
   }

@@ -11,6 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 
+import '../../capture/capture_screen.dart';
+import '../../capture/share_intake.dart';
 import '../../explorer/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../stickies/board/sticky_board_screen.dart';
@@ -214,8 +216,9 @@ class DeepLinkRouter {
   Future<void> _dispatch(DeepLink link) async {
     BuildContext? context;
     try {
+      final navKey = ref.read(rootNavigatorKeyProvider);
       final smKey = ref.read(scaffoldMessengerKeyProvider);
-      context = smKey.currentContext;
+      context = navKey.currentContext ?? smKey.currentContext;
     } catch (_) {}
 
     switch (link) {
@@ -224,7 +227,17 @@ class DeepLinkRouter {
         break;
 
       case CaptureLink():
-        onCapture?.call();
+        if (onCapture != null) {
+          onCapture!();
+        } else if (context != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const CaptureScreen(
+                initialDraft: CaptureDraft(text: '', files: []),
+              ),
+            ),
+          );
+        }
         break;
 
       case NewStickyLink():

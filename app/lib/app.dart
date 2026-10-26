@@ -22,6 +22,7 @@ class TephraApp extends ConsumerWidget {
     };
 
     return MaterialApp(
+      navigatorKey: ref.watch(rootNavigatorKeyProvider),
       scaffoldMessengerKey: ref.watch(scaffoldMessengerKeyProvider),
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light(),

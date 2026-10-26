@@ -12,6 +12,10 @@ final scaffoldMessengerKeyProvider =
       return GlobalKey<ScaffoldMessengerState>();
     });
 
+final rootNavigatorKeyProvider = Provider<GlobalKey<NavigatorState>>((ref) {
+  return GlobalKey<NavigatorState>();
+});
+
 final explorerServiceProvider = Provider<ExplorerService>((ref) {
   return ExplorerService(ref);
 });

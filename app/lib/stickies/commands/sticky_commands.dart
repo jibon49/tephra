@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 
+import '../../capture/capture_screen.dart';
+import '../../capture/share_intake.dart';
 import '../../commands/command_registry.dart';
 import '../../commands/tephra_command.dart';
 import '../../core/platform/platform_providers.dart';
@@ -306,8 +308,26 @@ void registerStickyCommands(CommandRegistry registry) {
       id: 'capture.quick-note',
       label: (l10n) => l10n.captureCommandQuickNote,
       icon: Icons.flash_on,
-      isAvailable: (_) => false,
-      run: (ref, context) {},
+      isAvailable: (ref) => ref.watch(vaultSessionProvider) != null,
+      run: (ref, context) {
+        final width = MediaQuery.sizeOf(context).width;
+        if (width >= 840) {
+          showDialog<void>(
+            context: context,
+            builder: (_) => const CaptureScreen(
+              initialDraft: CaptureDraft(text: '', files: []),
+            ),
+          );
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const CaptureScreen(
+                initialDraft: CaptureDraft(text: '', files: []),
+              ),
+            ),
+          );
+        }
+      },
     ),
   );
 }

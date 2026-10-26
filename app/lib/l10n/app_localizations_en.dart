@@ -2617,4 +2617,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overlayClose => 'Close';
+
+  @override
+  String get captureTitle => 'Quick Capture';
+
+  @override
+  String get captureTargetDaily => 'Daily note';
+
+  @override
+  String get captureTargetNew => 'New note';
+
+  @override
+  String get captureTargetInbox => 'Inbox';
+
+  @override
+  String get captureSave => 'Save';
+
+  @override
+  String get captureOpen => 'Open';
+
+  @override
+  String get captureNoVault => 'Open or create a vault first';
+
+  @override
+  String get captureTextPlaceholder => 'Write a note or capture thoughts...';
 }

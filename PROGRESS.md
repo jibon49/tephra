@@ -12,7 +12,7 @@ Format rules:
 ## Current status
 
 - Current phase: **04**
-- Current step: **04.8**
+- Current step: **04.16**
 - Last gate passed: **03** (all steps done; merged and tagged `v0.03.0`). Gate items marked "not verified on device"
   in Phases 02 and 03 are still open and need the human's real-device testing — do not tick them yourself.
 - Keep this block updated after every step (GEMINI.md §3) — it was stale after Phase 2 and 3.
@@ -441,7 +441,8 @@ eighbour)
   - notes: Implemented WidgetLine/widgetLinesFromMarkdown (inline stripping, task detection, line mapping); single sticky & stack JSON generation with argb colours; handleWidgetToggle & background entry-point stickyWidgetCallback with IoVaultFileSystem/StickyFileWriter; AndroidHomeWidgetService; lifecycle-aware StickyWidgetSync; WidgetStickyPickerScreen; Android XML layouts, StickyWidgetProvider, StickyStackWidgetProvider, WidgetRender.kt; 16 unit tests passing; flutter analyze zero issues; flutter build apk --debug succeeded.
 - [x] 04.14 Android floating sticky bubble (draw over other apps)
   - notes: Implemented overlayMain entry point; AndroidOverlayService with FlutterOverlayWindow; OverlayProtocol (open, update, contentChanged, ack, close, ping, pong); StickyEditApplier shared between StickyHub and OverlayBridge; OverlayWriterFallback with 1.5s ack timeout and headless conflict fallback; standalone OverlayApp with 56dp draggable bubble, bottom-dismiss, expansion to 300x420, mini renderer, and task toggles; wired sticky.open-window command; all 25 android stickies tests passing; analyze and format clean.
-- [ ] 04.15 Capture screen and share-to-Tephra (Android)
+- [x] 04.15 Capture screen and share-to-Tephra (Android)
+  - notes: Implemented AndroidShareIntentService wrapping ReceiveSharingIntent; draftFromShare with URL autolink, text joining, title sanitization/truncation, and fallback; CaptureService for atomic saveAsNewNote, appendToDailyNote, and appendToInbox with attachment copying; responsive CaptureScreen dialog/full-screen; ShareIntakeCoordinator with pending shares queue for first-run; wired capture.quick-note command and CaptureLink deep link; AndroidManifest singleTask and SEND/SEND_MULTIPLE intent filters; 10 unit tests in test/capture passing; format and analyze clean.
 - [ ] 04.16 Quick Settings tile, persistent quick-note notification, quick-capture widget, app shortcuts (Android)
 - [ ] 04.17 Auto-archive expired stickies, phase integration, demo
 

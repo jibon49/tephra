@@ -1277,7 +1277,15 @@
   "overlayOpenInTephra": "Open in Tephra",
   "overlayOpenTephraToSave": "Open Tephra to save",
   "overlayCollapse": "Collapse",
-  "overlayClose": "Close"
+  "overlayClose": "Close",
+  "captureTitle": "Quick Capture",
+  "captureTargetDaily": "Daily note",
+  "captureTargetNew": "New note",
+  "captureTargetInbox": "Inbox",
+  "captureSave": "Save",
+  "captureOpen": "Open",
+  "captureNoVault": "Open or create a vault first",
+  "captureTextPlaceholder": "Write a note or capture thoughts..."
 }
 
 
