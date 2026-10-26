@@ -114,6 +114,10 @@ sealed class StickyMessage {
           final locked = json['locked'];
           final collapsed = json['collapsed'];
           final title = json['title'];
+          final x = json['x'] as num?;
+          final y = json['y'] as num?;
+          final width = json['width'] as num?;
+          final height = json['height'] as num?;
           if (path is! String ||
               text is! String ||
               hash is! String ||
@@ -133,6 +137,10 @@ sealed class StickyMessage {
             locked: locked,
             collapsed: collapsed,
             title: title,
+            x: x?.toDouble(),
+            y: y?.toDouble(),
+            width: width?.toDouble(),
+            height: height?.toDouble(),
           );
 
         case 'update':
@@ -299,6 +307,10 @@ final class OpenMessage extends StickyMessage {
     required this.locked,
     required this.collapsed,
     required this.title,
+    this.x,
+    this.y,
+    this.width,
+    this.height,
   });
 
   final String path;
@@ -309,6 +321,10 @@ final class OpenMessage extends StickyMessage {
   final bool locked;
   final bool collapsed;
   final String title;
+  final double? x;
+  final double? y;
+  final double? width;
+  final double? height;
 
   @override
   Map<String, Object?> toJson() => {
@@ -322,6 +338,10 @@ final class OpenMessage extends StickyMessage {
     'locked': locked,
     'collapsed': collapsed,
     'title': title,
+    if (x != null) 'x': x,
+    if (y != null) 'y': y,
+    if (width != null) 'width': width,
+    if (height != null) 'height': height,
   };
 
   @override
@@ -336,11 +356,27 @@ final class OpenMessage extends StickyMessage {
           pinned == other.pinned &&
           locked == other.locked &&
           collapsed == other.collapsed &&
-          title == other.title;
+          title == other.title &&
+          x == other.x &&
+          y == other.y &&
+          width == other.width &&
+          height == other.height;
 
   @override
-  int get hashCode =>
-      Object.hash(path, text, hash, color, pinned, locked, collapsed, title);
+  int get hashCode => Object.hash(
+    path,
+    text,
+    hash,
+    color,
+    pinned,
+    locked,
+    collapsed,
+    title,
+    x,
+    y,
+    width,
+    height,
+  );
 
   @override
   String toString() => 'OpenMessage(path: $path, title: $title, hash: $hash)';

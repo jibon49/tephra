@@ -1,8 +1,11 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:window_manager/window_manager.dart';
+
+import 'windows_startup_registry.dart';
 
 /// Platform service for window management (desktop).
 abstract interface class WindowService {
@@ -83,10 +86,14 @@ class WindowsWindowService with WindowListener implements WindowService {
   }
 
   @override
-  Future<bool> isLaunchAtStartupEnabled() async => false;
+  Future<bool> isLaunchAtStartupEnabled() async {
+    return isWindowsLaunchAtStartupEnabled(Platform.resolvedExecutable);
+  }
 
   @override
-  Future<void> setLaunchAtStartup(bool enabled) async {}
+  Future<void> setLaunchAtStartup(bool enabled) async {
+    setWindowsLaunchAtStartup(enabled, Platform.resolvedExecutable);
+  }
 
   @override
   Future<void> setPreventClose(bool prevent) async {

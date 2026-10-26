@@ -18,12 +18,14 @@ import 'package:tephra/core/uuid.dart';
 import 'package:tephra/settings/app_settings.dart';
 import 'package:tephra/settings/app_settings_store.dart';
 import 'package:tephra/settings/providers.dart';
+import 'package:tephra/stickies/providers.dart';
 import 'package:tephra/stickies/windows/sticky_protocol.dart';
 import 'package:tephra/stickies/windows/sticky_window_main.dart';
+import 'package:tephra/stickies/windows/window_bus.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:workmanager/workmanager.dart';
 
-Future<void> main() async {
+Future<void> main(List<String> args) async {
   PerfProbe.markAppStart();
   if (PerfProbe.enabled) {
     PerfProbe.installLogBridge();
@@ -33,12 +35,14 @@ Future<void> main() async {
   await setupLogging();
   installCrashHandlers();
 
+  final isAutostart = args.contains('--autostart');
+
   if (!kIsWeb && Platform.isWindows) {
     try {
       final controller = await WindowController.fromCurrentEngine();
-      final args = StickyWindowArgs.tryDecode(controller.arguments);
-      if (args != null) {
-        await runStickyWindow(controller, args);
+      final stickyArgs = StickyWindowArgs.tryDecode(controller.arguments);
+      if (stickyArgs != null) {
+        await runStickyWindow(controller, stickyArgs);
         return;
       }
     } catch (e, st) {
@@ -57,8 +61,20 @@ Future<void> main() async {
   if (!kIsWeb && Platform.isWindows) {
     try {
       await windowManager.ensureInitialized();
+      if (isAutostart) {
+        await windowManager.hide();
+      }
     } catch (e, st) {
       Logger('app').warning('Failed to initialize windowManager', e, st);
+    }
+  }
+
+  WindowBus? windowBus;
+  if (!kIsWeb && Platform.isWindows) {
+    try {
+      windowBus = await DesktopWindowBus.fromCurrentEngine();
+    } catch (e, st) {
+      Logger('app').warning('Failed to initialize DesktopWindowBus', e, st);
     }
   }
 
@@ -83,6 +99,7 @@ Future<void> main() async {
       overrides: [
         initialAppSettingsProvider.overrideWithValue(initial),
         if (store != null) appSettingsStoreProvider.overrideWithValue(store),
+        if (windowBus != null) windowBusProvider.overrideWithValue(windowBus),
       ],
       child: const TephraApp(),
     ),

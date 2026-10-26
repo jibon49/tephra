@@ -2487,4 +2487,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stickyQuickEditorTitle => 'Quick edit';
+
+  @override
+  String get settingsStartWithWindows => 'Start Tephra with Windows';
+
+  @override
+  String get settingsStartWithWindowsSubtitle =>
+      'Automatically launch Tephra in the background on system startup';
+
+  @override
+  String get stickySettingsSection => 'Sticky notes';
+
+  @override
+  String get stickySettingsRestoreOnStart => 'Restore stickies on startup';
+
+  @override
+  String get stickySettingsRestoreOnStartSubtitle =>
+      'Automatically reopen floating sticky note windows when opening a vault';
+
+  @override
+  String get stickySettingsMaxWindows => 'Maximum open sticky windows';
+
+  @override
+  String get stickySettingsSemanticsTitle => 'Sticky window semantics';
+
+  @override
+  String get stickySettingsSemanticsHelp =>
+      'Sticky Windows Behavior:\n• Close one window (×): Closes window, removes geometry entry.\n• Hide all: Closes all windows, keeps geometry entries.\n• Show all: Opens up to max windows for active stickies.\n• App start: Restores kept entries unless hidden all.';
+
+  @override
+  String stickyShowingNStickies(int count, int total) {
+    return 'Showing $count of $total stickies';
+  }
 }

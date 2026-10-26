@@ -3,17 +3,20 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:logging/logging.dart';
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_vault/tephra_vault.dart';
 
+import '../../settings/app_settings.dart';
 import '../data/open_note_bridge.dart';
 import '../data/sticky_positions_store.dart';
 import '../data/sticky_repository.dart';
 import '../model/sticky_color.dart';
 import '../model/sticky_frontmatter.dart';
 import 'sticky_protocol.dart';
+import 'sticky_window_geometry.dart';
 import 'text_merger.dart';
 import 'window_bus.dart';
 
@@ -49,6 +52,10 @@ final class StickyHub {
     required this.positions,
     required this.conflictNamer,
     required this.clock,
+    this.screenRetriever,
+    this.getAppSettings,
+    this.updateAppSettings,
+    this.onNotify,
   });
 
   final WindowBus bus;
@@ -58,10 +65,17 @@ final class StickyHub {
   final StickyPositionsStore positions;
   final ConflictCopyNamer conflictNamer;
   final Clock clock;
+  final Future<List<ScreenInfo>> Function()? screenRetriever;
+  final AppSettings Function()? getAppSettings;
+  final Future<void> Function(AppSettings)? updateAppSettings;
+  final void Function(String message)? onNotify;
 
   final Map<VaultPath, _OpenWindowState> _windows = {};
   final Map<String, VaultPath> _windowIdToPath = {};
   final Map<VaultPath, Future<void>> _pathChains = {};
+  final Map<VaultPath, Rect> _pendingBounds = {};
+  final Set<VaultPath> _closingForHideAll = {};
+  final Set<VaultPath> _closingForQuit = {};
 
   StreamSubscription<void>? _incomingSub;
   StreamSubscription<void>? _repoSub;
@@ -108,6 +122,45 @@ final class StickyHub {
     }
 
     try {
+      final screens = await (screenRetriever?.call() ?? getScreenInfos());
+      Rect bounds;
+      if (positions.mine.containsKey(path)) {
+        bounds = toGlobal(positions.mine[path]!, screens);
+      } else {
+        // Cascade: first free slot starting at primary work-area top-right minus (320, -40),
+        // each next one offset (-24, +24).
+        final primary =
+            screens.where((s) => s.isPrimary).firstOrNull ??
+            screens.firstOrNull;
+        final work = primary?.workArea ?? const Rect.fromLTWH(0, 0, 1920, 1040);
+        final startX = (work.right - 320).round();
+        final startY = (work.top + 40).round();
+
+        var k = 0;
+        while (true) {
+          final candX = startX - 24 * k;
+          final candY = startY + 24 * k;
+          final isOccupied = _windows.values.any((w) {
+            final p = w.lastPosition;
+            if (p == null) return false;
+            return (p.x - candX).abs() < 12 && (p.y - candY).abs() < 12;
+          });
+          if (!isOccupied || k >= 50) {
+            bounds = Rect.fromLTWH(
+              candX.toDouble(),
+              candY.toDouble(),
+              280,
+              260,
+            );
+            break;
+          }
+          k++;
+        }
+        final geom = toStored(bounds, screens, collapsed: false);
+        await positions.save(path, geom);
+      }
+      _pendingBounds[path] = bounds;
+
       final args = StickyWindowArgs(mainWindowId: bus.selfId, path: path.value);
       final winId = await bus.createStickyWindow(args);
       final state = _OpenWindowState(windowId: winId, path: path);
@@ -133,22 +186,40 @@ final class StickyHub {
   }
 
   /// Shows sticky windows for active stickies up to maxWindows.
-  Future<void> showAll({int maxWindows = 20}) async {
-    final active = repo.all;
+  Future<void> showAll({int? maxWindows}) async {
+    final settings = getAppSettings?.call();
+    final effectiveMax = maxWindows ?? settings?.stickiesMaxWindows ?? 20;
+    if (updateAppSettings != null && settings != null) {
+      await updateAppSettings!(settings.copyWith(stickiesHiddenAll: false));
+    }
+
+    final active = repo.all.toList()
+      ..sort((a, b) => b.modified.compareTo(a.modified));
+
     var count = 0;
     for (final sticky in active) {
-      if (count >= maxWindows) break;
+      if (count >= effectiveMax) break;
       if (!_windows.containsKey(sticky.path)) {
         await open(sticky.path);
-        count++;
       }
+      count++;
+    }
+
+    if (active.length > effectiveMax) {
+      onNotify?.call('Showing $effectiveMax of ${active.length} stickies');
     }
   }
 
   /// Hides all open sticky windows by sending closeRequest(hideAll).
   Future<void> hideAll() async {
+    final settings = getAppSettings?.call();
+    if (updateAppSettings != null && settings != null) {
+      await updateAppSettings!(settings.copyWith(stickiesHiddenAll: true));
+    }
+
     final copy = _windows.values.toList();
     for (final win in copy) {
+      _closingForHideAll.add(win.path);
       try {
         await bus.send(
           win.windowId,
@@ -160,38 +231,45 @@ final class StickyHub {
     }
   }
 
+  /// Restores floating sticky windows on application startup if configured.
+  Future<void> restoreOnStart() async {
+    final settings = getAppSettings?.call();
+    final restore = settings?.stickiesRestoreOnStart ?? true;
+    final hiddenAll = settings?.stickiesHiddenAll ?? false;
+    if (!restore || hiddenAll) return;
+
+    final minePaths = positions.mine.keys.toList();
+    for (final path in minePaths) {
+      final sticky = repo.byPath(path);
+      if (sticky != null && sticky.meta.pinned) {
+        await open(path);
+      } else {
+        await positions.remove(path);
+      }
+    }
+  }
+
   /// Closes all open sticky windows cleanly before the main application quits.
   Future<void> closeAllForQuit() async {
     if (_windows.isEmpty) return;
 
-    final targetIds = _windows.values.map((w) => w.windowId).toSet();
-    for (final win in _windows.values) {
+    final copy = _windows.values.toList();
+    for (final win in copy) {
+      _closingForQuit.add(win.path);
       try {
         await bus.send(
           win.windowId,
           CloseRequestMessage(path: win.path.value, reason: 'quit'),
         );
       } catch (e, st) {
-        _log.fine('Window ${win.windowId} gone on quit', e, st);
+        _log.fine('Window ${win.windowId} gone on closeAllForQuit', e, st);
       }
     }
 
-    final completer = Completer<void>();
-    late StreamSubscription<Set<String>> sub;
-    sub = bus.openWindowIds.listen((liveIds) {
-      if (liveIds.intersection(targetIds).isEmpty) {
-        if (!completer.isCompleted) completer.complete();
-      }
-    });
-
-    await completer.future.timeout(
-      const Duration(seconds: 2),
-      onTimeout: () {},
-    );
-    await sub.cancel();
-
-    _windows.clear();
-    _windowIdToPath.clear();
+    final deadline = DateTime.now().add(const Duration(seconds: 2));
+    while (_windows.isNotEmpty && DateTime.now().isBefore(deadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
   }
 
   Future<void> _handleIncoming(String fromId, StickyMessage message) async {
@@ -256,6 +334,13 @@ final class StickyHub {
     final text = openNotes.openText(path) ?? sticky.text;
     final hash = hashProtocolText(text);
 
+    final screens = await (screenRetriever?.call() ?? getScreenInfos());
+    final bounds =
+        _pendingBounds.remove(path) ??
+        (positions.mine.containsKey(path)
+            ? toGlobal(positions.mine[path]!, screens)
+            : null);
+
     final win =
         _windows[path] ?? _OpenWindowState(windowId: fromId, path: path);
     _windows[path] = win;
@@ -274,6 +359,10 @@ final class StickyHub {
           locked: sticky.meta.locked,
           collapsed: positions.mine[path]?.collapsed ?? false,
           title: sticky.title,
+          x: bounds?.left,
+          y: bounds?.top,
+          width: bounds?.width,
+          height: bounds?.height,
         ),
       );
     } catch (e, st) {
@@ -382,7 +471,9 @@ final class StickyHub {
   Future<void> _handleClose(String fromId, VaultPath path) async {
     _windows.remove(path);
     _windowIdToPath.remove(fromId);
-    await positions.remove(path);
+    if (!_closingForHideAll.remove(path) && !_closingForQuit.remove(path)) {
+      await positions.remove(path);
+    }
   }
 
   Future<void> _handleRepoChange(StickyChange change) async {

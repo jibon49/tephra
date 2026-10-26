@@ -44,6 +44,30 @@ abstract interface class WindowBus {
   Future<void> dispose();
 }
 
+/// No-op implementation of [WindowBus] for unsupported platforms or stubbing.
+final class NoopWindowBus implements WindowBus {
+  const NoopWindowBus({this.selfId = 'main'});
+
+  @override
+  final String selfId;
+
+  @override
+  Future<void> send(String toWindowId, StickyMessage message) async {}
+
+  @override
+  Stream<(String fromWindowId, StickyMessage message)> get incoming =>
+      const Stream.empty();
+
+  @override
+  Future<String> createStickyWindow(StickyWindowArgs args) async => 'noop';
+
+  @override
+  Stream<Set<String>> get openWindowIds => const Stream.empty();
+
+  @override
+  Future<void> dispose() async {}
+}
+
 /// Production implementation of [WindowBus] backed by `package:desktop_multi_window`.
 class DesktopWindowBus implements WindowBus {
   DesktopWindowBus._(this._currentController, {required this.selfId}) {

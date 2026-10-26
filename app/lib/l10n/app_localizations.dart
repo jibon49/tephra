@@ -4520,6 +4520,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quick edit'**
   String get stickyQuickEditorTitle;
+
+  /// No description provided for @settingsStartWithWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Tephra with Windows'**
+  String get settingsStartWithWindows;
+
+  /// No description provided for @settingsStartWithWindowsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically launch Tephra in the background on system startup'**
+  String get settingsStartWithWindowsSubtitle;
+
+  /// No description provided for @stickySettingsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky notes'**
+  String get stickySettingsSection;
+
+  /// No description provided for @stickySettingsRestoreOnStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore stickies on startup'**
+  String get stickySettingsRestoreOnStart;
+
+  /// No description provided for @stickySettingsRestoreOnStartSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically reopen floating sticky note windows when opening a vault'**
+  String get stickySettingsRestoreOnStartSubtitle;
+
+  /// No description provided for @stickySettingsMaxWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum open sticky windows'**
+  String get stickySettingsMaxWindows;
+
+  /// No description provided for @stickySettingsSemanticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky window semantics'**
+  String get stickySettingsSemanticsTitle;
+
+  /// No description provided for @stickySettingsSemanticsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticky Windows Behavior:\n• Close one window (×): Closes window, removes geometry entry.\n• Hide all: Closes all windows, keeps geometry entries.\n• Show all: Opens up to max windows for active stickies.\n• App start: Restores kept entries unless hidden all.'**
+  String get stickySettingsSemanticsHelp;
+
+  /// No description provided for @stickyShowingNStickies.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {count} of {total} stickies'**
+  String stickyShowingNStickies(int count, int total);
 }
 
 class _AppLocalizationsDelegate

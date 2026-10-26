@@ -2,16 +2,24 @@
 
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tephra_core/tephra_core.dart';
+import 'package:tephra_sync/tephra_sync.dart';
 
 import '../core/providers.dart';
+import '../explorer/providers.dart';
 import '../search/providers.dart';
 import '../vault/providers.dart';
 import 'board/board_controller.dart';
 import 'data/open_note_bridge.dart';
+import 'data/sticky_positions_store.dart';
 import 'data/sticky_repository.dart';
 import 'model/sticky.dart';
 import 'model/sticky_color.dart';
+import 'windows/sticky_hub.dart';
+import 'windows/text_merger.dart';
+import 'windows/window_bus.dart';
 
 /// State of all active and archived stickies in the open vault.
 final class StickiesState {
@@ -82,3 +90,57 @@ final stickiesProvider = NotifierProvider<StickiesNotifier, StickiesState>(
 final boardControllerProvider = NotifierProvider<BoardController, BoardState>(
   BoardController.new,
 );
+
+/// Provider supplying the [WindowBus] instance.
+final windowBusProvider = Provider<WindowBus>((ref) {
+  return const NoopWindowBus();
+});
+
+/// Provider supplying the [StickyPositionsStore] for the open vault and current device.
+final stickyPositionsStoreProvider = Provider<StickyPositionsStore>((ref) {
+  final fs = ref.watch(vaultFsProvider);
+  final deviceId = ref.watch(appSettingsProvider).deviceId;
+  final store = StickyPositionsStore(fs: fs, deviceId: deviceId);
+  unawaited(store.load());
+  ref.onDispose(() => unawaited(store.dispose()));
+  return store;
+});
+
+/// Provider supplying the [StickyHub] single writer instance for desktop.
+final stickyHubProvider = Provider<StickyHub>((ref) {
+  final bus = ref.watch(windowBusProvider);
+  final repo = ref.watch(stickyRepositoryProvider);
+  final openNotes = ref.watch(openNoteBridgeProvider);
+  final positions = ref.watch(stickyPositionsStoreProvider);
+  final clock = ref.watch(clockProvider);
+  final appSettings = ref.watch(appSettingsProvider);
+
+  final hub = StickyHub(
+    bus: bus,
+    repo: repo,
+    openNotes: openNotes,
+    merger: const SyncTextMerger(),
+    positions: positions,
+    conflictNamer: (path) => VaultPath(
+      conflictCopyName(
+        path,
+        clock.now(),
+        appSettings.deviceName,
+        (p) => repo.byPath(p) != null,
+      ),
+    ),
+    clock: clock,
+    getAppSettings: () => ref.read(appSettingsProvider),
+    updateAppSettings: (s) async {
+      ref.read(appSettingsProvider.notifier).update((_) => s);
+    },
+    onNotify: (msg) {
+      final key = ref.read(scaffoldMessengerKeyProvider);
+      key.currentState?.showSnackBar(SnackBar(content: Text(msg)));
+    },
+  );
+
+  unawaited(hub.start());
+  ref.onDispose(() => unawaited(hub.dispose()));
+  return hub;
+});

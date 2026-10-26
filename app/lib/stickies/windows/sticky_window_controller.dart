@@ -34,6 +34,10 @@ class StickyWindowController extends ChangeNotifier {
   bool _locked = false;
   bool _collapsed = false;
   String _title = '';
+  double? _initialX;
+  double? _initialY;
+  double? _initialWidth;
+  double? _initialHeight;
 
   Timer? _debounceTimer;
   Timer? _geomDebounceTimer;
@@ -50,6 +54,10 @@ class StickyWindowController extends ChangeNotifier {
   bool get collapsed => _collapsed;
   String get title =>
       _title.isEmpty ? path.split('/').last.replaceAll('.md', '') : _title;
+  double? get initialX => _initialX;
+  double? get initialY => _initialY;
+  double? get initialWidth => _initialWidth;
+  double? get initialHeight => _initialHeight;
 
   /// Starts listening to messages from the main window and emits [ReadyMessage].
   Future<void> start() async {
@@ -75,6 +83,10 @@ class StickyWindowController extends ChangeNotifier {
         _locked = message.locked;
         _collapsed = message.collapsed;
         _title = message.title;
+        _initialX = message.x;
+        _initialY = message.y;
+        _initialWidth = message.width;
+        _initialHeight = message.height;
         _appliedText = message.text;
         _appliedHash = message.hash;
         if (!_dirty) {

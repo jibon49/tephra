@@ -599,6 +599,9 @@ class SettingsScreen extends ConsumerWidget {
           // --- Sync & backup ---
           const _SyncSettingsSection(),
 
+          // --- Sticky notes (Windows) ---
+          const _StickySettingsSection(),
+
           // --- About ---
           _SectionHeader(title: l10n.settingsAbout),
           const ListTile(
@@ -1126,6 +1129,77 @@ class _SyncSettingsSection extends ConsumerWidget {
             ),
           ),
         ],
+        const Divider(),
+      ],
+    );
+  }
+}
+
+class _StickySettingsSection extends ConsumerWidget {
+  const _StickySettingsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (kIsWeb || !Platform.isWindows) {
+      return const SizedBox.shrink();
+    }
+    final l10n = AppLocalizations.of(context);
+    final appSettings = ref.watch(appSettingsProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionHeader(title: l10n.stickySettingsSection),
+        FutureBuilder<bool>(
+          future: ref.read(windowServiceProvider).isLaunchAtStartupEnabled(),
+          builder: (context, snapshot) {
+            final enabled = snapshot.data ?? false;
+            return SwitchListTile(
+              title: Text(l10n.settingsStartWithWindows),
+              subtitle: Text(l10n.settingsStartWithWindowsSubtitle),
+              value: enabled,
+              onChanged: (val) async {
+                await ref.read(windowServiceProvider).setLaunchAtStartup(val);
+                (context as Element).markNeedsBuild();
+              },
+            );
+          },
+        ),
+        SwitchListTile(
+          title: Text(l10n.stickySettingsRestoreOnStart),
+          subtitle: Text(l10n.stickySettingsRestoreOnStartSubtitle),
+          value: appSettings.stickiesRestoreOnStart,
+          onChanged: (val) {
+            ref
+                .read(appSettingsProvider.notifier)
+                .update((s) => s.copyWith(stickiesRestoreOnStart: val));
+          },
+        ),
+        ListTile(
+          title: Text(l10n.stickySettingsMaxWindows),
+          trailing: DropdownButton<int>(
+            value: [5, 10, 20, 50].contains(appSettings.stickiesMaxWindows)
+                ? appSettings.stickiesMaxWindows
+                : 20,
+            onChanged: (val) {
+              if (val != null) {
+                ref
+                    .read(appSettingsProvider.notifier)
+                    .update((s) => s.copyWith(stickiesMaxWindows: val));
+              }
+            },
+            items: const [
+              DropdownMenuItem(value: 5, child: Text('5')),
+              DropdownMenuItem(value: 10, child: Text('10')),
+              DropdownMenuItem(value: 20, child: Text('20')),
+              DropdownMenuItem(value: 50, child: Text('50')),
+            ],
+          ),
+        ),
+        ListTile(
+          title: Text(l10n.stickySettingsSemanticsTitle),
+          subtitle: Text(l10n.stickySettingsSemanticsHelp),
+        ),
         const Divider(),
       ],
     );

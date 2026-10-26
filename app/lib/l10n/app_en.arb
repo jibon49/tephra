@@ -1227,7 +1227,22 @@
   "stickyBoardLayoutByTag": "By tag",
   "stickyBoardLayoutApplied": "Layout applied",
   "stickyBoardUndo": "Undo",
-  "stickyQuickEditorTitle": "Quick edit"
+  "stickyQuickEditorTitle": "Quick edit",
+  "settingsStartWithWindows": "Start Tephra with Windows",
+  "settingsStartWithWindowsSubtitle": "Automatically launch Tephra in the background on system startup",
+  "stickySettingsSection": "Sticky notes",
+  "stickySettingsRestoreOnStart": "Restore stickies on startup",
+  "stickySettingsRestoreOnStartSubtitle": "Automatically reopen floating sticky note windows when opening a vault",
+  "stickySettingsMaxWindows": "Maximum open sticky windows",
+  "stickySettingsSemanticsTitle": "Sticky window semantics",
+  "stickySettingsSemanticsHelp": "Sticky Windows Behavior:\n• Close one window (×): Closes window, removes geometry entry.\n• Hide all: Closes all windows, keeps geometry entries.\n• Show all: Opens up to max windows for active stickies.\n• App start: Restores kept entries unless hidden all.",
+  "stickyShowingNStickies": "Showing {count} of {total} stickies",
+  "@stickyShowingNStickies": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  }
 }
 
 

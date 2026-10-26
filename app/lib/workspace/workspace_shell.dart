@@ -1,11 +1,16 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/hotkey_host.dart';
 import '../core/perf/perf_runner.dart';
 import '../editor/save_state_indicator.dart';
+import '../stickies/providers.dart';
 import '../sync_ui/status/sync_status_indicator.dart';
 import '../vault/providers.dart';
 import 'builtin_panels.dart';
@@ -27,6 +32,9 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!kIsWeb && Platform.isWindows) {
+        unawaited(ref.read(stickyHubProvider).restoreOnStart());
+      }
       registerBuiltinPanels(ref);
       final registry = ref.read(statusBarRegistryProvider.notifier);
       registry.register(

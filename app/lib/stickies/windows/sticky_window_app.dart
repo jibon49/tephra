@@ -25,6 +25,7 @@ class _StickyWindowAppState extends State<StickyWindowApp> {
   final TextEditingController _bodyController = TextEditingController();
   final FocusNode _bodyFocusNode = FocusNode();
   double? _expandedHeight;
+  bool _initialBoundsApplied = false;
 
   @override
   void initState() {
@@ -43,6 +44,14 @@ class _StickyWindowAppState extends State<StickyWindowApp> {
   }
 
   void _onControllerChanged() {
+    if (widget.controller.initialX != null && !_initialBoundsApplied) {
+      _initialBoundsApplied = true;
+      final x = widget.controller.initialX!;
+      final y = widget.controller.initialY!;
+      final w = widget.controller.initialWidth ?? 280.0;
+      final h = widget.controller.initialHeight ?? 260.0;
+      windowManager.setBounds(Rect.fromLTWH(x, y, w, h));
+    }
     if (mounted) {
       setState(() {});
     }
