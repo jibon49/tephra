@@ -18,6 +18,7 @@ import '../core/sync/sync_worker_client.dart';
 import '../explorer/providers.dart';
 import '../search/providers.dart';
 import '../vault/providers.dart';
+import 'android/sticky_widget_sync.dart';
 import 'board/board_controller.dart';
 import 'data/open_note_bridge.dart';
 import 'data/sticky_positions_store.dart';
@@ -257,4 +258,35 @@ final headlessConfigSyncProvider = Provider<void>((ref) {
   unawaited(
     config.save(File(p.join(dir.path, HeadlessConfig.defaultFileName))),
   );
+});
+
+/// Provider keeping Android home-screen widgets synchronized with sticky changes.
+final stickyWidgetSyncProvider = Provider<StickyWidgetSync?>((ref) {
+  if (kIsWeb || !Platform.isAndroid) return null;
+
+  final session = ref.watch(vaultSessionProvider);
+  if (session == null) return null;
+
+  final repo = ref.watch(stickyRepositoryProvider);
+  final homeWidgets = ref.watch(homeWidgetServiceProvider);
+
+  final sync = StickyWidgetSync(
+    repo: repo,
+    homeWidgets: homeWidgets,
+    vaultId: session.vaultId,
+  );
+  sync.start();
+
+  // Also reconcile when a sync cycle finishes
+  ref.listen<AsyncValue<SyncStatusSnapshot>>(
+    syncStatusProvider(session.vaultId),
+    (prev, next) {
+      if (next.asData?.value.state == SyncUiState.idle) {
+        unawaited(sync.syncNow());
+      }
+    },
+  );
+
+  ref.onDispose(sync.dispose);
+  return sync;
 });

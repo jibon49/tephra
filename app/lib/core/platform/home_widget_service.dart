@@ -1,6 +1,9 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:home_widget/home_widget.dart';
 
 /// Android home-screen widget communication service.
 abstract interface class HomeWidgetService {
@@ -45,59 +48,86 @@ class NoopHomeWidgetService implements HomeWidgetService {
   Future<Uri?> initialWidgetLaunch() async => null;
 }
 
-/// Android stub implementation of [HomeWidgetService].
+/// Android production implementation of [HomeWidgetService].
 class AndroidHomeWidgetService implements HomeWidgetService {
+  static const String stickyWidgetProviderClass =
+      'com.tephra.app.StickyWidgetProvider';
+  static const String stickyStackWidgetProviderClass =
+      'com.tephra.app.StickyStackWidgetProvider';
+  static const String quickCaptureWidgetProviderClass =
+      'com.tephra.app.QuickCaptureWidgetProvider';
+
   @override
-  Future<void> saveJson(String key, Map<String, Object?> json) {
-    throw UnimplementedError(
-      'AndroidHomeWidgetService.saveJson will be implemented in step 04.13',
+  Future<void> saveJson(String key, Map<String, Object?> json) async {
+    final jsonString = jsonEncode(json);
+    await HomeWidget.saveWidgetData<String>(key, jsonString);
+  }
+
+  @override
+  Future<Map<String, Object?>?> readJson(String key) async {
+    final raw = await HomeWidget.getWidgetData<String>(key);
+    if (raw == null || raw.isEmpty) return null;
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is Map<String, Object?>) return decoded;
+      if (decoded is Map) return decoded.cast<String, Object?>();
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> updateStickyWidgets() async {
+    await HomeWidget.updateWidget(
+      qualifiedAndroidName: stickyWidgetProviderClass,
     );
   }
 
   @override
-  Future<Map<String, Object?>?> readJson(String key) {
-    throw UnimplementedError(
-      'AndroidHomeWidgetService.readJson will be implemented in step 04.13',
+  Future<void> updateStackWidgets() async {
+    await HomeWidget.updateWidget(
+      qualifiedAndroidName: stickyStackWidgetProviderClass,
     );
   }
 
   @override
-  Future<void> updateStickyWidgets() {
-    throw UnimplementedError(
-      'AndroidHomeWidgetService.updateStickyWidgets will be implemented in step 04.13',
-    );
+  Future<void> updateCaptureWidgets() async {
+    try {
+      await HomeWidget.updateWidget(
+        qualifiedAndroidName: quickCaptureWidgetProviderClass,
+      );
+    } catch (_) {}
   }
 
   @override
-  Future<void> updateStackWidgets() {
-    throw UnimplementedError(
-      'AndroidHomeWidgetService.updateStackWidgets will be implemented in step 04.13',
-    );
+  Future<List<int>> installedStickyWidgetIds() async {
+    try {
+      final all = await HomeWidget.getInstalledWidgets();
+      return all
+          .where(
+            (w) =>
+                w.androidClassName != null &&
+                w.androidClassName!.endsWith('StickyWidgetProvider'),
+          )
+          .map((w) => w.androidWidgetId)
+          .whereType<int>()
+          .toList();
+    } catch (_) {
+      return const [];
+    }
   }
 
   @override
-  Future<void> updateCaptureWidgets() {
-    throw UnimplementedError(
-      'AndroidHomeWidgetService.updateCaptureWidgets will be implemented in step 04.13',
-    );
-  }
+  Stream<Uri> get widgetLaunches =>
+      HomeWidget.widgetClicked.where((u) => u != null).cast<Uri>();
 
   @override
-  Future<List<int>> installedStickyWidgetIds() {
-    throw UnimplementedError(
-      'AndroidHomeWidgetService.installedStickyWidgetIds will be implemented in step 04.13',
-    );
-  }
-
-  @override
-  Stream<Uri> get widgetLaunches => throw UnimplementedError(
-    'AndroidHomeWidgetService.widgetLaunches will be implemented in step 04.13',
-  );
-
-  @override
-  Future<Uri?> initialWidgetLaunch() {
-    throw UnimplementedError(
-      'AndroidHomeWidgetService.initialWidgetLaunch will be implemented in step 04.13',
-    );
+  Future<Uri?> initialWidgetLaunch() async {
+    try {
+      return await HomeWidget.initiallyLaunchedFromHomeWidget();
+    } catch (_) {
+      return null;
+    }
   }
 }

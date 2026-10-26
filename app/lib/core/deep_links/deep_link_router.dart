@@ -15,6 +15,7 @@ import '../../explorer/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../stickies/board/sticky_board_screen.dart';
 import '../../stickies/providers.dart';
+import '../../stickies/ui/widget_sticky_picker_screen.dart';
 import '../../vault/note_tools/providers.dart';
 import '../../vault/providers.dart';
 import '../../vault/vault_opener.dart';
@@ -253,8 +254,14 @@ class DeepLinkRouter {
         }
         break;
 
-      case WidgetConfigLink():
-        // Handled in step 04.13 for sticky picker
+      case WidgetConfigLink(:final widgetId):
+        if (context != null && context.mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => WidgetStickyPickerScreen(widgetId: widgetId),
+            ),
+          );
+        }
         break;
     }
   }

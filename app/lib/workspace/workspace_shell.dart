@@ -45,6 +45,7 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
       ref.read(deepLinkRouterProvider).init();
       ref.read(reminderSchedulerProvider);
       ref.read(headlessConfigSyncProvider);
+      ref.read(stickyWidgetSyncProvider);
       registerBuiltinPanels(ref);
       final registry = ref.read(statusBarRegistryProvider.notifier);
       registry.register(

@@ -4700,6 +4700,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable in settings'**
   String get settingsNotificationsFix;
+
+  /// No description provided for @widgetPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a sticky note'**
+  String get widgetPickerTitle;
+
+  /// No description provided for @widgetPickerNewSticky.
+  ///
+  /// In en, this message translates to:
+  /// **'New sticky'**
+  String get widgetPickerNewSticky;
+
+  /// No description provided for @widgetPickerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No active stickies found'**
+  String get widgetPickerEmpty;
 }
 
 class _AppLocalizationsDelegate

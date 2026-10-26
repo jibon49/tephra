@@ -2589,4 +2589,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsNotificationsFix => 'Enable in settings';
+
+  @override
+  String get widgetPickerTitle => 'Choose a sticky note';
+
+  @override
+  String get widgetPickerNewSticky => 'New sticky';
+
+  @override
+  String get widgetPickerEmpty => 'No active stickies found';
 }

@@ -1268,7 +1268,10 @@
   "settingsExactAlarmsLimited": "Limited (may be delayed)",
   "settingsExactAlarmsBanner": "Reminders may be late. Allow 'Alarms & reminders' for Tephra.",
   "settingsExactAlarmsFix": "Allow",
-  "settingsNotificationsFix": "Enable in settings"
+  "settingsNotificationsFix": "Enable in settings",
+  "widgetPickerTitle": "Choose a sticky note",
+  "widgetPickerNewSticky": "New sticky",
+  "widgetPickerEmpty": "No active stickies found"
 }
 
 

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -20,6 +21,7 @@ import 'package:tephra/core/uuid.dart';
 import 'package:tephra/settings/app_settings.dart';
 import 'package:tephra/settings/app_settings_store.dart';
 import 'package:tephra/settings/providers.dart';
+import 'package:tephra/stickies/android/widget_callback.dart';
 import 'package:tephra/stickies/providers.dart';
 import 'package:tephra/stickies/windows/sticky_protocol.dart';
 import 'package:tephra/stickies/windows/sticky_window_main.dart';
@@ -59,6 +61,13 @@ Future<void> main(List<String> args) async {
       await Workmanager().initialize(tephraBackgroundDispatcher);
     } catch (e, st) {
       Logger('app').warning('Failed to initialize Workmanager', e, st);
+    }
+    try {
+      await HomeWidget.registerInteractivityCallback(stickyWidgetCallback);
+    } catch (e, st) {
+      Logger(
+        'app',
+      ).warning('Failed to register HomeWidget interactivity callback', e, st);
     }
   }
 
