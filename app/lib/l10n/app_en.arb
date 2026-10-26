@@ -1236,6 +1236,18 @@
   "stickySettingsMaxWindows": "Maximum open sticky windows",
   "stickySettingsSemanticsTitle": "Sticky window semantics",
   "stickySettingsSemanticsHelp": "Sticky Windows Behavior:\n• Close one window (×): Closes window, removes geometry entry.\n• Hide all: Closes all windows, keeps geometry entries.\n• Show all: Opens up to max windows for active stickies.\n• App start: Restores kept entries unless hidden all.",
+  "stickySettingsHotkey": "Global capture shortcut",
+  "stickySettingsHotkeySubtitle": "System-wide shortcut to create and open a new sticky note",
+  "stickySettingsHotkeyInvalid": "Invalid shortcut. Must include Ctrl, Alt, or Win/Meta with a key (A-Z, 0-9, F1-F12).",
+  "stickySettingsHotkeyDialogTitle": "Global shortcut",
+  "stickySettingsHotkeyRecord": "Record key combination",
+  "stickySettingsHotkeyEnterManual": "Or enter shortcut manually:",
+  "stickySettingsHotkeySaved": "Global shortcut updated to {hotkey}",
+  "@stickySettingsHotkeySaved": {
+    "placeholders": {
+      "hotkey": { "type": "String" }
+    }
+  },
   "stickyShowingNStickies": "Showing {count} of {total} stickies",
   "@stickyShowingNStickies": {
     "placeholders": {

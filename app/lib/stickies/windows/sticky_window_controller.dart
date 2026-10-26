@@ -34,6 +34,7 @@ class StickyWindowController extends ChangeNotifier {
   bool _locked = false;
   bool _collapsed = false;
   String _title = '';
+  bool _focusEdit = false;
   double? _initialX;
   double? _initialY;
   double? _initialWidth;
@@ -54,6 +55,11 @@ class StickyWindowController extends ChangeNotifier {
   bool get collapsed => _collapsed;
   String get title =>
       _title.isEmpty ? path.split('/').last.replaceAll('.md', '') : _title;
+  bool get focusEdit => _focusEdit;
+  void clearFocusEdit() {
+    _focusEdit = false;
+  }
+
   double? get initialX => _initialX;
   double? get initialY => _initialY;
   double? get initialWidth => _initialWidth;
@@ -83,6 +89,7 @@ class StickyWindowController extends ChangeNotifier {
         _locked = message.locked;
         _collapsed = message.collapsed;
         _title = message.title;
+        _focusEdit = message.focusEdit;
         _initialX = message.x;
         _initialY = message.y;
         _initialWidth = message.width;

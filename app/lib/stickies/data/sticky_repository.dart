@@ -111,7 +111,7 @@ final class StickyMoved extends StickyChange {
 }
 
 /// Central service managing in-memory sticky notes for the open vault.
-final class StickyRepository {
+class StickyRepository {
   StickyRepository({
     required this.fs,
     required this.search,

@@ -4569,6 +4569,48 @@ abstract class AppLocalizations {
   /// **'Sticky Windows Behavior:\n• Close one window (×): Closes window, removes geometry entry.\n• Hide all: Closes all windows, keeps geometry entries.\n• Show all: Opens up to max windows for active stickies.\n• App start: Restores kept entries unless hidden all.'**
   String get stickySettingsSemanticsHelp;
 
+  /// No description provided for @stickySettingsHotkey.
+  ///
+  /// In en, this message translates to:
+  /// **'Global capture shortcut'**
+  String get stickySettingsHotkey;
+
+  /// No description provided for @stickySettingsHotkeySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System-wide shortcut to create and open a new sticky note'**
+  String get stickySettingsHotkeySubtitle;
+
+  /// No description provided for @stickySettingsHotkeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid shortcut. Must include Ctrl, Alt, or Win/Meta with a key (A-Z, 0-9, F1-F12).'**
+  String get stickySettingsHotkeyInvalid;
+
+  /// No description provided for @stickySettingsHotkeyDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Global shortcut'**
+  String get stickySettingsHotkeyDialogTitle;
+
+  /// No description provided for @stickySettingsHotkeyRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Record key combination'**
+  String get stickySettingsHotkeyRecord;
+
+  /// No description provided for @stickySettingsHotkeyEnterManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Or enter shortcut manually:'**
+  String get stickySettingsHotkeyEnterManual;
+
+  /// No description provided for @stickySettingsHotkeySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Global shortcut updated to {hotkey}'**
+  String stickySettingsHotkeySaved(String hotkey);
+
   /// No description provided for @stickyShowingNStickies.
   ///
   /// In en, this message translates to:

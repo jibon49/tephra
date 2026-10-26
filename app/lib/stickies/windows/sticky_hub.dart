@@ -43,7 +43,7 @@ class _OpenWindowState {
 }
 
 /// The main-window single writer coordinating floating sticky windows.
-final class StickyHub {
+class StickyHub {
   StickyHub({
     required this.bus,
     required this.repo,
@@ -74,6 +74,7 @@ final class StickyHub {
   final Map<String, VaultPath> _windowIdToPath = {};
   final Map<VaultPath, Future<void>> _pathChains = {};
   final Map<VaultPath, Rect> _pendingBounds = {};
+  final Map<VaultPath, bool> _pendingFocusEdit = {};
   final Set<VaultPath> _closingForHideAll = {};
   final Set<VaultPath> _closingForQuit = {};
 
@@ -113,7 +114,7 @@ final class StickyHub {
   /// Opens a floating sticky window for [path].
   ///
   /// If a window is already open for this note, focuses/brings it to front instead.
-  Future<void> open(VaultPath path) async {
+  Future<void> open(VaultPath path, {bool focusEdit = false}) async {
     final existing = _windows[path];
     if (existing != null) {
       // One window per path: focus existing
@@ -121,6 +122,7 @@ final class StickyHub {
       return;
     }
 
+    _pendingFocusEdit[path] = focusEdit;
     try {
       final screens = await (screenRetriever?.call() ?? getScreenInfos());
       Rect bounds;
@@ -340,6 +342,7 @@ final class StickyHub {
         (positions.mine.containsKey(path)
             ? toGlobal(positions.mine[path]!, screens)
             : null);
+    final focusEdit = _pendingFocusEdit.remove(path) ?? false;
 
     final win =
         _windows[path] ?? _OpenWindowState(windowId: fromId, path: path);
@@ -359,6 +362,7 @@ final class StickyHub {
           locked: sticky.meta.locked,
           collapsed: positions.mine[path]?.collapsed ?? false,
           title: sticky.title,
+          focusEdit: focusEdit,
           x: bounds?.left,
           y: bounds?.top,
           width: bounds?.width,

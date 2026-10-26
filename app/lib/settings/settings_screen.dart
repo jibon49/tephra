@@ -1,5 +1,6 @@
 // © 2026 Tephra. All rights reserved.
 
+import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
@@ -7,14 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 
+import '../commands/shortcut_codec.dart';
 import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
+import '../stickies/providers.dart';
+import '../stickies/windows/accelerator.dart';
 import '../sync_ui/providers.dart';
 import '../sync_ui/settings/sync_settings_screen.dart';
 import '../sync_ui/setup/sync_setup_wizard.dart';
 import '../vault/note_tools/template_picker.dart';
 import '../vault/providers.dart';
 import 'hotkeys_screen.dart';
+import 'shortcut_recorder_dialog.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -1176,6 +1181,18 @@ class _StickySettingsSection extends ConsumerWidget {
           },
         ),
         ListTile(
+          title: Text(l10n.stickySettingsHotkey),
+          subtitle: Text(
+            '${appSettings.stickyHotkey} — ${l10n.stickySettingsHotkeySubtitle}',
+          ),
+          trailing: TextButton.icon(
+            icon: const Icon(Icons.keyboard_outlined, size: 18),
+            label: Text(l10n.stickySettingsHotkeyRecord),
+            onPressed: () =>
+                _editHotkey(context, ref, appSettings.stickyHotkey, l10n),
+          ),
+        ),
+        ListTile(
           title: Text(l10n.stickySettingsMaxWindows),
           trailing: DropdownButton<int>(
             value: [5, 10, 20, 50].contains(appSettings.stickiesMaxWindows)
@@ -1203,5 +1220,104 @@ class _StickySettingsSection extends ConsumerWidget {
         const Divider(),
       ],
     );
+  }
+
+  Future<void> _editHotkey(
+    BuildContext context,
+    WidgetRef ref,
+    String currentHotkey,
+    AppLocalizations l10n,
+  ) async {
+    final controller = TextEditingController(text: currentHotkey);
+    String? errorMessage;
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text(l10n.stickySettingsHotkeyDialogTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              OutlinedButton.icon(
+                icon: const Icon(
+                  Icons.fiber_manual_record,
+                  color: Colors.red,
+                  size: 16,
+                ),
+                label: Text(l10n.stickySettingsHotkeyRecord),
+                onPressed: () async {
+                  final recorded = await showShortcutRecorderDialog(context);
+                  if (recorded != null) {
+                    final str = formatShortcut(recorded);
+                    controller.text = str;
+                    setState(() => errorMessage = null);
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.stickySettingsHotkeyEnterManual,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: controller,
+                autofocus: false,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintText: 'Ctrl+Alt+N',
+                  errorText: errorMessage,
+                ),
+                onChanged: (_) {
+                  if (errorMessage != null) {
+                    setState(() => errorMessage = null);
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+              ),
+            ),
+            FilledButton(
+              onPressed: () {
+                try {
+                  final parsed = Accelerator.parse(controller.text);
+                  Navigator.of(dialogContext).pop(parsed.format());
+                } catch (_) {
+                  setState(() {
+                    errorMessage = l10n.stickySettingsHotkeyInvalid;
+                  });
+                }
+              },
+              child: Text(
+                MaterialLocalizations.of(dialogContext).saveButtonLabel,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result != null && result.isNotEmpty && context.mounted) {
+      ref
+          .read(appSettingsProvider.notifier)
+          .update((s) => s.copyWith(stickyHotkey: result));
+      await ref.read(globalHotkeyServiceProvider).register(result, () {
+        final integration = ref.read(stickyDesktopIntegrationProvider);
+        unawaited(integration?.createNewSticky());
+      });
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.stickySettingsHotkeySaved(result))),
+        );
+      }
+    }
   }
 }

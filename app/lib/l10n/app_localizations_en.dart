@@ -2516,6 +2516,31 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sticky Windows Behavior:\n• Close one window (×): Closes window, removes geometry entry.\n• Hide all: Closes all windows, keeps geometry entries.\n• Show all: Opens up to max windows for active stickies.\n• App start: Restores kept entries unless hidden all.';
 
   @override
+  String get stickySettingsHotkey => 'Global capture shortcut';
+
+  @override
+  String get stickySettingsHotkeySubtitle =>
+      'System-wide shortcut to create and open a new sticky note';
+
+  @override
+  String get stickySettingsHotkeyInvalid =>
+      'Invalid shortcut. Must include Ctrl, Alt, or Win/Meta with a key (A-Z, 0-9, F1-F12).';
+
+  @override
+  String get stickySettingsHotkeyDialogTitle => 'Global shortcut';
+
+  @override
+  String get stickySettingsHotkeyRecord => 'Record key combination';
+
+  @override
+  String get stickySettingsHotkeyEnterManual => 'Or enter shortcut manually:';
+
+  @override
+  String stickySettingsHotkeySaved(String hotkey) {
+    return 'Global shortcut updated to $hotkey';
+  }
+
+  @override
   String stickyShowingNStickies(int count, int total) {
     return 'Showing $count of $total stickies';
   }

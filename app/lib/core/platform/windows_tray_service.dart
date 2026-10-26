@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:tray_manager/tray_manager.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'tray_service.dart';
 
 /// Low-level abstraction over the native tray icon backend, injectable for testing.
@@ -146,14 +147,19 @@ class WindowsTrayService implements TrayService {
       .map((id) {
         switch (id) {
           case 'new_sticky':
+          case 'tray.new-sticky':
             return TrayAction.newSticky;
           case 'show_all_stickies':
+          case 'tray.show-all-stickies':
             return TrayAction.showAllStickies;
           case 'hide_all_stickies':
+          case 'tray.hide-all-stickies':
             return TrayAction.hideAllStickies;
           case 'open_tephra':
+          case 'tray.open':
             return TrayAction.openTephra;
           case 'quit':
+          case 'tray.quit':
             return TrayAction.quit;
           default:
             return null;
@@ -189,8 +195,76 @@ class WindowsTrayService implements TrayService {
   }
 
   @override
-  Future<void> setActions(List<TrayAction> actions) async {
-    // High-level action conversion will be implemented in step 04.11
+  Future<void> setActions(
+    List<TrayAction> actions, {
+    Map<TrayAction, String>? labels,
+  }) async {
+    final entries = <TrayMenuEntry>[];
+    for (var i = 0; i < actions.length; i++) {
+      final action = actions[i];
+      final id = actionToMenuId(action);
+      final label = labels?[action] ?? defaultActionLabel(action);
+      entries.add(TrayMenuItem(id: id, label: label));
+      if (action == TrayAction.hideAllStickies ||
+          action == TrayAction.openTephra) {
+        if (i + 1 < actions.length) {
+          entries.add(const TrayMenuSeparator());
+        }
+      }
+    }
+    await setMenu(entries);
+  }
+
+  /// Converts a [TrayAction] to its menu item ID.
+  static String actionToMenuId(TrayAction action) {
+    switch (action) {
+      case TrayAction.newSticky:
+        return 'new_sticky';
+      case TrayAction.showAllStickies:
+        return 'show_all_stickies';
+      case TrayAction.hideAllStickies:
+        return 'hide_all_stickies';
+      case TrayAction.openTephra:
+        return 'open_tephra';
+      case TrayAction.quit:
+        return 'quit';
+    }
+  }
+
+  /// Returns a fallback English label for [action].
+  static String defaultActionLabel(TrayAction action) {
+    switch (action) {
+      case TrayAction.newSticky:
+        return 'New sticky';
+      case TrayAction.showAllStickies:
+        return 'Show all stickies';
+      case TrayAction.hideAllStickies:
+        return 'Hide all stickies';
+      case TrayAction.openTephra:
+        return 'Open Tephra';
+      case TrayAction.quit:
+        return 'Quit';
+    }
+  }
+
+  /// Builds the canonical tray menu entries using localized labels.
+  static List<TrayMenuEntry> buildDefaultEntries(
+    AppLocalizations l10n, {
+    List<TrayMenuEntry> extraEntries = const [],
+  }) {
+    return [
+      TrayMenuItem(id: 'new_sticky', label: l10n.trayNewSticky),
+      TrayMenuItem(id: 'show_all_stickies', label: l10n.trayShowAllStickies),
+      TrayMenuItem(id: 'hide_all_stickies', label: l10n.trayHideAllStickies),
+      const TrayMenuSeparator(),
+      TrayMenuItem(id: 'open_tephra', label: l10n.trayOpenTephra),
+      if (extraEntries.isNotEmpty) ...[
+        const TrayMenuSeparator(),
+        ...extraEntries,
+      ],
+      const TrayMenuSeparator(),
+      TrayMenuItem(id: 'quit', label: l10n.trayQuit),
+    ];
   }
 
   @override

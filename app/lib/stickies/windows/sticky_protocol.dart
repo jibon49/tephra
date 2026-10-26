@@ -114,6 +114,7 @@ sealed class StickyMessage {
           final locked = json['locked'];
           final collapsed = json['collapsed'];
           final title = json['title'];
+          final focusEdit = (json['focusEdit'] as bool?) ?? false;
           final x = json['x'] as num?;
           final y = json['y'] as num?;
           final width = json['width'] as num?;
@@ -137,6 +138,7 @@ sealed class StickyMessage {
             locked: locked,
             collapsed: collapsed,
             title: title,
+            focusEdit: focusEdit,
             x: x?.toDouble(),
             y: y?.toDouble(),
             width: width?.toDouble(),
@@ -307,6 +309,7 @@ final class OpenMessage extends StickyMessage {
     required this.locked,
     required this.collapsed,
     required this.title,
+    this.focusEdit = false,
     this.x,
     this.y,
     this.width,
@@ -321,6 +324,7 @@ final class OpenMessage extends StickyMessage {
   final bool locked;
   final bool collapsed;
   final String title;
+  final bool focusEdit;
   final double? x;
   final double? y;
   final double? width;
@@ -338,6 +342,7 @@ final class OpenMessage extends StickyMessage {
     'locked': locked,
     'collapsed': collapsed,
     'title': title,
+    if (focusEdit) 'focusEdit': true,
     if (x != null) 'x': x,
     if (y != null) 'y': y,
     if (width != null) 'width': width,
@@ -357,6 +362,7 @@ final class OpenMessage extends StickyMessage {
           locked == other.locked &&
           collapsed == other.collapsed &&
           title == other.title &&
+          focusEdit == other.focusEdit &&
           x == other.x &&
           y == other.y &&
           width == other.width &&
@@ -372,6 +378,7 @@ final class OpenMessage extends StickyMessage {
     locked,
     collapsed,
     title,
+    focusEdit,
     x,
     y,
     width,

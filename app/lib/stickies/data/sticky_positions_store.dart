@@ -105,7 +105,7 @@ final class StickyGeometry {
 }
 
 /// Stores per-device sticky window geometries in `.tephra/stickies.json`.
-final class StickyPositionsStore {
+class StickyPositionsStore {
   StickyPositionsStore({required this.fs, required this.deviceId});
 
   final VaultFileSystem fs;

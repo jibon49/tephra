@@ -52,6 +52,14 @@ class _StickyWindowAppState extends State<StickyWindowApp> {
       final h = widget.controller.initialHeight ?? 260.0;
       windowManager.setBounds(Rect.fromLTWH(x, y, w, h));
     }
+    if (widget.controller.focusEdit &&
+        !_isEditing &&
+        !widget.controller.locked) {
+      widget.controller.clearFocusEdit();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _enterEditMode();
+      });
+    }
     if (mounted) {
       setState(() {});
     }

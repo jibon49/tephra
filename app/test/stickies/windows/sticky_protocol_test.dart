@@ -154,6 +154,44 @@ void main() {
         isNull,
       );
     });
+
+    test('OpenMessage focusEdit field serialization and defaults', () {
+      const defaultMsg = OpenMessage(
+        path: 'Stickies/test.md',
+        text: 'Hello',
+        hash: 'hash1',
+        color: 'yellow',
+        pinned: false,
+        locked: false,
+        collapsed: false,
+        title: 'test',
+      );
+      expect(defaultMsg.focusEdit, isFalse);
+      expect(defaultMsg.toJson().containsKey('focusEdit'), isFalse);
+
+      final decodedDefault =
+          StickyMessage.fromJson(defaultMsg.toJson()) as OpenMessage?;
+      expect(decodedDefault?.focusEdit, isFalse);
+
+      const focusMsg = OpenMessage(
+        path: 'Stickies/test.md',
+        text: 'Hello',
+        hash: 'hash1',
+        color: 'yellow',
+        pinned: false,
+        locked: false,
+        collapsed: false,
+        title: 'test',
+        focusEdit: true,
+      );
+      expect(focusMsg.focusEdit, isTrue);
+      expect(focusMsg.toJson()['focusEdit'], isTrue);
+
+      final decodedFocus =
+          StickyMessage.fromJson(focusMsg.toJson()) as OpenMessage?;
+      expect(decodedFocus?.focusEdit, isTrue);
+      expect(decodedFocus, equals(focusMsg));
+    });
   });
 
   group('FakeWindowBus', () {

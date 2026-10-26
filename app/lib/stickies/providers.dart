@@ -1,7 +1,9 @@
 // © 2026 Tephra. All rights reserved.
 
 import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
@@ -17,6 +19,7 @@ import 'data/sticky_positions_store.dart';
 import 'data/sticky_repository.dart';
 import 'model/sticky.dart';
 import 'model/sticky_color.dart';
+import 'windows/sticky_desktop_integration.dart';
 import 'windows/sticky_hub.dart';
 import 'windows/text_merger.dart';
 import 'windows/window_bus.dart';
@@ -143,4 +146,42 @@ final stickyHubProvider = Provider<StickyHub>((ref) {
   unawaited(hub.start());
   ref.onDispose(() => unawaited(hub.dispose()));
   return hub;
+});
+
+/// Provider supplying the [StickyDesktopIntegration] instance for Windows desktop.
+final stickyDesktopIntegrationProvider = Provider<StickyDesktopIntegration?>((
+  ref,
+) {
+  if (kIsWeb || !Platform.isWindows) {
+    return null;
+  }
+
+  final hotkey = ref.watch(globalHotkeyServiceProvider);
+  final tray = ref.watch(trayServiceProvider);
+  final hub = ref.watch(stickyHubProvider);
+  final repo = ref.watch(stickyRepositoryProvider);
+  final positions = ref.watch(stickyPositionsStoreProvider);
+  final window = ref.watch(windowServiceProvider);
+  final noteDocs = ref.watch(noteDocumentStoreProvider);
+  final appSettings = ref.watch(appSettingsProvider);
+  final vaultSettings = ref.watch(vaultSettingsProvider);
+
+  final integration = StickyDesktopIntegration(
+    globalHotkeyService: hotkey,
+    trayService: tray,
+    stickyHub: hub,
+    stickyRepository: repo,
+    stickyPositionsStore: positions,
+    windowService: window,
+    noteDocumentStore: noteDocs,
+    appSettings: appSettings,
+    vaultSettings: vaultSettings,
+    onNotice: (msg) {
+      final key = ref.read(scaffoldMessengerKeyProvider);
+      key.currentState?.showSnackBar(SnackBar(content: Text(msg)));
+    },
+  );
+
+  ref.onDispose(() => unawaited(integration.dispose()));
+  return integration;
 });

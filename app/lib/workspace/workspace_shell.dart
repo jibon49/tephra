@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../commands/hotkey_host.dart';
 import '../core/perf/perf_runner.dart';
 import '../editor/save_state_indicator.dart';
+import '../l10n/app_localizations.dart';
 import '../stickies/providers.dart';
 import '../sync_ui/status/sync_status_indicator.dart';
 import '../vault/providers.dart';
@@ -33,6 +34,11 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!kIsWeb && Platform.isWindows) {
+        final l10n = AppLocalizations.of(context);
+        final integration = ref.read(stickyDesktopIntegrationProvider);
+        if (integration != null) {
+          unawaited(integration.init(l10n: l10n));
+        }
         unawaited(ref.read(stickyHubProvider).restoreOnStart());
       }
       registerBuiltinPanels(ref);
