@@ -24,6 +24,9 @@ export 'sync/google_auth_service.dart'
 /// Provider supplying the application's clock source.
 final clockProvider = Provider<Clock>((ref) => const SystemClock());
 
+/// Provider supplying the application support directory when available.
+final appSupportDirectoryProvider = Provider<Directory?>((ref) => null);
+
 /// Provider supplying operating system recycle bin integration on supported platforms.
 final systemTrashProvider = Provider<SystemTrash?>((ref) {
   return (!kIsWeb && Platform.isWindows) ? WindowsSystemTrash() : null;

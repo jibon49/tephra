@@ -9,6 +9,7 @@ import 'package:tephra_core/tephra_core.dart';
 
 import '../../commands/command_registry.dart';
 import '../../commands/tephra_command.dart';
+import '../../core/platform/platform_providers.dart';
 import '../../vault/providers.dart';
 import '../../workspace/open_file.dart';
 import '../../workspace/providers.dart';
@@ -173,9 +174,18 @@ void registerStickyCommands(CommandRegistry registry) {
         final sticky = _activeSticky(ref, activePath);
         if (sticky == null) return;
 
+        final notifs = ref.read(notificationServiceProvider);
+        final perm = await notifs.permissionState();
+        if (!perm.notifications) {
+          await notifs.requestNotificationPermission();
+        }
+
+        if (!context.mounted) return;
         final result = await showStickyReminderDialog(
           context,
           initialValue: sticky.meta.remind,
+          exactAlarmsAllowed: perm.exactAlarms,
+          onRequestExactAlarms: () => notifs.requestExactAlarmPermission(),
         );
         if (result != null) {
           final repo = ref.read(stickyRepositoryProvider);

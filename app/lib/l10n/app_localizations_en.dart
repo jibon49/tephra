@@ -2544,4 +2544,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String stickyShowingNStickies(int count, int total) {
     return 'Showing $count of $total stickies';
   }
+
+  @override
+  String get vaultNotOnDevice =>
+      'This note belongs to a vault that is not on this device.';
+
+  @override
+  String get notificationChannelReminders => 'Reminders';
+
+  @override
+  String get settingsRemindersTitle => 'Reminders';
+
+  @override
+  String get settingsRemindersEnable => 'Enable reminders';
+
+  @override
+  String get settingsRemindersEnableSubtitle =>
+      'Schedule system notifications for sticky note reminder times';
+
+  @override
+  String get settingsNotificationsStatus => 'Notifications';
+
+  @override
+  String get settingsNotificationsAllowed => 'Allowed';
+
+  @override
+  String get settingsNotificationsBlocked => 'Blocked';
+
+  @override
+  String get settingsExactAlarmsStatus => 'Exact timing';
+
+  @override
+  String get settingsExactAlarmsAllowed => 'Allowed';
+
+  @override
+  String get settingsExactAlarmsLimited => 'Limited (may be delayed)';
+
+  @override
+  String get settingsExactAlarmsBanner =>
+      'Reminders may be late. Allow \'Alarms & reminders\' for Tephra.';
+
+  @override
+  String get settingsExactAlarmsFix => 'Allow';
+
+  @override
+  String get settingsNotificationsFix => 'Enable in settings';
 }

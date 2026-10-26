@@ -4616,6 +4616,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Showing {count} of {total} stickies'**
   String stickyShowingNStickies(int count, int total);
+
+  /// No description provided for @vaultNotOnDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This note belongs to a vault that is not on this device.'**
+  String get vaultNotOnDevice;
+
+  /// No description provided for @notificationChannelReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get notificationChannelReminders;
+
+  /// No description provided for @settingsRemindersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get settingsRemindersTitle;
+
+  /// No description provided for @settingsRemindersEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable reminders'**
+  String get settingsRemindersEnable;
+
+  /// No description provided for @settingsRemindersEnableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule system notifications for sticky note reminder times'**
+  String get settingsRemindersEnableSubtitle;
+
+  /// No description provided for @settingsNotificationsStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotificationsStatus;
+
+  /// No description provided for @settingsNotificationsAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed'**
+  String get settingsNotificationsAllowed;
+
+  /// No description provided for @settingsNotificationsBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get settingsNotificationsBlocked;
+
+  /// No description provided for @settingsExactAlarmsStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact timing'**
+  String get settingsExactAlarmsStatus;
+
+  /// No description provided for @settingsExactAlarmsAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed'**
+  String get settingsExactAlarmsAllowed;
+
+  /// No description provided for @settingsExactAlarmsLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Limited (may be delayed)'**
+  String get settingsExactAlarmsLimited;
+
+  /// No description provided for @settingsExactAlarmsBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders may be late. Allow \'Alarms & reminders\' for Tephra.'**
+  String get settingsExactAlarmsBanner;
+
+  /// No description provided for @settingsExactAlarmsFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get settingsExactAlarmsFix;
+
+  /// No description provided for @settingsNotificationsFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable in settings'**
+  String get settingsNotificationsFix;
 }
 
 class _AppLocalizationsDelegate

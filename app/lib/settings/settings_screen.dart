@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 
 import '../commands/shortcut_codec.dart';
+import '../core/platform/notification_service.dart';
 import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../stickies/providers.dart';
@@ -606,6 +607,9 @@ class SettingsScreen extends ConsumerWidget {
 
           // --- Sticky notes (Windows) ---
           const _StickySettingsSection(),
+
+          // --- Reminders ---
+          const _ReminderSettingsSection(),
 
           // --- About ---
           _SectionHeader(title: l10n.settingsAbout),
@@ -1319,5 +1323,150 @@ class _StickySettingsSection extends ConsumerWidget {
         );
       }
     }
+  }
+}
+
+class _ReminderSettingsSection extends ConsumerStatefulWidget {
+  const _ReminderSettingsSection();
+
+  @override
+  ConsumerState<_ReminderSettingsSection> createState() =>
+      _ReminderSettingsSectionState();
+}
+
+class _ReminderSettingsSectionState
+    extends ConsumerState<_ReminderSettingsSection>
+    with WidgetsBindingObserver {
+  NotificationPermissionState? _permState;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkPermissions();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkPermissions();
+      final scheduler = ref.read(reminderSchedulerProvider);
+      unawaited(scheduler?.reconcile());
+    }
+  }
+
+  Future<void> _checkPermissions() async {
+    final notifs = ref.read(notificationServiceProvider);
+    final state = await notifs.permissionState();
+    if (mounted) {
+      setState(() {
+        _permState = state;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final appSettings = ref.watch(appSettingsProvider);
+    final notifs = ref.read(notificationServiceProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SectionHeader(title: l10n.settingsRemindersTitle),
+        SwitchListTile(
+          title: Text(l10n.settingsRemindersEnable),
+          subtitle: Text(l10n.settingsRemindersEnableSubtitle),
+          value: appSettings.remindersEnabled,
+          onChanged: (val) {
+            ref
+                .read(appSettingsProvider.notifier)
+                .update((s) => s.copyWith(remindersEnabled: val));
+            final scheduler = ref.read(reminderSchedulerProvider);
+            if (scheduler != null) {
+              scheduler.enabled = val;
+              unawaited(scheduler.reconcile());
+            }
+          },
+        ),
+        if (appSettings.remindersEnabled && _permState != null) ...[
+          if (!_permState!.exactAlarms) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Card(
+                color: Theme.of(context).colorScheme.errorContainer
+                    .withValues(alpha: 0.5),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        color: Colors.amber,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.settingsExactAlarmsBanner,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          await notifs.requestExactAlarmPermission();
+                          await _checkPermissions();
+                        },
+                        child: Text(l10n.settingsExactAlarmsFix),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+          ListTile(
+            title: Text(l10n.settingsNotificationsStatus),
+            subtitle: Text(
+              _permState!.notifications
+                  ? l10n.settingsNotificationsAllowed
+                  : l10n.settingsNotificationsBlocked,
+            ),
+            trailing: !_permState!.notifications
+                ? TextButton(
+                    onPressed: () async {
+                      await notifs.requestNotificationPermission();
+                      await _checkPermissions();
+                    },
+                    child: Text(l10n.settingsNotificationsFix),
+                  )
+                : null,
+          ),
+          ListTile(
+            title: Text(l10n.settingsExactAlarmsStatus),
+            subtitle: Text(
+              _permState!.exactAlarms
+                  ? l10n.settingsExactAlarmsAllowed
+                  : l10n.settingsExactAlarmsLimited,
+            ),
+            trailing: !_permState!.exactAlarms
+                ? TextButton(
+                    onPressed: () async {
+                      await notifs.requestExactAlarmPermission();
+                      await _checkPermissions();
+                    },
+                    child: Text(l10n.settingsExactAlarmsFix),
+                  )
+                : null,
+          ),
+        ],
+      ],
+    );
   }
 }

@@ -11,20 +11,34 @@ Future<Optional<LocalDateTime>?> showStickyReminderDialog(
   BuildContext context, {
   LocalDateTime? initialValue,
   DateTime? now,
+  bool exactAlarmsAllowed = true,
+  VoidCallback? onRequestExactAlarms,
 }) {
   return showDialog<Optional<LocalDateTime>>(
     context: context,
-    builder: (context) =>
-        StickyReminderDialog(initialValue: initialValue, now: now),
+    builder: (context) => StickyReminderDialog(
+      initialValue: initialValue,
+      now: now,
+      exactAlarmsAllowed: exactAlarmsAllowed,
+      onRequestExactAlarms: onRequestExactAlarms,
+    ),
   );
 }
 
 /// Dialog with quick reminder chips and Material date/time pickers.
 class StickyReminderDialog extends StatelessWidget {
-  const StickyReminderDialog({super.key, this.initialValue, this.now});
+  const StickyReminderDialog({
+    super.key,
+    this.initialValue,
+    this.now,
+    this.exactAlarmsAllowed = true,
+    this.onRequestExactAlarms,
+  });
 
   final LocalDateTime? initialValue;
   final DateTime? now;
+  final bool exactAlarmsAllowed;
+  final VoidCallback? onRequestExactAlarms;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +52,36 @@ class StickyReminderDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (!exactAlarmsAllowed) ...[
+              Card(
+                color: Theme.of(context).colorScheme.errorContainer
+                    .withValues(alpha: 0.5),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        size: 20,
+                        color: Colors.amber,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          l10n.settingsExactAlarmsBanner,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: onRequestExactAlarms,
+                        child: Text(l10n.settingsExactAlarmsFix),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
             Wrap(
               spacing: 8,
               runSpacing: 8,

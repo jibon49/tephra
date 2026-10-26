@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commands/hotkey_host.dart';
+import '../core/deep_links/deep_link_router.dart';
 import '../core/perf/perf_runner.dart';
 import '../editor/save_state_indicator.dart';
 import '../l10n/app_localizations.dart';
@@ -41,6 +42,9 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
         }
         unawaited(ref.read(stickyHubProvider).restoreOnStart());
       }
+      ref.read(deepLinkRouterProvider).init();
+      ref.read(reminderSchedulerProvider);
+      ref.read(headlessConfigSyncProvider);
       registerBuiltinPanels(ref);
       final registry = ref.read(statusBarRegistryProvider.notifier);
       registry.register(

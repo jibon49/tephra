@@ -1254,7 +1254,21 @@
       "count": { "type": "int" },
       "total": { "type": "int" }
     }
-  }
+  },
+  "vaultNotOnDevice": "This note belongs to a vault that is not on this device.",
+  "notificationChannelReminders": "Reminders",
+  "settingsRemindersTitle": "Reminders",
+  "settingsRemindersEnable": "Enable reminders",
+  "settingsRemindersEnableSubtitle": "Schedule system notifications for sticky note reminder times",
+  "settingsNotificationsStatus": "Notifications",
+  "settingsNotificationsAllowed": "Allowed",
+  "settingsNotificationsBlocked": "Blocked",
+  "settingsExactAlarmsStatus": "Exact timing",
+  "settingsExactAlarmsAllowed": "Allowed",
+  "settingsExactAlarmsLimited": "Limited (may be delayed)",
+  "settingsExactAlarmsBanner": "Reminders may be late. Allow 'Alarms & reminders' for Tephra.",
+  "settingsExactAlarmsFix": "Allow",
+  "settingsNotificationsFix": "Enable in settings"
 }
 
 

@@ -6,6 +6,7 @@ import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -13,6 +14,7 @@ import 'package:tephra/app.dart';
 import 'package:tephra/core/json_file_store.dart';
 import 'package:tephra/core/logging.dart';
 import 'package:tephra/core/perf/perf_probe.dart';
+import 'package:tephra/core/providers.dart';
 import 'package:tephra/core/sync/background_sync.dart';
 import 'package:tephra/core/uuid.dart';
 import 'package:tephra/settings/app_settings.dart';
@@ -22,6 +24,8 @@ import 'package:tephra/stickies/providers.dart';
 import 'package:tephra/stickies/windows/sticky_protocol.dart';
 import 'package:tephra/stickies/windows/sticky_window_main.dart';
 import 'package:tephra/stickies/windows/window_bus.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:window_manager/window_manager.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -80,12 +84,26 @@ Future<void> main(List<String> args) async {
 
   final AppSettings initial;
   final AppSettingsStore? store;
+  Directory? appSupportDir;
+
+  tz.initializeTimeZones();
+  if (!kIsWeb) {
+    try {
+      final info = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(info.identifier));
+    } catch (e) {
+      Logger('app')
+          .warning('Failed to load local time zone ($e); falling back to UTC');
+      tz.setLocalLocation(tz.getLocation('UTC'));
+    }
+  }
 
   if (kIsWeb) {
     initial = AppSettings(deviceId: generateUuidV4());
     store = null;
   } else {
     final dir = await getApplicationSupportDirectory();
+    appSupportDir = dir;
     final file = AppJsonFile(File(p.join(dir.path, 'settings.json')));
     store = AppSettingsStore(file);
     initial = store.load();
@@ -100,6 +118,8 @@ Future<void> main(List<String> args) async {
         initialAppSettingsProvider.overrideWithValue(initial),
         if (store != null) appSettingsStoreProvider.overrideWithValue(store),
         if (windowBus != null) windowBusProvider.overrideWithValue(windowBus),
+        if (appSupportDir != null)
+          appSupportDirectoryProvider.overrideWithValue(appSupportDir),
       ],
       child: const TephraApp(),
     ),

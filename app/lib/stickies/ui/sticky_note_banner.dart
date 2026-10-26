@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tephra_core/tephra_core.dart';
 
+import '../../core/platform/platform_providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../model/sticky_frontmatter.dart';
 import '../model/sticky_meta.dart';
@@ -106,9 +107,18 @@ class StickyNoteBanner extends ConsumerWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
               onTap: () async {
+                final notifs = ref.read(notificationServiceProvider);
+                final perm = await notifs.permissionState();
+                if (!perm.notifications) {
+                  await notifs.requestNotificationPermission();
+                }
+                if (!context.mounted) return;
                 final result = await showStickyReminderDialog(
                   context,
                   initialValue: meta.remind,
+                  exactAlarmsAllowed: perm.exactAlarms,
+                  onRequestExactAlarms: () =>
+                      notifs.requestExactAlarmPermission(),
                 );
                 if (result != null) {
                   await repo.patch(path, StickyPatch(remind: result));

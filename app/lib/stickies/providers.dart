@@ -6,10 +6,15 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_sync/tephra_sync.dart';
+import 'package:timezone/timezone.dart' as tz;
 
+import '../core/headless_config.dart';
 import '../core/providers.dart';
+import '../core/sync/sync_messages.dart';
+import '../core/sync/sync_worker_client.dart';
 import '../explorer/providers.dart';
 import '../search/providers.dart';
 import '../vault/providers.dart';
@@ -19,6 +24,8 @@ import 'data/sticky_positions_store.dart';
 import 'data/sticky_repository.dart';
 import 'model/sticky.dart';
 import 'model/sticky_color.dart';
+import 'reminders/reminder_ledger.dart';
+import 'reminders/reminder_scheduler.dart';
 import 'windows/sticky_desktop_integration.dart';
 import 'windows/sticky_hub.dart';
 import 'windows/text_merger.dart';
@@ -184,4 +191,70 @@ final stickyDesktopIntegrationProvider = Provider<StickyDesktopIntegration?>((
 
   ref.onDispose(() => unawaited(integration.dispose()));
   return integration;
+});
+
+/// Provider supplying the [ReminderLedger] instance.
+final reminderLedgerProvider = Provider<ReminderLedger>((ref) {
+  final dir = ref.watch(appSupportDirectoryProvider);
+  if (dir != null) {
+    return FileReminderLedger(File(p.join(dir.path, 'reminders.json')));
+  }
+  return MemoryReminderLedger();
+});
+
+/// Provider managing sticky note reminder notifications for the open vault.
+final reminderSchedulerProvider = Provider<ReminderScheduler?>((ref) {
+  final session = ref.watch(vaultSessionProvider);
+  if (session == null) return null;
+
+  final notifications = ref.watch(notificationServiceProvider);
+  final repo = ref.watch(stickyRepositoryProvider);
+  final clock = ref.watch(clockProvider);
+  final ledger = ref.watch(reminderLedgerProvider);
+  final appSettings = ref.watch(appSettingsProvider);
+
+  final scheduler = ReminderScheduler(
+    notifications: notifications,
+    repo: repo,
+    vaultId: session.vaultId,
+    location: tz.local,
+    clock: clock,
+    ledger: ledger,
+    enabled: appSettings.remindersEnabled,
+  );
+
+  scheduler.start();
+  unawaited(scheduler.reconcile());
+
+  // Reconcile when a sync cycle finishes
+  ref.listen<AsyncValue<SyncStatusSnapshot>>(
+    syncStatusProvider(session.vaultId),
+    (prev, next) {
+      if (next.asData?.value.state == SyncUiState.idle) {
+        unawaited(scheduler.reconcile());
+      }
+    },
+  );
+
+  ref.onDispose(scheduler.dispose);
+  return scheduler;
+});
+
+/// Provider keeping `<appSupportDir>/headless.json` synchronized whenever vault or settings change.
+final headlessConfigSyncProvider = Provider<void>((ref) {
+  final session = ref.watch(vaultSessionProvider);
+  if (session == null) return;
+  final vaultSettings = ref.watch(vaultSettingsProvider);
+  final appSettings = ref.watch(appSettingsProvider);
+  final dir = ref.watch(appSupportDirectoryProvider);
+  if (dir == null) return;
+
+  final config = HeadlessConfig.fromSession(
+    session: session,
+    vaultSettings: vaultSettings,
+    appSettings: appSettings,
+  );
+  unawaited(
+    config.save(File(p.join(dir.path, HeadlessConfig.defaultFileName))),
+  );
 });
