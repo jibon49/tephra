@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:tephra_core/tephra_core.dart';
 import 'package:tephra_sync/tephra_sync.dart';
+import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../core/headless_config.dart';
@@ -219,11 +220,23 @@ final reminderSchedulerProvider = Provider<ReminderScheduler?>((ref) {
   final ledger = ref.watch(reminderLedgerProvider);
   final appSettings = ref.watch(appSettingsProvider);
 
+  tz.Location location;
+  try {
+    location = tz.local;
+  } catch (_) {
+    try {
+      tz_data.initializeTimeZones();
+      location = tz.local;
+    } catch (_) {
+      location = tz.UTC;
+    }
+  }
+
   final scheduler = ReminderScheduler(
     notifications: notifications,
     repo: repo,
     vaultId: session.vaultId,
-    location: tz.local,
+    location: location,
     clock: clock,
     ledger: ledger,
     enabled: appSettings.remindersEnabled,

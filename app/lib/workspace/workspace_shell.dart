@@ -52,13 +52,27 @@ class _WorkspaceShellState extends ConsumerState<WorkspaceShell> {
           );
         }
       }
-      ref.read(deepLinkRouterProvider).init();
-      ref.read(shareIntakeCoordinatorProvider).init();
-      ref.read(reminderSchedulerProvider);
-      ref.read(headlessConfigSyncProvider);
-      ref.read(stickyWidgetSyncProvider);
-      ref.read(overlayBridgeProvider);
-      ref.read(stickyArchiverProvider);
+      try {
+        ref.read(deepLinkRouterProvider).init();
+      } catch (_) {}
+      try {
+        ref.read(shareIntakeCoordinatorProvider).init();
+      } catch (_) {}
+      try {
+        ref.read(reminderSchedulerProvider);
+      } catch (_) {}
+      try {
+        ref.read(headlessConfigSyncProvider);
+      } catch (_) {}
+      try {
+        ref.read(stickyWidgetSyncProvider);
+      } catch (_) {}
+      try {
+        ref.read(overlayBridgeProvider);
+      } catch (_) {}
+      try {
+        ref.read(stickyArchiverProvider);
+      } catch (_) {}
       registerBuiltinPanels(ref);
       final registry = ref.read(statusBarRegistryProvider.notifier);
       registry.register(
